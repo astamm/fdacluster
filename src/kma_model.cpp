@@ -45,7 +45,7 @@ KmaModel::KmaModel(
 
     //Optimizer factory
     SharedFactory<OptimizerMethod> optfac;
-    optfac.FactoryRegister<Bobyca>("bobyca");
+    optfac.FactoryRegister<Bobyqa>("bobyqa");
 
     //
     //  check-in

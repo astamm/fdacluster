@@ -14,8 +14,7 @@ class OptimizerMethod{
 };
 
 
-
-class Bobyca: public OptimizerMethod{
+class Bobyqa: public OptimizerMethod{
 public:
   virtual double optimize(colvec& arg, std::shared_ptr<WarpingFunction>& pfunc, std::function<double(colvec)> fun);
 };

@@ -4,7 +4,7 @@ Version: 2.0.1
 Type: Package
 Author: Alessandro Zito, Alice Parodi, Mirco Patriarca, Laura Sangalli, Piercesare Secchi, Simone Vantini, Valeria Vitelli
 Maintainer: Alessandro Zito <zito.ales@gmail.com>
-Description:Fdakmaplus10 jointly performs clustering and alignment of a functional dataset (multidimensional or unidimensional functions)
+Description: Fdakmaplus10 jointly performs clustering and alignment of a functional dataset (multidimensional or unidimensional functions)
 License: GPL (???)
 Encoding: UTF-8
 LazyData: true
@@ -12,3 +12,4 @@ Import: Rcpp (>= 0.12.11)
 LinkingTo: Rcpp , RcppArmadillo
 SystemRequirements: C++14
 RoxygenNote: 6.0.1
+Suggests: testthat

@@ -6,8 +6,7 @@
 
 typedef dlib::matrix<double,0,1> argument;
 
-
-double Bobyca::optimize(colvec& arg, std::shared_ptr<WarpingFunction>& pfunc, std::function<double(colvec)> fun)
+double Bobyqa::optimize(colvec& arg, std::shared_ptr<WarpingFunction>& pfunc, std::function<double(colvec)> fun)
 {
 
     //LAMBDA FUNCTION
