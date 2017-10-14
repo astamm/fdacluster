@@ -15,7 +15,8 @@
 Rcpp::List KmaModel::execute()
 {
 
-    if(show_iter==true)  cout<<"Start execution."<<endl;
+    if(show_iter==true)
+      cout<<"Start execution."<<endl;
 
     Timer timer;
     timer.step( "start execution");
@@ -268,10 +269,8 @@ x_out_vec(iter)=x_out;
     //
     if(show_iter==true) cout<<"Final warping: ";
     mat final_par = warping->final_warping(parameters_vec,labels,ict);
-    if(show_iter==true) cout<<"Done";
+    if(show_iter==true) cout<<"Done"<<endl;
 
-
-    if(show_iter==true) cout<<"Output"<<endl;
 
     field<mat> par_vec(iter);
     for(int k = 0; k < iter; k++)
@@ -301,7 +300,7 @@ x_out_vec(iter)=x_out;
 
 
     timer.step( "output ");
-
+    if(show_iter==true) cout<<"Output"<<"---------------------------------------------"<<endl;
     return ListBuilder()
            .add("iterations", iter)
            .add("n.clust",n_clust)

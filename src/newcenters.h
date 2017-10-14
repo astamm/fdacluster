@@ -51,9 +51,9 @@ arma::cube newCenters(const arma::mat& x_reg,
         for(uword i=0; i< ict.size(); i++)
         {
             urowvec sel = find(labels == ict(i)).t();
-          cout<<"inizio calcolo centro"<<endl;
+
             center a = cen->computeParallelCenter( x_reg.rows(sel), util::observations(y,sel), dissim, x_out, par_opt(0));
-            cout<<"finisco calcolo centro"<<endl;
+
             templates.tube(span(i),span::all) = a.y_center.t();
             if(show_iter==true)
                 cout<<"Template num. "<<i<<" computed"<<endl;
