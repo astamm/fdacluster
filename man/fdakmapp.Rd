@@ -9,9 +9,6 @@
 Fdakmap jointly performs clustering and alignment of a functional
 dataset (multidimensional or unidimensional functions).
 }
-\examples{
-
-}
 \references{
 \itemize{
 \item Sangalli, L.M., Secchi, P., Vantini, S., Vitelli, V., 2010. \emph{"K-mean alignment for curve clustering"}. Computational Statistics and Data Analysis, 54, 1219-1233.

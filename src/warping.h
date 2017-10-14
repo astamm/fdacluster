@@ -3,8 +3,8 @@
 
 #include <RcppArmadillo.h>
 #include <memory>
-#include "dissimilarity.hpp"
-#include "utilities.hpp"
+#include "dissimilarity.h"
+#include "utilities.h"
 
 /// Warping setting
 /**

@@ -1,6 +1,6 @@
 #include <RcppArmadillo.h>
 
-#include "utilities.hpp"
+#include "utilities.h"
 
 using namespace arma;
 

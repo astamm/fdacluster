@@ -1,12 +1,12 @@
 
-#include <RcppArmadillo.h>
-#ifdef _OPENMP
-#include <omp.h>
-#endif
+ #include <RcppArmadillo.h>
+// #ifdef _OPENMP
+// #include <omp.h>
+// #endif
 
-#include "center_methods.hpp"
-#include "low.hpp"
-#include "utilities.hpp"
+#include "center_methods.h"
+#include "low.h"
+#include "utilities.h"
 
 //
 //  COMPUTE CENTERS
@@ -182,10 +182,8 @@ center PseudoMedoid::computeCenter(const mat& x,const cube& y, std::shared_ptr<D
 //
 // parallel center
 //
-
 center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out,uword n_th)
 {
-    cout<<"check : entro in parallel center"<<endl;
     center out;
 
     out.x_center = x_out;
@@ -194,16 +192,11 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
     uword n_obs = y.n_rows;
     uword n_dim = y.n_slices;
 
-    cout<<"mat dim: "<<n_dim<<" "<<n_obs<<endl;
     mat y_fin(n_dim,n_out);
 
-    cout<<"D dim: "<<n_obs<<" ^2 "<<endl;
 
     mat D(n_obs,n_obs);
     D.zeros();
-
-    cout<<"arrivo al parallelo for"<<endl;
-#ifdef _OPENMP
     #pragma omp parallel for num_threads(n_th)
     for(uword k=1; k<= n_obs*(n_obs-1)/2 ; k++)
     {
@@ -226,29 +219,6 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
           util::approx( x.row(j), obs_j, x_com));
         D(j,i) = D(i,j);
     }
-#else
-    // // if OPENMP is not supported the execution is garantueed
-    // Rcpp::Rcout<<"OPENMP not supported"<<endl;
-    // for(uword k=1; k<= n_obs*(n_obs-1)/2 ; k++)
-    // {
-    //
-    //     uword i = floor((1+sqrt(8*k-7))/2);
-    //     uword j = k-(i-1)*i/2-1;
-    //
-    //     mat obs_i = y(span(i),span::all,span::all);
-    //     mat obs_j = y(span(j),span::all,span::all);
-    //
-    //     if(n_dim >1)
-    //     {
-    //         obs_i = obs_i.t();
-    //         obs_j = obs_j.t();
-    //     }
-    //     D(i,j) = dissim->compute( x_com, x_com, approx( x.row(i), obs_i, x_com), approx( x.row(j), obs_j, x_com));
-    //     D(j,i) = D(i,j);
-    // }
-#endif
-
-    cout<<"esco al parallelo for"<<endl;
     colvec dis = sum(D,1);
     uword m =  index_min(dis);
     mat obs_m = y(span(m),span::all,span::all);

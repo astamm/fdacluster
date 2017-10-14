@@ -4,7 +4,7 @@
 
 using namespace std;
 
-#include "low.hpp"
+#include "low.h"
 
 void lowess(const vector<double> &x, const vector<double> &y, double f,double delta, long nsteps, vector<double> &ys) //{{{
 {

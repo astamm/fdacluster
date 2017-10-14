@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
-#include "fence.hpp"
-#include "utilities.hpp"
-#include "optimizer.hpp"
+#include "fence.h"
+#include "utilities.h"
+#include "optimizer.h"
 
 
 void iterativeFence(

@@ -1,8 +1,7 @@
 #include <RcppArmadillo.h>
 
-#include "kma_model.hpp"
-
-#include "factory.hpp"
+#include "kma_model.h"
+#include "factory.h"
 
 //
 // KmaModle constructor

@@ -121,8 +121,6 @@
 #' \item{timer}{vector : time of execution. }
 
 
-
-
 kmap <- function(x, y, seeds= NULL, n_clust = 1,
        warping_method ='affine', center_method ='mean',
        similarity_method ='pearson', optim_method = 'bobyqa',
@@ -132,7 +130,7 @@ kmap <- function(x, y, seeds= NULL, n_clust = 1,
 {
 
   if(is.null(y))
-    error("Provvide a valid function")
+    stop("Provvide a valid function")
 
   if(length(dim(y))==2){
     y<-array(y,c(dim(y)[1],dim(y)[2],1))

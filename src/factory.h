@@ -4,9 +4,6 @@
 #include<RcppArmadillo.h>
 #include<memory>
 
-using namespace arma;
-
-
 // Factory class
 template<typename D>
 class SharedFactory

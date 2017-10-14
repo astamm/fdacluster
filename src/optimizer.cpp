@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 #include <memory>
 
-#include "optimizer.hpp"
+#include "optimizer.h"
 #include "dlib/optimization/find_optimal_parameters.h"
 
 typedef dlib::matrix<double,0,1> argument;

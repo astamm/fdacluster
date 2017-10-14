@@ -2,8 +2,8 @@
 #define FENCE_HPP
 
 #include <RcppArmadillo.h>
-#include "warping.hpp"
-#include "optimizer.hpp"
+#include "warping.h"
+#include "optimizer.h"
 
 /// Remove warping outliers
 /** It's an optional check that can be activated by input. After each computation

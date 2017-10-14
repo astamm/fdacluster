@@ -1,11 +1,11 @@
 #include "RcppArmadillo.h"
 
-#include "factory.hpp"
-#include "dissimilarity.hpp"
-#include "warping.hpp"
-#include "utilities.hpp"
-#include "kma_model.hpp"
-#include "checkin.hpp"
+#include "factory.h"
+#include "dissimilarity.h"
+#include "warping.h"
+#include "utilities.h"
+#include "kma_model.h"
+#include "checkin.h"
 
 Rcpp::List kmap(const arma::mat& x,
                 const arma::cube& y,

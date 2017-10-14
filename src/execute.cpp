@@ -5,11 +5,11 @@
 #include <omp.h>
 #endif
 
-#include "newcenters.hpp"
-#include "kma_model.hpp"
-#include "optimizer.hpp"
-#include "ListBuilder.hpp"
-#include "fence.hpp"
+#include "newcenters.h"
+#include "kma_model.h"
+#include "optimizer.h"
+#include "ListBuilder.h"
+#include "fence.h"
 
 
 Rcpp::List KmaModel::execute()
@@ -117,7 +117,7 @@ Rcpp::List KmaModel::execute()
 
         //compute best warping parameters and assign new labels
         if(show_iter==true) cout<<iter<<". Compute best warping: "<<endl;
-#ifdef _OPENMP
+
         #pragma omp parallel for num_threads(parallel_opt(0))
         for(uword obs=0; obs<n_obs; obs++)
         {
@@ -127,7 +127,6 @@ Rcpp::List KmaModel::execute()
             mat parameters_temp(np,nt);
             colvec arg(np);
             mat y_reg = util::approx( x_reg.row(obs), util::observation(y,obs), x_out );
-
             //calcolo warping parameters for each templates
             for(uword t=0; t<nt; t++ )
             {
@@ -161,54 +160,9 @@ Rcpp::List KmaModel::execute()
                 }
             }
         }// fine iterazioni per ogni osservazione
-#else
-        // // if OPENMP is not supported the execution is garantueed
-        // cout<<"OPENMP not supported"<<endl;
-        // for(uword obs=0; obs<n_obs; obs++)
-        // {
 
-            // inizializzo container warp_temp
-            uword nt = templates.n_rows;
-            rowvec index_temp(nt);
-            mat parameters_temp(np,nt);
-            colvec arg(np);
-
-            mat y_reg = util::approx( x_reg.row(obs), util::observation(y,obs), x_out );
-
-            //calcolo warping parameters for each templates
-            for(uword t=0; t<nt; t++ )
-            {
-                mat t_in = templates.tube(span(t),span::all);
-                warping_set wset = warping->set_function(x_out, x_out, y_reg, t_in, dissim);
-
-                //LAMBDA FUNCTION da chiedere perchè non riesco a passare [warping or &warping]
-                auto fun = [&] (const dlib::matrix<double,0,1>& arg)
-                {
-                    return warping->warp(wset,arg);
-                };
-                index_temp[t] = optimizer->optimize( arg, warping, fun);
-                parameters_temp.col(t) = arg;
-
-            }
-
-            //fine iterazioni per ogni tempalte
-            index(obs) = min( index_temp );
-            labels(obs) = ict( index_min(index_temp));
-            parameters.col(obs)= parameters_temp.col(index_min(index_temp));
-
-            //PRINT
-            if(show_iter==true)
-            {
-                cout<<iter<<". Observation "<<obs<<" has been assigned to cluster "<<labels(obs)<<endl;
-                // cout<<"distances from other templates are "<<endl;
-                // index_temp.raw_print(std::cout);
-            }
-
-        }// fine iterazioni per ogni osservazione
-#endif
 
         if(show_iter==true) cout<<"Done"<<endl;
-
         timer.step( "warping "+ std::to_string(iter) );
 
 

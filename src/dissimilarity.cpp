@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 
-#include "dissimilarity.hpp"
-#include "utilities.hpp"
+#include "dissimilarity.h"
+#include "utilities.h"
 
 using namespace arma;
 
@@ -20,7 +20,6 @@ grid Dissimilarity::setGrid(const rowvec& xf, const rowvec& xg,
     uword n_dim = yf.n_rows;
     uword nf = xf.size();
     uword ng = xg.size();
-
 
     //
     // Na detection and elimination
@@ -67,13 +66,11 @@ grid Dissimilarity::setGrid(const rowvec& xf, const rowvec& xg,
 
     if( y_f.n_cols == 0 || y_g.n_cols == 0)
     {
-        cout<<"DISSIMILARITY : Una delle due funzioni in input è completamente NA"<<endl;
-        return out;
+      Rcpp::warning("Una delle due funzioni è completamente NA.");
+      return out;
     }
 
 ////////////////////// x_sim e approssimazioni /////////////////////////////////////////
-
-//  cout<<" are x_fg and y_fg finite?"<<x_f.is_finite()<<x_g.is_finite()<<y_f.is_finite()<<y_g.is_finite()<<endl;
 
     double x_min = std::max( x_f.min(), x_g.min() );
     double x_max = std::min( x_f.max(), x_g.max() );
@@ -94,7 +91,7 @@ grid Dissimilarity::setGrid(const rowvec& xf, const rowvec& xg,
 
     if( p<=1 )
     {
-        cout<<"i due domini non hanno aperti in comune"<<endl;
+      Rcpp::warning("Disimilarity: no open intervals in common. Reduction of warping bounds suggested.");
         return out;
     }
 
@@ -123,6 +120,7 @@ double Pearson::compute(const rowvec& xf, const rowvec& xg,
                         const mat& yf, const mat& yg)
 {
     grid gr = setGrid(xf,xg,yf,yg);
+
     if(gr.yf_sim.is_empty())
         return 10000000;
 

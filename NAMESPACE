@@ -1,3 +1,5 @@
 exportPattern("^[[:alpha:]]+")
 importFrom(Rcpp, evalCpp)
+importFrom("grDevices", "dev.new", "rainbow")
+importFrom("graphics", "axis", "boxplot", "legend", "lines", "matplot","par", "title")
 useDynLib(fdakmapp)

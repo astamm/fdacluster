@@ -3,10 +3,10 @@
 
 #include <RcppArmadillo.h>
 
-#include "dissimilarity.hpp"
-#include "warping.hpp"
-#include "center_methods.hpp"
-#include "optimizer.hpp"
+#include "dissimilarity.h"
+#include "warping.h"
+#include "center_methods.h"
+#include "optimizer.h"
 
 
 using  namespace arma;

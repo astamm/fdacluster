@@ -2,7 +2,7 @@
 #define MY_OPTIMIZER_HPP
 
 #include <RcppArmadillo.h>
-#include "warping.hpp"
+#include "warping.h"
 
 //
 //  optimizer
