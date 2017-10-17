@@ -1,6 +1,5 @@
 #include "RcppArmadillo.h"
 
-#include "factory.h"
 #include "dissimilarity.h"
 #include "warping.h"
 #include "utilities.h"

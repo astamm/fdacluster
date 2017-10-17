@@ -21,8 +21,25 @@ public:
 
     Dissimilarity() {};
     /// compute dissimilarity method different for each derived class
+    /**
+     * @param[xf] abscissa of the f function;
+     * @param[xg] abscissa of the g function;
+     * @param[yf] values of the f function;
+     * @param[yg] values of the g function;
+     *
+     * @return dissimilarity between f and g functions.
+     */
     virtual double compute(const rowvec& xf, const rowvec& xg,const mat& yf, const mat& yg)=0;
+
     /// compute common grid and approximations to compute dissimilarity
+    /**
+    * @param[xf] abscissa of the f function;
+    * @param[xg] abscissa of the g function;
+    * @param[yf] values of the f function;
+    * @param[yg] values of the g function;
+    *
+    * @return grid element with approximated functions on a common grid.
+    */
     grid setGrid(const rowvec& xf, const rowvec& xg, const mat& yf, const mat& yg);
 };
 
@@ -38,7 +55,7 @@ public:
 
     Pearson():Dissimilarity() {};
 
-    double compute(const rowvec& xf, const rowvec& xg,
+    virtual double compute(const rowvec& xf, const rowvec& xg,
                    const mat& yf, const mat& yg);
 };
 
@@ -47,7 +64,7 @@ class L2 final: public Dissimilarity
 {
 public:
     L2():Dissimilarity() {};
-    double compute(const rowvec& xf, const rowvec& xg,
+    virtual double compute(const rowvec& xf, const rowvec& xg,
                    const mat& yf, const mat& yg);
 };
 

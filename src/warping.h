@@ -9,6 +9,8 @@
 /// Warping setting
 /**
   * Input for warp member function.
+  * It contains abscisa and values of the functions to warp and it is returned by
+  * the set_function member function.
   */
 struct warping_set
 {
@@ -17,6 +19,7 @@ struct warping_set
     mat yf;
     mat yg;
 };
+
 
 /// Base class for all The Warping Functions
 /**
@@ -35,6 +38,15 @@ protected:
 
 public:
     /// Member to create warping_set.
+    /**
+     * @param[x_f] abscissa f function;
+     * @param[x_g] abscissa g function;
+     * @param[y_f] values f function;
+     * @param[y_g] values g function;
+     * @param[d] pointer tho the base class Dissimilarity.
+     *
+     * @return a warping_set object.
+     */
     warping_set set_function(const rowvec& x_f, const rowvec& x_g,
                              const mat& y_f, const mat& y_g,
                              std::shared_ptr<Dissimilarity>& d)
@@ -60,15 +72,28 @@ public:
     };
 
     /// Apply warping to a matrix.
+    /**
+     * @param[x] abscissa to warp;
+     * @param[par] warping parameters to apply;
+     *
+     * return abscissas warped;
+     */
     virtual mat apply_warping(const mat& x, const mat& par )=0;
 
     /// Return number of parameters.
     virtual uword n_pars()=0;
 
     /// Set bounds given the input option different for each warping function.
+    /**
+     * @param[war_opt] input warping option.
+     * @param[x] absissa to warp.
+     */
     virtual void set_bounds(const rowvec& war_opt, const mat& x)=0;
 
     /// Set buonds given in a matrix.
+    /**
+     * @param[bou] bounds already computed;
+     */
     void set_bounds(const mat& bou)
     {
         lowerBound = bou.row(0);
@@ -76,12 +101,28 @@ public:
     }
 
     /// Compute final warping.
+    /**
+     * @param[parameters_vec] warping's parameters of each iteration;
+     * @param[labels] final labels;
+     * @param[ict] index current clusters;
+     *
+     * @return a matrix with the total warping parameters applied.
+     */
     virtual mat final_warping(const cube& parameters_vec, const urowvec& labels, const urowvec& ict)=0;
 
     /// Normalize the warping parameters computed by clusters.
+    /**
+     * @param[par] warping parameters computed;
+     * @param[ict] index current clusters;
+     * @param[labels] current labels;
+     */
     virtual void normalize(mat& par,const urowvec& ict,const urowvec& labels)=0;
 
     /// Compute dissimilarity after warp for optimization.
+    /**
+     * @param[w_set] warping_set element with the functions to warp.
+     * @param[arg] best parameters that will be computed.
+     */
     virtual double warp(const warping_set& w_set, const colvec& arg) const =0;
 };
 
@@ -117,6 +158,7 @@ public:
         lowerBound = { 1 - dl, -sl * min_temp};
     }
     virtual mat final_warping(const cube& parameters_vec, const urowvec& labels, const urowvec& ict);
+
     virtual void normalize(mat& par,const urowvec& ict,const urowvec& labels);
 
     virtual double warp(const warping_set& w_set, const colvec& arg) const

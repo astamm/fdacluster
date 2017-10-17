@@ -8,7 +8,6 @@
 #include "newcenters.h"
 #include "kma_model.h"
 #include "optimizer.h"
-#include "ListBuilder.h"
 #include "fence.h"
 
 
@@ -18,7 +17,7 @@ Rcpp::List KmaModel::execute()
     if(show_iter==true)
       cout<<"Start execution."<<endl;
 
-    Timer timer;
+    Rcpp::Timer timer;
     timer.step( "start execution");
 
     //
@@ -279,19 +278,19 @@ x_out_vec(iter)=x_out;
     }
 
 
-    NumericVector out1 = wrap(original_center.x_center);
+    Rcpp::NumericVector out1 = Rcpp::wrap(original_center.x_center);
     out1.attr("dim")=R_NilValue;
 
-    NumericVector out2 = wrap(original_center.dissim_whit_origin);
+    Rcpp::NumericVector out2 = Rcpp::wrap(original_center.dissim_whit_origin);
     out2.attr("dim")=R_NilValue;
 
-    NumericVector out3 = wrap(x_out);
+    Rcpp::NumericVector out3 = Rcpp::wrap(x_out);
     out3.attr("dim")=R_NilValue;
 
-    NumericVector out4 = wrap(index);
+    Rcpp::NumericVector out4 = Rcpp::wrap(index);
     out4.attr("dim")=R_NilValue;
 
-    NumericVector out7 = wrap(labels+1);
+    Rcpp::NumericVector out7 = Rcpp::wrap(labels+1);
     out7.attr("dim")=R_NilValue;
 
 
@@ -301,7 +300,7 @@ x_out_vec(iter)=x_out;
 
     timer.step( "output ");
     if(show_iter==true) cout<<"Output"<<"---------------------------------------------"<<endl;
-    return ListBuilder()
+    return util::ListBuilder()
            .add("iterations", iter)
            .add("n.clust",n_clust)
            .add("x.center.orig",out1)

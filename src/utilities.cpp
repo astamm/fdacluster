@@ -8,7 +8,6 @@ using namespace arma;
 // tableC
 //
 
-
 std::map<arma::uword, arma::uword> util::tableC(arma::urowvec x) {
 
   std::map<arma::uword,arma::uword> counts;

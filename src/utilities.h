@@ -3,6 +3,8 @@
 
 #include <RcppArmadillo.h>
 
+
+#include<memory>
 #include <vector>
 #include <string>
 #include <algorithm>
@@ -14,11 +16,11 @@ namespace util{
 
 /// which_out Find the element out of the range.
 /**
- *  \param vec vector of double.
- *  \param lo double lower bound.
- *  \param up  double upper bound.
+ *  @param[vec] vector of double.
+ *  @param[lo] double lower bound.
+ *  @param[up]  double upper bound.
  *
- *  \return vector of the position of the element out of the range.
+ *  @return  A vector of the position of the element out of the range.
  */
 
 arma::urowvec which_out(arma::rowvec vec, double lo,double up);
@@ -28,9 +30,10 @@ arma::urowvec which_out(arma::rowvec vec, double lo,double up);
 
 /// quantile: Find the requested quantile.
 /**
- *  \param vec vector of doubles.
- *  \param per  requested quantile (between 0 and 1).
- *  \return value in the requested position.
+ *  @param[vec] vector of doubles.
+ *  @param[per]  requested quantile (between 0 and 1).
+ *
+ *  @return value in the requested position.
  */
 double quantile(const arma::rowvec vec, const double per);
 
@@ -38,8 +41,8 @@ double quantile(const arma::rowvec vec, const double per);
 
 /// normalize NA in multidimensional function.
 /**
- *  \param  mat  matrix representing a multidimensional function.
- *  \return matrix with NA normalized.
+ *  @param[y]  matrix representing a multidimensional function.
+ *  @return matrix with NA normalized.
  */
 arma::mat norm_ex(const arma::mat& y);
 
@@ -83,58 +86,151 @@ void unzip(
 
 /// compute max values by row avoiding NA value
 /**
- *  \param x matrix of doubles.
- *  \return vector of upper values.
+ *  @param[x] matrix of doubles.
+ *  @return vector of upper values.
  */
 arma::rowvec uppers(const arma::mat& x);
 
 
 /// compute min values by row avoiding NA value
 /**
- *  \param x matrix of doubles.
- *  \return vector of lower values.
+ *  @param x matrix of doubles;
+ *
+ *  @return vector of lower values.
  */
 arma::rowvec lowers(const arma::mat& x);
 
 
 /// extract an obsevation from a cube
 /**
- *  \param  y cube of observations.
- *  \parm i index of the observation to extract.
- *  \return etracted observation.
+ *  @param[y] cube of observations;
+ *  @param[i] index of the observation to extract;
+ *
+ *  @return extracted observation.
  */
 const arma::mat observation(const arma::cube& y, arma::uword i);
 
 
 /// extract many obsevations from a cube
 /**
- *  \param y cube.
- *  \parm ind indeces of the observations to extract.
- *  \return extracted observations.
+ *  @param[y] cube.
+ *  @parm[ind] indeces of the observations to extract.
+ *  @return extracted observations.
  */
 const arma::cube observations(const arma::cube& y, arma::urowvec ind);
 
 
 /// extract requested ebscissa.
 /**
- *  \param mat  matrix of grids.
- *  \parm i index of the abscissa to extract.
- *  \return extracted abscissa.
+ *  @param[mat]  matrix of grids.
+ *  @param[i] index of the abscissa to extract.
+ *  @return extracted abscissa.
  */
 const arma::rowvec abscissa(const arma::mat& x,arma::uword i);
 
 /// Approximate a function on a new grid.
 /**
- *  \param x  original absicssa.
- *  \param y fuction to approximate.
- *  \return xx new abscissa.
+ *  @param[x]  original absicssa.
+ *  @param[x] fuction to approximate.
+ *
+ *  @return xx new abscissa.
  */
 arma::mat approx(const arma::rowvec& x,
            const arma::mat& y,
            const arma::rowvec& xx);
 
 /// R table function in c++
+/**
+ * @param[x] input vector;
+ *
+ * @return the table of the input vector.
+ */
 std::map<arma::uword, arma::uword> tableC(arma::urowvec x);
+
+
+
+/// List builder for build big list to return to R
+class ListBuilder
+{
+
+public:
+
+  ListBuilder() {};
+  ~ListBuilder() {};
+
+  inline ListBuilder& add(const std::string& name, SEXP x)
+  {
+    names.push_back(name);
+    elements.push_back(PROTECT(x));
+    return *this;
+  }
+
+  template <typename T>
+  inline ListBuilder& add(const std::string& name, const T& x)
+  {
+    names.push_back(name);
+    elements.push_back(PROTECT(Rcpp::wrap(x)));
+    return *this;
+  }
+
+  inline operator Rcpp::List() const
+  {
+    Rcpp::List result(elements.size());
+    for (size_t i = 0; i < elements.size(); ++i)
+    {
+      result[i] = elements[i];
+    }
+    result.attr("names") = Rcpp::wrap(names);
+    UNPROTECT(elements.size());
+    return result;
+  }
+
+  inline operator Rcpp::DataFrame() const
+  {
+    Rcpp::List result = static_cast<Rcpp::List>(*this);
+    result.attr("class") = "data.frame";
+    result.attr("row.names") = Rcpp::IntegerVector::create(NA_INTEGER, XLENGTH(elements[0]));
+    return result;
+  }
+
+private:
+
+  std::vector<std::string> names;
+  std::vector<SEXP> elements;
+
+  ListBuilder(ListBuilder const&) {};
+
+};
+
+
+/// Factory class
+template<typename D>
+class SharedFactory
+{
+
+public:
+  typedef std::unordered_map< std::string, std::function< std::shared_ptr<D>() > > registry_map;
+
+  registry_map map;
+
+  // use this to instantiate the proper Derived class
+  std::shared_ptr<D> instantiate(const std::string& name)
+  {
+    auto it = map.find(name);
+    return it == map.end() ? nullptr : (it->second)();
+  }
+
+  template<typename T>
+  void FactoryRegister(std::string name)
+  {
+    map[name] = []()
+    {
+      return std::make_shared<T>();
+    };
+    //std::cout << "Registering class '" << name << "'\n";
+  }
+
+};
 
 
 }

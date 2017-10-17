@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 
 #include "kma_model.h"
-#include "factory.h"
+#include "checkin.h"
 
 //
 // KmaModle constructor
@@ -25,25 +25,25 @@ KmaModel::KmaModel(
     //
 
     // dissimilarity factory
-    SharedFactory<Dissimilarity> disfac;
+    util::SharedFactory<Dissimilarity> disfac;
     disfac.FactoryRegister<Pearson>("pearson");
     disfac.FactoryRegister<L2>("l2");
 
     //warping factory
-    SharedFactory<WarpingFunction> warfac;
+    util::SharedFactory<WarpingFunction> warfac;
     warfac.FactoryRegister<ShiftFunction>("shift");
     warfac.FactoryRegister<DilationFunction>("dilation");
     warfac.FactoryRegister<AffineFunction>("affine");
     warfac.FactoryRegister<NoAlignmentFunction>("noalign");
 
     //center factory
-    SharedFactory<CenterMethod> cenfac;
+    util::SharedFactory<CenterMethod> cenfac;
     cenfac.FactoryRegister<Medoid>("medoid");
     cenfac.FactoryRegister<PseudoMedoid>("pseudomedoid");
     cenfac.FactoryRegister<Mean>("mean");
 
     //Optimizer factory
-    SharedFactory<OptimizerMethod> optfac;
+    util::SharedFactory<OptimizerMethod> optfac;
     optfac.FactoryRegister<Bobyqa>("bobyqa");
 
     //
@@ -55,10 +55,12 @@ KmaModel::KmaModel(
     Rcpp::Rcout<<"---------------------------------------------"<<endl;
     Rcpp::Rcout<<"Check.in inputs:"<<endl;
     }
-    //
-    // checkIn(t_x,t_y, warping_method, center_method, similarity_method, t_optim_method,
-    //         t_warping_opt, t_center_opt, par_opt);
 
+
+  std::vector<std::string> ava_war, ava_cen, ava_sim, vava_optim;
+   bool flag= checkIn(x, y, warping_method, center_method, similarity_method,
+                  optim_method,warfac,disfac,cenfac,optfac,
+                 warping_opt, t_center_opt, par_opt);
 
     optimizer = optfac.instantiate(optim_method);
     dissim =  disfac.instantiate(similarity_method) ;

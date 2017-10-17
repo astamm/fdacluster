@@ -1,11 +1,12 @@
-#ifndef CHECK_IN_HPP
-#define CHECK_IN_HPP
+#include "checkin.h"
+
 
 #include<RcppArmadillo.h>
 #include "dissimilarity.h"
 #include "warping.h"
 #include "center_methods.h"
 #include "optimizer.h"
+
 
 bool checkIn(const arma::mat& x,
              const arma::cube& y,
@@ -19,5 +20,39 @@ bool checkIn(const arma::mat& x,
              const util::SharedFactory<OptimizerMethod> d,
              const arma::rowvec& warping_opt,
              const arma::rowvec& center_opt,
-             const arma::urowvec par_opt);
-#endif
+             const arma::urowvec par_opt)
+{
+  Rcpp::Rcout<<"Check-in : ";
+  //
+  //  check on x y dimensions
+  //
+
+  //
+  //check on available options in factories
+  //
+
+  //
+  //  check on options
+  //
+
+  //
+  // check on parallel options
+  //
+
+  if(par_opt(1)==1)
+  {
+    if(center_method!="medoid")
+      Rcpp::stop("Parallelization mode 1 is available only with medoid");
+  }
+  if(par_opt(1)!=0 & par_opt(1)!=1)
+    Rcpp::stop("Parallelization mode could be 0 or 1");
+
+
+
+
+
+
+
+  Rcpp::Rcout<<"Done"<<endl;
+  return true;
+}

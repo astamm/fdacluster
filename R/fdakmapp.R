@@ -1,6 +1,6 @@
 #'@title Functional Data Analysis Plus: K-Mean/Medoid Alignment:
-#'@description Fdakmap jointly performs clustering and alignment of a functional
-#' dataset (multidimensional or unidimensional functions).
+#'@description Fdakmapp is the package that allows to jointly perform clustering
+#' and alignment of a functional dataset (multidimensional or unidimensional functions).
 #'
 #'@references
 #'\itemize{
@@ -10,8 +10,12 @@
 #'@seealso
 #'\code{\link{kmap}}.
 #'
-#'@keywords Functional Data Analysis, Alignment, Registration,
-#' K-Mean Clustering, Time Warping
+#'@examples
+#' ############# EXE ##########################
+#' res<-kmap(x=aneurisk65$x, y=aneurisk65$y, n_clust=2)
+#'
+#' ############# OUTPUT################
+#' kmap_show_results(res,FALSE)
 #'
 #'@docType package
 #'@name fdakmapp
