@@ -118,7 +118,9 @@ Rcpp::List KmaModel::execute()
         //compute best warping parameters and assign new labels
         if(show_iter==true) cout<<iter<<". Compute best warping: "<<endl;
 
-        #pragma omp parallel for num_threads(parallel_opt(0))
+        #ifdef _OPENMP
+          #pragma omp parallel for num_threads(parallel_opt(0))
+        #endif
         for(uword obs=0; obs<n_obs; obs++)
         {
             // inizializzo container warp_temp

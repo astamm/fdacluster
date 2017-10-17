@@ -56,11 +56,9 @@ KmaModel::KmaModel(
     Rcpp::Rcout<<"Check.in inputs:"<<endl;
     }
 
-
-  std::vector<std::string> ava_war, ava_cen, ava_sim, vava_optim;
-   bool flag= checkIn(x, y, warping_method, center_method, similarity_method,
+  checkIn(x, y, warping_method, center_method, similarity_method,
                   optim_method,warfac,disfac,cenfac,optfac,
-                 warping_opt, t_center_opt, par_opt);
+                 warping_opt, t_center_opt, par_opt,t_show_iter);
 
     optimizer = optfac.instantiate(optim_method);
     dissim =  disfac.instantiate(similarity_method) ;

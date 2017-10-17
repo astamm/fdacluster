@@ -32,17 +32,23 @@ arma::cube newCenters(const arma::mat& x_reg,
     switch(par_opt(1))
     {
     case 0:
+#ifdef _OPENMP
         #pragma omp parallel for num_threads(par_opt(0))
+#endif
         for(uword i=0; i< ict.size(); i++)
         {
             urowvec sel = find(labels == ict(i)).t();
             center a = cen->computeCenter( x_reg.rows(sel), util::observations(y,sel), dissim, x_out );
             templates.tube(span(i),span::all) = a.y_center.t();
-            #pragma omp critical
+#ifdef _OPENMP
+
+                        #pragma omp critical
             {
                 if(show_iter==true)
                     cout<<"The thread num. "<<omp_get_thread_num()<<" has computed template num. "<<i<<endl;
+
             }
+        #endif
         }
         break;
 
