@@ -145,9 +145,9 @@ public:
     {
         mat out(x.n_rows,x.n_cols);
         for(size_t obs=0; obs < x.n_rows; obs++)
-        {
-            out.row(obs) = par(0,obs)*x.row(obs) + par(1,obs);
-        }
+            {
+                out.row(obs) = par(0,obs)*x.row(obs) + par(1,obs);
+            }
         return out;
     }
     virtual void set_bounds(const rowvec& war_opt, const mat& x)
@@ -185,9 +185,9 @@ public:
     {
         mat out(x.n_rows,x.n_cols);
         for(size_t obs=0; obs < x.n_rows; obs++)
-        {
-            out.row(obs) = x.row(obs) + par(0,obs);
-        }
+            {
+                out.row(obs) = x.row(obs) + par(0,obs);
+            }
         return out;
     }
 
@@ -226,9 +226,9 @@ public:
     {
         mat out(x.n_rows,x.n_cols);
         for(size_t obs=0; obs < x.n_rows; obs++)
-        {
-            out.row(obs) = par(0,obs)*x.row(obs);
-        }
+            {
+                out.row(obs) = par(0,obs)*x.row(obs);
+            }
         return out;
     }
     virtual void set_bounds(const rowvec& war_opt, const mat& x)

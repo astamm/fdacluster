@@ -12,7 +12,8 @@
 #include <iterator>
 
 
-namespace util{
+namespace util
+{
 
 /// which_out Find the element out of the range.
 /**
@@ -59,9 +60,9 @@ void zip(
     std::vector<std::pair<A,B>> &zipped)
 {
     for(size_t i=0; i<a.size(); ++i)
-    {
-        zipped.push_back(std::make_pair(a[i], b[i]));
-    }
+        {
+            zipped.push_back(std::make_pair(a[i], b[i]));
+        }
 }
 
 /// Unzip a zipped vector.
@@ -76,10 +77,10 @@ void unzip(
     std::vector<B> &b)
 {
     for(size_t i=0; i<a.size(); i++)
-    {
-        a[i] = zipped[i].first;
-        b[i] = zipped[i].second;
-    }
+        {
+            a[i] = zipped[i].first;
+            b[i] = zipped[i].second;
+        }
 }
 
 
@@ -136,8 +137,8 @@ const arma::rowvec abscissa(const arma::mat& x,arma::uword i);
  *  @return xx new abscissa.
  */
 arma::mat approx(const arma::rowvec& x,
-           const arma::mat& y,
-           const arma::rowvec& xx);
+                 const arma::mat& y,
+                 const arma::rowvec& xx);
 
 /// R table function in c++
 /**
@@ -155,50 +156,50 @@ class ListBuilder
 
 public:
 
-  ListBuilder() {};
-  ~ListBuilder() {};
+    ListBuilder() {};
+    ~ListBuilder() {};
 
-  inline ListBuilder& add(const std::string& name, SEXP x)
-  {
-    names.push_back(name);
-    elements.push_back(PROTECT(x));
-    return *this;
-  }
-
-  template <typename T>
-  inline ListBuilder& add(const std::string& name, const T& x)
-  {
-    names.push_back(name);
-    elements.push_back(PROTECT(Rcpp::wrap(x)));
-    return *this;
-  }
-
-  inline operator Rcpp::List() const
-  {
-    Rcpp::List result(elements.size());
-    for (size_t i = 0; i < elements.size(); ++i)
+    inline ListBuilder& add(const std::string& name, SEXP x)
     {
-      result[i] = elements[i];
+        names.push_back(name);
+        elements.push_back(PROTECT(x));
+        return *this;
     }
-    result.attr("names") = Rcpp::wrap(names);
-    UNPROTECT(elements.size());
-    return result;
-  }
 
-  inline operator Rcpp::DataFrame() const
-  {
-    Rcpp::List result = static_cast<Rcpp::List>(*this);
-    result.attr("class") = "data.frame";
-    result.attr("row.names") = Rcpp::IntegerVector::create(NA_INTEGER, XLENGTH(elements[0]));
-    return result;
-  }
+    template <typename T>
+    inline ListBuilder& add(const std::string& name, const T& x)
+    {
+        names.push_back(name);
+        elements.push_back(PROTECT(Rcpp::wrap(x)));
+        return *this;
+    }
+
+    inline operator Rcpp::List() const
+    {
+        Rcpp::List result(elements.size());
+        for (size_t i = 0; i < elements.size(); ++i)
+            {
+                result[i] = elements[i];
+            }
+        result.attr("names") = Rcpp::wrap(names);
+        UNPROTECT(elements.size());
+        return result;
+    }
+
+    inline operator Rcpp::DataFrame() const
+    {
+        Rcpp::List result = static_cast<Rcpp::List>(*this);
+        result.attr("class") = "data.frame";
+        result.attr("row.names") = Rcpp::IntegerVector::create(NA_INTEGER, XLENGTH(elements[0]));
+        return result;
+    }
 
 private:
 
-  std::vector<std::string> names;
-  std::vector<SEXP> elements;
+    std::vector<std::string> names;
+    std::vector<SEXP> elements;
 
-  ListBuilder(ListBuilder const&) {};
+    ListBuilder(ListBuilder const&) {};
 
 };
 
@@ -209,26 +210,26 @@ class SharedFactory
 {
 
 public:
-  typedef std::unordered_map< std::string, std::function< std::shared_ptr<D>() > > registry_map;
+    typedef std::unordered_map< std::string, std::function< std::shared_ptr<D>() > > registry_map;
 
-  registry_map map;
+    registry_map map;
 
-  // use this to instantiate the proper Derived class
-  std::shared_ptr<D> instantiate(const std::string& name)
-  {
-    auto it = map.find(name);
-    return it == map.end() ? nullptr : (it->second)();
-  }
-
-  template<typename T>
-  void FactoryRegister(std::string name)
-  {
-    map[name] = []()
+    // use this to instantiate the proper Derived class
+    std::shared_ptr<D> instantiate(const std::string& name)
     {
-      return std::make_shared<T>();
-    };
-    //std::cout << "Registering class '" << name << "'\n";
-  }
+        auto it = map.find(name);
+        return it == map.end() ? nullptr : (it->second)();
+    }
+
+    template<typename T>
+    void FactoryRegister(std::string name)
+    {
+        map[name] = []()
+        {
+            return std::make_shared<T>();
+        };
+        //std::cout << "Registering class '" << name << "'\n";
+    }
 
 };
 

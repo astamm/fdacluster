@@ -79,7 +79,7 @@ private:
     double d=0;
 public:
     virtual center computeCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out);
-    virtual center computeParallelCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out,uword n_th) {};
+    virtual center computeParallelCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out,uword n_th){};
     virtual void setParameters(const rowvec& par);
 };
 

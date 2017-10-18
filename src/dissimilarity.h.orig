@@ -49,14 +49,14 @@ public:
   *The function is returned negative to be a dissimilarity and
   * fit the minimization of the algorithm.
   */
-class Pearson final: public Dissimilarity
+ class Pearson final: public Dissimilarity
 {
 public:
 
     Pearson():Dissimilarity() {};
 
     virtual double compute(const rowvec& xf, const rowvec& xg,
-                           const mat& yf, const mat& yg);
+                   const mat& yf, const mat& yg);
 };
 
 /// L2 Distance
@@ -65,7 +65,7 @@ class L2 final: public Dissimilarity
 public:
     L2():Dissimilarity() {};
     virtual double compute(const rowvec& xf, const rowvec& xg,
-                           const mat& yf, const mat& yg);
+                   const mat& yf, const mat& yg);
 };
 
 

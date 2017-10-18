@@ -1,8 +1,8 @@
 
- #include <RcppArmadillo.h>
- #ifdef _OPENMP
-  #include <omp.h>
- #endif
+#include <RcppArmadillo.h>
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 #include "center_methods.h"
 #include "low.h"
@@ -30,24 +30,24 @@ center Medoid::computeCenter(const mat& x,const cube& y, std::shared_ptr<Dissimi
     D.zeros();
 
     for(uword i=0; i<n_obs; i++)
-    {
-        for(uword j=(i+1); j<n_obs; j++)
         {
+            for(uword j=(i+1); j<n_obs; j++)
+                {
 
-            mat obs_i = y(span(i),span::all,span::all);
-            mat obs_j = y(span(j),span::all,span::all);
-            if(n_dim >1)
-            {
-                obs_i = obs_i.t();
-                obs_j = obs_j.t();
-            }
+                    mat obs_i = y(span(i),span::all,span::all);
+                    mat obs_j = y(span(j),span::all,span::all);
+                    if(n_dim >1)
+                        {
+                            obs_i = obs_i.t();
+                            obs_j = obs_j.t();
+                        }
 
-            D(i,j) = dissim->compute( x_com, x_com,
-              util::approx( x.row(i), obs_i, x_com),
-              util::approx( x.row(j), obs_j, x_com));
-            D(j,i) = D(i,j);
+                    D(i,j) = dissim->compute( x_com, x_com,
+                                              util::approx( x.row(i), obs_i, x_com),
+                                              util::approx( x.row(j), obs_j, x_com));
+                    D(j,i) = D(i,j);
+                }
         }
-    }
 
     colvec dis = sum(D,1);
     uword m =  index_min(dis);
@@ -76,42 +76,42 @@ center Mean::computeCenter(const mat& x,const cube& y, std::shared_ptr<Dissimila
     uword n_cam = y.n_cols;
     mat y_fin(n_dim,n_out);
     for(uword l=0; l<n_dim; l++)
-    {
-
-        vector<double> y_in, x_in;
-
-        for(uword i=0; i<n_obs; i++)
         {
-            for(uword j=0; j<n_cam; j++)
-            {
 
-                if ( is_finite(x(i,j)) &&is_finite(y(i,j,l)))
+            vector<double> y_in, x_in;
+
+            for(uword i=0; i<n_obs; i++)
                 {
-                    x_in.push_back( x(i,j) );
-                    y_in.push_back( y(i,j,l) );
-                }
-            }
-        }// fine ciclu su osservaizoni
+                    for(uword j=0; j<n_cam; j++)
+                        {
 
-        std::vector<std::pair<double,double>> zipped;
-        util::zip(x_in, y_in, zipped);
+                            if ( is_finite(x(i,j)) &&is_finite(y(i,j,l)))
+                                {
+                                    x_in.push_back( x(i,j) );
+                                    y_in.push_back( y(i,j,l) );
+                                }
+                        }
+                }// fine ciclu su osservaizoni
 
-        // Sort the vector of pairs
-        std::sort(std::begin(zipped), std::end(zipped),
-                  [&](const pair<double,double>& a, const pair<double,double>& b)
-        {
-            return a.first < b.first;
-        });
+            std::vector<std::pair<double,double>> zipped;
+            util::zip(x_in, y_in, zipped);
 
-        util::unzip(zipped,x_in,y_in);
-        vector<double> ys(y_in.size());
-        lowess(x_in, y_in, span, d, 2, ys);
+            // Sort the vector of pairs
+            std::sort(std::begin(zipped), std::end(zipped),
+                      [&](const pair<double,double>& a, const pair<double,double>& b)
+            {
+                return a.first < b.first;
+            });
 
-        rowvec x1(x_in),y1(ys);
-        // approssimo su x_out
-        y_fin.row(l) = util::approx(x1,y1,x_out);
+            util::unzip(zipped,x_in,y_in);
+            vector<double> ys(y_in.size());
+            lowess(x_in, y_in, span, d, 2, ys);
 
-    }
+            rowvec x1(x_in),y1(ys);
+            // approssimo su x_out
+            y_fin.row(l) = util::approx(x1,y1,x_out);
+
+        }
     out.y_center= y_fin;
     // assegno x_center
     out.x_center=x_out;
@@ -119,9 +119,9 @@ center Mean::computeCenter(const mat& x,const cube& y, std::shared_ptr<Dissimila
     // compute dissimilarity whit others
     rowvec dso(n_obs);
     for(uword i=0; i<n_obs; i++)
-    {
-        dso(i)= dissim->compute(x_out,x.row(i),out.y_center,util::observation(y,i));
-    }
+        {
+            dso(i)= dissim->compute(x_out,x.row(i),out.y_center,util::observation(y,i));
+        }
     out.dissim_whit_origin=dso;
 
     return out;
@@ -142,27 +142,27 @@ center PseudoMedoid::computeCenter(const mat& x,const cube& y, std::shared_ptr<D
     mat y_fin(n_dim,n_out);
 
     for(uword k=0; k<n_dim; k++)
-    {
-
-        mat D(n_obs,n_obs); // D.zeros();
-        mat dim = y.slice(k);
-
-        for(uword i=0; i<n_obs; i++)
         {
-            for(uword j=i; j<n_obs; j++)
-            {
 
-                D(i,j) = dissim->compute( x_com, x_com,
-                  util::approx( x.row(i), dim.row(i), x_com),
-                  util::approx( x.row(j), dim.row(j), x_com));
-                D(j,i) = D(i,j);
-            }
+            mat D(n_obs,n_obs); // D.zeros();
+            mat dim = y.slice(k);
+
+            for(uword i=0; i<n_obs; i++)
+                {
+                    for(uword j=i; j<n_obs; j++)
+                        {
+
+                            D(i,j) = dissim->compute( x_com, x_com,
+                                                      util::approx( x.row(i), dim.row(i), x_com),
+                                                      util::approx( x.row(j), dim.row(j), x_com));
+                            D(j,i) = D(i,j);
+                        }
+                }
+
+            colvec dis = sum(D,1);
+            uword m =  index_min(dis);
+            y_fin.row(k) =  util::approx( x.row(m), dim.row(m), out.x_center);
         }
-
-        colvec dis = sum(D,1);
-        uword m =  index_min(dis);
-        y_fin.row(k) =  util::approx( x.row(m), dim.row(m), out.x_center);
-    }
 
 
     out.y_center=util::norm_ex(y_fin);
@@ -172,9 +172,9 @@ center PseudoMedoid::computeCenter(const mat& x,const cube& y, std::shared_ptr<D
     //
     rowvec dso(n_obs);
     for(uword i=0; i<n_obs; i++)
-    {
-        dso(i)= dissim->compute(out.x_center, x.row(i), out.y_center, util::observation(y,i) );
-    }
+        {
+            dso(i)= dissim->compute(out.x_center, x.row(i), out.y_center, util::observation(y,i) );
+        }
     out.dissim_whit_origin=dso;
     return out;
 }
@@ -202,26 +202,26 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
     #pragma omp parallel for num_threads(n_th)
 #endif
     for(uword k=1; k<= n_obs*(n_obs-1)/2 ; k++)
-    {
-
-        uword i = floor((1+sqrt(8*k-7))/2);
-        uword j = k-(i-1)*i/2-1;
-
-        mat obs_i = y(span(i),span::all,span::all);
-        mat obs_j = y(span(j),span::all,span::all);
-
-        if(n_dim >1)
         {
-            obs_i = obs_i.t();
-            obs_j = obs_j.t();
+
+            uword i = floor((1+sqrt(8*k-7))/2);
+            uword j = k-(i-1)*i/2-1;
+
+            mat obs_i = y(span(i),span::all,span::all);
+            mat obs_j = y(span(j),span::all,span::all);
+
+            if(n_dim >1)
+                {
+                    obs_i = obs_i.t();
+                    obs_j = obs_j.t();
+                }
+
+
+            D(i,j) = dissim->compute( x_com, x_com,
+                                      util::approx( x.row(i), obs_i, x_com),
+                                      util::approx( x.row(j), obs_j, x_com));
+            D(j,i) = D(i,j);
         }
-
-
-        D(i,j) = dissim->compute( x_com, x_com,
-          util::approx( x.row(i), obs_i, x_com),
-          util::approx( x.row(j), obs_j, x_com));
-        D(j,i) = D(i,j);
-    }
     colvec dis = sum(D,1);
     uword m =  index_min(dis);
     mat obs_m = y(span(m),span::all,span::all);

@@ -25,83 +25,83 @@ void lowess(const vector<double> &x, const vector<double> &y, double f, long nst
     rw.resize(n);
     res.resize(n);
     if(n==1)
-    {
-        ys[0]=y[0];
-        return;
-    }
+        {
+            ys[0]=y[0];
+            return;
+        }
     // ns - at least 2, at most n
     ns = max(min((long)(f*n),n),(long)2);
     for(iter=0; iter<nsteps+1; iter++)
-    {
-        // robustnes iterations
-        nleft = 0;
-        nright = ns-1;
-        // index of last estimated point
-        last = -1;
-        // index of current point
-        i=0;
-        do
         {
-            while(nright<n-1)
-            {
-                // move <nleft,nright> right, while radius decreases
-                d1 = x[i]-x[nleft];
-                d2 = x[nright+1] - x[i];
-                if(d1<=d2)break;
-                nleft++;
-                nright++;
-            }
-            // fit value at x[i]
-            lowest(x,y,x[i],ys[i],nleft,nright,res,iter>0,rw,ok);
-            if(!ok) ys[i]=y[i];
-            if(last<i-1)
-            {
-                // interpolate skipped points
-                if(last<0)
+            // robustnes iterations
+            nleft = 0;
+            nright = ns-1;
+            // index of last estimated point
+            last = -1;
+            // index of current point
+            i=0;
+            do
                 {
-                    //warning("Lowess: out of range.\n");
+                    while(nright<n-1)
+                        {
+                            // move <nleft,nright> right, while radius decreases
+                            d1 = x[i]-x[nleft];
+                            d2 = x[nright+1] - x[i];
+                            if(d1<=d2)break;
+                            nleft++;
+                            nright++;
+                        }
+                    // fit value at x[i]
+                    lowest(x,y,x[i],ys[i],nleft,nright,res,iter>0,rw,ok);
+                    if(!ok) ys[i]=y[i];
+                    if(last<i-1)
+                        {
+                            // interpolate skipped points
+                            if(last<0)
+                                {
+                                    //warning("Lowess: out of range.\n");
+                                }
+                            denom = x[i] - x[last];
+                            for(j=last+1; j<i; j++)
+                                {
+                                    alpha = (x[j]-x[last])/denom;
+                                    ys[j] = alpha * ys[i] + (1.0-alpha)*ys[last];
+                                }
+                        }
+                    last = i;
+                    cut = x[last]+delta;
+                    for(i=last+1; i<n; i++)
+                        {
+                            if(x[i]>cut)break;
+                            if(x[i]==x[last])
+                                {
+                                    ys[i]=ys[last];
+                                    last=i;
+                                }
+                        }
+                    i=max(last+1,i-1);
                 }
-                denom = x[i] - x[last];
-                for(j=last+1; j<i; j++)
+            while(last<n-1);
+            for(i=0; i<n; i++)
+                res[i] = y[i]-ys[i];
+            if(iter==nsteps)break ;
+            for(i=0; i<n; i++)
+                rw[i]=abs(res[i]);
+            sort(rw.begin(),rw.end());
+            m1 = n/2+1;
+            m2 = n-m1;
+            m1 --;
+            cmad = 3.0 *(rw[m1]+rw[m2]);
+            c9 = .999*cmad;
+            c1 = .001*cmad;
+            for(i=0; i<n; i++)
                 {
-                    alpha = (x[j]-x[last])/denom;
-                    ys[j] = alpha * ys[i] + (1.0-alpha)*ys[last];
+                    r = abs(res[i]);
+                    if(r<=c1) rw[i]=1;
+                    else if(r>c9) rw[i]=0;
+                    else rw[i] = (1.0-(r/cmad)*(r/cmad))*(1.0-(r/cmad)*(r/cmad));
                 }
-            }
-            last = i;
-            cut = x[last]+delta;
-            for(i=last+1; i<n; i++)
-            {
-                if(x[i]>cut)break;
-                if(x[i]==x[last])
-                {
-                    ys[i]=ys[last];
-                    last=i;
-                }
-            }
-            i=max(last+1,i-1);
         }
-        while(last<n-1);
-        for(i=0; i<n; i++)
-            res[i] = y[i]-ys[i];
-        if(iter==nsteps)break ;
-        for(i=0; i<n; i++)
-            rw[i]=abs(res[i]);
-        sort(rw.begin(),rw.end());
-        m1 = n/2+1;
-        m2 = n-m1;
-        m1 --;
-        cmad = 3.0 *(rw[m1]+rw[m2]);
-        c9 = .999*cmad;
-        c1 = .001*cmad;
-        for(i=0; i<n; i++)
-        {
-            r = abs(res[i]);
-            if(r<=c1) rw[i]=1;
-            else if(r>c9) rw[i]=0;
-            else rw[i] = (1.0-(r/cmad)*(r/cmad))*(1.0-(r/cmad)*(r/cmad));
-        }
-    }
 }
 
 void lowest(const vector<double> &x, const vector<double> &y, double xs, double &ys, long nleft, long nright, vector<double> &w, bool userw,  vector<double> &rw, bool &ok) //{{{
@@ -117,50 +117,50 @@ void lowest(const vector<double> &x, const vector<double> &y, double xs, double 
     // sum of weights
     a = 0;
     for(j=nleft; j<n; j++)
-    {
-        // compute weights (pick up all ties on right)
-        w[j]=0.;
-        r = abs(x[j]-xs);
-        if(r<=h9)
         {
-            // small enough for non-zero weight
-            if(r>h1) w[j] = (1.0-(r/h)*(r/h)*(r/h))*(1.0-(r/h)*(r/h)*(r/h))*(1.0-(r/h)*(r/h)*(r/h));
-            else w[j] = 1.;
-            if(userw) w[j] *= rw[j];
-            a += w[j];
+            // compute weights (pick up all ties on right)
+            w[j]=0.;
+            r = abs(x[j]-xs);
+            if(r<=h9)
+                {
+                    // small enough for non-zero weight
+                    if(r>h1) w[j] = (1.0-(r/h)*(r/h)*(r/h))*(1.0-(r/h)*(r/h)*(r/h))*(1.0-(r/h)*(r/h)*(r/h));
+                    else w[j] = 1.;
+                    if(userw) w[j] *= rw[j];
+                    a += w[j];
+                }
+            else if(x[j]>xs) break;  // get out at first zero wt on right
         }
-        else if(x[j]>xs) break;  // get out at first zero wt on right
-    }
     nrt = j-1;
     // rightmost pt (may be greater than nright because of ties)
     if(a<=0.) ok = false;
     else
-    {
-        // weighted least squares
-        ok = true;
-        // normalize weights
-        for(j=nleft; j<=nrt; j++)
-            w[j] /= a;
-        if(h>0.)
         {
-            // use linear fit
-            a = 0.;
+            // weighted least squares
+            ok = true;
+            // normalize weights
             for(j=nleft; j<=nrt; j++)
-                a += w[j]*x[j]; // weighted centre of values
-            b = xs-a;
-            c = 0;
+                w[j] /= a;
+            if(h>0.)
+                {
+                    // use linear fit
+                    a = 0.;
+                    for(j=nleft; j<=nrt; j++)
+                        a += w[j]*x[j]; // weighted centre of values
+                    b = xs-a;
+                    c = 0;
+                    for(j=nleft; j<=nrt; j++)
+                        c += w[j]*(x[j]-a)*(x[j]-a);
+                    if(sqrt(c)>0.001*range)
+                        {
+                            // points are spread enough to compute slope
+                            b /= c;
+                            for(j=nleft; j<=nrt; j++)
+                                w[j] *= (1.0+b*(x[j]-a));
+                        }
+                }
+            ys = 0;
             for(j=nleft; j<=nrt; j++)
-                c += w[j]*(x[j]-a)*(x[j]-a);
-            if(sqrt(c)>0.001*range)
-            {
-                // points are spread enough to compute slope
-                b /= c;
-                for(j=nleft; j<=nrt; j++)
-                    w[j] *= (1.0+b*(x[j]-a));
-            }
+                ys += w[j]*y[j];
         }
-        ys = 0;
-        for(j=nleft; j<=nrt; j++)
-            ys += w[j]*y[j];
-    }
 }

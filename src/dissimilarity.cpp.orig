@@ -37,38 +37,38 @@ grid Dissimilarity::setGrid(const rowvec& xf, const rowvec& xg,
     uword c=0;
 
     for(uword i=0; i < nf ; i++)
+    {
+        if( yf.col(i).is_finite() )
         {
-            if( yf.col(i).is_finite() )
-                {
-                    x_f(c) = xf(i);
-                    y_f.col(c) = yf.col(i);
-                    c++;
-                }
+            x_f(c) = xf(i);
+            y_f.col(c) = yf.col(i);
+            c++;
         }
+    }
 
     x_f.resize(c);
     y_f.resize(n_dim,c);
 
     c=0;
     for(uword i=0; i<ng; i++)
+    {
+        if( yg.col(i).is_finite() )
         {
-            if( yg.col(i).is_finite() )
-                {
-                    x_g(c) = xg(i);
-                    y_g.col(c) = yg.col(i);
-                    c++;
-                }
+            x_g(c) = xg(i);
+            y_g.col(c) = yg.col(i);
+            c++;
         }
+    }
 
 
     x_g.resize(c);
     y_g.resize(n_dim,c);
 
     if( y_f.n_cols == 0 || y_g.n_cols == 0)
-        {
-            Rcpp::warning("Una delle due funzioni è completamente NA.");
-            return out;
-        }
+    {
+      Rcpp::warning("Una delle due funzioni è completamente NA.");
+      return out;
+    }
 
 ////////////////////// x_sim e approssimazioni /////////////////////////////////////////
 
@@ -77,23 +77,23 @@ grid Dissimilarity::setGrid(const rowvec& xf, const rowvec& xg,
 
     double pf(0),pg(0);
     for (uword i=0; i<x_f.size(); i++)
-        {
-            if(x_f(i)>=x_min && x_f(i)<=x_max)
-                pf++;
-        }
+    {
+        if(x_f(i)>=x_min && x_f(i)<=x_max)
+            pf++;
+    }
     for (uword i=0; i<x_g.size(); i++)
-        {
-            if(x_g(i)>=x_min && x_g(i)<=x_max)
-                pg++;
-        }
+    {
+        if(x_g(i)>=x_min && x_g(i)<=x_max)
+            pg++;
+    }
 
     double p = std::max(pg,pf);
 
     if( p<=1 )
-        {
-            Rcpp::warning("Disimilarity: no open intervals in common. Reduction of warping bounds suggested.");
-            return out;
-        }
+    {
+      Rcpp::warning("Disimilarity: no open intervals in common. Reduction of warping bounds suggested.");
+        return out;
+    }
 
 
     rowvec xs(p);
@@ -101,9 +101,9 @@ grid Dissimilarity::setGrid(const rowvec& xf, const rowvec& xg,
 
     xs(0) = x_min;
     for (size_t i = 1; i<p; i++)
-        {
-            xs(i) =  xs(i-1) + (x_max-x_min) / (p-1);
-        }
+    {
+        xs(i) =  xs(i-1) + (x_max-x_min) / (p-1);
+    }
 
     out.yf_sim.set_size(n_dim,p);
     out.yg_sim.set_size(n_dim,p);
@@ -128,9 +128,9 @@ double Pearson::compute(const rowvec& xf, const rowvec& xg,
     double res(0);
 
     for(uword k=0; k < dim; k++ )
-        {
-            res += norm_dot( gr.yf_sim.row(k), gr.yg_sim.row(k) );
-        }
+    {
+        res += norm_dot( gr.yf_sim.row(k), gr.yg_sim.row(k) );
+    }
     return -res/dim;
 }
 
@@ -152,10 +152,10 @@ double L2::compute(const rowvec& xf, const rowvec& xg,
     double D = gr.x_sim(len-1)-gr.x_sim(0);
 
     for(uword k=0; k < dim; k++ )
-        {
-            rowvec diff = sqrt(d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
-            res += dot(diff,diff)/(D*dim);
-        }
+    {
+        rowvec diff = sqrt(d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
+        res += dot(diff,diff)/(D*dim);
+    }
     return res;
 
 }

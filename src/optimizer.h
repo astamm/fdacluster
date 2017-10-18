@@ -9,8 +9,9 @@
 //
 
 /// Optimizer Base class
-class OptimizerMethod{
-  public:
+class OptimizerMethod
+{
+public:
     ///optimer member function
     /**
      * @param[arg] warping's warping to be optimized returned by reference;
@@ -23,9 +24,10 @@ class OptimizerMethod{
 };
 
 
-class Bobyqa: public OptimizerMethod{
+class Bobyqa: public OptimizerMethod
+{
 public:
-  virtual double optimize(colvec& arg, std::shared_ptr<WarpingFunction>& pfunc, std::function<double(colvec)> fun);
+    virtual double optimize(colvec& arg, std::shared_ptr<WarpingFunction>& pfunc, std::function<double(colvec)> fun);
 };
 
 #endif

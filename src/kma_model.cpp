@@ -51,14 +51,14 @@ KmaModel::KmaModel(
     //
 
     if(t_show_iter == true)
-    {
-    Rcpp::Rcout<<"---------------------------------------------"<<endl;
-    Rcpp::Rcout<<"Check.in inputs:"<<endl;
-    }
+        {
+            Rcpp::Rcout<<"---------------------------------------------"<<endl;
+            Rcpp::Rcout<<"Check.in inputs:"<<endl;
+        }
 
-  checkIn(x, y, warping_method, center_method, similarity_method,
-                  optim_method,warfac,disfac,cenfac,optfac,
-                 warping_opt, t_center_opt, par_opt,t_show_iter);
+    checkIn(x, y, warping_method, center_method, similarity_method,
+            optim_method,warfac,disfac,cenfac,optfac,
+            warping_opt, t_center_opt, par_opt,t_show_iter);
 
     optimizer = optfac.instantiate(optim_method);
     dissim =  disfac.instantiate(similarity_method) ;
@@ -72,17 +72,17 @@ KmaModel::KmaModel(
     n_dim = t_y.n_slices;
 
     if(t_show_iter == true)
-    {
-      Rcpp::Rcout<<"Loading problem..."<<endl;
-      Rcpp::Rcout<<"Number of threads: " << par_opt(0)<<endl;
-      Rcpp::Rcout<<"Parallel type: " << par_opt(1)<<endl;
-      Rcpp::Rcout<<"Dataset(obs x camp x dim): "<<n_obs<<" x "<<n_camp<<" x "<<n_dim<<endl;
-      Rcpp::Rcout<<"Warping Method: "<<warping_method<<endl;
-      Rcpp::Rcout<<"Center Method:  "<<center_method<<endl;
-      Rcpp::Rcout<<"Dissimilarity Method:  "<<similarity_method<<endl;
-      Rcpp::Rcout<<"Optimization Method:  "<< optim_method<<endl;
-      Rcpp::Rcout<<"Numbero of cluster: "<<n_clust<<endl;
-      Rcpp::Rcout<<"Seeds: ";
-      t_seeds.raw_print(Rcpp::Rcout);
-    }
+        {
+            Rcpp::Rcout<<"Loading problem..."<<endl;
+            Rcpp::Rcout<<"Number of threads: " << par_opt(0)<<endl;
+            Rcpp::Rcout<<"Parallel type: " << par_opt(1)<<endl;
+            Rcpp::Rcout<<"Dataset(obs x camp x dim): "<<n_obs<<" x "<<n_camp<<" x "<<n_dim<<endl;
+            Rcpp::Rcout<<"Warping Method: "<<warping_method<<endl;
+            Rcpp::Rcout<<"Center Method:  "<<center_method<<endl;
+            Rcpp::Rcout<<"Dissimilarity Method:  "<<similarity_method<<endl;
+            Rcpp::Rcout<<"Optimization Method:  "<< optim_method<<endl;
+            Rcpp::Rcout<<"Numbero of cluster: "<<n_clust<<endl;
+            Rcpp::Rcout<<"Seeds: ";
+            t_seeds.raw_print(Rcpp::Rcout);
+        }
 }

@@ -15,7 +15,7 @@ Rcpp::List KmaModel::execute()
 {
 
     if(show_iter==true)
-      cout<<"Start execution."<<endl;
+        cout<<"Start execution."<<endl;
 
     Rcpp::Timer timer;
     timer.step( "start execution");
@@ -41,9 +41,9 @@ Rcpp::List KmaModel::execute()
     cube templates(n_clust,n_out,n_dim);
 
     for(uword i=0; i < n_clust; i++)
-    {
-        templates(span(i),span::all,span::all) = util::approx( util::abscissa(x,seeds(i)), util::observation(y,seeds(i)), x_out ).t();
-    }
+        {
+            templates(span(i),span::all,span::all) = util::approx( util::abscissa(x,seeds(i)), util::observation(y,seeds(i)), x_out ).t();
+        }
     if(show_iter==true) cout<<"Done"<<endl;
 
     //
@@ -53,14 +53,14 @@ Rcpp::List KmaModel::execute()
 
     center original_center;
     if(com_oc==TRUE)
-    {
-        original_center = cen->computeCenter( x, y,dissim, x_out);
-        if(show_iter==true) cout<<"Done"<<endl;
-    }
+        {
+            original_center = cen->computeCenter( x, y,dissim, x_out);
+            if(show_iter==true) cout<<"Done"<<endl;
+        }
     else
-    {
-        if(show_iter==true) cout<<"Skipped"<<endl;
-    }
+        {
+            if(show_iter==true) cout<<"Skipped"<<endl;
+        }
 
     //
     // WHILE equipment
@@ -101,163 +101,163 @@ Rcpp::List KmaModel::execute()
             (sum( labels == labels_old  ) != pn_obs) && // non considerà il caso in cui i cluster sn uguali ma con diverse etichette
             (still_in == true) &&
             (iter < iter_max))
-    {
-
-        iter++;
-        if(show_iter==true) cout<< "Iteration num: "<<iter<<endl;
-
-
-        index_old = index;
-        labels_old = labels;
-        mat parameters(np, n_obs);
-
-        if(show_iter==true) cout<<"Set bound: ";
-        warping->set_bounds(warping_opt,x_reg);
-        if(show_iter==true) cout<<"Done"<<endl;
-
-        //compute best warping parameters and assign new labels
-        if(show_iter==true) cout<<iter<<". Compute best warping: "<<endl;
-
-        #ifdef _OPENMP
-          #pragma omp parallel for num_threads(parallel_opt(0))
-        #endif
-        for(uword obs=0; obs<n_obs; obs++)
         {
-            // inizializzo container warp_temp
-            uword nt = templates.n_rows;
-            rowvec index_temp(nt);
-            mat parameters_temp(np,nt);
-            colvec arg(np);
-            mat y_reg = util::approx( x_reg.row(obs), util::observation(y,obs), x_out );
-            //calcolo warping parameters for each templates
-            for(uword t=0; t<nt; t++ )
-            {
-                mat t_in = templates(span(t),span::all,span::all);
-                if(n_dim >1) t_in =t_in.t();
-                warping_set wset = warping->set_function(x_out, x_out, y_reg, t_in, dissim);
 
-                //LAMBDA FUNCTION
-                auto fun = [this,&wset] (const colvec& arg)
+            iter++;
+            if(show_iter==true) cout<< "Iteration num: "<<iter<<endl;
+
+
+            index_old = index;
+            labels_old = labels;
+            mat parameters(np, n_obs);
+
+            if(show_iter==true) cout<<"Set bound: ";
+            warping->set_bounds(warping_opt,x_reg);
+            if(show_iter==true) cout<<"Done"<<endl;
+
+            //compute best warping parameters and assign new labels
+            if(show_iter==true) cout<<iter<<". Compute best warping: "<<endl;
+
+#ifdef _OPENMP
+            #pragma omp parallel for num_threads(parallel_opt(0))
+#endif
+            for(uword obs=0; obs<n_obs; obs++)
                 {
-                    return this->warping->warp(wset,arg);
-                };
+                    // inizializzo container warp_temp
+                    uword nt = templates.n_rows;
+                    rowvec index_temp(nt);
+                    mat parameters_temp(np,nt);
+                    colvec arg(np);
+                    mat y_reg = util::approx( x_reg.row(obs), util::observation(y,obs), x_out );
+                    //calcolo warping parameters for each templates
+                    for(uword t=0; t<nt; t++ )
+                        {
+                            mat t_in = templates(span(t),span::all,span::all);
+                            if(n_dim >1) t_in =t_in.t();
+                            warping_set wset = warping->set_function(x_out, x_out, y_reg, t_in, dissim);
 
-                index_temp(t) = optimizer->optimize( arg, warping, fun);
-                parameters_temp.col(t) = arg;
-            }
+                            //LAMBDA FUNCTION
+                            auto fun = [this,&wset] (const colvec& arg)
+                            {
+                                return this->warping->warp(wset,arg);
+                            };
 
-            //fine iterazioni per ogni tempalte
-            index(obs) = min( index_temp );
-            labels(obs) = ict( index_min(index_temp));
-            parameters.col(obs)= parameters_temp.col(index_min(index_temp));
+                            index_temp(t) = optimizer->optimize( arg, warping, fun);
+                            parameters_temp.col(t) = arg;
+                        }
+
+                    //fine iterazioni per ogni tempalte
+                    index(obs) = min( index_temp );
+                    labels(obs) = ict( index_min(index_temp));
+                    parameters.col(obs)= parameters_temp.col(index_min(index_temp));
+                    //PRINT
+                    #pragma omp critical
+                    {
+                        if(show_iter==true)
+                            {
+                                // cout<<iter<<". Observation "<<obs<<" has been assigned to cluster "<<labels(obs)<<endl;
+                                // cout<<"distances from other templates are "<<endl;
+                                // index_temp.raw_print(std::cout);
+                                //cout<<"|";
+                            }
+                    }
+                }// fine iterazioni per ogni osservazione
+
+
+            if(show_iter==true) cout<<"Done"<<endl;
+            timer.step( "warping "+ std::to_string(iter) );
+
+
+            //update current template list
+            ict = unique(labels);
+
+
             //PRINT
-            #pragma omp critical
-            {
-                if(show_iter==true)
+            if(show_iter==true)
                 {
-                    // cout<<iter<<". Observation "<<obs<<" has been assigned to cluster "<<labels(obs)<<endl;
-                    // cout<<"distances from other templates are "<<endl;
-                    // index_temp.raw_print(std::cout);
-                    //cout<<"|";
+                    //cout<<"Computed labels are:"<<endl;
+                    //labels.raw_print();
+                    Rcpp::Rcout<<"current cluster vector updated"<<endl;
+                    ict.print();
+                    std::map<uword,uword> mcl = util::tableC(labels);
+                    for(auto it = mcl.cbegin(); it != mcl.cend(); ++it)
+                        {
+                            Rcpp::Rcout <<"cluster num: "<< it->first << " has " << it->second << " elements;" << endl;
+                        }
+                    //   cout<<"parameters computed are"<<endl<<parameters<<endl;
                 }
-            }
-        }// fine iterazioni per ogni osservazione
 
 
-        if(show_iter==true) cout<<"Done"<<endl;
-        timer.step( "warping "+ std::to_string(iter) );
-
-
-        //update current template list
-        ict = unique(labels);
-
-
-        //PRINT
-        if(show_iter==true)
-        {
-            //cout<<"Computed labels are:"<<endl;
-            //labels.raw_print();
-            Rcpp::Rcout<<"current cluster vector updated"<<endl;
-            ict.print();
-            std::map<uword,uword> mcl = util::tableC(labels);
-            for(auto it = mcl.cbegin(); it != mcl.cend(); ++it)
-            {
-              Rcpp::Rcout <<"cluster num: "<< it->first << " has " << it->second << " elements;" << endl;
-            }
-            //   cout<<"parameters computed are"<<endl<<parameters<<endl;
-        }
-
-
-if(show_iter==true) Rcpp::Rcout<<"Fence alghoritm : "<<endl;
-if(fence==TRUE)
-{
-    iterativeFence(parameters, iter, labels, index, warping, optimizer, templates,
-                   x_reg, y, x_out,dissim, ict, show_iter);
-    if(show_iter==true) Rcpp::Rcout<<"Done"<<endl;
-}
-else
-{
-    if(show_iter==true) Rcpp::Rcout<<"Failed"<<endl;
-}
+            if(show_iter==true) Rcpp::Rcout<<"Fence alghoritm : "<<endl;
+            if(fence==TRUE)
+                {
+                    iterativeFence(parameters, iter, labels, index, warping, optimizer, templates,
+                                   x_reg, y, x_out,dissim, ict, show_iter);
+                    if(show_iter==true) Rcpp::Rcout<<"Done"<<endl;
+                }
+            else
+                {
+                    if(show_iter==true) Rcpp::Rcout<<"Failed"<<endl;
+                }
 
 
 // normalizzaziione
-if(show_iter==true) cout<<"Parameters' normalization :";
-warping->normalize(parameters,ict,labels);
-if(show_iter==true) cout<<"Done"<<endl;
+            if(show_iter==true) cout<<"Parameters' normalization :";
+            warping->normalize(parameters,ict,labels);
+            if(show_iter==true) cout<<"Done"<<endl;
 
 
 // salvo parametri
-parameters_vec(span::all,span::all,span(iter-1))=parameters;
+            parameters_vec(span::all,span::all,span(iter-1))=parameters;
 
 
 //update x_reg and x_out
-if(show_iter==true) cout<<"Update x_reg and x_out: ";
-x_reg = warping->apply_warping(x_reg,parameters);
-x_out =  linspace<rowvec>( min( util::lowers(x_reg) ), max( util::uppers(x_reg)), n_out);
-if(show_iter==true) cout<<"Done"<<endl;
-
-x_out_vec(iter)=x_out;
-
-        timer.step( "fence/norm/update "+ std::to_string(iter) );
-
-        //compute new tempaltes
-        if(show_iter==true) cout<<"Compute new templates: "<<endl;
-
-        templates_vec(iter-1) = templates;
-        templates.set_size(ict.size(),n_out,n_dim);
-
-        newCenters( x_reg, y, x_out, dissim, cen, parallel_opt,
-                    templates, ict, labels, show_iter);
-
-        if(show_iter==true)
-        {
-            cout<<"Templates updated"<<endl;
-            cout<<"While condition"<<endl<<"dissim cambiata piu di toll: "<<(sum( abs(index-index_old) < toll)<n_obs )
-                <<endl<<"almeno un etichetta cambiata: "<<(sum( labels == labels_old  ) != n_obs)<<endl;
-            cout<<"Check total similarity: ";
-        }
-        //check total smilarity
-        if(check_total_similarity == true)
-        {
-
-            double tot = sum(index);
-            double tot_old = sum(index_old);
-            // sel la distanza totale aumenta
-            if( tot_old < tot )
-            {
-                still_in= false;
-                templates=templates_vec(iter-1);
-                index = index_old;
-                labels=labels_old;
-                x_out=x_out_vec(iter-1);
-                if(show_iter==true) cout<<"Total similarity didn't increase. ";
-            }
+            if(show_iter==true) cout<<"Update x_reg and x_out: ";
+            x_reg = warping->apply_warping(x_reg,parameters);
+            x_out =  linspace<rowvec>( min( util::lowers(x_reg) ), max( util::uppers(x_reg)), n_out);
             if(show_iter==true) cout<<"Done"<<endl;
-        }
-        timer.step( "newtemplates "+ std::to_string(iter) );
 
-    }//fine while
+            x_out_vec(iter)=x_out;
+
+            timer.step( "fence/norm/update "+ std::to_string(iter) );
+
+            //compute new tempaltes
+            if(show_iter==true) cout<<"Compute new templates: "<<endl;
+
+            templates_vec(iter-1) = templates;
+            templates.set_size(ict.size(),n_out,n_dim);
+
+            newCenters( x_reg, y, x_out, dissim, cen, parallel_opt,
+                        templates, ict, labels, show_iter);
+
+            if(show_iter==true)
+                {
+                    cout<<"Templates updated"<<endl;
+                    cout<<"While condition"<<endl<<"dissim cambiata piu di toll: "<<(sum( abs(index-index_old) < toll)<n_obs )
+                        <<endl<<"almeno un etichetta cambiata: "<<(sum( labels == labels_old  ) != n_obs)<<endl;
+                    cout<<"Check total similarity: ";
+                }
+            //check total smilarity
+            if(check_total_similarity == true)
+                {
+
+                    double tot = sum(index);
+                    double tot_old = sum(index_old);
+                    // sel la distanza totale aumenta
+                    if( tot_old < tot )
+                        {
+                            still_in= false;
+                            templates=templates_vec(iter-1);
+                            index = index_old;
+                            labels=labels_old;
+                            x_out=x_out_vec(iter-1);
+                            if(show_iter==true) cout<<"Total similarity didn't increase. ";
+                        }
+                    if(show_iter==true) cout<<"Done"<<endl;
+                }
+            timer.step( "newtemplates "+ std::to_string(iter) );
+
+        }//fine while
 
     parameters_vec.resize(np,n_obs,iter);
     templates_vec(iter) = templates;
@@ -275,9 +275,9 @@ x_out_vec(iter)=x_out;
 
     field<mat> par_vec(iter);
     for(int k = 0; k < iter; k++)
-    {
-        par_vec(k) = parameters_vec.slice(k);
-    }
+        {
+            par_vec(k) = parameters_vec.slice(k);
+        }
 
 
     Rcpp::NumericVector out1 = Rcpp::wrap(original_center.x_center);
