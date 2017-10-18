@@ -8,7 +8,6 @@ typedef dlib::matrix<double,0,1> argument;
 
 double Bobyqa::optimize(colvec& arg, std::shared_ptr<WarpingFunction>& pfunc, std::function<double(colvec)> fun)
 {
-
     //LAMBDA FUNCTION
     auto fun2 = [&fun] (const argument& argt)
     {

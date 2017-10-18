@@ -1,8 +1,8 @@
 
  #include <RcppArmadillo.h>
-// #ifdef _OPENMP
-// #include <omp.h>
-// #endif
+ #ifdef _OPENMP
+  #include <omp.h>
+ #endif
 
 #include "center_methods.h"
 #include "low.h"
