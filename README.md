@@ -9,8 +9,10 @@ An R studio project file is provided to open the project in RStudio.
 
 ### Prerequisites
 
-To install the package locally the packages Rcpp and RcppArmadillo needs to be instaleld.
-Using install_github() will install the dependencies automatically.
+The package is linked against OpenMP, the BLAS and LAPACK libraries, to use RcppArmadillo, in Makevars.
+
+To install the package locally the packages Rcpp and RcppArmadillo needs to be installed.
+Using install_github() will install the dependencies (Rcpp and RcppArmadillo) automatically.
 
 ### Installing
 
