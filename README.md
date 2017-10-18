@@ -33,3 +33,8 @@ devtools::test()
 res<-kmap(x=aneurisk65$x, y=aneurisk65$y, n_clust=2)
 kmap_show_results(res,FALSE)
 ```
+
+## Documentation
+
+The R documentation can be found in the main directory in fdakmapp.pdf.
+The C++ documentation can be found at https://zitale.github.io/fdakmapp/.
