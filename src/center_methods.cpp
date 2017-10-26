@@ -216,11 +216,11 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
             uword i = floor((1+sqrt(8*k-7))/2);
             uword j = k-(i-1)*i/2-1;
 
-            if( i>(y.n_rows-1) )
-              cout<<"DEBUG: i  y.n_rows-1 "<<i<<" "<<(y.n_rows-1)<<endl;
-
-            if( j>(y.n_rows-1) )
-              cout<<"DEBUG: j  y.n_rows-1 "<<j<<" "<<(y.n_rows-1)<<endl;
+          #pragma omp critical
+          {
+            if( i>(y.n_rows-1) || j>(y.n_rows-1) )
+              cout<<"DEBUG: k i j y.n_rows-1 "<<k<<" "<<i<<" "<<j<<" "<<(y.n_rows-1)<<endl;
+          };
 
             mat obs_i = y(span(i),span::all,span::all);
             mat obs_j = y(span(j),span::all,span::all);
