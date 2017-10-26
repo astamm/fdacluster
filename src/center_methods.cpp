@@ -196,8 +196,15 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 
     mat y_fin(n_dim,n_out);
 
-    mat D(n_obs,n_obs);
-    D.zeros();
+    field<rowvec> fD(n_obs);
+
+    for(uword i=0; i<n_obs;i++){
+      fD(i).set_size(n_obs);
+      fD(i).zeros();
+      }
+
+    // mat D(n_obs,n_obs);
+    // D.zeros();
 
     cout<<"DEBUG: matrice similarità definita n_obs: "<<n_obs<<endl;
 #ifdef _OPENMP
@@ -222,13 +229,18 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
                 }
 
 
-            D(i,j) = dissim->compute( x_com, x_com,
+            // D(i,j)
+            fD(i)(j)= dissim->compute( x_com, x_com,
                                       util::approx( x.row(i), obs_i, x_com),
                                       util::approx( x.row(j), obs_j, x_com));
-            D(j,i) = D(i,j);
+            fD(j)(i) = fD(i)(j);
         }
 
-    colvec dis = sum(D,1);
+    //colvec dis = sum(D,1);
+    colvec dis(n_obs);
+    for(uword i=0; i<n_obs;i++)
+      dis(i) = sum(fD(i));
+
     uword m =  index_min(dis);
     mat obs_m = y(span(m),span::all,span::all);
 
@@ -239,7 +251,7 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
     //
     // compute dissimilarity whit others
     //
-    out.dissim_whit_origin = D.row(m);
+    out.dissim_whit_origin = fD(m);
 
     return out;
 }
