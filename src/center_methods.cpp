@@ -198,9 +198,18 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 
     field<rowvec> fD(n_obs);
 
-    for(uword i=0; i<n_obs;i++)
+  #ifdef _OPENMP
+    #pragma omp parallel for num_threads(n_th)
+  #endif
+    for(uword i=0; i<n_obs;i++){
       fD(i).zeros(n_obs);
 
+    #ifdef _OPENMP
+      #pragma omp critical
+       cout<<i<<" "<<endl;
+
+     #endif
+    }
 
     // mat D(n_obs,n_obs);
     // D.zeros();
