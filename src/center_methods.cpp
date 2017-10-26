@@ -212,12 +212,10 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 #endif
     for(uword k=1; k<= n_obs*(n_obs-1)/2 ; k++)
         {
-            cout<<"DEBUG: entro in for parallelo"<<endl;
 
             uword i = floor((1+sqrt(8*k-7))/2);
             uword j = k-(i-1)*i/2-1;
 
-            cout<<"DEBUG: inizio lavoro con i cubi"<<endl;
 
             mat obs_i = y(span(i),span::all,span::all);
             mat obs_j = y(span(j),span::all,span::all);
