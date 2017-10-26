@@ -144,6 +144,7 @@ kmap <- function(x, y, seeds= NULL, n_clust = 1,
   }else{
     nseeds<-seeds
   }
+
   out<-.Call('_fdakmapp_kmap', PACKAGE = 'fdakmapp', x, y, nseeds, n_clust, warping_method, center_method, similarity_method, optim_method, warping_opt, center_opt, out_opt, fence, check_total_similarity, show_iter, comp_original_center,par_opt)
 
   ## gestione timer  ################################################

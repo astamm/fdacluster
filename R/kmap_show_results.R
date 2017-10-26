@@ -219,16 +219,3 @@ kmap_show_results <-function (Result, bp_sim=TRUE){
 
 
 }
-
-#
-#  Test to check if random seeds is better or non than smart seeds
-#
-
-
-
-
-
-
-
-
-

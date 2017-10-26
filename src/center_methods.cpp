@@ -184,6 +184,8 @@ center PseudoMedoid::computeCenter(const mat& x,const cube& y, std::shared_ptr<D
 //
 center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out,uword n_th)
 {
+
+  cout<<"DEBUG: entro in parallel center"<<endl;
     center out;
 
     out.x_center = x_out;
@@ -194,18 +196,21 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 
     mat y_fin(n_dim,n_out);
 
-
     mat D(n_obs,n_obs);
     D.zeros();
 
+    cout<<"DEBUG: matrice similarità definita n_obs: "<<n_obs<<endl;
 #ifdef _OPENMP
     #pragma omp parallel for num_threads(n_th)
 #endif
     for(uword k=1; k<= n_obs*(n_obs-1)/2 ; k++)
         {
+            cout<<"DEBUG: entro in for parallelo"<<endl;
 
             uword i = floor((1+sqrt(8*k-7))/2);
             uword j = k-(i-1)*i/2-1;
+
+            cout<<"DEBUG: inizio lavoro con i cubi"<<endl;
 
             mat obs_i = y(span(i),span::all,span::all);
             mat obs_j = y(span(j),span::all,span::all);
@@ -222,6 +227,7 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
                                       util::approx( x.row(j), obs_j, x_com));
             D(j,i) = D(i,j);
         }
+
     colvec dis = sum(D,1);
     uword m =  index_min(dis);
     mat obs_m = y(span(m),span::all,span::all);
