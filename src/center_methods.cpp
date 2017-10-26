@@ -210,15 +210,15 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 #ifdef _OPENMP
     #pragma omp parallel for num_threads(n_th)
 #endif
-    for(uword k=1; k<= n_obs*(n_obs-1)/2 ; k++)
+    for(double k=1; k<= n_obs*(n_obs-1)/2 ; k++)
         {
 
-            uword i = floor((1+sqrt(8*k-7))/2);
-            uword j = k-(i-1)*i/2-1;
+            double i = floor( (1+sqrt(8*k - 7)) / 2 );
+            double j = k-(i-1)*i/2-1;
 
           #pragma omp critical
           {
-            if( i>(y.n_rows-1) || j>(y.n_rows-1) )
+            if(i<0 || j<0 || i>(y.n_rows-1) || j>(y.n_rows-1) )
               cout<<"DEBUG: k i j y.n_rows-1 "<<k<<" "<<i<<" "<<j<<" "<<(y.n_rows-1)<<endl;
           };
 
