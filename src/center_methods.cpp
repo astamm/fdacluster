@@ -200,10 +200,9 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 
     for(uword i=0; i<n_obs;i++){
       fD(i).zeros(n_obs);
-      cout<<i<<"";
+      cout<<i<<""<<endl;
     }
 
-    urowvec flag;flag.zeros(n_obs);
     // mat D(n_obs,n_obs);
     // D.zeros();
 
@@ -216,11 +215,6 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 
             uword i = floor((1+sqrt(8*k-7))/2);
             uword j = k-(i-1)*i/2-1;
-
-          if(flag(i)==0){
-            fD(i).set_size(n_obs);
-            flag(i)=1;
-          }
 
             if( i>(y.n_rows-1) )
               cout<<"DEBUG: i  y.n_rows-1 "<<i<<" "<<(y.n_rows-1)<<endl;
