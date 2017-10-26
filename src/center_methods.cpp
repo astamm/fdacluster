@@ -213,8 +213,8 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
     for(uword k=1; k<= n_obs*(n_obs-1)/2 ; k++)
         {
             double kd =k;
-            double i = floor( (1+sqrt(8*k - 7)) / 2 );
-            double j = k-(i-1)*i/2-1;
+            double i = floor( (1+sqrt(8*kd - 7)) / 2 );
+            double j = kd-(i-1)*i/2-1;
 
           #pragma omp critical
           {
