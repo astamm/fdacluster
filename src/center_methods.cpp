@@ -1,7 +1,7 @@
 
 #include <RcppArmadillo.h>
 #ifdef _OPENMP
-#include <omp.h>
+  #include <omp.h>
 #endif
 
 #include "center_methods.h"
@@ -200,9 +200,9 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
       fD(i).zeros(n_obs);
     }
 
-#ifdef _OPENMP
-    #pragma omp parallel for num_threads(n_th)
-#endif
+    #ifdef _OPENMP
+      #pragma omp parallel for num_threads(n_th)
+    #endif
     for(uword k=1; k<= n_obs*(n_obs-1)/2 ; k++)
         {
             double kd =k;
@@ -233,15 +233,12 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
       dis(i) = sum(fD(i));
 
     uword m =  index_min(dis);
+
     mat obs_m = y(span(m),span::all,span::all);
-
     if(n_dim >1) obs_m = obs_m.t();
-
     out.y_center =  util::approx( x.row(m), obs_m, out.x_center);
 
-    //
     // compute dissimilarity whit others
-    //
     out.dissim_whit_origin = fD(m);
 
     return out;

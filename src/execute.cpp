@@ -47,7 +47,7 @@ Rcpp::List KmaModel::execute()
     if(show_iter==true) cout<<"Done"<<endl;
 
     //
-    //compute center_origin
+    //compute center_origin (to be fixed with new centers)
     //
     if(show_iter==true) cout<<"Compute center_origin and dissimilarity with others : ";
 
@@ -228,7 +228,7 @@ Rcpp::List KmaModel::execute()
             templates.set_size(ict.size(),n_out,n_dim);
 
             newCenters( x_reg, y, x_out, dissim, cen, parallel_opt,
-                        templates, ict, labels, show_iter);
+                         templates, ict, labels, show_iter);
 
             if(show_iter==true)
                 {
@@ -237,6 +237,7 @@ Rcpp::List KmaModel::execute()
                         <<endl<<"almeno un etichetta cambiata: "<<(sum( labels == labels_old  ) != n_obs)<<endl;
                     cout<<"Check total similarity: ";
                 }
+
             //check total smilarity
             if(check_total_similarity == true)
                 {

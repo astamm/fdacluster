@@ -8,7 +8,7 @@
 #'@param bp_sim boolean: if TRUE dissimilarity,similarity or distance boxplot are plotted.
 #'
 
-kmap_show_results <-function (Result, bp_sim=TRUE){
+kmap_show_results <-function (Result, bp_sim=FALSE){
   # Result<-res
   lwd.functions = 1
   lwd.centers = 3
