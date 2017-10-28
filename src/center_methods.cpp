@@ -184,8 +184,6 @@ center PseudoMedoid::computeCenter(const mat& x,const cube& y, std::shared_ptr<D
 //
 center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out,uword n_th)
 {
-
-  cout<<"DEBUG: entro in parallel center"<<endl;
     center out;
 
     out.x_center = x_out;
@@ -206,7 +204,6 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
     // mat D(n_obs,n_obs);
     // D.zeros();
 
-    cout<<"DEBUG: matrice similarità definita n_obs: "<<n_obs<<endl;
 #ifdef _OPENMP
     #pragma omp parallel for num_threads(n_th)
 #endif
@@ -216,11 +213,6 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
             double i = floor( (1+sqrt(8*kd - 7)) / 2 );
             double j = kd-(i-1)*i/2-1;
 
-          #pragma omp critical
-          {
-            if(i<0 || j<0 || i>(y.n_rows-1) || j>(y.n_rows-1) )
-              cout<<"DEBUG: k i j y.n_rows-1 "<<k<<" "<<i<<" "<<j<<" "<<(y.n_rows-1)<<endl;
-          };
 
             mat obs_i = y(span(i),span::all,span::all);
             mat obs_j = y(span(j),span::all,span::all);
