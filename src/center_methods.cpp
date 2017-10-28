@@ -198,11 +198,7 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 
     for(uword i=0; i<n_obs;i++){
       fD(i).zeros(n_obs);
-      cout<<i<<""<<endl;
     }
-
-    // mat D(n_obs,n_obs);
-    // D.zeros();
 
 #ifdef _OPENMP
     #pragma omp parallel for num_threads(n_th)
