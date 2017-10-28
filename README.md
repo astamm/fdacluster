@@ -4,7 +4,7 @@ dataset (multidimensional or unidimensional). The centers can be computed by mea
 Many options are available and also the parallal version.
 
 ## Getting Started
-The package can be cloned and downloaded directly from github.
+The package can be cloned or downloaded directly from github.
 An R studio project file is provided to open the project in RStudio.
 
 ### Prerequisites
@@ -19,10 +19,18 @@ Using install_github() will install the dependencies (Rcpp and RcppArmadillo) au
 The package can be installed directly from github but devtools is required.
 
 ```
-install.packages(devtools)
 library(devtools)
 install_github('zitale/fdakmapp')
 ```
+Usally the Mac's compiler doesn't support OpenMP. For this reason is available a release the compile the package without -fopenmp.
+
+```
+library(devtools)
+install_github('zitale/fdakmapp@v2.0.2.no.opm')
+```
+
+
+Othewise another compiler can be installed following the tutorial at: https://clang-omp.github.io/.
 
 ### Automatic tests
 
