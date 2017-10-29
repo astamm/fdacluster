@@ -142,8 +142,10 @@ kmap <- function(x, y, seeds= NULL, n_clust = 1,
   if(is.null(seeds)){
     nseeds<-sample(0:(nrow(y)-1),n_clust)
   }else{
-    nseeds<-seeds
+    nseeds<-(seeds-1)
   }
+  if ((sum(nseeds<0)+sum(nseeds>=nrow(y)))!=0 )
+    stop("seeds indexes have to be in observations range")
 
   out<-.Call('_fdakmapp_kmap', PACKAGE = 'fdakmapp', x, y, nseeds, n_clust, warping_method, center_method, similarity_method, optim_method, warping_opt, center_opt, out_opt, fence, check_total_similarity, show_iter, comp_original_center,par_opt)
 

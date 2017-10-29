@@ -83,6 +83,7 @@ KmaModel::KmaModel(
             Rcpp::Rcout<<"Optimization Method:  "<< optim_method<<endl;
             Rcpp::Rcout<<"Numbero of cluster: "<<n_clust<<endl;
             Rcpp::Rcout<<"Seeds: ";
-            t_seeds.raw_print(Rcpp::Rcout);
+            rowvec s=t_seeds+1;
+            s.raw_print(Rcpp::Rcout);
         }
 }
