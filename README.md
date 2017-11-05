@@ -26,7 +26,7 @@ Usally the Mac's compiler doesn't support OpenMP. For this reason is available a
 
 ```
 library(devtools)
-install_github('zitale/fdakmapp@v2.0.2.no.opm')
+install_github('zitale/fdakmapp@v2.0.2.noomp')
 ```
 
 
