@@ -1,6 +1,8 @@
 #include <RcppArmadillo.h>
 #include <Rcpp/Benchmark/Timer.h>
 
+#include <gperftools/profiler.h>
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -13,6 +15,8 @@
 
 Rcpp::List KmaModel::execute()
 {
+  // ProfilerStart("Desktop/myprof_exe");
+
 
     if(show_iter==true)
         cout<<"Start execution."<<endl;
@@ -302,6 +306,7 @@ Rcpp::List KmaModel::execute()
 
 
     timer.step( "output ");
+    // ProfilerStop();
     if(show_iter==true) cout<<"Output"<<"---------------------------------------------"<<endl;
     return util::ListBuilder()
            .add("iterations", iter)

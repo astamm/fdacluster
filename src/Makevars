@@ -6,5 +6,8 @@
 PKG_CXXFLAGS = $(SHLIB_OPENMP_CXXFLAGS)
 PKG_LIBS = $(SHLIB_OPENMP_CFLAGS) $(LAPACK_LIBS) $(FLIBS) $(BLAS_LIBS)
 
+## to profile ad this to PCK_LIBS
+#-lprofiler
+
 ## optional
 CXX_STD = CXX11

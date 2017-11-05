@@ -188,10 +188,11 @@ mat util::approx(const rowvec& x,
         {
             if(xx(i) == x(0))
                 {
-                    for(uword k = 0; k < dim; k++)
-                        {
-                            yy(k,i)=y(k,0);
-                        }
+                    // for(uword k = 0; k < dim; k++)
+                    //     {
+                    //         yy(k,i)=y(k,0);
+                    //     }
+                    yy.col(i)=y.col(0);
                 }
             i++;
         }
@@ -202,12 +203,11 @@ mat util::approx(const rowvec& x,
             //  il <= non funziona bene con double quindi per l'uguaglianza controll la diff< eps
             while( ( i < xx.size() ) && (xx(i) < x(j) || (std::abs(xx(i) - x(j)) < 0.000000001) ) )
                 {
-
-                    for(int k = 0; k < dim; k++)
-                        {
-                            yy(k,i)= ( y(k,j) - y(k,j-1) ) * ( xx(i) - x(j-1)) / (x(j)-x(j-1)) + y(k,j-1);
-                        }
-
+                    // for(int k = 0; k < dim; k++)
+                    //     {
+                    //         yy(k,i)= ( y(k,j) - y(k,j-1) ) * ( xx(i) - x(j-1)) / (x(j)-x(j-1)) + y(k,j-1);
+                    //     }
+                    yy.col(i)= y.col(j-1) +( y.col(j) - y.col(j-1) ) * ( xx(i) - x(j-1)) / (x(j)-x(j-1)) ;
                     i++;
                 }
 
