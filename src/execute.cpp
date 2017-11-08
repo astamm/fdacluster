@@ -1,7 +1,7 @@
 #include <RcppArmadillo.h>
 #include <Rcpp/Benchmark/Timer.h>
 
-#include <gperftools/profiler.h>
+//#include <gperftools/profiler.h>
 
 #ifdef _OPENMP
 #include <omp.h>
