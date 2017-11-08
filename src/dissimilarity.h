@@ -68,6 +68,14 @@ public:
                            const mat& yf, const mat& yg);
 };
 
+/// L2 Distance
+class L2w final: public Dissimilarity
+{
+public:
+  L2w():Dissimilarity() {};
+  virtual double compute(const rowvec& xf, const rowvec& xg,
+                         const mat& yf, const mat& yg);
+};
 
 
 #endif

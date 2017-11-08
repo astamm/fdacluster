@@ -28,6 +28,7 @@ KmaModel::KmaModel(
     util::SharedFactory<Dissimilarity> disfac;
     disfac.FactoryRegister<Pearson>("pearson");
     disfac.FactoryRegister<L2>("l2");
+    disfac.FactoryRegister<L2w>("l2w");
 
     //warping factory
     util::SharedFactory<WarpingFunction> warfac;
