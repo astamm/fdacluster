@@ -13,6 +13,7 @@
 aneurisk65
 }
 \description{
-A dataset containing 65 multidimensional curves.
+A dataset containing 65 multidimensional curves from aneurisk project.
+The curves represent the first derivatives of the 65 ICA centerlines.
 }
 \keyword{datasets}

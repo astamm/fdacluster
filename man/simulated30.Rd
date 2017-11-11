@@ -13,6 +13,6 @@
 simulated30
 }
 \description{
-A dataset containing 30 simulated curves.
+A dataset containing 30 simulated unidimensional curves.
 }
 \keyword{datasets}

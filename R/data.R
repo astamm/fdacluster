@@ -1,6 +1,6 @@
 #' Data for Examples.
 #'
-#' A dataset containing 30 simulated curves.
+#' A dataset containing 30 simulated unidimensional curves.
 #'
 #' @format A list with abscissas x and values y:
 #' \describe{
@@ -13,7 +13,8 @@
 
 #' Data for Examples.
 #'
-#' A dataset containing 65 multidimensional curves.
+#' A dataset containing 65 multidimensional curves from aneurisk project.
+#' The curves represent the first derivatives of the 65 ICA centerlines.
 #'
 #' @format A list with abscissas x and values y:
 #' \describe{

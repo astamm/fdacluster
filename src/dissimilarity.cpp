@@ -1,3 +1,20 @@
+// Copyright (C) 2017 Alessandro Zito (zito.ales@gmail.com)
+//
+// This file is part of Fdakmapp.
+//
+// Fdakmapp is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Fdakmapp is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   along with Fdakmapp.  If not, see <http://www.gnu.org/licenses/>.
+
 #include <RcppArmadillo.h>
 
 #include "dissimilarity.h"
@@ -180,6 +197,35 @@ double L2w::compute(const rowvec& xf, const rowvec& xg,
   rowvec w(len-1);
   for(uword i=0;i < (len-1); i++)
     w(i)=1/(i+1);
+
+  for(uword k=0; k < dim; k++ )
+  {
+    rowvec diff =  sqrt(w % d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
+    res += dot(diff, diff)/(D*dim);
+  }
+
+  return sqrt(res);
+
+}
+
+
+double L2first::compute(const rowvec& xf, const rowvec& xg,
+                    const mat& yf, const mat& yg)
+{
+  grid gr=setGrid(xf,xg,yf,yg);
+  if(gr.yf_sim.is_empty())
+    return 10000000;
+
+  uword dim = gr.yf_sim.n_rows;
+  uword len = gr.x_sim.size();
+
+  double res(0);
+
+  rowvec d = gr.x_sim.cols(1,len-1) - gr.x_sim.cols(0,len-2);
+  double D = gr.x_sim(len-1)-gr.x_sim(0);
+
+  rowvec w= Rcpp::rep(0.001,len-1);
+  w(0)=1;
 
   for(uword k=0; k < dim; k++ )
   {

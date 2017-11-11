@@ -1,3 +1,20 @@
+// Copyright (C) 2017 Alessandro Zito (zito.ales@gmail.com)
+//
+// This file is part of Fdakmapp.
+//
+// Fdakmapp is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Fdakmapp is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+//   You should have received a copy of the GNU General Public License
+//   along with Fdakmapp.  If not, see <http://www.gnu.org/licenses/>.
+
 #include "RcppArmadillo.h"
 
 #include "dissimilarity.h"
@@ -24,9 +41,9 @@ Rcpp::List kmap(const arma::mat& x,
                 const arma::urowvec par_opt)
 {
 
-    KmaModel modello(x, y, n_clust, warping_method, center_method, similarity_method, optim_method, seeds,
+    KmaModel model(x, y, n_clust, warping_method, center_method, similarity_method, optim_method, seeds,
                      warping_opt, center_opt, out_opt(0),out_opt(1), fence, out_opt(2), show_iter, check_total_similarity, comp_original_center, par_opt);
 
-    return  modello.execute();
+    return  model.execute();
 
 }

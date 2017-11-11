@@ -2,13 +2,13 @@
 #'
 #'@description Show results of the clustering with alignment of functional data
 #
-#'@usage kma_show_results <-function (Result, bp_sim)
+#'@usage kma_show_results <-function (Result, bp_sim,wr_fun)
+#'
 #'@param Result output of kmap.
-#'
-#'@param bp_sim boolean: if TRUE dissimilarity,similarity or distance boxplot are plotted.
-#'
+#'@param bp_sim boolean: if TRUE dissimilarity,similarity or distance boxplot are plotted. Default value is FALSE.
+#'@param wr_fun boolean: if TRUE the warping functions applied to x are plotted. Default value is FALSE.
 
-kmap_show_results <-function (Result, bp_sim=FALSE){
+kmap_show_results <-function (Result, bp_sim=FALSE,wr_fun=FALSE){
   # Result<-res
   lwd.functions = 1
   lwd.centers = 3
@@ -149,28 +149,29 @@ kmap_show_results <-function (Result, bp_sim=FALSE){
 # print warping functions -------------------------------------------------
 
 
-# #
-# #      print warping functions
-# #
-#   dev.new()
-#   plot(t(x[1, ]), t(x.final[1, ]), xlim = c(min(x, na.rm = TRUE),
-#       max(x, na.rm = TRUE)), ylim = c(min(x, na.rm = TRUE),
-#       max(x, na.rm = TRUE)), type = "l", lwd = 1, col = colours.warping[1],
-#       xlab = "x", ylab = "y", asp = 1)
-#     for (i in 2:n.obs) {
-#         lines(t(x[i, ]), t(x.final[i, ]), type = "l", lwd = 1,
-#             col = colours.warping[i], xlab = "x", ylab = "y",
-#             asp = 1)
-#     }
-#     title3 <- c("Registration: ", Result$warping.method)
-#     title3 <- paste(title3, collapse = "")
-#     title33 <- c("Warping Functions")
-#     title3def <- c(title3, title33)
-#     title(main = title3def)
-#     abline(v = min(x))
-#     abline(v = max(x))
+#
+#      print warping functions
+#
+if(wr_fun==TRUE){
+      dev.new()
+  plot(t(x[1, ]), t(x.final[1, ]), xlim = c(min(x, na.rm = TRUE),
+      max(x, na.rm = TRUE)), ylim = c(min(x, na.rm = TRUE),
+      max(x, na.rm = TRUE)), type = "l", lwd = 1, col = colours.warping[1],
+      xlab = "x", ylab = "y", asp = 1)
+    for (i in 2:n.obs) {
+        lines(t(x[i, ]), t(x.final[i, ]), type = "l", lwd = 1,
+            col = colours.warping[i], xlab = "x", ylab = "y",
+            asp = 1)
+    }
+    title3 <- c("Registration: ", Result$warping.method)
+    title3 <- paste(title3, collapse = "")
+    title33 <- c("Warping Functions")
+    title3def <- c(title3, title33)
+    title(main = title3def)
+    abline(v = min(x))
+    abline(v = max(x))
 
-
+}
 # print similarity boxes --------------------------------------------------
     #
     #  print similarty boxes
