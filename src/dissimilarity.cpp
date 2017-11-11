@@ -180,59 +180,59 @@ double L2::compute(const rowvec& xf, const rowvec& xg,
 
 
 double L2w::compute(const rowvec& xf, const rowvec& xg,
-                   const mat& yf, const mat& yg)
+                    const mat& yf, const mat& yg)
 {
-  grid gr=setGrid(xf,xg,yf,yg);
-  if(gr.yf_sim.is_empty())
-    return 10000000;
+    grid gr=setGrid(xf,xg,yf,yg);
+    if(gr.yf_sim.is_empty())
+        return 10000000;
 
-  uword dim = gr.yf_sim.n_rows;
-  uword len = gr.x_sim.size();
+    uword dim = gr.yf_sim.n_rows;
+    uword len = gr.x_sim.size();
 
-  double res(0);
+    double res(0);
 
-  rowvec d = gr.x_sim.cols(1,len-1) - gr.x_sim.cols(0,len-2);
-  double D = gr.x_sim(len-1)-gr.x_sim(0);
+    rowvec d = gr.x_sim.cols(1,len-1) - gr.x_sim.cols(0,len-2);
+    double D = gr.x_sim(len-1)-gr.x_sim(0);
 
-  rowvec w(len-1);
-  for(uword i=0;i < (len-1); i++)
-    w(i)=1/(i+1);
+    rowvec w(len-1);
+    for(uword i=0; i < (len-1); i++)
+        w(i)=1/(i+1);
 
-  for(uword k=0; k < dim; k++ )
-  {
-    rowvec diff =  sqrt(w % d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
-    res += dot(diff, diff)/(D*dim);
-  }
+    for(uword k=0; k < dim; k++ )
+        {
+            rowvec diff =  sqrt(w % d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
+            res += dot(diff, diff)/(D*dim);
+        }
 
-  return sqrt(res);
+    return sqrt(res);
 
 }
 
 
 double L2first::compute(const rowvec& xf, const rowvec& xg,
-                    const mat& yf, const mat& yg)
+                        const mat& yf, const mat& yg)
 {
-  grid gr=setGrid(xf,xg,yf,yg);
-  if(gr.yf_sim.is_empty())
-    return 10000000;
+    grid gr=setGrid(xf,xg,yf,yg);
+    if(gr.yf_sim.is_empty())
+        return 10000000;
 
-  uword dim = gr.yf_sim.n_rows;
-  uword len = gr.x_sim.size();
+    uword dim = gr.yf_sim.n_rows;
+    uword len = gr.x_sim.size();
 
-  double res(0);
+    double res(0);
 
-  rowvec d = gr.x_sim.cols(1,len-1) - gr.x_sim.cols(0,len-2);
-  double D = gr.x_sim(len-1)-gr.x_sim(0);
+    rowvec d = gr.x_sim.cols(1,len-1) - gr.x_sim.cols(0,len-2);
+    double D = gr.x_sim(len-1)-gr.x_sim(0);
 
-  rowvec w= Rcpp::rep(0.001,len-1);
-  w(0)=1;
+    rowvec w= Rcpp::rep(0.001,len-1);
+    w(0)=1;
 
-  for(uword k=0; k < dim; k++ )
-  {
-    rowvec diff =  sqrt(w % d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
-    res += dot(diff, diff)/(D*dim);
-  }
+    for(uword k=0; k < dim; k++ )
+        {
+            rowvec diff =  sqrt(w % d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
+            res += dot(diff, diff)/(D*dim);
+        }
 
-  return sqrt(res);
+    return sqrt(res);
 
 }

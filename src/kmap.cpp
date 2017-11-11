@@ -42,7 +42,7 @@ Rcpp::List kmap(const arma::mat& x,
 {
 
     KmaModel model(x, y, n_clust, warping_method, center_method, similarity_method, optim_method, seeds,
-                     warping_opt, center_opt, out_opt(0),out_opt(1), fence, out_opt(2), show_iter, check_total_similarity, comp_original_center, par_opt);
+                   warping_opt, center_opt, out_opt(0),out_opt(1), fence, out_opt(2), show_iter, check_total_similarity, comp_original_center, par_opt);
 
     return  model.execute();
 

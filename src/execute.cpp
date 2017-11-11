@@ -33,7 +33,7 @@
 
 Rcpp::List KmaModel::execute()
 {
-  // ProfilerStart("Desktop/myprof_exe");
+    // ProfilerStart("Desktop/myprof_exe");
 
 
     if(show_iter==true)
@@ -250,7 +250,7 @@ Rcpp::List KmaModel::execute()
             templates.set_size(ict.size(),n_out,n_dim);
 
             newCenters( x_reg, y, x_out, dissim, cen, parallel_opt,
-                         templates, ict, labels, show_iter);
+                        templates, ict, labels, show_iter);
 
             if(show_iter==true)
                 {

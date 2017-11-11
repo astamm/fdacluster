@@ -89,9 +89,9 @@ public:
 class L2w final: public Dissimilarity
 {
 public:
-  L2w():Dissimilarity() {};
-  virtual double compute(const rowvec& xf, const rowvec& xg,
-                         const mat& yf, const mat& yg);
+    L2w():Dissimilarity() {};
+    virtual double compute(const rowvec& xf, const rowvec& xg,
+                           const mat& yf, const mat& yg);
 };
 
 
@@ -99,9 +99,9 @@ public:
 class L2first final: public Dissimilarity
 {
 public:
-  L2first():Dissimilarity() {};
-  virtual double compute(const rowvec& xf, const rowvec& xg,
-                         const mat& yf, const mat& yg);
+    L2first():Dissimilarity() {};
+    virtual double compute(const rowvec& xf, const rowvec& xg,
+                           const mat& yf, const mat& yg);
 };
 
 #endif

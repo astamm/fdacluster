@@ -17,7 +17,7 @@
 
 #include <RcppArmadillo.h>
 #ifdef _OPENMP
-  #include <omp.h>
+#include <omp.h>
 #endif
 
 #include "center_methods.h"
@@ -212,13 +212,14 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 
     field<rowvec> fD(n_obs);
 
-    for(uword i=0; i<n_obs;i++){
-      fD(i).zeros(n_obs);
-    }
+    for(uword i=0; i<n_obs; i++)
+        {
+            fD(i).zeros(n_obs);
+        }
 
-    #ifdef _OPENMP
-      #pragma omp parallel for num_threads(n_th)
-    #endif
+#ifdef _OPENMP
+    #pragma omp parallel for num_threads(n_th)
+#endif
     for(uword k=1; k<= n_obs*(n_obs-1)/2 ; k++)
         {
             double kd =k;
@@ -238,15 +239,15 @@ center Medoid::computeParallelCenter(const mat& x, const cube& y, std::shared_pt
 
             // D(i,j)
             fD(i)(j)= dissim->compute( x_com, x_com,
-                                      util::approx( x.row(i), obs_i, x_com),
-                                      util::approx( x.row(j), obs_j, x_com));
+                                       util::approx( x.row(i), obs_i, x_com),
+                                       util::approx( x.row(j), obs_j, x_com));
             fD(j)(i) = fD(i)(j);
         }
 
     //colvec dis = sum(D,1);
     colvec dis(n_obs);
-    for(uword i=0; i<n_obs;i++)
-      dis(i) = sum(fD(i));
+    for(uword i=0; i<n_obs; i++)
+        dis(i) = sum(fD(i));
 
     uword m =  index_min(dis);
 
