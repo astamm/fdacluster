@@ -11,8 +11,9 @@
 #'\code{\link{kmap}}.
 #'
 #'@examples
+#' library(fdakmapp)
 #' ############# EXE ##########################
-#' res<-kmap(x=aneurisk65$x, y=aneurisk65$y, n_clust=2,seeds=c(32,64))
+#' res<-kmap(x=aneurisk65$x, y=aneurisk65$y, n_clust=2,seeds=c(32,64),comp_original_center = TRUE)
 #'
 #' ############# OUTPUT################
 #' kmap_show_results(res,TRUE,TRUE)

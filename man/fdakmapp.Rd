@@ -10,8 +10,9 @@ Fdakmapp is a package that allows to jointly perform clustering
 and alignment of a functional dataset (multidimensional or unidimensional functions).
 }
 \examples{
+library(fdakmapp)
 ############# EXE ##########################
-res<-kmap(x=aneurisk65$x, y=aneurisk65$y, n_clust=2,seeds=c(32,64))
+res<-kmap(x=aneurisk65$x, y=aneurisk65$y, n_clust=2,seeds=c(32,64),comp_original_center = TRUE)
 
 ############# OUTPUT################
 kmap_show_results(res,TRUE,TRUE)
