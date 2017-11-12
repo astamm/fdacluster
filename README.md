@@ -1,15 +1,15 @@
 # fdakmapp
 The fdakmapp package provides the kmap function that jointly performs clustering and alignment of a functional 
-dataset (multidimensional or unidimensional). The centers can be computed by mean and medoid center methods.
-Many options are available and also the parallal version.
+dataset (multidimensional or unidimensional). The centers can be computed by mean or medoid center methods.
+The parallel version is available.
 
 ## Getting Started
-The package can be cloned or downloaded directly from github.
+The source code can be cloned or downloaded directly from github.
 An R studio project file is provided to open the project in RStudio.
 
 ### Prerequisites
 
-The package is linked against OpenMP, the BLAS and LAPACK libraries, to use RcppArmadillo, in Makevars.
+The package is linked against OpenMP, the BLAS and LAPACK libraries in Makevars.
 
 To install the package locally the packages Rcpp and RcppArmadillo needs to be installed.
 Using install_github() will install the dependencies (Rcpp and RcppArmadillo) automatically.
@@ -18,19 +18,23 @@ Using install_github() will install the dependencies (Rcpp and RcppArmadillo) au
 
 The package can be installed directly from github but devtools is required.
 
+If devtools is not installed use the following comand to install it
+```
+install.packages('devtools') 
+```
+and then install the package
 ```
 library(devtools)
 install_github('zitale/fdakmapp')
 ```
-Usally the Mac's compiler doesn't support OpenMP. For this reason is available a release the compile the package without -fopenmp.
 
+Usually the clag compiler doesn't support OpenMP. For this reason is available a release without -fopenmp.
 ```
 library(devtools)
 install_github('zitale/fdakmapp@v2.0.2.noomp')
 ```
 
-
-Othewise another compiler can be installed following the tutorial at: https://clang-omp.github.io/.
+Othewise the problem can be solved following the tutorial at: https://clang-omp.github.io/.
 
 ### Automatic tests
 
@@ -41,7 +45,7 @@ devtools::test()
 
 ```
 res<-kmap(x=aneurisk65$x, y=aneurisk65$y, n_clust=2)
-kmap_show_results(res,FALSE)
+kmap_show_results(res,FALSE,FALSE)
 ```
 
 ## Documentation
