@@ -34,9 +34,9 @@ void newCenters(const arma::mat& x_reg,
                 std::shared_ptr<Dissimilarity>& dissim,
                 std::shared_ptr<CenterMethod>& cen,
                 const arma::urowvec& par_opt,
-                cube& templates,
-                const urowvec& ict,
-                const urowvec& labels,
+                arma::cube& templates,
+                const arma::urowvec& ict,
+                const arma::urowvec& labels,
                 const bool show_iter
                );
 

@@ -1,15 +1,17 @@
-#'@title plot results kmap
+#' Plot for \code{kmap} objects
 #'
-#'@description Show results of the clustering with alignment of functional data
-#
-#'@usage kma_show_results <-function (Result, bp_sim,wr_fun)
+#' @param x The \code{kmap} object to be plotted.
+#' @param bp_sim Boolean. When \code{TRUE}, dissimilarity boxplot are
+#'   additionally plotted. Default is \code{FALSE}.
+#' @param wr_fun Boolean. When \code{TRUE}, the warping functions are
+#'   additionally plotted. Default is \code{FALSE}.
 #'
-#'@param Result output of kmap.
-#'@param bp_sim boolean: if TRUE dissimilarity,similarity or distance boxplot are plotted. Default value is FALSE.
-#'@param wr_fun boolean: if TRUE the warping functions applied to x are plotted. Default value is FALSE.
-
-kmap_show_results <-function (Result, bp_sim=FALSE,wr_fun=FALSE){
-  # Result<-res
+#' @return The input \code{kmap} object invisibly.
+#' @export
+#'
+#' @examples
+plot.kmap <- function(x, bp_sim = FALSE, wr_fun = FALSE, ...) {
+  Result <- x
   lwd.functions = 1
   lwd.centers = 3
 
@@ -218,5 +220,5 @@ if(wr_fun==TRUE){
     }
    }
 
-
+    invisible(x)
 }

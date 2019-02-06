@@ -19,67 +19,63 @@
 #define UTILITIES_HPP_
 
 #include <RcppArmadillo.h>
-
-
-#include<memory>
-#include <vector>
+#include <functional> // for std::function
+#include <memory> // for std::shared_ptr...
+#include <map>
 #include <string>
-#include <algorithm>
-#include <iostream>
-#include <iterator>
-
+#include <unordered_map> // for std::unordered_map
+#include <utility>
+#include <vector>
 
 namespace util
 {
 
-/// which_out Find the element out of the range.
+/// R table function in c++
 /**
- *  @param[vec] vector of double.
- *  @param[lo] double lower bound.
- *  @param[up]  double upper bound.
+ * @param[inputLabels] Vector of input lables to count.
  *
- *  @return  A vector of the position of the element out of the range.
+ * @return Table containing the label counts.
  */
+std::map<unsigned int, unsigned int> tableC(const arma::urowvec &inputLabels);
 
-arma::urowvec which_out(arma::rowvec vec, double lo,double up);
-
-
-
-
-/// quantile: Find the requested quantile.
+/// Find out-of-range elements.
 /**
- *  @param[vec] vector of doubles.
- *  @param[per]  requested quantile (between 0 and 1).
+ *  @param[inputValues] Input values to be filtered.
+ *  @param[lowerBound] Lower bound of included values.
+ *  @param[upperBound] Upper bound of included values.
  *
- *  @return value in the requested position.
+ *  @return Indices of out-of-range elements.
  */
-double quantile(const arma::rowvec vec, const double per);
+arma::urowvec which_out(const arma::rowvec &inputValues, const double lowerBound, const double upperBound);
 
-
-
-/// normalize NA in multidimensional function.
+/// Find the requested quantile.
 /**
- *  @param[y]  matrix representing a multidimensional function.
- *  @return matrix with NA normalized.
+ *  @param[inputValues] Vector of input values.
+ *  @param[quantileOrder] Order of the requested quantile (between 0 and 1).
+ *
+ *  @return Requested quantile.
  */
-arma::mat norm_ex(const arma::mat& y);
+double quantile(const arma::rowvec &inputValues, const double quantileOrder);
 
-
-/// Created a ziiped vector.
+/// Create a zipped vector.
 /** Fill the zipped vector with pairs consisting of the
 *   corresponding elements of a and b. (This assumes
 *   that the vectors have equal length).
 */
 template <typename A, typename B>
-void zip(
-    const std::vector<A> &a,
-    const std::vector<B> &b,
-    std::vector<std::pair<A,B>> &zipped)
+void zip(const std::vector<A> &a,
+         const std::vector<B> &b,
+         std::vector< std::pair<A,B> > &zipped)
 {
-    for(size_t i=0; i<a.size(); ++i)
-        {
-            zipped.push_back(std::make_pair(a[i], b[i]));
-        }
+    unsigned int vecDim = a.size();
+
+    if (b.size() != a.size())
+        Rcpp::stop("a and b should be of same size.");
+
+    zipped.resize(vecDim);
+
+    for (unsigned int i = 0;i < vecDim;++i)
+        zipped[i] = std::make_pair(a[i], b[i]);
 }
 
 /// Unzip a zipped vector.
@@ -88,118 +84,100 @@ void zip(
 * that the vectors have equal length)
 */
 template <typename A, typename B>
-void unzip(
-    const std::vector<std::pair<A, B>> &zipped,
-    std::vector<A> &a,
-    std::vector<B> &b)
+void unzip(const std::vector< std::pair<A, B> > &zipped,
+           std::vector<A> &a,
+           std::vector<B> &b)
 {
-    for(size_t i=0; i<a.size(); i++)
-        {
-            a[i] = zipped[i].first;
-            b[i] = zipped[i].second;
-        }
+    unsigned int vecDim = zipped.size();
+    a.resize(vecDim);
+    b.resize(vecDim);
+
+    for (unsigned i = 0;i < vecDim;++i)
+    {
+        a[i] = zipped[i].first;
+        b[i] = zipped[i].second;
+    }
 }
 
-
-
-/// compute max values by row avoiding NA value
+/// Find the maximal lower bound of a set of grids.
 /**
- *  @param[x] matrix of doubles.
- *  @return vector of upper values.
- */
-arma::rowvec uppers(const arma::mat& x);
-
-
-/// compute min values by row avoiding NA value
-/**
- *  @param x matrix of doubles;
+ *  @param[gridValues] Matrix of input grids.
  *
- *  @return vector of lower values.
+ *  @return Common lower bound.
  */
-arma::rowvec lowers(const arma::mat& x);
+double GetCommonLowerBound(const arma::mat& gridValues);
 
-
-/// extract an obsevation from a cube
+/// Find the minimal upper bound of a set of grids.
 /**
- *  @param[y] cube of observations;
- *  @param[i] index of the observation to extract;
+ *  @param[gridValues] Matrix of input grids.
  *
- *  @return extracted observation.
+ *  @return Common upper bound.
  */
-const arma::mat observation(const arma::cube& y, arma::uword i);
+double GetCommonUpperBound(const arma::mat& gridValues);
 
-
-/// extract many obsevations from a cube
+/// Extract one observation from a cube.
 /**
- *  @param[y] cube.
- *  @parm[ind] indeces of the observations to extract.
- *  @return extracted observations.
- */
-const arma::cube observations(const arma::cube& y, arma::urowvec ind);
-
-
-/// extract requested ebscissa.
-/**
- *  @param[mat]  matrix of grids.
- *  @param[i] index of the abscissa to extract.
- *  @return extracted abscissa.
- */
-const arma::rowvec abscissa(const arma::mat& x,arma::uword i);
-
-/// Approximate a function on a new grid.
-/**
- *  @param[x]  original absicssa.
- *  @param[x] fuction to approximate.
+ *  @param[inputData] Data array in arma::cube format.
+ *  @param[observationIndex] Index of the observation to extract.
  *
- *  @return xx new abscissa.
+ *  @return Extracted observation.
  */
-arma::mat approx(const arma::rowvec& x,
-                 const arma::mat& y,
-                 const arma::rowvec& xx);
+arma::mat GetObservation(const arma::cube& inputData, unsigned int observationIndex);
 
-/// R table function in c++
+/// Extract several obsevations from a cube.
 /**
- * @param[x] input vector;
- *
- * @return the table of the input vector.
+ *  @param[inputData] Data array in arma::cube format.
+ *  @param[observationIndices] Indices of the observations to extract.
+ *  @return Extracted observations.
  */
-std::map<arma::uword, arma::uword> tableC(arma::urowvec x);
+arma::cube GetObservations(const arma::cube& inputData, arma::urowvec& observationIndices);
 
-
+/// Approximate a function on a new grid by linear interpolation.
+/**
+ *  @param[inputGrid] Original grid.
+ *  @param[inputValues] Original values.
+ *  @param[outputGrid] Interpolating grid.
+ *
+ *  @return Inpterolated values.
+ */
+arma::mat approx(const arma::rowvec& inputGrid,
+                 const arma::mat& inputValues,
+                 const arma::rowvec& outputGrid);
 
 /// List builder for build big list to return to R
 class ListBuilder
 {
-
 public:
-
     ListBuilder() {};
     ~ListBuilder() {};
 
     inline ListBuilder& add(const std::string& name, SEXP x)
     {
-        names.push_back(name);
-        elements.push_back(PROTECT(x));
+        m_Names.push_back(name);
+        m_Elements.push_back(PROTECT(x));
+
         return *this;
     }
 
     template <typename T>
     inline ListBuilder& add(const std::string& name, const T& x)
     {
-        names.push_back(name);
-        elements.push_back(PROTECT(Rcpp::wrap(x)));
+        m_Names.push_back(name);
+        m_Elements.push_back(PROTECT(Rcpp::wrap(x)));
+
         return *this;
     }
 
     inline operator Rcpp::List() const
     {
-        Rcpp::List result(elements.size());
-        for (size_t i = 0; i < elements.size(); ++i)
-            {
-                result[i] = elements[i];
-            }
-        result.attr("names") = Rcpp::wrap(names);
-        UNPROTECT(elements.size());
+        Rcpp::List result(m_Elements.size());
+
+        for (unsigned int i = 0;i < m_Elements.size();++i)
+            result[i] = m_Elements[i];
+
+        result.attr("names") = Rcpp::wrap(m_Names);
+        UNPROTECT(m_Elements.size());
+
         return result;
     }
 
@@ -207,17 +185,15 @@ public:
     {
         Rcpp::List result = static_cast<Rcpp::List>(*this);
         result.attr("class") = "data.frame";
-        result.attr("row.names") = Rcpp::IntegerVector::create(NA_INTEGER, XLENGTH(elements[0]));
+        result.attr("row.names") = Rcpp::IntegerVector::create(NA_INTEGER, XLENGTH(m_Elements[0]));
         return result;
     }
 
 private:
-
-    std::vector<std::string> names;
-    std::vector<SEXP> elements;
-
     ListBuilder(ListBuilder const&) {};
 
+    std::vector<std::string> m_Names;
+    std::vector<SEXP> m_Elements;
 };
 
 
@@ -225,9 +201,8 @@ private:
 template<typename D>
 class SharedFactory
 {
-
 public:
-    typedef std::unordered_map< std::string, std::function< std::shared_ptr<D>() > > registry_map;
+    typedef std::unordered_map<std::string, std::function< std::shared_ptr<D>() > > registry_map;
 
     registry_map map;
 
@@ -245,11 +220,8 @@ public:
         {
             return std::make_shared<T>();
         };
-        //std::cout << "Registering class '" << name << "'\n";
     }
-
 };
-
 
 }
 

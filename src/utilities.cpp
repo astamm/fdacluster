@@ -15,222 +15,236 @@
 //   You should have received a copy of the GNU General Public License
 //   along with Fdakmapp.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <RcppArmadillo.h>
-
 #include "utilities.h"
-
-using namespace arma;
 
 //
 // tableC
 //
-
-std::map<arma::uword, arma::uword> util::tableC(arma::urowvec x)
+std::map<unsigned int, unsigned int> util::tableC(const arma::urowvec &inputLabels)
 {
+    std::map<unsigned int, unsigned int> outputCounts;
+    unsigned int nbLabels = inputLabels.size();
 
-    std::map<arma::uword,arma::uword> counts;
-    int n = x.size();
+    for (unsigned int i = 0;i < nbLabels;++i)
+        ++outputCounts[inputLabels[i]];
 
-    for (int i = 0; i < n; i++)
-        {
-            counts[x[i]]=counts[x[i]]+1;
-        }
-
-    return counts;
+    return outputCounts;
 }
-
-
-
-
-
-
-
 
 //
 //  which_out
 //
-
-urowvec util::which_out(rowvec vec, double lo,double up)
+arma::urowvec util::which_out(const arma::rowvec &inputValues, const double lowerBound, const double upperBound)
 {
+    unsigned int nbValues = inputValues.size();
+    arma::urowvec outputIndices(nbValues);
+    unsigned int pos = 0;
 
-    urowvec out(vec.n_cols);
-    uword c=0;
-    for(int i=0; i<vec.size(); i++)
+    for (unsigned int i = 0;i < nbValues;++i)
+    {
+        if (inputValues(i) < lowerBound || inputValues(i) > upperBound)
         {
-            if(vec(i) < lo || vec(i) > up)
-                {
-                    out(c)=i;
-                    c++;
-                }
+            outputIndices(pos) = i;
+            ++pos;
         }
-    out.resize(c);
-    return out;
+    }
+
+    outputIndices.resize(pos);
+
+    return outputIndices;
 }
-
-
 
 //
 //  quantile
 //
-
-
-double util::quantile(const arma::rowvec vec, const double per)
+double util::quantile(const arma::rowvec &inputValues, const double quantileOrder)
 {
+    if (quantileOrder <= 0 || quantileOrder >= 1)
+        Rcpp::stop("The quantile order should be between 0 and 1 excluded.");
 
-    if(per<=0 || per>=1)
-        perror("quantile:per has to be between 0 and 1");
+    std::vector<double> workVector = arma::conv_to<std::vector<double> >::from(inputValues);
+    unsigned int q = std::round(inputValues.size() * quantileOrder);
 
-    std::vector<double> svec = conv_to<std::vector<double>>::from(vec);
-    uword q = round(vec.n_cols * per) ;
+    std::nth_element(workVector.begin(), workVector.begin() + q, workVector.end());
 
-    std::nth_element(svec.begin(),svec.begin() + q, svec.end());
-
-    return *(svec.begin()+q);
-
+    return *(workVector.begin() + q);
 }
 
-
-
 //
-//  norm_estremi
+// GetCommonLowerBound
 //
-
-mat util::norm_ex(const mat& y)
+double util::GetCommonLowerBound(const arma::mat& inputGrids)
 {
-    mat out(y.n_rows,y.n_cols);
-    out.fill(datum::nan);
+    // Assumption: Matrix is in format NOBS x NPTS
+    unsigned int nObs = inputGrids.n_rows;
+    unsigned int nPts = inputGrids.n_cols;
 
-    for(size_t i=0; i< y.n_cols; i++)
+    double resVal = 0.0;
+    unsigned int posi = 0;
+
+    for (unsigned int i = 0;i < nObs;++i)
+    {
+        double tmpVal = 0.0;
+        unsigned int posj = 0;
+
+        for (unsigned int j = 0;j < nPts;++j)
         {
-            if(y.col(i).is_finite())
-                {
-                    out.col(i)=y.col(i);
-                }
+            if (!arma::is_finite(inputGrids(i, j)))
+                continue;
+
+            if (inputGrids(i, j) < tmpVal || posj == 0)
+                tmpVal = inputGrids(i, j);
+
+            ++posj;
         }
 
-    return out;
+        if (tmpVal < resVal || posi == 0)
+            resVal = tmpVal;
+
+        ++posi;
+    }
+
+    return resVal;
 }
 
-
-
 //
-// Upper and Lower element of each row not NA
+// GetCommonUpperBound
 //
-//
-rowvec util::uppers(const mat& x)
+double util::GetCommonUpperBound(const arma::mat& inputGrids)
 {
-    rowvec out(x.n_rows);
+    // Assumption: Matrix is in format NOBS x NPTS
+    unsigned int nObs = inputGrids.n_rows;
+    unsigned int nPts = inputGrids.n_cols;
 
-    for(size_t i=0; i< x.n_rows; i++)
+    double resVal = 0.0;
+    unsigned int posi = 0;
+
+    for (unsigned int i = 0;i < nObs;++i)
+    {
+        double tmpVal = 0.0;
+        unsigned int posj = 0;
+
+        for (unsigned int j = 0;j < nPts;++j)
         {
-            out[i]=max(x.row(i));
-        }
-    return out;
-}
+            if (!arma::is_finite(inputGrids(i, j)))
+                continue;
 
-rowvec util::lowers(const mat& x)
-{
-    rowvec out(x.n_rows);
+            if (inputGrids(i, j) > tmpVal || posj == 0)
+                tmpVal = inputGrids(i, j);
 
-    for(size_t i=0; i< x.n_rows; i++)
-        {
-            out[i]=min(x.row(i));
+            ++posj;
         }
-    return out;
+
+        if (tmpVal > resVal || posi == 0)
+            resVal = tmpVal;
+
+        ++posi;
+    }
+
+    return resVal;
 }
 
 //
 // observation
 //
-const mat util::observation(const cube& y,uword i)
+arma::mat util::GetObservation(const arma::cube& inputData, unsigned int observationIndex)
 {
+    arma::mat outputMatrix = inputData(arma::span(observationIndex), arma::span::all, arma::span::all);
 
-    if(y.n_slices > 1)
-        {
-            mat out =y( span(i,i), span::all, span::all );
-            return out.t();
-        }
-    return y( span(i,i), span::all, span::all );
-}
+    if (inputData.n_slices > 1) // Output observation will be of size NDIM x NPTS
+        return outputMatrix.t();
 
-
-const cube util::observations(const cube& y, urowvec ind)
-{
-    cube out(ind.size(),y.n_cols,y.n_slices);
-
-    for(uword i =0; i< ind.size(); i++)
-        {
-            out( span(i,i), span::all, span::all) = y( span(ind(i),ind(i)), span::all, span::all );
-        }
-    return out;
+    // Otherwise of size NPTS x 1
+    // TODO: weird, better off always outputing NPTS x NDIM
+    return outputMatrix;
 }
 
 //
-// ABSCISSA
+// observations
 //
-
-//
-// abscissa
-//
-const rowvec util::abscissa(const mat& x,uword i)
+arma::cube util::GetObservations(const arma::cube& inputData, arma::urowvec& observationIndices)
 {
-    return x.row(i);
+    arma::cube outputCube(observationIndices.size(), inputData.n_cols, inputData.n_slices);
+
+    for (unsigned int i = 0;i < observationIndices.size();++i)
+        outputCube(arma::span(i), arma::span::all, arma::span::all) = inputData(arma::span(observationIndices(i)), arma::span::all, arma::span::all);
+
+    return outputCube;
 }
 
 //
-// APPROX
+// approx
 //
-mat util::approx(const rowvec& x,
-                 const mat& y,
-                 const rowvec& xx)
+arma::mat util::approx(const arma::rowvec& inputGrid,
+                       const arma::mat& inputValues,
+                       const arma::rowvec& outputGrid)
 {
+    // inputY is assumed to be of size NDIM x NPTS
+    // inputX is assumed to be of size NPTS
+    // outputX is assumed to be of size NOUT
+    // outputY will be of size NDIM x NOUT
+    unsigned int nDim = inputValues.n_rows;
+    unsigned int nPts = inputValues.n_cols;
 
-    uword dim = y.n_rows;
-    uword n_xx  = xx.n_cols;
+    if (inputGrid.size() != nPts)
+        Rcpp::stop("The length of input arc length and the number of rows in the input matrix should be equal.");
 
-    mat yy(dim, n_xx);
-    yy.fill(datum::nan);
+    arma::rowvec inputXCopy(inputGrid);
+    arma::mat inputYCopy(inputValues);
 
-    //check sul vettore in ingresso non necessaria ma utile nello sviluppo
-    if(xx(n_xx-1)-xx(0) <= 0)
+    for (unsigned int j = 0;j < nPts;++j)
+    {
+        if (arma::is_finite(inputGrid(j)) && arma::is_finite(inputValues.col(j)))
+            continue;
+
+        inputXCopy.shed_col(j);
+        inputYCopy.shed_col(j);
+        --j;
+    }
+
+    nPts = inputXCopy.size();
+
+    if (nPts <= 1)
+        Rcpp::stop("All entries are NA except maybe one. Interpolation is not possible. Aborting...");
+
+    unsigned int nOut = outputGrid.size();
+
+    arma::mat outputValues(nDim, nOut);
+    outputValues.fill(arma::datum::nan);
+
+    if (outputGrid(nOut - 1) - outputGrid(0) <= 0)
+    {
+        Rcpp::Rcout << "Output arc length is not in increasing order: " << outputGrid(nOut - 1) - outputGrid(0) << std::endl;
+        return outputValues;
+    }
+
+    unsigned int i = 0;
+
+    while (i < nOut && outputGrid(i) <= inputXCopy(0))
+    {
+        if (std::abs(outputGrid(i) - inputXCopy(0)) < arma::datum::eps)
+            outputValues.col(i) = inputYCopy.col(0);
+        ++i;
+    }
+
+    if (i == nOut)
+        return outputValues;
+
+    arma::vec oldY, newY;
+
+    for (unsigned int j = 1;j < nPts;++j)
+    {
+        double oldX = inputXCopy(j - 1);
+        oldY = inputYCopy.col(j - 1);
+        double newX = inputXCopy(j);
+        newY = inputYCopy.col(j);
+
+        while (i < nOut && outputGrid(i) <= newX)
         {
-            cout<< " diff :"<<xx(n_xx-1)-xx(0) <<endl;
-            cout<<" vettore in ingresso decrescente"<<endl;
-            return yy;
+            outputValues.col(i) = oldY + (newY - oldY) * (outputGrid(i) - oldX) / (newX - oldX);
+            ++i;
         }
+    }
 
-    uword i=0;
-
-    while(xx(i) <= x(0))
-        {
-            if(xx(i) == x(0))
-                {
-                    // for(uword k = 0; k < dim; k++)
-                    //     {
-                    //         yy(k,i)=y(k,0);
-                    //     }
-                    yy.col(i)=y.col(0);
-                }
-            i++;
-        }
-
-    for(uword j = 1; j < x.size(); j++)
-        {
-
-            //  il <= non funziona bene con double quindi per l'uguaglianza controll la diff< eps
-            while( ( i < xx.size() ) && (xx(i) < x(j) || (std::abs(xx(i) - x(j)) < 0.000000001) ) )
-                {
-                    // for(int k = 0; k < dim; k++)
-                    //     {
-                    //         yy(k,i)= ( y(k,j) - y(k,j-1) ) * ( xx(i) - x(j-1)) / (x(j)-x(j-1)) + y(k,j-1);
-                    //     }
-                    yy.col(i)= y.col(j-1) +( y.col(j) - y.col(j-1) ) * ( xx(i) - x(j-1)) / (x(j)-x(j-1)) ;
-                    i++;
-                }
-
-        }
-
-    return yy;
-
+    return outputValues;
 }
-

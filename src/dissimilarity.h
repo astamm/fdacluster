@@ -18,90 +18,96 @@
 #ifndef DISSIMILARITY_HPP_
 #define DISSIMILARITY_HPP_
 
-#include<RcppArmadillo.h>
-
-using namespace arma;
+#include <RcppArmadillo.h>
 
 /// Element with approximated abiscissa and approximated functions to compute dissimilarity.
-struct grid
+struct FunctionPair
 {
-    mat yf_sim;
-    mat yg_sim;
-    rowvec x_sim;
+    arma::rowvec Grid;
+    arma::mat Values1;
+    arma::mat Values2;
 };
-
 
 /// Base class for all the available dissimilarity.
 class Dissimilarity
 {
 public:
-
-    Dissimilarity() {};
     /// compute dissimilarity method different for each derived class
     /**
-     * @param[xf] abscissa of the f function;
-     * @param[xg] abscissa of the g function;
-     * @param[yf] values of the f function;
-     * @param[yg] values of the g function;
+     * @param[grid1] evaluation grid of the first function;
+     * @param[grid2] evaluation grid of the second function;
+     * @param[values1] values of the first function;
+     * @param[values2] values of the second function;
      *
-     * @return dissimilarity between f and g functions.
+     * @return dissimilarity between the two input functions.
      */
-    virtual double compute(const rowvec& xf, const rowvec& xg,const mat& yf, const mat& yg)=0;
+    virtual double GetDistance(const arma::rowvec& grid1,
+                               const arma::rowvec& grid2,
+                               const arma::mat& values1,
+                               const arma::mat& values2) = 0;
 
     /// compute common grid and approximations to compute dissimilarity
     /**
-    * @param[xf] abscissa of the f function;
-    * @param[xg] abscissa of the g function;
-    * @param[yf] values of the f function;
-    * @param[yg] values of the g function;
+     * @param[grid1] evaluation grid of the first function;
+     * @param[grid2] evaluation grid of the second function;
+     * @param[values1] values of the first function;
+     * @param[values2] values of the second function;
     *
-    * @return grid element with approximated functions on a common grid.
+    * @return FunctionPair object containing the two functions evaluated on their common grid.
     */
-    grid setGrid(const rowvec& xf, const rowvec& xg, const mat& yf, const mat& yg);
-};
+    FunctionPair GetComparableFunctions(const arma::rowvec& grid1,
+                                        const arma::rowvec& grid2,
+                                        const arma::mat& values1,
+                                        const arma::mat& values2);
 
+protected:
+    Dissimilarity() {}
+    virtual ~Dissimilarity() {}
+};
 
 /// Pearson similarity
 /**
   *The function is returned negative to be a dissimilarity and
   * fit the minimization of the algorithm.
   */
-class Pearson final: public Dissimilarity
+class Pearson : public Dissimilarity
 {
 public:
-
-    Pearson():Dissimilarity() {};
-
-    virtual double compute(const rowvec& xf, const rowvec& xg,
-                           const mat& yf, const mat& yg);
+    virtual double GetDistance(const arma::rowvec& grid1,
+                               const arma::rowvec& grid2,
+                               const arma::mat& values1,
+                               const arma::mat& values2);
 };
 
 /// L2 Distance
-class L2 final: public Dissimilarity
+class L2 : public Dissimilarity
 {
 public:
-    L2():Dissimilarity() {};
-    virtual double compute(const rowvec& xf, const rowvec& xg,
-                           const mat& yf, const mat& yg);
+    virtual double GetDistance(const arma::rowvec& grid1,
+                               const arma::rowvec& grid2,
+                               const arma::mat& values1,
+                               const arma::mat& values2);
 };
 
 /// L2w Distance
-class L2w final: public Dissimilarity
+class L2w : public Dissimilarity
 {
 public:
-    L2w():Dissimilarity() {};
-    virtual double compute(const rowvec& xf, const rowvec& xg,
-                           const mat& yf, const mat& yg);
+    virtual double GetDistance(const arma::rowvec& grid1,
+                               const arma::rowvec& grid2,
+                               const arma::mat& values1,
+                               const arma::mat& values2);
 };
 
 
 /// L2w Distance
-class L2first final: public Dissimilarity
+class L2first : public Dissimilarity
 {
 public:
-    L2first():Dissimilarity() {};
-    virtual double compute(const rowvec& xf, const rowvec& xg,
-                           const mat& yf, const mat& yg);
+    virtual double GetDistance(const arma::rowvec& grid1,
+                               const arma::rowvec& grid2,
+                               const arma::mat& values1,
+                               const arma::mat& values2);
 };
 
 #endif

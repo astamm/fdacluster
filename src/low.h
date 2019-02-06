@@ -18,7 +18,7 @@
 #ifndef LOW_H
 #define LOW_H
 
-#include<vector>
+#include <vector>
 
 using namespace std;
 /// Lowess algorithm

@@ -51,8 +51,8 @@ void newCenters(const arma::mat& x_reg,
             for(uword i=0; i< ict.size(); i++)
                 {
                     urowvec sel = find(labels == ict(i)).t();
-                    center a = cen->computeCenter( x_reg.rows(sel), util::observations(y,sel), dissim, x_out );
-                    templates.tube(span(i),span::all) = a.y_center.t();
+                    CenterObject a = cen->GetCenter( x_reg.rows(sel), util::GetObservations(y, sel), dissim, x_out );
+                    templates.tube(span(i),span::all) = a.Values.t();
 
 // #ifdef _OPENMP
 // #pragma omp critical
@@ -69,8 +69,8 @@ void newCenters(const arma::mat& x_reg,
             for(uword i=0; i< ict.size(); i++)
                 {
                     urowvec sel = find(labels == ict(i)).t();
-                    center a = cen->computeParallelCenter( x_reg.rows(sel), util::observations(y,sel), dissim, x_out, par_opt(0));
-                    templates.tube(span(i),span::all) = a.y_center.t();
+                    CenterObject a = cen->GetCenterParallel( x_reg.rows(sel), util::GetObservations(y, sel), dissim, x_out, par_opt(0));
+                    templates.tube(span(i),span::all) = a.Values.t();
                     if(show_iter==true)
                         cout<<"Template num. "<<i<<" computed"<<endl;
                 }

@@ -18,86 +18,122 @@
 #ifndef CENTER_METHODS_HPP_
 #define CENTER_METHODS_HPP_
 
-#include<RcppArmadillo.h>
-#include<memory>
-
 #include "dissimilarity.h"
-#include "utilities.h"
 
-using namespace arma;
+#include <RcppArmadillo.h>
+#include <memory>
 
 /// Center element returned by computeCenter and computeParallelCenter methods
-struct center
+struct CenterObject
 {
-    rowvec x_center;
-    mat y_center;
-    rowvec dissim_whit_origin;
+    arma::rowvec Grid;
+    arma::mat Values;
+    arma::rowvec Distances;
 };
 
 
 /// Base class for all the center methods available.
 class CenterMethod
 {
-
 public:
     /// Compute center method.
     /**
-     *  @param[x] abscissa of the input functions;
-     *  @param[y] values of the input functions;
-     *  @param[dissim] shared pointer to the base class Dissimilarity.
-     *  @param[x_out] grid of the returning center
+     *  @param[inputGrid] Input grid on which observed functions are evaluated;
+     *  @param[inputValues] Input function values on input grid;
+     *  @param[distanceObject] Shared pointer to the base class Dissimilarity;
+     *  @param[outputGrid] Output grid on which the center will be evaluated.
      *
-     *  @return A center element
+     *  @return A center object.
      */
-    virtual center computeCenter(const mat& x,const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out)=0;
+    virtual CenterObject GetCenter(const arma::mat& inputGrid,
+                                   const arma::cube& inputValues,
+                                   std::shared_ptr<Dissimilarity>& distanceObject,
+                                   const arma::rowvec& outputGrid) = 0;
+
     /// Compute center method in parallel (used if type of parallelization is 1).
     /**
-     *  @param[x] abscissa of the input functions;
-     *  @param[y] values of the input functions;
-     *  @param[dissim] shared pointer to the base class Dissimilarity.
-     *  @param[x_out] grid of the returning center
-     *  @param[n_th] number of threads to use during the computation.
+     *  @param[inputGrid] Input grid on which observed functions are evaluated;
+     *  @param[inputValues] Input function values on input grid;
+     *  @param[distanceObject] Shared pointer to the base class Dissimilarity;
+     *  @param[outputGrid] Output grid on which the center will be evaluated;
+     *  @param[nbThreads] Number of threads to use during the computation.
      *
-     *  @return A center element
+     *  @return A center object.
      */
-    virtual center computeParallelCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out,uword n_th)=0;
-    /// Set the parameters needed by the chosen center method.
-    /**
-     * @param[par] a row vector with options.
-     */
-    virtual void setParameters(const rowvec& par)=0;
+    virtual CenterObject GetCenterParallel(const arma::mat& inputGrid,
+                                           const arma::cube& inputValues,
+                                           std::shared_ptr<Dissimilarity>& distanceObject,
+                                           const arma::rowvec& outputGrid,
+                                           unsigned int nbThreads)
+    {
+        CenterObject outputCenter;
+        return outputCenter;
+    }
+
+    void SetSpanValue(const double num) {m_SpanValue = num;}
+    double GetSpanValue() {return m_SpanValue;}
+
+    void SetDeltaValue(const double num) {m_DeltaValue = num;};
+    double GetDeltaValue() {return m_DeltaValue;}
+
+protected:
+    CenterMethod()
+    {
+        m_SpanValue = 0.0;
+        m_DeltaValue = 0.0;
+    }
+
+    virtual ~CenterMethod() {};
+
+private:
+    double m_SpanValue, m_DeltaValue;
 };
 
-
 /// Medoid center method finds the real medoid center.
-class Medoid final: public CenterMethod
+class Medoid : public CenterMethod
 {
 public:
-    virtual center computeCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out);
-    virtual center computeParallelCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out,uword n_th);
-    virtual void setParameters(const rowvec& par) {};
+    virtual CenterObject GetCenter(const arma::mat& inputGrid,
+                                   const arma::cube& inputValues,
+                                   std::shared_ptr<Dissimilarity>& distanceObject,
+                                   const arma::rowvec& outputGrid);
+
+    virtual CenterObject GetCenterParallel(const arma::mat& inputGrid,
+                                           const arma::cube& inputValues,
+                                           std::shared_ptr<Dissimilarity>& distanceObject,
+                                           const arma::rowvec& outputGrid,
+                                           unsigned int nbThreads);
 };
 
 
 /// PseudoMedoid center method finds the real medoid of each component and create a center.
-class PseudoMedoid final: public CenterMethod
+class PseudoMedoid : public CenterMethod
 {
 public:
-    virtual center computeCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out);
-    virtual center computeParallelCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out,uword n_th) {};
-    virtual void setParameters(const rowvec& par) {};
+    virtual CenterObject GetCenter(const arma::mat& inputGrid,
+                                   const arma::cube& inputValues,
+                                   std::shared_ptr<Dissimilarity>& distanceObject,
+                                   const arma::rowvec& outputGrid);
 };
 
 /// Mean center method compute an approximation by lowess.
-class Mean final: public CenterMethod
+class Mean : public CenterMethod
 {
-private:
-    double span=0;
-    double d=0;
 public:
-    virtual center computeCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out);
-    virtual center computeParallelCenter(const mat& x, const cube& y, std::shared_ptr<Dissimilarity>& dissim, const rowvec& x_out,uword n_th) {};
-    virtual void setParameters(const rowvec& par);
+    virtual CenterObject GetCenter(const arma::mat& inputGrid,
+                                   const arma::cube& inputValues,
+                                   std::shared_ptr<Dissimilarity>& distanceObject,
+                                   const arma::rowvec& outputGrid);
+};
+
+/// Median center method.
+class Median : public CenterMethod
+{
+public:
+    virtual CenterObject GetCenter(const arma::mat& inputGrid,
+                                   const arma::cube& inputValues,
+                                   std::shared_ptr<Dissimilarity>& distanceObject,
+                                   const arma::rowvec& outputGrid);
 };
 
 #endif

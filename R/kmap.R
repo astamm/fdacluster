@@ -1,113 +1,80 @@
-#'@title K-mean algorithm for clustering and alignment of functional data
+#' K-mean alignment and variants for functional data
 #'
-#'@description kmap jointly performs clustering and alignment of a functional dataset
-#'(multidimensional or unidimensional functions). To run kmap function with different
-#'numbers of clusters and/or different alignment methods see the input options.
+#' This function jointly performs clustering and alignment of functional data
+#' sets with possibly multidimensional domains.
 #'
-#'@usage res<-kmap(  x, y,  y1, n_clust,warping_method, center_method,similarity_method,
-#'optim_method, seeds, span, delta, d_max, s_max, n_out, toll, fence,
-#' iter_max,show_iter, check_total_similarity)
+#' @param x Numeric matrix [\emph{nObs} x \emph{nPts}] or vector [\emph{nPts}]:
+#'   the grid on which where each function is evaluated, where \emph{nObs} is
+#'   the number of observations and \emph{nPts} is the grid size. Grids are
+#'   allowed to be different for each observation. If \code{x} is a vector of
+#'   length \emph{nPts}, it is assumed to be the common grid on which all
+#'   observations are evaluated. Smaller grids are completed with missing values
+#'   to match the size of the largest.
+#' @param y Numeric matrix [\emph{nObs} x \emph{nPts}] or array [\emph{nObs} x
+#'   \emph{nPts} x \emph{nDim}]: values of the observed functions on the grid
+#'   \code{x}, where \emph{d} is the dimension of the domain of definition of
+#'   the functions.
+#' @param seeds Numeric vector [nClusters]: indices of the observations used as
+#'   initial centers for the k-mean algorithm. If \code{seeds = NULL} (default),
+#'   they are randomly chosen among the \emph{nObs} original functions.
+#' @param n_clust Scalar: number of clusters to look for (default: 1).
+#' @param warping_method Character: class of warping functions among
+#'   \code{noalign} for no alignment which is equivalent to performing k-means
+#'   clustering only, \code{shift}, \code{dilation} and \code{affine} (default).
+#' @param center_method Character: method to find the cluster representative
+#'   among \code{mean} (default), \code{medoid}, \code{pseudomedoid} and
+#'   \code{median}.
+#' @param similarity_method Character: metric to measure dissimilarity between
+#'   two observations. Choices are \code{pearson} (default), \code{l2},
+#'   \code{l2weighted} and \code{l2first}.
+#' @param optim_method Character: optimization method for searching the optimal
+#'   warping functions at each iteration. The only available method at the
+#'   moment is \code{bobyqa}.
+#' @param warping_opt Numeric vector. It depends on the class of warping
+#'   functions. For affine functions, it is a 2D vector specifying the upper
+#'   bounds for dilation and shift. For dilations, a scalar specifying the upper
+#'   bound for dilation. For shifts, a scalar specifying the upper bound for
+#'   shift. For no alignment, it is an empty vector. Default value is
+#'   \code{c(0.15, 0.15)} for affine warping functions.
+#' @param center_opt Numeric vector. It depends on the cluster representative
+#'   method. It is an empty vector for all methods except \code{mean}. In this
+#'   latter case, it is a 2D vector of the form \code{c(span, delta)} specifying
+#'   the parameters for the \code{lowess} approximation. Default value is
+#'   \code{c(0.01, 0.1)}.
+#' @param out_opt Numeric vector. It is a 3D vector of the form \code{c(nOut,
+#'   tol, maxIter)}. It contains the size of the output grid on which the
+#'   centers will be evaluated and two stopping criteria for the optimization
+#'   algorithm. The defaut value is \code{c(100, 0.001, 100)}.
+#' @param fence Boolean. When \code{TRUE}, a control is activated at the end of
+#'   each iteration. The aim of the control is to avoid warping outliers with
+#'   respect to their computed distributions. Default value is \code{FALSE}
+#'   because it is time-consuming.
+#' @param check_total_similarity Boolean. When \code{TRUE} (default), at each
+#'   iteration, the algorithm checks if the total similarity is improving and
+#'   stops if it is not.
+#' @param show_iter Boolean. When \code{TRUE} (default), information pertaining
+#'   to the current iteration is displayed in the console.
+#' @param comp_original_center Boolean. When \code{TRUE}, the initial center
+#'   with relative dissimilarities is computed. Otherwise, this step is skipped.
+#'   Default value is \code{FALSE} because it is time-consuming.
+#' @param par_opt Numeric vector. Parallel options as a 2D vector of the form
+#'   \code{c(nThreads, parVersion)}, where \code{nThreads} specifies the number
+#'   of threads to run on parallel and \code{parVersion} is either 0 for a
+#'   trivial parallelization in which each thread computes the center of a
+#'   cluster or 1 for a more efficient parallelization in which all threads
+#'   compute the centers sequentially. The latter parallelizatiobn mode is
+#'   available only when \code{center_method = 'medoid'}. Default value is
+#'   \code{c(1, 0)}.
 #'
-#'@param x numeric matrix [\emph{n.func} X \emph{grid.size}] or vector [\emph{grid.size}]:
-#'     the abscissa values where each function is evaluated. \emph{n.func}: number
-#'     of functions in the dataset. \emph{grid.size}: maximal number of abscissa values
-#'     where each function is evaluated. The abscissa points may be unevenly spaced and
-#'     they may differ from function to function. \code{x} can also be a vector of length
-#'     \emph{grid.size}. In this case, \code{x} will be used as abscissa grid for all
-#'     functions.Furthermore if the grid's size differs from one function to another the
-#'     matrix must be completed with NA values.The parameter \code{x} must be
-#'     provided.
-#'
-#'@param y numeric matrix [\emph{n.func} X \emph{grid.size}] or array [\emph{n.func} X \emph{grid.size}
-#'         X \emph{d}]: evaluations of the set of original functions on the abscissa grid
-#'         \code{x}. \emph{n.func}: number of functions in the dataset. \emph{grid.size}:
-#'         maximal number of abscissa values where each function is evaluated. \emph{d}:
-#'         (only if the sample is multidimensional) number of function components, i.e.
-#'          each function is a \emph{d}-dimensional curve. The parameter \code{y} must be
-#'           provided.
-#'
-#' @param seeds numeric vector [n.clust] indexes of the functions to be used as initial centers.
-#'               In the case where the values of seeds are not provided, they are randomly
-#'                chosen among the \emph{n.func} original functions.If seeds=NULL all the
-#'                centers are randomly chosen. Default value of seeds is NULL.
-#'
-#'@param n_clust scalar: required number of clusters. Default value is 1. Note that if
-#'               n.clust=1 kma performs only alignment without clustering.
-#'
-#' @param warping_method character: type of alignment required. The implemented options
-#'                       are: "affine", "dialation", "shift" and "noalign". If
-#'                       warping.method='noalign' kma performs only clustering (without
-#'                        alignment). If warping.method='affine' kma performs alignment
-#'                       (and possibly clustering) of functions using linear affine
-#'                       transformation as warping functions, i.e., x.final = dilation*x + shift.
-#'                        If warping.method='shift' kma allows only shift, i.e.,
-#'                        x.final = x + shift. If warping.method='dilation' kma allows only
-#'                        dilation, i.e., x.final = dilation*x. Default value is 'affine'.
-#'
-#'@param center_method character: type of clustering method to be used.
-#'                     Possible choices are: 'mean','medoid' and 'pseudomedoid'.
-#'                     Default value is 'mean'.
-#'
-#'@param similarity_method character: required similarity measure. Possible choices are:
-#'                         'pearson','l2'. Default value is 'pearson'.
-#'
-#'@param optim_method character: optimization method chosen to solve the minimization
-#'                    problems at each iteration. Possible choices are: 'bobyqa'.
-#'                    Default method is 'bobyqa'
-#'
-#'@param warping_opt numeric vector. The parameters depend on the warping_method chosen.
-#'                   If warping_method ='affine' warping_opt <- c( max_dilation , max_shift). \cr
-#'                   If warping_method <- 'dilation' warping_opt <- c(max_dilation).\cr
-#'                   If warping_method <- 'shift'  warping_opt <- c(max_shift).\cr
-#'                   If warping_method <- 'noalign' warping_opt <- as.numeric().\cr
-#'                   Default value is warping_opt<-c(0.15,0.15). \cr
-#'
-#'@param center_opt numeric vector. The parameters depend on the center_method chosen.
-#'                  If center_method ='mean' center_opt <- c(span, delta). \cr
-#'                  If center_method ='medoid' center_opt <- as.numeric(). \cr
-#'                  If center_method ='pseudomedoid' center_opt <- as.numeric(). \cr
-#'                  Default value is center_opt<-c(0.01,0.1). \cr
-#'
-#'@param out_opt numeric vector. The parameters to set are (n_out , tollerance, max_iteration).
-#'               n_out is the size of the grid where the centers will be computed.
-#'               tollerance is a stop condition parameter.
-#'               max_iterationa is a stop condition parameter.
-#'               The defaut value is out_opt <- c(100 , 0.001 , 100).
-#'
-#'@param fence boolean: if fence=TRUE a control is activated at the end of each iteration.
-#'             The aim of the control is to avoid warping outliers with respect to their
-#'             computed distributions. If fence=TRUE the running time can increase
-#'             considerably. Default value of fence is FALSE.
-#'
-#'@param check_total_similarity boolean: if check.total.similarity=TRUE at each iteration
-#'                              the algorithm checks if the total similarity is improving
-#'                              and stops if it's not true. In this case the results
-#'                              obtained in the penultimate iteration are returned.
-#'                               Defaultvalue is TRUE.
-#'
-#'@param show_iter boolean: if show.iter=TRUE kmap shows the current iteration of the
-#'                 algorithm. Default value is TRUE.
-#'
-#'@param comp_original_center boolean: if comp_original_center=TRUE the initial center
-#'                            with relative dissimilarities is computed otherwise this
-#'                            step is skipped.It can by computationally expensive.
-#'                             Default value is FALSE.
-#'
-#'@param par_opt  numeric vector: Parallel options. The parameters to set are (num_threads, parallel_version)
-#'                parallel_version  available are 0 and 1 :  0 is a trivial parallelization in which each
-#'                thread compute the center of a cluster; 1 is a more efficient parallelization in which
-#'                all the threads compute the centers sequentially (available only with center_method = 'medoid').
-#'
-#'@return The function output is a list containing the following elements:
-#'
+#' @return The function output is a \code{kmap} object, which is a list with the following elements:
 #' \item{x}{ as input.}
 #' \item{y}{ as input. }
 #' \item{seeds}{ vector with the indeces used in the algorithm.}
-#' \item{warping.method}{ as input.}
-#' \item{similarity.method}{ as input. }
-#' \item{center.method }{ as input. }
-#' \item{iterations }{scalar: total number of iterations performed by kma function.}
-#' \item{n.clust }{ as input. }
+#' \item{warping_method}{ as input.}
+#' \item{similarity_method}{ as input. }
+#' \item{center_method}{ as input. }
+#' \item{iterations}{scalar: total number of iterations performed by kma function.}
+#' \item{n_clust}{ as input. }
 #' \item{x.center.orig }{numeric vector \emph{n_out}: abscissa of the center computed if \emph{comp_original_center}=TRUE.}
 #' \item{y.center.orig }{numeric vector \emph{n_out} or matrix \emph{n_out} X \emph{n_dim}: value of the center computed if \emph{comp_original_center}=TRUE.}
 #' \item{similarity.origin}{numeric vector \emph{n_obs} dissimilarity,similarity or distance of the original center respect the obserbations computed if \emph{comp_original_center}=TRUE.}
@@ -122,17 +89,24 @@
 #' \item{parameters.list}{list [iterations]: warping parameters at each iteration.}
 #' \item{parameters}{matrix [n_par X n_obs]: warping parameters applied to the original abscissas x to obtain the aligned abscissas x.final.}
 #' \item{timer}{vector: time of execution by step. }
-
-#  ------------------------------------------------------------------------
-
-
-
-kmap <- function(x, y, seeds= NULL, n_clust = 1,
-       warping_method ='affine', center_method ='mean',
-       similarity_method ='pearson', optim_method = 'bobyqa',
-       warping_opt=c(0.15,0.15), center_opt = c(0.01,0.1), out_opt = c(100 , 0.001 , 100),
-       fence = FALSE, check_total_similarity = TRUE,show_iter = TRUE,
-       comp_original_center=FALSE, par_opt=c(1,0))
+#' @export
+#'
+#' @examples
+kmap <- function(x, y,
+                 seeds = NULL,
+                 n_clust = 1,
+                 warping_method = 'affine',
+                 center_method = 'mean',
+                 similarity_method = 'pearson',
+                 optim_method = 'bobyqa',
+                 warping_opt = c(0.15, 0.15),
+                 center_opt = c(0.01, 0.1),
+                 out_opt = c(100, 0.001, 100),
+                 fence = FALSE,
+                 check_total_similarity = TRUE,
+                 show_iter = TRUE,
+                 comp_original_center = FALSE,
+                 par_opt = c(1, 0))
 {
 
   if(is.null(y))
@@ -171,7 +145,17 @@ kmap <- function(x, y, seeds= NULL, n_clust = 1,
   out$timer<-t
     #######################################################################
 
-  out<-c(x=list(x),y=list(y), seeds=list(nseeds), warping.method = list(warping_method),
-         similarity.method = list(similarity_method),center.method = list(center_method),out)
+  out <- c(
+    x = list(x),
+    y = list(y),
+    seeds = list(nseeds),
+    warping.method = list(warping_method),
+    similarity.method = list(similarity_method),
+    center.method = list(center_method),
+    out
+  )
 
+  class(out) <- "kmap"
+
+  out
 }

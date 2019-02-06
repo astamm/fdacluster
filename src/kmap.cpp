@@ -15,7 +15,7 @@
 //   You should have received a copy of the GNU General Public License
 //   along with Fdakmapp.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "RcppArmadillo.h"
+#include "kmap.h"
 
 #include "dissimilarity.h"
 #include "warping.h"

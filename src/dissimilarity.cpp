@@ -20,219 +20,209 @@
 #include "dissimilarity.h"
 #include "utilities.h"
 
-using namespace arma;
-
-
-grid Dissimilarity::setGrid(const rowvec& xf, const rowvec& xg,
-                            const mat& yf, const mat& yg)
+FunctionPair Dissimilarity::GetComparableFunctions(const arma::rowvec& grid1,
+                                                   const arma::rowvec& grid2,
+                                                   const arma::mat& values1,
+                                                   const arma::mat& values2)
 {
-
-    grid out;
-
-    out.yf_sim.reset();
-    out.yg_sim.reset();
-    out.x_sim.reset();
+    FunctionPair outputPair;
+    outputPair.Grid.reset();
+    outputPair.Values1.reset();
+    outputPair.Values2.reset();
 
     // dimensions of inputs function
-    uword n_dim = yf.n_rows;
-    uword nf = xf.size();
-    uword ng = xg.size();
+    unsigned int nDim = values1.n_rows;
+
+    if (values2.n_rows != nDim)
+        Rcpp::stop("Function domains have not the same dimension.");
+
+    unsigned int nPts1 = values1.n_cols;
+
+    if (grid1.size() != nPts1)
+        Rcpp::stop("Function 1 is not properly evaluated on its grid.");
+
+    unsigned int nPts2 = values2.n_cols;
+
+    if (grid2.size() != nPts2)
+        Rcpp::stop("Function 2 is not properly evaluated on its grid.");
 
     //
-    // Na detection and elimination
+    // Missing value detection and elimination
     //
 
-    mat y_f( n_dim, nf ),y_g( n_dim, ng );
-    rowvec x_f(nf), x_g(ng);
+    arma::mat cleanValues1(nDim, nPts1, arma::fill::zeros), cleanValues2(nDim, nPts2, arma::fill::zeros);
+    arma::rowvec cleanGrid1(nPts1, arma::fill::zeros), cleanGrid2(nPts2, arma::fill::zeros);
 
-    y_f.zeros();
-    y_g.zeros();
-    x_f.zeros();
-    x_g.zeros();
-
-
-    uword c=0;
-
-    for(uword i=0; i < nf ; i++)
+    unsigned int c = 0;
+    for (unsigned int i = 0;i < nPts1;++i)
+    {
+        if (arma::is_finite(grid1(i)) && arma::is_finite(values1.col(i)))
         {
-            if( yf.col(i).is_finite() )
-                {
-                    x_f(c) = xf(i);
-                    y_f.col(c) = yf.col(i);
-                    c++;
-                }
+            cleanGrid1(c) = grid1(i);
+            cleanValues1.col(c) = values1.col(i);
+            ++c;
         }
+    }
 
-    x_f.resize(c);
-    y_f.resize(n_dim,c);
+    cleanGrid1.resize(c);
+    cleanValues1.resize(nDim, c);
 
-    c=0;
-    for(uword i=0; i<ng; i++)
+    c = 0;
+    for (unsigned int i = 0;i < nPts2;++i)
+    {
+        if (arma::is_finite(grid2(i)) && arma::is_finite(values2.col(i)))
         {
-            if( yg.col(i).is_finite() )
-                {
-                    x_g(c) = xg(i);
-                    y_g.col(c) = yg.col(i);
-                    c++;
-                }
+            cleanGrid2(c) = grid2(i);
+            cleanValues2.col(c) = values2.col(i);
+            ++c;
         }
+    }
 
+    cleanGrid2.resize(c);
+    cleanValues2.resize(nDim, c);
 
-    x_g.resize(c);
-    y_g.resize(n_dim,c);
+    if (cleanValues1.n_cols == 0 || cleanValues2.n_cols == 0)
+    {
+        Rcpp::warning("Dissimilarity: at least one function only contains missing values.");
+        return outputPair;
+    }
 
-    if( y_f.n_cols == 0 || y_g.n_cols == 0)
-        {
-            Rcpp::warning("Una delle due funzioni è completamente NA.");
-            return out;
-        }
+    // Compute smallest common grid
 
-////////////////////// x_sim e approssimazioni /////////////////////////////////////////
+    double xMin = std::max(cleanGrid1.min(), cleanGrid2.min());
+    double xMax = std::min(cleanGrid1.max(), cleanGrid2.max());
 
-    double x_min = std::max( x_f.min(), x_g.min() );
-    double x_max = std::min( x_f.max(), x_g.max() );
+    if (xMin >= xMax)
+    {
+        Rcpp::warning("Disimilarity: domain intersection is empty.");
+        return outputPair;
+    }
 
-    double pf(0),pg(0);
-    for (uword i=0; i<x_f.size(); i++)
-        {
-            if(x_f(i)>=x_min && x_f(i)<=x_max)
-                pf++;
-        }
-    for (uword i=0; i<x_g.size(); i++)
-        {
-            if(x_g(i)>=x_min && x_g(i)<=x_max)
-                pg++;
-        }
+    arma::rowvec xCommon = arma::linspace<arma::rowvec>(xMin, xMax, (nPts1 + nPts2) / 2);
 
-    double p = std::max(pg,pf);
+    outputPair.Grid = xCommon;
+    outputPair.Values1 = util::approx(cleanGrid1, cleanValues1, xCommon);
+    outputPair.Values2 = util::approx(cleanGrid2, cleanValues2, xCommon);
 
-    if( p<=1 )
-        {
-            Rcpp::warning("Disimilarity: no open intervals in common. Reduction of warping bounds suggested.");
-            return out;
-        }
-
-
-    rowvec xs(p);
-    xs.zeros();
-
-    xs(0) = x_min;
-    for (size_t i = 1; i<p; i++)
-        {
-            xs(i) =  xs(i-1) + (x_max-x_min) / (p-1);
-        }
-
-    out.yf_sim.set_size(n_dim,p);
-    out.yg_sim.set_size(n_dim,p);
-
-    // set attributes of dissimilarity
-    out.yf_sim = util::approx( x_f, y_f, xs );
-    out.yg_sim = util::approx( x_g, y_g, xs );
-    out.x_sim = xs;
-    return out;
+    return outputPair;
 }
 
-
-double Pearson::compute(const rowvec& xf, const rowvec& xg,
-                        const mat& yf, const mat& yg)
+double Pearson::GetDistance(const arma::rowvec& grid1,
+                            const arma::rowvec& grid2,
+                            const arma::mat& values1,
+                            const arma::mat& values2)
 {
-    grid gr = setGrid(xf,xg,yf,yg);
+    FunctionPair pair = this->GetComparableFunctions(grid1, grid2, values1, values2);
 
-    if(gr.yf_sim.is_empty())
-        return 10000000;
+    if (pair.Grid.is_empty())
+        return 1e7;
 
-    uword dim = gr.yf_sim.n_rows;
-    double res(0);
+    unsigned int nDim = pair.Values1.n_rows;
+    double pearsonCorrelation = 0.0;
 
-    for(uword k=0; k < dim; k++ )
-        {
-            res += norm_dot( gr.yf_sim.row(k), gr.yg_sim.row(k) );
-        }
-    return -res/dim;
+    for (unsigned int k = 0;k < nDim;++k)
+        pearsonCorrelation += arma::norm_dot(pair.Values1.row(k), pair.Values2.row(k));
+
+    return -pearsonCorrelation / (double)nDim;
 }
 
-
-
-double L2::compute(const rowvec& xf, const rowvec& xg,
-                   const mat& yf, const mat& yg)
+double L2::GetDistance(const arma::rowvec& grid1,
+                       const arma::rowvec& grid2,
+                       const arma::mat& values1,
+                       const arma::mat& values2)
 {
-    grid gr=setGrid(xf,xg,yf,yg);
-    if(gr.yf_sim.is_empty())
-        return 10000000;
+    FunctionPair pair = this->GetComparableFunctions(grid1, grid2, values1, values2);
 
-    uword dim = gr.yf_sim.n_rows;
-    uword len = gr.x_sim.size();
+    if (pair.Grid.is_empty())
+        return 1e7;
 
-    double res(0);
+    unsigned int nDim = pair.Values1.n_rows;
+    unsigned int nPts = pair.Grid.size();
 
-    rowvec d = gr.x_sim.cols(1,len-1) - gr.x_sim.cols(0,len-2);
-    double D = gr.x_sim(len-1)-gr.x_sim(0);
+    if (nPts <= 1.0)
+        return 1e7;
 
-    for(uword k=0; k < dim; k++ )
-        {
-            rowvec diff = sqrt(d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
-            res += dot(diff,diff)/(D*dim);
-        }
+    double squaredDistanceValue = 0.0;
 
-    return sqrt(res);
+    arma::rowvec diffVector = pair.Grid.cols(1, nPts - 1) - pair.Grid.cols(0, nPts - 2);
+    double rangeValue = pair.Grid(nPts - 1) - pair.Grid(0);
+    arma::rowvec workVector;
 
+    for (unsigned int k = 0;k < nDim;++k)
+    {
+        workVector = arma::sqrt(diffVector) % (pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1));
+        squaredDistanceValue += arma::dot(workVector, workVector) / (rangeValue * (double)nDim);
+    }
+
+    return std::sqrt(squaredDistanceValue);
 }
 
-
-double L2w::compute(const rowvec& xf, const rowvec& xg,
-                    const mat& yf, const mat& yg)
+double L2w::GetDistance(const arma::rowvec& grid1,
+                        const arma::rowvec& grid2,
+                        const arma::mat& values1,
+                        const arma::mat& values2)
 {
-    grid gr=setGrid(xf,xg,yf,yg);
-    if(gr.yf_sim.is_empty())
-        return 10000000;
+    FunctionPair pair = this->GetComparableFunctions(grid1, grid2, values1, values2);
 
-    uword dim = gr.yf_sim.n_rows;
-    uword len = gr.x_sim.size();
+    if (pair.Grid.is_empty())
+        return 1e7;
 
-    double res(0);
+    unsigned int nDim = pair.Values1.n_rows;
+    unsigned int nPts = pair.Grid.size();
 
-    rowvec d = gr.x_sim.cols(1,len-1) - gr.x_sim.cols(0,len-2);
-    double D = gr.x_sim(len-1)-gr.x_sim(0);
+    if (nPts <= 1.0)
+        return 1e7;
 
-    rowvec w(len-1);
-    for(uword i=0; i < (len-1); i++)
-        w(i)=1/(i+1);
+    double squaredDistanceValue = 0.0;
 
-    for(uword k=0; k < dim; k++ )
-        {
-            rowvec diff =  sqrt(w % d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
-            res += dot(diff, diff)/(D*dim);
-        }
+    arma::rowvec diffVector = pair.Grid.cols(1, nPts - 1) - pair.Grid.cols(0, nPts - 2);
+    double rangeValue = pair.Grid(nPts - 1) - pair.Grid(0);
+    arma::rowvec workVector;
 
-    return sqrt(res);
+    arma::rowvec weightVector(nPts - 1);
+    for (unsigned int i = 0;i < nPts - 1;++i)
+        weightVector(i) = 1.0 / ((double)i + 1.0);
 
+    for (unsigned int k = 0;k < nDim;++k)
+    {
+        workVector = arma::sqrt(weightVector % diffVector) % (pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1));
+        squaredDistanceValue += arma::dot(workVector, workVector) / (rangeValue * (double)nDim);
+    }
+
+    return std::sqrt(squaredDistanceValue);
 }
 
-
-double L2first::compute(const rowvec& xf, const rowvec& xg,
-                        const mat& yf, const mat& yg)
+double L2first::GetDistance(const arma::rowvec& grid1,
+                            const arma::rowvec& grid2,
+                            const arma::mat& values1,
+                            const arma::mat& values2)
 {
-    grid gr=setGrid(xf,xg,yf,yg);
-    if(gr.yf_sim.is_empty())
-        return 10000000;
+    FunctionPair pair = this->GetComparableFunctions(grid1, grid2, values1, values2);
 
-    uword dim = gr.yf_sim.n_rows;
-    uword len = gr.x_sim.size();
+    if (pair.Grid.is_empty())
+        return 1e7;
 
-    double res(0);
+    unsigned int nDim = pair.Values1.n_rows;
+    unsigned int nPts = pair.Grid.size();
 
-    rowvec d = gr.x_sim.cols(1,len-1) - gr.x_sim.cols(0,len-2);
-    double D = gr.x_sim(len-1)-gr.x_sim(0);
+    if (nPts <= 1.0)
+        return 1e7;
 
-    rowvec w= Rcpp::rep(0.001,len-1);
-    w(0)=1;
+    double squaredDistanceValue = 0.0;
 
-    for(uword k=0; k < dim; k++ )
-        {
-            rowvec diff =  sqrt(w % d) % ( gr.yf_sim.row(k).cols(1,len-1)- gr.yg_sim.row(k).cols(1,len-1) );
-            res += dot(diff, diff)/(D*dim);
-        }
+    arma::rowvec diffVector = pair.Grid.cols(1, nPts - 1) - pair.Grid.cols(0, nPts - 2);
+    double rangeValue = pair.Grid(nPts - 1) - pair.Grid(0);
+    arma::rowvec workVector;
 
-    return sqrt(res);
+    arma::rowvec weightVector(nPts - 1);
+    weightVector.fill(1e-3);
+    weightVector(0) = 1.0;
 
+    for (unsigned int k = 0;k < nDim;++k)
+    {
+        workVector = arma::sqrt(weightVector % diffVector) % (pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1));
+        squaredDistanceValue += arma::dot(workVector, workVector) / (rangeValue * (double)nDim);
+    }
+
+    return std::sqrt(squaredDistanceValue);
 }

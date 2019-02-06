@@ -60,6 +60,7 @@ KmaModel::KmaModel(
     cenfac.FactoryRegister<Medoid>("medoid");
     cenfac.FactoryRegister<PseudoMedoid>("pseudomedoid");
     cenfac.FactoryRegister<Mean>("mean");
+    cenfac.FactoryRegister<Median>("median");
 
     //Optimizer factory
     util::SharedFactory<OptimizerMethod> optfac;
@@ -84,7 +85,8 @@ KmaModel::KmaModel(
     warping = warfac.instantiate(warping_method);
     cen = cenfac.instantiate(center_method);
     //parameters center method
-    cen->setParameters(t_center_opt);
+    cen->SetSpanValue(t_center_opt[0]);
+    cen->SetDeltaValue(t_center_opt[1]);
 
     n_obs = t_y.n_rows;
     n_camp = t_y.n_cols;

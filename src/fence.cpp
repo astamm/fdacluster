@@ -81,7 +81,7 @@ void iterativeFence(
                     rowvec index_temp(nt);
                     mat parameters_temp(n_par,nt);
                     colvec arg(n_par);
-                    mat y_reg = util::approx( x_reg.row(obs), util::observation(y,obs), x_out );
+                    mat y_reg = util::approx( x_reg.row(obs), util::GetObservation(y, obs), x_out );
                     for(uword t=0; t<nt; t++ )
                         {
                             mat t_in = templates(span(t),span::all,span::all);

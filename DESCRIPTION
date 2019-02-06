@@ -11,5 +11,5 @@ LazyData: true
 Import: Rcpp (>= 0.12.11)
 LinkingTo: Rcpp , RcppArmadillo
 SystemRequirements: C++11
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
 Suggests: testthat
