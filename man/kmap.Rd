@@ -4,12 +4,24 @@
 \alias{kmap}
 \title{K-mean alignment and variants for functional data}
 \usage{
-kmap(x, y, seeds = NULL, n_clust = 1, warping_method = "affine",
-  center_method = "mean", similarity_method = "pearson",
-  optim_method = "bobyqa", warping_opt = c(0.15, 0.15),
-  center_opt = c(0.01, 0.1), out_opt = c(100, 0.001, 100),
-  fence = FALSE, check_total_similarity = TRUE, show_iter = TRUE,
-  comp_original_center = FALSE, par_opt = c(1, 0))
+kmap(
+  x,
+  y,
+  seeds = NULL,
+  n_clust = 1,
+  warping_method = "affine",
+  center_method = "mean",
+  similarity_method = "pearson",
+  optim_method = "bobyqa",
+  warping_opt = c(0.15, 0.15),
+  center_opt = c(0.01, 0.1),
+  out_opt = c(100, 0.001, 100),
+  fence = FALSE,
+  check_total_similarity = TRUE,
+  show_iter = TRUE,
+  comp_original_center = FALSE,
+  par_opt = c(1, 0)
+)
 }
 \arguments{
 \item{x}{Numeric matrix [\emph{nObs} x \emph{nPts}] or vector [\emph{nPts}]:

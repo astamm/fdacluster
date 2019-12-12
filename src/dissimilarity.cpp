@@ -134,25 +134,58 @@ double L2::GetDistance(const arma::rowvec& grid1,
     FunctionPair pair = this->GetComparableFunctions(grid1, grid2, values1, values2);
 
     if (pair.Grid.is_empty())
-        return 1e7;
+        return std::numeric_limits<double>::max();
 
     unsigned int nDim = pair.Values1.n_rows;
     unsigned int nPts = pair.Grid.size();
 
     if (nPts <= 1.0)
-        return 1e7;
-
-    double squaredDistanceValue = 0.0;
+        return std::numeric_limits<double>::max();
 
     arma::rowvec diffVector = pair.Grid.cols(1, nPts - 1) - pair.Grid.cols(0, nPts - 2);
     double rangeValue = pair.Grid(nPts - 1) - pair.Grid(0);
     arma::rowvec workVector;
+    double squaredDistanceValue = 0.0;
 
     for (unsigned int k = 0;k < nDim;++k)
     {
         workVector = arma::sqrt(diffVector) % (pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1));
-        squaredDistanceValue += arma::dot(workVector, workVector) / (rangeValue * (double)nDim);
+        squaredDistanceValue += arma::dot(workVector, workVector);
     }
+
+    squaredDistanceValue /= (rangeValue * (double)nDim);
+
+    return std::sqrt(squaredDistanceValue);
+}
+
+double UnitQuaternionL2::GetDistance(const arma::rowvec& grid1,
+                                     const arma::rowvec& grid2,
+                                     const arma::mat& values1,
+                                     const arma::mat& values2)
+{
+    FunctionPair pair = this->GetComparableFunctions(grid1, grid2, values1, values2);
+
+    if (pair.Grid.is_empty())
+        return std::numeric_limits<double>::max();
+
+    unsigned int nDim = pair.Values1.n_rows;
+    unsigned int nPts = pair.Grid.size();
+
+    if (nPts <= 1.0)
+        return std::numeric_limits<double>::max();
+
+    arma::rowvec diffVector = pair.Grid.cols(1, nPts - 1) - pair.Grid.cols(0, nPts - 2);
+    double rangeValue = pair.Grid(nPts - 1) - pair.Grid(0);
+    arma::rowvec workVector;
+    double squaredDistanceValue = 0.0;
+
+    for (unsigned int k = 0;k < nDim;++k)
+    {
+        workVector = arma::sqrt(diffVector) % (pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1));
+        squaredDistanceValue += arma::dot(workVector, workVector);
+    }
+
+    squaredDistanceValue /= (rangeValue * (double)nDim);
 
     return std::sqrt(squaredDistanceValue);
 }

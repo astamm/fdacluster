@@ -145,6 +145,38 @@ CenterObject Mean::GetCenter(const arma::mat& inputGrid,
     return outputCenter;
 }
 
+CenterObject UnitQuaternionMean::GetCenter(const arma::mat& inputGrid,
+                                           const arma::cube& inputValues,
+                                           std::shared_ptr<Dissimilarity>& distanceObject,
+                                           const arma::rowvec& outputGrid)
+{
+    CenterObject outputCenter;
+
+    unsigned int nOut = outputGrid.size();
+    unsigned int nDim = inputValues.n_slices;
+    unsigned int nObs = inputValues.n_rows;
+    unsigned int nPts = inputValues.n_cols;
+
+    if (inputGrid.n_cols != nPts)
+        Rcpp::stop("The number of columns in x should match the second dimension of y.");
+
+    if (inputGrid.n_rows != nObs)
+        Rcpp::stop("The number of rows in x should match the first dimension of y.");
+
+    arma::mat yOut(nDim, nOut);
+
+    // compute dissimilarity whit others
+    arma::rowvec dso(nObs);
+    for (unsigned int i = 0;i < nObs;++i)
+        dso(i) = distanceObject->GetDistance(outputGrid, inputGrid.row(i), yOut, util::GetObservation(inputValues, i));
+
+    outputCenter.Grid = outputGrid;
+    outputCenter.Values = yOut;
+    outputCenter.Distances = dso;
+
+    return outputCenter;
+}
+
 CenterObject PseudoMedoid::GetCenter(const arma::mat& inputGrid,
                                      const arma::cube& inputValues,
                                      std::shared_ptr<Dissimilarity>& distanceObject,

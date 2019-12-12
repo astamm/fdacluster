@@ -12,5 +12,5 @@
 #' @name fdakmapp
 #' @docType package
 #' @useDynLib fdakmapp
-#' @importFrom Rcpp evalCpp
+#' @importFrom Rcpp sourceCpp
 NULL

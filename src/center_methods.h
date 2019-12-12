@@ -126,6 +126,16 @@ public:
                                    const arma::rowvec& outputGrid);
 };
 
+/// Mean for unit quaternions.
+class UnitQuaternionMean : public CenterMethod
+{
+public:
+    virtual CenterObject GetCenter(const arma::mat& inputGrid,
+                                   const arma::cube& inputValues,
+                                   std::shared_ptr<Dissimilarity>& distanceObject,
+                                   const arma::rowvec& outputGrid);
+};
+
 /// Median center method.
 class Median : public CenterMethod
 {

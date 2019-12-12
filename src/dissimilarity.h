@@ -89,6 +89,16 @@ public:
                                const arma::mat& values2);
 };
 
+/// Unit Quaternion L2 Distance
+class UnitQuaternionL2 : public Dissimilarity
+{
+public:
+  virtual double GetDistance(const arma::rowvec& grid1,
+                             const arma::rowvec& grid2,
+                             const arma::mat& values1,
+                             const arma::mat& values2);
+};
+
 /// L2w Distance
 class L2w : public Dissimilarity
 {

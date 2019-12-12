@@ -8,8 +8,12 @@ Description: The fdakmapp package provides the kmap function that jointly perfor
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Import: Rcpp (>= 0.12.11)
-LinkingTo: Rcpp , RcppArmadillo
+LinkingTo: Rcpp , RcppArmadillo, squad
 SystemRequirements: C++11
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2
 Suggests: testthat
+Imports: 
+    squad (>= 0.0.0.9000),
+    Rcpp
+Remotes: 
+    astamm/squad
