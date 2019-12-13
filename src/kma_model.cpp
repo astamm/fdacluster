@@ -47,6 +47,7 @@ KmaModel::KmaModel(
     disfac.FactoryRegister<L2>("l2");
     disfac.FactoryRegister<L2w>("l2w");
     disfac.FactoryRegister<L2first>("l2first");
+    disfac.FactoryRegister<UnitQuaternionL2>("UnitQuaternionL2");
 
     //warping factory
     util::SharedFactory<WarpingFunction> warfac;
@@ -61,6 +62,7 @@ KmaModel::KmaModel(
     cenfac.FactoryRegister<PseudoMedoid>("pseudomedoid");
     cenfac.FactoryRegister<Mean>("mean");
     cenfac.FactoryRegister<Median>("median");
+    cenfac.FactoryRegister<UnitQuaternionMean>("UnitQuaternionMean");
 
     //Optimizer factory
     util::SharedFactory<OptimizerMethod> optfac;

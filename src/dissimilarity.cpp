@@ -16,6 +16,7 @@
 //   along with Fdakmapp.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <RcppArmadillo.h>
+#include <squad.h>
 
 #include "dissimilarity.h"
 #include "utilities.h"
@@ -174,18 +175,16 @@ double UnitQuaternionL2::GetDistance(const arma::rowvec& grid1,
     if (nPts <= 1.0)
         return std::numeric_limits<double>::max();
 
-    arma::rowvec diffVector = pair.Grid.cols(1, nPts - 1) - pair.Grid.cols(0, nPts - 2);
-    double rangeValue = pair.Grid(nPts - 1) - pair.Grid(0);
-    arma::rowvec workVector;
+    double rangeValue = pair.Grid[nPts - 1] - pair.Grid[0];
     double squaredDistanceValue = 0.0;
 
-    for (unsigned int k = 0;k < nDim;++k)
+    for (unsigned int j = 0;j < nPts - 1;++j)
     {
-        workVector = arma::sqrt(diffVector) % (pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1));
-        squaredDistanceValue += arma::dot(workVector, workVector);
+        double tmpDistance = squad::GeodesicQuaternionDistance(Rcpp::wrap(pair.Values1), Rcpp::wrap(pair.Values2), j + 1, j + 1);
+        squaredDistanceValue += (pair.Grid[j + 1] - pair.Grid[j]) * tmpDistance * tmpDistance;
     }
 
-    squaredDistanceValue /= (rangeValue * (double)nDim);
+    squaredDistanceValue /= rangeValue;
 
     return std::sqrt(squaredDistanceValue);
 }

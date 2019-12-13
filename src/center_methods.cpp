@@ -19,6 +19,8 @@
 #ifdef _OPENMP
 #include <omp.h>
 #endif
+#include <rotations.h>
+#include <squad.h>
 
 #include "center_methods.h"
 #include "low.h"
@@ -145,6 +147,77 @@ CenterObject Mean::GetCenter(const arma::mat& inputGrid,
     return outputCenter;
 }
 
+// as.SO3.Q4 = function (x, ...)
+//     {
+//         q <- formatQ4(x)
+//         if (any((rowSums(q^2) - 1) > 1e-09)) {
+//             warning("Unit quaternions required.  Input was normalized.")
+//             nonq <- which((rowSums(q^2) - 1) > 1e-09)
+//             q[nonq, ] <- as.Q4(q[nonq, ]/sqrt(rowSums(q[nonq, ]^2)))
+//         }
+//         else {
+//             class(q) <- "Q4"
+//         }
+//         theta <- mis.angle(q)
+//             u <- mis.axis(q)
+//             return(as.SO3.default(u, theta))
+//     }
+//
+// as.Q4.SO3 = function (x, ...)
+//     {
+//         R <- x
+//         R <- formatSO3(R)
+//         theta <- mis.angle(R)
+//         u <- mis.axis(R)
+//         x <- as.Q4.default(u, theta)
+//         return(x)
+//     }
+//
+// mis.angle.Q4 = function (x)
+//     {
+//         Qs <- formatQ4(x)
+//         theta <- 2 * acos(Qs[, 1])
+//         class(theta) <- "numeric"
+//         return(theta)
+//     }
+//
+// mis.angle.SO3 = function (x)
+//     {
+//         Rs <- formatSO3(x)
+//         theta <- c(rdistSO3C(Rs, diag(1, 3, 3)))
+//         return(theta)
+//     }
+//
+// mis.axis.Q4 = function (x, ...)
+//     {
+//         q <- formatQ4(x)
+//         theta <- mis.angle(q)
+//         u <- q[, 2:4]/sin(theta/2)
+//         if (any(is.infinite(u) | is.nan(u))) {
+//             infs <- which(is.infinite(u) | is.nan(u))
+//             u[infs] <- 0
+//         }
+//         u <- matrix(u, ncol = 3)
+//             return(u)
+//     }
+//
+// mis.axis.SO3 = function (x, ...)
+//     {
+//         R <- formatSO3(x)
+//         n <- nrow(R)
+//         u <- matrix(NA, n, 3)
+//         for (i in 1:n) {
+//             Ri <- matrix(R[i, ], 3, 3)
+//             X <- Ri - t(Ri)
+//             u[i, ] <- rev(X[upper.tri(X)]) * c(-1, 1, -1)
+//             norm <- sqrt(sum(u[i, ]^2))
+//             if (norm != 0) {
+//                 u[i, ] <- u[i, ]/norm
+//             }
+//         }
+//         return(u)
+//     }
+
 CenterObject UnitQuaternionMean::GetCenter(const arma::mat& inputGrid,
                                            const arma::cube& inputValues,
                                            std::shared_ptr<Dissimilarity>& distanceObject,
@@ -163,9 +236,48 @@ CenterObject UnitQuaternionMean::GetCenter(const arma::mat& inputGrid,
     if (inputGrid.n_rows != nObs)
         Rcpp::stop("The number of rows in x should match the first dimension of y.");
 
-    arma::mat yOut(nDim, nOut);
+    double xMin = util::GetCommonLowerBound(inputGrid);
+    xMin = std::max(xMin, outputGrid.min());
+    double xMax = util::GetCommonUpperBound(inputGrid);
+    xMax = std::min(xMax, outputGrid.max());
 
-    // compute dissimilarity whit others
+    if (xMin >= xMax)
+        Rcpp::stop("No common grid between curves in this group");
+
+    Rcpp::Rcout << xMin << std::endl;
+    Rcpp::Rcout << xMax << std::endl;
+
+    arma::cube yIn(nObs, nDim, nOut);
+    Rcpp::NumericVector tmpVec;
+    Rcpp::NumericMatrix tmpMat;
+    for (unsigned int i = 0;i < nObs;++i)
+    {
+        tmpVec = Rcpp::wrap(inputGrid.row(i));
+        Rcpp::Rcout << "TOTO" << std::endl;
+        tmpMat = Rcpp::wrap(util::GetObservation(inputValues, i));
+        Rcpp::Rcout << "TATA" << std::endl;
+        tmpMat = squad::RegularizeGrid(tmpVec, tmpMat, xMin, xMax, nOut);
+        Rcpp::Rcout << "YITY" << std::endl;
+        yIn(arma::span(i), arma::span::all, arma::span::all) = Rcpp::as<arma::mat>(tmpMat);
+        Rcpp::Rcout << "TITI" << std::endl;
+    }
+
+    Rcpp::Rcout << "TUTU" << std::endl;
+
+    arma::mat yOut(nDim, nOut);
+    yOut = yIn(arma::span(0), arma::span::all, arma::span::all);
+    //
+    // // Obtaining namespace of rotations package
+    // Rcpp::Environment rotationsPkg = Rcpp::Environment::namespace_env("rotations");
+    //
+    // // Picking up as.SO3() and as.Q4() functions from rotations package
+    // Rcpp::Function toSO3 = rotationsPkg["as.SO3"];
+    // Rcpp::Function toQ4 = rotationsPkg["as.Q4"];
+    //
+    // for (unsigned int j = 0;j < nOut;++j)
+    //     yOut.col(j) = Rcpp::as<arma::vec>(toQ4(rotations::gmeanSO3C(Rcpp::as<arma::mat>(toSO3(yIn.slice(j))), 2000, 1.0e-5)));
+
+    // compute dissimilarity between observations and center
     arma::rowvec dso(nObs);
     for (unsigned int i = 0;i < nObs;++i)
         dso(i) = distanceObject->GetDistance(outputGrid, inputGrid.row(i), yOut, util::GetObservation(inputValues, i));

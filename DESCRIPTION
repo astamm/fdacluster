@@ -17,4 +17,4 @@ Imports:
     Rcpp,
     rotations
 Remotes: 
-    astamm/squad
+    astamm/squad@export-cpp
