@@ -60,6 +60,11 @@ public:
                                         const arma::mat& values1,
                                         const arma::mat& values2);
 
+    FunctionPair GetComparableQuaternionFunctions(const arma::rowvec& grid1,
+                                                  const arma::rowvec& grid2,
+                                                  const arma::mat& values1,
+                                                  const arma::mat& values2);
+
 protected:
     Dissimilarity() {}
     virtual ~Dissimilarity() {}
