@@ -125,21 +125,26 @@ Rcpp::List KmaModel::execute()
             (still_in == true) &&
             (iter < iter_max))
         {
-
             iter++;
-            if(show_iter==true) cout<< "Iteration num: "<<iter<<endl;
 
+            if (show_iter)
+                Rcpp::Rcout << "Iteration num: " << iter << std::endl;
 
             index_old = index;
             labels_old = labels;
             mat parameters(np, n_obs);
 
-            if(show_iter==true) cout<<"Set bound: ";
+            if (show_iter)
+                Rcpp::Rcout << "Set bound: ";
+
             warping->set_bounds(warping_opt,x_reg);
-            if(show_iter==true) cout<<"Done"<<endl;
+
+            if (show_iter)
+                Rcpp::Rcout << "Done" << std::endl;
 
             //compute best warping parameters and assign new labels
-            if(show_iter==true) cout<<iter<<". Compute best warping: "<<endl;
+            if (show_iter)
+                Rcpp::Rcout << iter << ". Compute best warping: " << std::endl;
 
 #ifdef _OPENMP
             #pragma omp parallel for num_threads(parallel_opt(0))
@@ -173,42 +178,26 @@ Rcpp::List KmaModel::execute()
                     index(obs) = min( index_temp );
                     labels(obs) = ict( index_min(index_temp));
                     parameters.col(obs)= parameters_temp.col(index_min(index_temp));
-                    //PRINT
-                    #pragma omp critical
-                    {
-                        if(show_iter==true)
-                            {
-                                // cout<<iter<<". Observation "<<obs<<" has been assigned to cluster "<<labels(obs)<<endl;
-                                // cout<<"distances from other templates are "<<endl;
-                                // index_temp.raw_print(std::cout);
-                                //cout<<"|";
-                            }
-                    }
                 }// fine iterazioni per ogni osservazione
 
 
-            if(show_iter==true) cout<<"Done"<<endl;
-            timer.step( "warping "+ std::to_string(iter) );
+            if (show_iter)
+                Rcpp::Rcout << "Done" << std::endl;
 
+            timer.step( "warping "+ std::to_string(iter) );
 
             //update current template list
             ict = unique(labels);
 
-
             //PRINT
-            if(show_iter==true)
-                {
-                    //cout<<"Computed labels are:"<<endl;
-                    //labels.raw_print();
-                    Rcpp::Rcout<<"current cluster vector updated"<<endl;
-                    ict.print();
-                    std::map<uword,uword> mcl = util::tableC(labels);
-                    for(auto it = mcl.cbegin(); it != mcl.cend(); ++it)
-                        {
-                            Rcpp::Rcout <<"cluster num: "<< it->first << " has " << it->second << " elements;" << endl;
-                        }
-                    //   cout<<"parameters computed are"<<endl<<parameters<<endl;
-                }
+            if (show_iter)
+            {
+                Rcpp::Rcout << "current cluster vector updated" << std::endl;
+                ict.print();
+                std::map<uword,uword> mcl = util::tableC(labels);
+                for(auto it = mcl.cbegin(); it != mcl.cend(); ++it)
+                    Rcpp::Rcout <<"cluster num: "<< it->first << " has " << it->second << " elements;" << std::endl;
+            }
 
 
             if(show_iter==true) Rcpp::Rcout<<"Fence alghoritm : "<<endl;
@@ -224,28 +213,40 @@ Rcpp::List KmaModel::execute()
                 }
 
 
-// normalizzaziione
-            if(show_iter==true) cout<<"Parameters' normalization :";
-            warping->normalize(parameters,ict,labels);
-            if(show_iter==true) cout<<"Done"<<endl;
+// normalizzazione
+            if (show_iter)
+                Rcpp::Rcout << "Parameters' normalization :";
 
+            warping->normalize(parameters, ict, labels);
+
+            if (show_iter)
+                Rcpp::Rcout << "Done" << std::endl;
 
 // salvo parametri
-            parameters_vec(span::all,span::all,span(iter-1))=parameters;
+            parameters_vec(span::all,span::all,span(iter-1)) = parameters;
 
 
 //update x_reg and x_out
-            if(show_iter==true) cout<<"Update x_reg and x_out: ";
-            x_reg = warping->apply_warping(x_reg,parameters);
-            x_out =  linspace<rowvec>( util::GetCommonLowerBound(x_reg), util::GetCommonUpperBound(x_reg), n_out);
-            if(show_iter==true) cout<<"Done"<<endl;
+            if (show_iter)
+                Rcpp::Rcout << "Update x_reg and x_out: ";
 
-            x_out_vec(iter)=x_out;
+            x_reg = warping->apply_warping(x_reg,parameters);
+            x_out = arma::linspace<arma::rowvec>(
+                util::GetCommonLowerBound(x_reg),
+                util::GetCommonUpperBound(x_reg),
+                n_out
+            );
+
+            if (show_iter)
+                Rcpp::Rcout << "Done" << std::endl;
+
+            x_out_vec(iter) = x_out;
 
             timer.step( "fence/norm/update "+ std::to_string(iter) );
 
             //compute new templates
-            if(show_iter==true) cout<<"Compute new templates: "<<endl;
+            if (show_iter)
+                Rcpp::Rcout << "Compute new templates: " << std::endl;
 
             templates_vec(iter-1) = templates;
             templates.set_size(ict.size(),n_out,n_dim);
@@ -253,32 +254,36 @@ Rcpp::List KmaModel::execute()
             newCenters( x_reg, y, x_out, dissim, cen, parallel_opt,
                         templates, ict, labels, show_iter);
 
-            if(show_iter==true)
-                {
-                    cout<<"Templates updated"<<endl;
-                    cout<<"While condition"<<endl<<"dissim cambiata piu di toll: "<<(sum( abs(index-index_old) < toll)<n_obs )
-                        <<endl<<"almeno un etichetta cambiata: "<<(sum( labels == labels_old  ) != n_obs)<<endl;
-                    cout<<"Check total similarity: ";
-                }
+            if (show_iter)
+            {
+                Rcpp::Rcout <<"Templates updated" << std::endl;
+                Rcpp::Rcout << "While condition" << std::endl << "dissim cambiata piu di toll: " << (sum( abs(index-index_old) < toll)<n_obs ) << std::endl << "almeno un etichetta cambiata: " << (sum( labels == labels_old  ) != n_obs) << std::endl;
+                Rcpp::Rcout << "Check total similarity: ";
+            }
 
             //check total smilarity
-            if(check_total_similarity == true)
-                {
+            if (check_total_similarity)
+            {
+                double tot = sum(index);
+                double tot_old = sum(index_old);
 
-                    double tot = sum(index);
-                    double tot_old = sum(index_old);
-                    // sel la distanza totale aumenta
-                    if( tot_old < tot )
-                        {
-                            still_in= false;
-                            templates=templates_vec(iter-1);
-                            index = index_old;
-                            labels=labels_old;
-                            x_out=x_out_vec(iter-1);
-                            if(show_iter==true) cout<<"Total similarity didn't increase. ";
-                        }
-                    if(show_iter==true) cout<<"Done"<<endl;
+                // sel la distanza totale aumenta
+                if (tot_old < tot)
+                {
+                    still_in = false;
+                    templates = templates_vec(iter - 1);
+                    index = index_old;
+                    labels = labels_old;
+                    x_out = x_out_vec(iter - 1);
+
+                    if (show_iter)
+                        Rcpp::Rcout << "Total similarity didn't increase. ";
                 }
+
+                if (show_iter)
+                    Rcpp::Rcout << "Done" << std::endl;
+            }
+
             timer.step( "newtemplates "+ std::to_string(iter) );
 
         }//fine while
@@ -286,23 +291,23 @@ Rcpp::List KmaModel::execute()
     parameters_vec.resize(np,n_obs,iter);
     templates_vec(iter) = templates;
 
-    if(show_iter==true) cout<<"End while iterations"<<endl;
-
+    if (show_iter)
+        Rcpp::Rcout << "End while iterations" << std::endl;
 
     //
     // output
     //
-    if(show_iter==true) cout<<"Final warping: ";
-    mat final_par = warping->final_warping(parameters_vec,labels,ict);
-    if(show_iter==true) cout<<"Done"<<endl;
+    if (show_iter)
+        Rcpp::Rcout << "Final warping: ";
 
+    mat final_par = warping->final_warping(parameters_vec, labels, ict);
 
-    field<mat> par_vec(iter);
-    for(int k = 0; k < iter; k++)
-        {
-            par_vec(k) = parameters_vec.slice(k);
-        }
+    if (show_iter)
+        Rcpp::Rcout << "Done" << std::endl;
 
+    arma::field<arma::mat> par_vec(iter);
+    for(unsigned int k = 0;k < iter;++k)
+        par_vec(k) = parameters_vec.slice(k);
 
     Rcpp::NumericVector out1 = Rcpp::wrap(original_center.Grid);
     out1.attr("dim")=R_NilValue;
@@ -325,8 +330,9 @@ Rcpp::List KmaModel::execute()
 
 
     timer.step( "output ");
-    // ProfilerStop();
-    if(show_iter==true) cout<<"Output"<<"---------------------------------------------"<<endl;
+
+    if (show_iter)
+        Rcpp::Rcout << "Output" << "---------------------------------------------" << std::endl;
     return util::ListBuilder()
            .add("iterations", iter)
            .add("n.clust",n_clust)

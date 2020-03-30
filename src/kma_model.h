@@ -26,7 +26,7 @@
 #include "optimizer.h"
 
 
-using  namespace arma;
+using namespace arma;
 
 /// Main class.
 /** This class handles loading of the problem and execution of the algorithm.
@@ -60,13 +60,26 @@ class KmaModel
 
 public:
     /// Constructor that load the problem.
-    KmaModel(const mat& t_x, const cube& t_y,
-             uword t_n_clust, std::string t_warping_method, std::string t_center_method,
-             std::string t_similarity_method, std::string t_optim_method,
-             const rowvec& t_seeds,
-             const rowvec& t_warping_opt, const rowvec& t_center_opt, double t_n_out,
-             double t_toll, bool t_fence, uword t_iter_max,bool t_show_iter,
-             bool t_check_total_similarity,bool comp_original_center, urowvec par_opt);
+    KmaModel(
+        const mat& t_x,
+        const cube& t_y,
+        uword t_n_clust,
+        const rowvec& t_seeds,
+        std::string warping_method,
+        std::string center_method,
+        std::string similarity_method,
+        std::string t_optim_method,
+        const rowvec& t_warping_opt,
+        const rowvec& t_center_opt,
+        double t_n_out,
+        double t_toll,
+        uword t_iter_max,
+        bool t_fence,
+        bool t_check_total_similarity,
+        bool t_show_iter,
+        bool comp_original_center,
+        urowvec par_opt
+    );
 
     /// Method the execute the algorithm.
     Rcpp::List execute();

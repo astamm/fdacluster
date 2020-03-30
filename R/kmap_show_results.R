@@ -5,8 +5,12 @@
 #'   additionally plotted. Default is \code{FALSE}.
 #' @param wr_fun Boolean. When \code{TRUE}, the warping functions are
 #'   additionally plotted. Default is \code{FALSE}.
+#' @param ... Additional parameters passed to the \code{\link[graphics]{plot}}
+#'   function.
 #'
 #' @return The input \code{kmap} object invisibly.
+#' @importFrom grDevices dev.new rainbow
+#' @importFrom graphics abline axis boxplot legend lines matplot par plot title
 #' @export
 #'
 #' @examples

@@ -268,7 +268,6 @@ double UnitQuaternionL2::GetDistance(const arma::rowvec& grid1,
     if (pair.Grid.is_empty())
         return std::numeric_limits<double>::max();
 
-    unsigned int nDim = pair.Values1.n_rows;
     unsigned int nPts = pair.Grid.size();
 
     if (nPts <= 1.0)

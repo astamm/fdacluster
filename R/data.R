@@ -10,7 +10,6 @@
 #'
 "simulated30"
 
-
 #' Data for Examples.
 #'
 #' A dataset containing 65 multidimensional curves from aneurisk project.

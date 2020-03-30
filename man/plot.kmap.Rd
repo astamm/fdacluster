@@ -14,6 +14,9 @@ additionally plotted. Default is \code{FALSE}.}
 
 \item{wr_fun}{Boolean. When \code{TRUE}, the warping functions are
 additionally plotted. Default is \code{FALSE}.}
+
+\item{...}{Additional parameters passed to the \code{\link[graphics]{plot}}
+function.}
 }
 \value{
 The input \code{kmap} object invisibly.

@@ -25,17 +25,39 @@
 //
 
 KmaModel::KmaModel(
-    const mat& t_x, const cube& t_y,
-    uword t_n_clust, std::string warping_method, std::string center_method,
-    std::string similarity_method, std::string t_optim_method,const rowvec& t_seeds,
-    const rowvec& t_warping_opt, const rowvec& t_center_opt, double t_n_out,
-    double t_toll, bool t_fence, uword t_iter_max,bool t_show_iter,
-    bool t_check_total_similarity, const bool comp_original_center,const  urowvec par_opt)
-    : x(t_x), y(t_y),  n_clust(t_n_clust),
-      optim_method(t_optim_method), seeds(t_seeds),
-      warping_opt(t_warping_opt), n_out(t_n_out),
-      toll(t_toll),fence(t_fence), iter_max(t_iter_max),show_iter(t_show_iter),
-      check_total_similarity(t_check_total_similarity),com_oc(comp_original_center),parallel_opt(par_opt)
+    const mat& t_x,
+    const cube& t_y,
+    uword t_n_clust,
+    const rowvec& t_seeds,
+    std::string warping_method,
+    std::string center_method,
+    std::string similarity_method,
+    std::string t_optim_method,
+    const rowvec& t_warping_opt,
+    const rowvec& t_center_opt,
+    double t_n_out,
+    double t_toll,
+    uword t_iter_max,
+    bool t_fence,
+    bool t_check_total_similarity,
+    bool t_show_iter,
+    bool comp_original_center,
+    const  urowvec par_opt
+  ) :
+  x(t_x),
+  y(t_y),
+  n_clust(t_n_clust),
+  seeds(t_seeds),
+  optim_method(t_optim_method),
+  warping_opt(t_warping_opt),
+  n_out(t_n_out),
+  toll(t_toll),
+  iter_max(t_iter_max),
+  fence(t_fence),
+  check_total_similarity(t_check_total_similarity),
+  show_iter(t_show_iter),
+  com_oc(comp_original_center),
+  parallel_opt(par_opt)
 {
     //
     // FActories registration
@@ -72,11 +94,11 @@ KmaModel::KmaModel(
     //  check-in
     //
 
-    if(t_show_iter == true)
-        {
-            Rcpp::Rcout<<"---------------------------------------------"<<endl;
-            Rcpp::Rcout<<"Check.in inputs:"<<endl;
-        }
+    if (t_show_iter)
+    {
+      Rcpp::Rcout<<"---------------------------------------------"<<endl;
+      Rcpp::Rcout<<"Check.in inputs:"<<endl;
+    }
 
     checkIn(x, y, warping_method, center_method, similarity_method,
             optim_method,warfac,disfac,cenfac,optfac,

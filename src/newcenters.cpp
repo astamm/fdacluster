@@ -53,14 +53,6 @@ void newCenters(const arma::mat& x_reg,
                     urowvec sel = find(labels == ict(i)).t();
                     CenterObject a = cen->GetCenter( x_reg.rows(sel), util::GetObservations(y, sel), dissim, x_out );
                     templates.tube(span(i),span::all) = a.Values.t();
-
-// #ifdef _OPENMP
-// #pragma omp critical
-// {
-//   if(show_iter==true)
-//     cout<<"The thread num. "<<omp_get_thread_num()<<" has computed template num. "<<i<<endl;
-// }
-// #endif
                 }
             break;
 
@@ -71,8 +63,8 @@ void newCenters(const arma::mat& x_reg,
                     urowvec sel = find(labels == ict(i)).t();
                     CenterObject a = cen->GetCenterParallel( x_reg.rows(sel), util::GetObservations(y, sel), dissim, x_out, par_opt(0));
                     templates.tube(span(i),span::all) = a.Values.t();
-                    if(show_iter==true)
-                        cout<<"Template num. "<<i<<" computed"<<endl;
+                    if (show_iter)
+                        Rcpp::Rcout << "Template num. " << i << " computed" << std::endl;
                 }
             break;
         }
