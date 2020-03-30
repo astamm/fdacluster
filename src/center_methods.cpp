@@ -33,8 +33,6 @@ CenterObject Medoid::GetCenter(const arma::mat& inputGrid,
 {
     CenterObject outputCenter;
 
-    unsigned int nOut = outputGrid.size();
-    unsigned int nDim = inputValues.n_slices;
     unsigned int nObs = inputValues.n_rows;
     unsigned int nPts = inputValues.n_cols;
 
@@ -330,8 +328,6 @@ CenterObject Medoid::GetCenterParallel(const arma::mat& inputGrid,
 {
     CenterObject outputCenter;
 
-    unsigned int nOut = outputGrid.size();
-    unsigned int nDim = inputValues.n_slices;
     unsigned int nObs = inputValues.n_rows;
     unsigned int nPts = inputValues.n_cols;
 
@@ -341,16 +337,7 @@ CenterObject Medoid::GetCenterParallel(const arma::mat& inputGrid,
     if (inputGrid.n_rows != nObs)
         Rcpp::stop("The number of rows in x should match the first dimension of y.");
 
-    double xMin = util::GetCommonLowerBound(inputGrid);
-    double xMax = util::GetCommonUpperBound(inputGrid);
-
-    if (xMin >= xMax)
-        Rcpp::stop("No common grid between curves in this group");
-
-    arma::rowvec xCommon = arma::linspace<arma::rowvec>(xMin, xMax, nOut);
-    arma::mat yOut, workMatrix1, workMatrix2;
     arma::field<arma::rowvec> fD(nObs);
-
     for (unsigned int i = 0;i < nObs;++i)
         fD(i).zeros(nObs);
 
@@ -363,13 +350,13 @@ CenterObject Medoid::GetCenterParallel(const arma::mat& inputGrid,
         unsigned int i = std::floor((1 + std::sqrt(8 * (double)k - 7)) / 2);
         unsigned int j = k - (i - 1) * i / 2 - 1;
 
-        workMatrix1 = util::GetObservation(inputValues, i);
-        workMatrix2 = util::GetObservation(inputValues, j);
+        fD(i)(j) = distanceObject->GetDistance(
+            inputGrid.row(i),
+            inputGrid.row(j),
+            util::GetObservation(inputValues, i),
+            util::GetObservation(inputValues, j)
+        );
 
-        workMatrix1 = util::approx(inputGrid.row(i), workMatrix1, xCommon);
-        workMatrix2 = util::approx(inputGrid.row(j), workMatrix2, xCommon);
-
-        fD(i)(j) = distanceObject->GetDistance(xCommon, xCommon, workMatrix1, workMatrix2);
         fD(j)(i) = fD(i)(j);
     }
 
@@ -380,7 +367,7 @@ CenterObject Medoid::GetCenterParallel(const arma::mat& inputGrid,
 
     unsigned int medoidIndex = arma::index_min(distVec);
 
-    yOut = util::GetObservation(inputValues, medoidIndex);
+    arma::mat yOut = util::GetObservation(inputValues, medoidIndex);
 
     outputCenter.Grid = outputGrid;
     outputCenter.Values = util::approx(inputGrid.row(medoidIndex), yOut, outputGrid);

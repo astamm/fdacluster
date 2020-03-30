@@ -244,7 +244,7 @@ Rcpp::List KmaModel::execute()
 
             timer.step( "fence/norm/update "+ std::to_string(iter) );
 
-            //compute new tempaltes
+            //compute new templates
             if(show_iter==true) cout<<"Compute new templates: "<<endl;
 
             templates_vec(iter-1) = templates;

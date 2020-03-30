@@ -16,8 +16,6 @@
 //   along with Fdakmapp.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <RcppArmadillo.h>
-//[[Rcpp::depends(RcppArmadillo)]]
-
 
 /// Main function
 /**

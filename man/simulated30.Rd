@@ -4,11 +4,13 @@
 \name{simulated30}
 \alias{simulated30}
 \title{Data for Examples.}
-\format{A list with abscissas x and values y:
+\format{
+A list with abscissas x and values y:
 \describe{
   \item{x}{matrix 30 x 200 }
   \item{y}{array 30 x 200 x 1}
-}}
+}
+}
 \usage{
 simulated30
 }

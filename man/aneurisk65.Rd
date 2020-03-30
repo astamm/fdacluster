@@ -4,11 +4,13 @@
 \name{aneurisk65}
 \alias{aneurisk65}
 \title{Data for Examples.}
-\format{A list with abscissas x and values y:
+\format{
+A list with abscissas x and values y:
 \describe{
   \item{x}{matrix 65 x 1380 }
   \item{y}{array 65 x1380 x 3}
-}}
+}
+}
 \usage{
 aneurisk65
 }

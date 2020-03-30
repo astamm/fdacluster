@@ -192,14 +192,13 @@ arma::mat util::approx(const arma::rowvec& inputGrid,
     arma::rowvec inputXCopy(inputGrid);
     arma::mat inputYCopy(inputValues);
 
-    for (unsigned int j = 0;j < nPts;++j)
+    for (int j = nPts - 1;j >= 0;--j)
     {
         if (arma::is_finite(inputGrid(j)) && arma::is_finite(inputValues.col(j)))
             continue;
 
         inputXCopy.shed_col(j);
         inputYCopy.shed_col(j);
-        --j;
     }
 
     nPts = inputXCopy.size();
