@@ -7,7 +7,7 @@
 using namespace Rcpp;
 
 // kmap
-Rcpp::List kmap(const arma::mat& x, const arma::cube& y, const arma::rowvec& seeds, const arma::uword n_clust, const std::string warping_method, const std::string center_method, const std::string similarity_method, const std::string optim_method, const arma::rowvec& warping_opt, const arma::rowvec& center_opt, const arma::rowvec& out_opt, const bool fence, const bool check_total_similarity, const bool show_iter, const bool comp_original_center, const arma::urowvec par_opt);
+Rcpp::List kmap(const arma::mat& x, const arma::cube& y, const arma::rowvec& seeds, const arma::uword n_clust, const std::string warping_method, const std::string center_method, const std::string similarity_method, const std::string optim_method, const arma::rowvec& warping_opt, const arma::rowvec& center_opt, const arma::rowvec& out_opt, const bool fence, const bool check_total_similarity, const bool show_iter, const bool comp_original_center, const arma::urowvec& par_opt);
 RcppExport SEXP _fdakmapp_kmap(SEXP xSEXP, SEXP ySEXP, SEXP seedsSEXP, SEXP n_clustSEXP, SEXP warping_methodSEXP, SEXP center_methodSEXP, SEXP similarity_methodSEXP, SEXP optim_methodSEXP, SEXP warping_optSEXP, SEXP center_optSEXP, SEXP out_optSEXP, SEXP fenceSEXP, SEXP check_total_similaritySEXP, SEXP show_iterSEXP, SEXP comp_original_centerSEXP, SEXP par_optSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -27,7 +27,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const bool >::type check_total_similarity(check_total_similaritySEXP);
     Rcpp::traits::input_parameter< const bool >::type show_iter(show_iterSEXP);
     Rcpp::traits::input_parameter< const bool >::type comp_original_center(comp_original_centerSEXP);
-    Rcpp::traits::input_parameter< const arma::urowvec >::type par_opt(par_optSEXP);
+    Rcpp::traits::input_parameter< const arma::urowvec& >::type par_opt(par_optSEXP);
     rcpp_result_gen = Rcpp::wrap(kmap(x, y, seeds, n_clust, warping_method, center_method, similarity_method, optim_method, warping_opt, center_opt, out_opt, fence, check_total_similarity, show_iter, comp_original_center, par_opt));
     return rcpp_result_gen;
 END_RCPP

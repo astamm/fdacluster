@@ -78,10 +78,10 @@ public:
         bool t_check_total_similarity,
         bool t_show_iter,
         bool comp_original_center,
-        urowvec par_opt
+        const urowvec& par_opt
     );
 
-    /// Method the execute the algorithm.
+    /// Method to execute the algorithm.
     Rcpp::List execute();
 
 };

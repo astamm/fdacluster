@@ -21,7 +21,7 @@
 #include "checkin.h"
 
 //
-// KmaModle constructor
+// KmaModel constructor
 //
 
 KmaModel::KmaModel(
@@ -42,7 +42,7 @@ KmaModel::KmaModel(
     bool t_check_total_similarity,
     bool t_show_iter,
     bool comp_original_center,
-    const  urowvec par_opt
+    const urowvec& par_opt
   ) :
   x(t_x),
   y(t_y),

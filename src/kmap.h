@@ -39,4 +39,4 @@ Rcpp::List kmap(const arma::mat& x,
                 const bool check_total_similarity,
                 const bool show_iter,
                 const bool comp_original_center,
-                const arma::urowvec par_opt);
+                const arma::urowvec &par_opt);
