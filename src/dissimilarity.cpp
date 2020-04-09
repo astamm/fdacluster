@@ -273,6 +273,8 @@ double UnitQuaternionL2::GetDistance(const arma::rowvec& grid1,
     if (nPts <= 1.0)
         return std::numeric_limits<double>::max();
 
+    arma::rowvec diffVector = pair.Grid.cols(1, nPts - 1) - pair.Grid.cols(0, nPts - 2);
+    double rangeValue = pair.Grid(nPts - 1) - pair.Grid(0);
     double squaredDistanceValue = 0.0;
 
     for (unsigned int j = 0;j < nPts - 1;++j)
@@ -283,10 +285,10 @@ double UnitQuaternionL2::GetDistance(const arma::rowvec& grid1,
             j + 1, j + 1
         );
 
-        squaredDistanceValue += tmpDistance * tmpDistance;
+        squaredDistanceValue += diffVector[j] * tmpDistance * tmpDistance;
     }
 
-    squaredDistanceValue /= (nPts - 1.0);
+    squaredDistanceValue /= rangeValue;
 
     return std::sqrt(squaredDistanceValue);
 }
