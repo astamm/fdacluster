@@ -163,8 +163,10 @@ CenterObject UnitQuaternionMean::GetCenter(const arma::mat& inputGrid,
     if (inputGrid.n_rows != nObs)
         Rcpp::stop("The number of rows in x should match the first dimension of y.");
 
-    double xMin = outputGrid.min();// util::GetCommonLowerBound(inputGrid);
-    double xMax = outputGrid.max();// util::GetCommonUpperBound(inputGrid);
+    double xMin = util::GetCommonLowerBound(inputGrid);
+    double xMax = util::GetCommonUpperBound(inputGrid);
+
+    arma::rowvec xCommon = arma::linspace<arma::rowvec>(xMin, xMax, nOut);
 
     if (xMin >= xMax)
         Rcpp::stop("No common grid between curves in this group");
@@ -191,9 +193,9 @@ CenterObject UnitQuaternionMean::GetCenter(const arma::mat& inputGrid,
     // compute dissimilarity between observations and center
     arma::rowvec dso(nObs);
     for (unsigned int i = 0;i < nObs;++i)
-        dso(i) = distanceObject->GetDistance(outputGrid, inputGrid.row(i), yOut, util::GetObservation(inputValues, i));
+        dso(i) = distanceObject->GetDistance(xCommon, inputGrid.row(i), yOut, util::GetObservation(inputValues, i));
 
-    outputCenter.Grid = outputGrid;
+    outputCenter.Grid = xCommon;
     outputCenter.Values = yOut;
     outputCenter.Distances = dso;
 
