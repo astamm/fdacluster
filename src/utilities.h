@@ -138,11 +138,12 @@ arma::cube GetObservations(const arma::cube& inputData, arma::urowvec& observati
  *  @param[inputValues] Original values.
  *  @param[outputGrid] Interpolating grid.
  *
- *  @return Inpterolated values.
+ *  @return Interpolated values.
  */
-arma::mat approx(const arma::rowvec& inputGrid,
-                 const arma::mat& inputValues,
-                 const arma::rowvec& outputGrid);
+Rcpp::List approx(const arma::rowvec& inputGrid,
+                  const arma::mat& inputValues,
+                  const unsigned int outSize,
+                  const std::string interpolationMethod = "Linear");
 
 /// List builder for build big list to return to R
 class ListBuilder
@@ -198,29 +199,30 @@ private:
 
 
 /// Factory class
-template<typename D>
+template <typename ObjectType>
 class SharedFactory
 {
 public:
-    typedef std::unordered_map<std::string, std::function< std::shared_ptr<D>() > > registry_map;
-
-    registry_map map;
+    using RegistryMap = std::unordered_map<std::string, std::function< std::shared_ptr<ObjectType>() > >;
 
     // use this to instantiate the proper Derived class
-    std::shared_ptr<D> instantiate(const std::string& name)
+    std::shared_ptr<ObjectType> Instantiate(const std::string &name)
     {
-        auto it = map.find(name);
-        return it == map.end() ? nullptr : (it->second)();
+        auto it = m_Map.find(name);
+        return it == m_Map.end() ? nullptr : (it->second)();
     }
 
-    template<typename T>
-    void FactoryRegister(std::string name)
+    template <typename T>
+    void Register(std::string name)
     {
-        map[name] = []()
+        m_Map[name] = []()
         {
             return std::make_shared<T>();
         };
     }
+
+private:
+    RegistryMap m_Map;
 };
 
 }

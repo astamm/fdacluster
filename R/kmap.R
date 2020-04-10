@@ -109,14 +109,14 @@ kmap <- function(x, y,
                  par_opt = c(1, 0))
 {
 
-  if(is.null(y))
-    stop("Provvide a valid function")
+  if (is.null(y))
+    stop("Provide a valid function")
 
-  if(length(dim(y))==2){
-    y<-array(y,c(dim(y)[1],dim(y)[2],1))
+  if (length(dim(y)) == 2) {
+    y <- array(y, c(dim(y)[1], dim(y)[2], 1))
   }
 
-  if(is.vector(x))
+  if (is.vector(x))
    x <- t(replicate(dim(y)[1],x,1))
 
   if(is.null(seeds)){

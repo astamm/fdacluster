@@ -25,65 +25,105 @@
 #include "center_methods.h"
 #include "optimizer.h"
 
-
-using namespace arma;
-
 /// Main class.
 /** This class handles loading of the problem and execution of the algorithm.
  */
 class KmaModel
 {
-
-    const mat x;
-    const cube y;
-    const uword n_clust;
-    const rowvec seeds;
-
-    std::shared_ptr<Dissimilarity> dissim;
-    std::shared_ptr<CenterMethod> cen;
-    std::shared_ptr<WarpingFunction> warping;
-    std::shared_ptr<OptimizerMethod> optimizer;
-
-    const std::string optim_method;
-    const rowvec warping_opt;
-    const uword n_out;
-    const double toll;
-    const uword iter_max;
-    bool fence;
-    bool check_total_similarity;
-    bool show_iter;
-    bool com_oc;
-    uword n_obs;
-    uword n_camp;
-    uword n_dim;
-    const urowvec parallel_opt;
-
 public:
-    /// Constructor that load the problem.
-    KmaModel(
-        const mat& t_x,
-        const cube& t_y,
-        uword t_n_clust,
-        const rowvec& t_seeds,
-        std::string warping_method,
-        std::string center_method,
-        std::string similarity_method,
-        std::string t_optim_method,
-        const rowvec& t_warping_opt,
-        const rowvec& t_center_opt,
-        double t_n_out,
-        double t_toll,
-        uword t_iter_max,
-        bool t_fence,
-        bool t_check_total_similarity,
-        bool t_show_iter,
-        bool comp_original_center,
-        const urowvec& par_opt
+    KmaModel()
+    {
+        m_InputGrids.reset();
+        m_InputValues.reset();
+        m_SeedVector.reset();
+
+        m_NumberOfClusters = 1;
+        m_MaximumNumberOfIterations = 100;
+        m_NumberOfObservations = 1;
+        m_NumberOfDimensions = 1;
+        m_NumberOfPoints = 1;
+        m_NumberOfThreads = 1;
+        m_ParallelMethod = 0;
+
+        m_ShiftUpperBound = 0.15;
+        m_DilationUpperBound = 0.15;
+        m_Tolerance = 0.001;
+
+        m_UseFence = false;
+        m_CheckTotalSimilarity = true;
+        m_UseVerbose = true;
+        m_ComputeOriginalCenters = false;
+
+        std::string m_InterpolationMethod = "linear";
+        std::string m_WarpingMethod = "affine";
+        std::string m_CenterMethod = "mean";
+        std::string m_DissimilarityMethod = "pearson";
+        std::string m_OptimizerMethod = "bobyqa";
+    }
+
+    void SetInputData(const arma::mat &grids, const arma::cube &values);
+    void SetWarpingMethod(const std::string &val);
+    void SetCenterMethod(const std::string &method, const double &span);
+    void SetDissimilarityMethod(const std::string &val);
+    void SetOptimizerMethod(const std::string &val);
+
+    void SetSeedVector(const arma::urowvec &val) {m_SeedVector = val;}
+
+    void SetNumberOfClusters(const unsigned int &val) {m_NumberOfClusters = val;}
+    void SetMaximumNumberOfIterations(const unsigned int &val) {m_MaximumNumberOfIterations = val;}
+    void SetNumberOfThreads(const unsigned int &val) {m_NumberOfThreads = val;}
+    void SetParallelMethod(const unsigned int &val) {m_ParallelMethod = val;}
+
+    void SetShiftUpperBound(const double &val) {m_ShiftUpperBound = val;}
+    void SetDilationUpperBound(const double &val) {m_DilationUpperBound = val;}
+    void SetTolerance(const double &val) {m_Tolerance = val;}
+
+    void SetUseFence(const bool &val) {m_UseFence = val;}
+    void SetCheckTotalSimilarity(const bool &val) {m_CheckTotalSimilarity = val;}
+    void SetUseVerbose(const bool &val) {m_UseVerbose = val;}
+    void SetComputeOriginalCenters(const bool &val) {m_ComputeOriginalCenters = val;}
+
+    void SetInterpolationMethod(const std::string &val) {m_InterpolationMethod = val;}
+
+    // Method to get a description of the model.
+    void Print(
+            const std::string &warpingMethod,
+            const std::string &centerMethod,
+            const std::string &dissimilarityMethod,
+            const std::string &optimizerMethod
     );
 
     /// Method to execute the algorithm.
-    Rcpp::List execute();
+    Rcpp::List FitModel();
 
+private:
+    arma::mat m_InputGrids;
+    arma::cube m_InputValues;
+    arma::urowvec m_SeedVector;
+
+    unsigned int m_NumberOfClusters;
+    unsigned int m_MaximumNumberOfIterations;
+    unsigned int m_NumberOfObservations;
+    unsigned int m_NumberOfDimensions;
+    unsigned int m_NumberOfPoints;
+    unsigned int m_NumberOfThreads;
+    unsigned int m_ParallelMethod;
+
+    double m_ShiftUpperBound;
+    double m_DilationUpperBound;
+    double m_Tolerance;
+
+    bool m_UseFence;
+    bool m_CheckTotalSimilarity;
+    bool m_UseVerbose;
+    bool m_ComputeOriginalCenters;
+
+    std::string m_InterpolationMethod;
+
+    std::shared_ptr<WarpingFunction> m_WarpingPointer;
+    std::shared_ptr<Dissimilarity> m_DissimilarityPointer;
+    std::shared_ptr<CenterMethod> m_CenterPointer;
+    std::shared_ptr<OptimizerMethod> m_OptimizerPointer;
 };
 
 #endif

@@ -21,45 +21,56 @@
 #include "warping.h"
 #include "utilities.h"
 #include "kma_model.h"
-#include "checkin.h"
 
-Rcpp::List kmap(const arma::mat& x,
-                const arma::cube& y,
-                const arma::rowvec& seeds,
-                const arma::uword n_clust,
-                const std::string warping_method,
-                const std::string center_method,
-                const std::string similarity_method,
-                const std::string optim_method,
-                const arma::rowvec& warping_opt,
-                const arma::rowvec& center_opt,
-                const arma::rowvec& out_opt,
-                const bool fence,
-                const bool check_total_similarity,
-                const bool show_iter,
-                const bool comp_original_center,
-                const arma::urowvec& par_opt)
+Rcpp::List kmap(const arma::mat &x,
+                const arma::cube &y,
+                const arma::urowvec &seeds,
+                const unsigned int &n_clust,
+                const unsigned int &maximum_number_of_iterations,
+                const unsigned int &number_of_threads,
+                const unsigned int &parallel_method,
+                const double &shift_upper_bound,
+                const double &dilation_upper_bound,
+                const double &tolerance,
+                const double &lowess_span_value,
+                const bool &use_fence,
+                const bool &check_total_similarity,
+                const bool &use_verbose,
+                const bool &compute_original_centers,
+                const std::string &interpolation_method,
+                const std::string &warping_method,
+                const std::string &center_method,
+                const std::string &dissimilarity_method,
+                const std::string &optimizer_method)
 {
-    KmaModel model(
-        x,
-        y,
-        n_clust,
-        seeds,
-        warping_method,
-        center_method,
-        similarity_method,
-        optim_method,
-        warping_opt,
-        center_opt,
-        out_opt(0),
-        out_opt(1),
-        out_opt(2),
-        fence,
-        check_total_similarity,
-        show_iter,
-        comp_original_center,
-        par_opt
-    );
+    KmaModel model;
 
-    return model.execute();
+    model.SetInputData(x, y);
+
+    model.SetSeedVector(seeds);
+
+    model.SetNumberOfClusters(n_clust);
+    model.SetMaximumNumberOfIterations(maximum_number_of_iterations);
+    model.SetNumberOfThreads(number_of_threads);
+    model.SetParallelMethod(parallel_method);
+
+    model.SetShiftUpperBound(shift_upper_bound);
+    model.SetDilationUpperBound(dilation_upper_bound);
+    model.SetTolerance(tolerance);
+
+    model.SetUseFence(use_fence);
+    model.SetCheckTotalSimilarity(check_total_similarity);
+    model.SetUseVerbose(use_verbose);
+    model.SetComputeOriginalCenters(compute_original_centers);
+
+    model.SetInterpolationMethod(interpolation_method);
+    model.SetWarpingMethod(warping_method);
+    model.SetCenterMethod(center_method, lowess_span_value);
+    model.SetDissimilarityMethod(dissimilarity_method);
+    model.SetOptimizerMethod(optimizer_method);
+
+    if (use_verbose)
+        model.Print(warping_method, center_method, dissimilarity_method, optimizer_method);
+
+    return model.FitModel();
 }

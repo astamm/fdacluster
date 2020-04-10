@@ -17,6 +17,8 @@
 
 #include "utilities.h"
 
+#include <squad.h>
+
 //
 // tableC
 //
@@ -155,7 +157,7 @@ arma::mat util::GetObservation(const arma::cube& inputData, unsigned int observa
         return outputMatrix.t();
 
     // Otherwise of size NPTS x 1
-    // TODO: weird, better off always outputing NPTS x NDIM
+    // TODO: weird, better off always outputting NPTS x NDIM
     return outputMatrix;
 }
 
@@ -175,16 +177,17 @@ arma::cube util::GetObservations(const arma::cube& inputData, arma::urowvec& obs
 //
 // approx
 //
-arma::mat util::approx(const arma::rowvec& inputGrid,
+Rcpp::List util::approx(const arma::rowvec& inputGrid,
                        const arma::mat& inputValues,
-                       const arma::rowvec& outputGrid)
+                       const unsigned int outSize,
+                       const std::string interpolationMethod)
 {
-    // inputY is assumed to be of size NDIM x NPTS
-    // inputX is assumed to be of size NPTS
+    // inputGrid is assumed to be of size NDIM x NPTS
+    // inputValues is assumed to be of size NPTS
     // outputX is assumed to be of size NOUT
-    // outputY will be of size NDIM x NOUT
-    unsigned int nDim = inputValues.n_rows;
+    // outputY will be of size NDIM x NPTS
     unsigned int nPts = inputValues.n_cols;
+    unsigned int nDim = inputValues.n_rows;
 
     if (inputGrid.size() != nPts)
         Rcpp::stop("The length of input arc length and the number of rows in the input matrix should be equal.");
@@ -206,44 +209,67 @@ arma::mat util::approx(const arma::rowvec& inputGrid,
     if (nPts <= 1)
         Rcpp::stop("All entries are NA except maybe one. Interpolation is not possible. Aborting...");
 
-    unsigned int nOut = outputGrid.size();
+    double gridMin = inputXCopy.min();
+    double gridMax = inputXCopy.max();
+    arma::rowvec outputGrid = arma::linspace<arma::rowvec>(gridMin, gridMax, outSize);
 
-    arma::mat outputValues(nDim, nOut);
+    arma::mat outputValues(outSize, nDim);
     outputValues.fill(arma::datum::nan);
 
-    if (outputGrid(nOut - 1) - outputGrid(0) <= 0)
+    if (outputGrid(outSize - 1) - outputGrid(0) <= 0)
     {
-        Rcpp::Rcout << "Output arc length is not in increasing order: " << outputGrid(nOut - 1) - outputGrid(0) << std::endl;
-        return outputValues;
+        Rcpp::Rcout << "Output arc length is not in increasing order: " << outputGrid(outSize - 1) - outputGrid(0) << std::endl;
+        return Rcpp::List::create(
+            Rcpp::Named("grid") = outputGrid,
+            Rcpp::Named("values") = outputValues
+        );
     }
 
-    unsigned int i = 0;
-
-    while (i < nOut && outputGrid(i) <= inputXCopy(0))
+    if (interpolationMethod == "Linear")
     {
-        if (std::abs(outputGrid(i) - inputXCopy(0)) < arma::datum::eps)
-            outputValues.col(i) = inputYCopy.col(0);
-        ++i;
-    }
+        unsigned int i = 0;
 
-    if (i == nOut)
-        return outputValues;
-
-    arma::vec oldY, newY;
-
-    for (unsigned int j = 1;j < nPts;++j)
-    {
-        double oldX = inputXCopy(j - 1);
-        oldY = inputYCopy.col(j - 1);
-        double newX = inputXCopy(j);
-        newY = inputYCopy.col(j);
-
-        while (i < nOut && outputGrid(i) <= newX)
+        while (i < outSize && outputGrid(i) <= inputXCopy(0))
         {
-            outputValues.col(i) = oldY + (newY - oldY) * (outputGrid(i) - oldX) / (newX - oldX);
+            if (std::abs(outputGrid(i) - inputXCopy(0)) < arma::datum::eps)
+                outputValues.col(i) = inputYCopy.col(0);
             ++i;
         }
-    }
 
-    return outputValues;
+        if (i == outSize)
+            return Rcpp::List::create(
+                Rcpp::Named("grid") = outputGrid,
+                Rcpp::Named("values") = outputValues
+            );
+
+        arma::vec oldY, newY;
+
+        for (unsigned int j = 1;j < nPts;++j)
+        {
+            double oldX = inputXCopy(j - 1);
+            oldY = inputYCopy.col(j - 1);
+            double newX = inputXCopy(j);
+            newY = inputYCopy.col(j);
+
+            while (i < outSize && outputGrid(i) <= newX)
+            {
+                outputValues.col(i) = oldY + (newY - oldY) * (outputGrid(i) - oldX) / (newX - oldX);
+                ++i;
+            }
+        }
+    }
+    else if (interpolationMethod == "UnitQuaternion")
+    {
+        Rcpp::NumericVector workingGrid = Rcpp::wrap(inputXCopy);
+        Rcpp::NumericMatrix workingValues = Rcpp::wrap(inputYCopy);
+        workingValues = squad::RegularizeGrid(workingGrid, workingValues, gridMin, gridMax, outSize);
+        inputYCopy = Rcpp::as<arma::mat>(workingValues);
+    }
+    else
+        Rcpp::stop("Unsupported interpolation method. Currently supported ones are linear or unit quaternion.");
+
+    return Rcpp::List::create(
+        Rcpp::Named("grid") = outputGrid,
+        Rcpp::Named("values") = outputValues
+    );
 }

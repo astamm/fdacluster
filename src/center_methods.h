@@ -76,10 +76,9 @@ public:
     void SetDeltaValue(const double num) {m_DeltaValue = num;};
     double GetDeltaValue() {return m_DeltaValue;}
 
-protected:
     CenterMethod()
     {
-        m_SpanValue = 0.0;
+        m_SpanValue = 0.2;
         m_DeltaValue = 0.0;
     }
 
