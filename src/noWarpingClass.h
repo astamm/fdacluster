@@ -1,5 +1,5 @@
-#ifndef AFFINEWARPINGCLASS_H
-#define AFFINEWARPINGCLASS_H
+#ifndef NOWARPINGCLASS_H
+#define NOWARPINGCLASS_H
 
 #include <RcppArmadillo.h>
 #include <memory>
@@ -8,15 +8,14 @@
 #include "dissimilarity.h"
 #include "utilities.h"
 
-class AffineWarpingFunction : public BaseWarpingFunction
+class NoWarpingFunction : public BaseWarpingFunction
 {
   /**
-   * An affine transformation of the abscissa x given
-   *  dilation and shift (d,s) is: d * x + s .
+   * The applied transformation is the identity:
    */
 
 public:
-  unsigned int GetNumberOfParameters() {return 2;}
+  unsigned int GetNumberOfParameters() {return 0;}
 
   arma::mat ApplyWarping(const arma::mat &x, const arma::mat &par);
   void SetParameterBounds(const arma::rowvec &war_opt, const arma::mat &x);
@@ -39,4 +38,4 @@ public:
   );
 };
 
-#endif /* AFFINEWARPINGCLASS_H */
+#endif /* NOWARPINGCLASS_H */
