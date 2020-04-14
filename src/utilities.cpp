@@ -100,7 +100,7 @@ double util::GetCommonLowerBound(const arma::mat& inputGrids)
             ++posj;
         }
 
-        if (tmpVal < resVal || posi == 0)
+        if (tmpVal > resVal || posi == 0)
             resVal = tmpVal;
 
         ++posi;
@@ -137,7 +137,7 @@ double util::GetCommonUpperBound(const arma::mat& inputGrids)
             ++posj;
         }
 
-        if (tmpVal > resVal || posi == 0)
+        if (tmpVal < resVal || posi == 0)
             resVal = tmpVal;
 
         ++posi;
