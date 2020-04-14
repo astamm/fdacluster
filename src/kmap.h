@@ -35,7 +35,6 @@ Rcpp::List kmap(
     const double &shift_upper_bound,
     const double &dilation_upper_bound,
     const double &tolerance,
-    const double &lowess_span_value,
     const bool &use_fence,
     const bool &check_total_similarity,
     const bool &use_verbose,

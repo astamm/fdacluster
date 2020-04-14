@@ -6,7 +6,7 @@
 
 CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
                                          const arma::cube& inputValues,
-                                         const std::shared_ptr<Dissimilarity>& dissimilarityPointer)
+                                         const std::shared_ptr<BaseDissimilarityFunction>& dissimilarityPointer)
 {
     CenterType outputCenter;
 
@@ -56,7 +56,7 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
 
 CenterType MedoidCenterMethod::GetCenterParallel(const arma::mat& inputGrid,
                                                  const arma::cube& inputValues,
-                                                 const std::shared_ptr<Dissimilarity>& dissimilarityPointer,
+                                                 const std::shared_ptr<BaseDissimilarityFunction>& dissimilarityPointer,
                                                  unsigned int nbThreads)
 {
     CenterType outputCenter;

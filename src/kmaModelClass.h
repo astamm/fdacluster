@@ -3,7 +3,7 @@
 
 #include <RcppArmadillo.h>
 
-#include "dissimilarity.h"
+#include "baseDissimilarityClass.h"
 #include "baseWarpingClass.h"
 #include "baseCenterClass.h"
 #include "baseOptimizerClass.h"
@@ -46,7 +46,7 @@ public:
 
     void SetInputData(const arma::mat &grids, const arma::cube &values);
     void SetWarpingMethod(const std::string &val);
-    void SetCenterMethod(const std::string &method, const double &span);
+    void SetCenterMethod(const std::string &val);
     void SetDissimilarityMethod(const std::string &val);
     void SetOptimizerMethod(const std::string &val);
 
@@ -104,7 +104,7 @@ private:
     std::string m_InterpolationMethod;
 
     std::shared_ptr<BaseWarpingFunction> m_WarpingPointer;
-    std::shared_ptr<Dissimilarity> m_DissimilarityPointer;
+    std::shared_ptr<BaseDissimilarityFunction> m_DissimilarityPointer;
     std::shared_ptr<BaseCenterMethod> m_CenterPointer;
     std::shared_ptr<BaseOptimizerFunction> m_OptimizerPointer;
 };

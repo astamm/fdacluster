@@ -6,6 +6,10 @@
 #include "affineWarpingClass.h"
 #include "medoidCenterClass.h"
 #include "meanCenterClass.h"
+#include "pearsonDissimilarityClass.h"
+#include "l2DissimilarityClass.h"
+
+#include "utilities.h"
 #include "fence.h"
 #include "newcenters.h"
 
@@ -42,30 +46,25 @@ void KmaModel::SetWarpingMethod(const std::string &val)
     Rcpp::stop("The warping method is not available.");
 }
 
-void KmaModel::SetCenterMethod(const std::string &method, const double &span)
+void KmaModel::SetCenterMethod(const std::string &val)
 {
   // Center factory
   util::SharedFactory<BaseCenterMethod> centerFactory;
   centerFactory.Register<MedoidCenterMethod>("medoid");
   centerFactory.Register<MeanCenterMethod>("mean");
 
-  m_CenterPointer = centerFactory.Instantiate(method);
+  m_CenterPointer = centerFactory.Instantiate(val);
 
   if (!m_CenterPointer)
     Rcpp::stop("The center method is not available.");
-
-  m_CenterPointer->SetSpanValue(span);
 }
 
 void KmaModel::SetDissimilarityMethod(const std::string &val)
 {
   // Dissimilarity factory
-  util::SharedFactory<Dissimilarity> dissimilarityFactory;
-  dissimilarityFactory.Register<Pearson>("pearson");
-  dissimilarityFactory.Register<L2>("l2");
-  dissimilarityFactory.Register<L2w>("l2w");
-  dissimilarityFactory.Register<L2first>("l2first");
-  dissimilarityFactory.Register<UnitQuaternionL2>("unit_quaternion_l2");
+  util::SharedFactory<BaseDissimilarityFunction> dissimilarityFactory;
+  dissimilarityFactory.Register<PearsonDissimilarityFunction>("pearson");
+  dissimilarityFactory.Register<L2DissimilarityFunction>("l2");
 
   m_DissimilarityPointer = dissimilarityFactory.Instantiate(val);
 
@@ -165,7 +164,7 @@ Rcpp::List KmaModel::FitModel()
   //compute center_origin (to be fixed with new centers)
   //
 
-  CenterObject original_center;
+  CenterType original_center;
 
   if (m_ComputeOriginalCenters)
   {
@@ -425,10 +424,10 @@ Rcpp::List KmaModel::FitModel()
   for(unsigned int k = 0;k < iter;++k)
     par_vec(k) = parameters_vec.slice(k);
 
-  Rcpp::NumericVector out1 = Rcpp::wrap(original_center.Grid);
+  Rcpp::NumericVector out1 = Rcpp::wrap(original_center.centerGrid);
   out1.attr("dim") = R_NilValue;
 
-  Rcpp::NumericVector out2 = Rcpp::wrap(original_center.Distances);
+  Rcpp::NumericVector out2 = Rcpp::wrap(original_center.distancesToCenter);
   out2.attr("dim") = R_NilValue;
 
   Rcpp::NumericVector out3 = Rcpp::wrap(x_out);
@@ -449,7 +448,7 @@ Rcpp::List KmaModel::FitModel()
     .add("iterations", iter)
     .add("n.clust", m_NumberOfClusters)
     .add("x.center.orig",out1)
-    .add("y.center.orig",original_center.Values)
+    .add("y.center.orig",original_center.centerValues)
     .add("similarity.origin",out2)
     .add("x.final", x_reg)
     .add("n.clust.final", ict.size())

@@ -4,7 +4,7 @@
 
 CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
                                        const arma::cube& inputValues,
-                                       const std::shared_ptr<Dissimilarity>& dissimilarityPointer)
+                                       const std::shared_ptr<BaseDissimilarityFunction>& dissimilarityPointer)
 {
     CenterType outputCenter;
 
@@ -72,7 +72,7 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
         }
     }
     else
-        Rcpp::Rcout << "Operations for the requested space are not yet implemented." << std::endl;
+        Rcpp::Rcout << "Mean operations for the requested space are not yet implemented." << std::endl;
 
     // compute dissimilarity between observations and center
     arma::rowvec distancesToCenter(numberOfObservations);
