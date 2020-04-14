@@ -1,12 +1,7 @@
 #ifndef DILATIONWARPINGCLASS_H
 #define DILATIONWARPINGCLASS_H
 
-#include <RcppArmadillo.h>
-#include <memory>
-
 #include "baseWarpingClass.h"
-#include "dissimilarity.h"
-#include "utilities.h"
 
 class DilationWarpingFunction : public BaseWarpingFunction
 {

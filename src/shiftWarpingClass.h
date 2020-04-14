@@ -1,12 +1,7 @@
 #ifndef SHIFTWARPINGCLASS_H
 #define SHIFTWARPINGCLASS_H
 
-#include <RcppArmadillo.h>
-#include <memory>
-
 #include "baseWarpingClass.h"
-#include "dissimilarity.h"
-#include "utilities.h"
 
 class ShiftWarpingFunction : public BaseWarpingFunction
 {
