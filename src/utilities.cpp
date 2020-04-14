@@ -179,7 +179,6 @@ arma::cube util::GetObservations(const arma::cube& inputData, arma::urowvec& obs
 //
 Rcpp::List util::approx(const arma::rowvec& inputGrid,
                        const arma::mat& inputValues,
-                       const unsigned int outSize,
                        const std::string interpolationMethod)
 {
     // inputGrid is assumed to be of size NDIM x NPTS
@@ -211,14 +210,14 @@ Rcpp::List util::approx(const arma::rowvec& inputGrid,
 
     double gridMin = inputXCopy.min();
     double gridMax = inputXCopy.max();
-    arma::rowvec outputGrid = arma::linspace<arma::rowvec>(gridMin, gridMax, outSize);
+    arma::rowvec outputGrid = arma::linspace<arma::rowvec>(gridMin, gridMax, nPts);
 
-    arma::mat outputValues(outSize, nDim);
+    arma::mat outputValues(nPts, nDim);
     outputValues.fill(arma::datum::nan);
 
-    if (outputGrid(outSize - 1) - outputGrid(0) <= 0)
+    if (outputGrid(nPts - 1) - outputGrid(0) <= 0)
     {
-        Rcpp::Rcout << "Output arc length is not in increasing order: " << outputGrid(outSize - 1) - outputGrid(0) << std::endl;
+        Rcpp::Rcout << "Output arc length is not in increasing order: " << outputGrid(nPts - 1) - outputGrid(0) << std::endl;
         return Rcpp::List::create(
             Rcpp::Named("grid") = outputGrid,
             Rcpp::Named("values") = outputValues
@@ -229,14 +228,14 @@ Rcpp::List util::approx(const arma::rowvec& inputGrid,
     {
         unsigned int i = 0;
 
-        while (i < outSize && outputGrid(i) <= inputXCopy(0))
+        while (i < nPts && outputGrid(i) <= inputXCopy(0))
         {
             if (std::abs(outputGrid(i) - inputXCopy(0)) < arma::datum::eps)
                 outputValues.col(i) = inputYCopy.col(0);
             ++i;
         }
 
-        if (i == outSize)
+        if (i == nPts)
             return Rcpp::List::create(
                 Rcpp::Named("grid") = outputGrid,
                 Rcpp::Named("values") = outputValues
@@ -251,7 +250,7 @@ Rcpp::List util::approx(const arma::rowvec& inputGrid,
             double newX = inputXCopy(j);
             newY = inputYCopy.col(j);
 
-            while (i < outSize && outputGrid(i) <= newX)
+            while (i < nPts && outputGrid(i) <= newX)
             {
                 outputValues.col(i) = oldY + (newY - oldY) * (outputGrid(i) - oldX) / (newX - oldX);
                 ++i;
@@ -262,7 +261,7 @@ Rcpp::List util::approx(const arma::rowvec& inputGrid,
     {
         Rcpp::NumericVector workingGrid = Rcpp::wrap(inputXCopy);
         Rcpp::NumericMatrix workingValues = Rcpp::wrap(inputYCopy);
-        workingValues = squad::RegularizeGrid(workingGrid, workingValues, gridMin, gridMax, outSize);
+        workingValues = squad::RegularizeGrid(workingGrid, workingValues, gridMin, gridMax, nPts);
         inputYCopy = Rcpp::as<arma::mat>(workingValues);
     }
     else
