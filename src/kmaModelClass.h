@@ -1,29 +1,12 @@
-// Copyright (C) 2017 Alessandro Zito (zito.ales@gmail.com)
-//
-// This file is part of Fdakmapp.
-//
-// Fdakmapp is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Fdakmapp is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-//   You should have received a copy of the GNU General Public License
-//   along with Fdakmapp.  If not, see <http://www.gnu.org/licenses/>.
-
-#ifndef _KMA_MODEL_HPP
-#define _KMA_MODEL_HPP
+#ifndef KMAMODELCLASS_H
+#define KMAMODELCLASS_H
 
 #include <RcppArmadillo.h>
 
 #include "dissimilarity.h"
-#include "warping.h"
+#include "baseWarpingClass.h"
 #include "center_methods.h"
-#include "optimizer.h"
+#include "baseOptimizerClass.h"
 
 /// Main class.
 /** This class handles loading of the problem and execution of the algorithm.
@@ -120,10 +103,10 @@ private:
 
     std::string m_InterpolationMethod;
 
-    std::shared_ptr<WarpingFunction> m_WarpingPointer;
+    std::shared_ptr<BaseWarpingFunction> m_WarpingPointer;
     std::shared_ptr<Dissimilarity> m_DissimilarityPointer;
     std::shared_ptr<CenterMethod> m_CenterPointer;
-    std::shared_ptr<OptimizerMethod> m_OptimizerPointer;
+    std::shared_ptr<BaseOptimizerFunction> m_OptimizerPointer;
 };
 
-#endif
+#endif /* KMAMODELCLASS_H */

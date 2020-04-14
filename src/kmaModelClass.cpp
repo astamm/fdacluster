@@ -1,28 +1,12 @@
-// Copyright (C) 2017 Alessandro Zito (zito.ales@gmail.com)
-//
-// This file is part of Fdakmapp.
-//
-// Fdakmapp is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Fdakmapp is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-//   You should have received a copy of the GNU General Public License
-//   along with Fdakmapp.  If not, see <http://www.gnu.org/licenses/>.
-
-#include "kma_model.h"
-
-#include "checkin.h"
+#include "kmaModelClass.h"
+#include "bobyqaOptimizerClass.h"
+#include "noWarpingClass.h"
+#include "shiftWarpingClass.h"
+#include "dilationWarpingClass.h"
+#include "affineWarpingClass.h"
 #include "fence.h"
 #include "newcenters.h"
-#include "optimizer.h"
 
-#include <RcppArmadillo.h>
 #include <Rcpp/Benchmark/Timer.h>
 
 #ifdef _OPENMP
@@ -44,11 +28,11 @@ void KmaModel::SetInputData(const arma::mat &grids, const arma::cube &values)
 void KmaModel::SetWarpingMethod(const std::string &val)
 {
   // Warping factory
-  util::SharedFactory<WarpingFunction> warpingFactory;
-  warpingFactory.Register<NoAlignmentFunction>("none");
-  warpingFactory.Register<ShiftFunction>("shift");
-  warpingFactory.Register<DilationFunction>("dilation");
-  warpingFactory.Register<AffineFunction>("affine");
+  util::SharedFactory<BaseWarpingFunction> warpingFactory;
+  warpingFactory.Register<NoWarpingFunction>("none");
+  warpingFactory.Register<ShiftWarpingFunction>("shift");
+  warpingFactory.Register<DilationWarpingFunction>("dilation");
+  warpingFactory.Register<AffineWarpingFunction>("affine");
 
   m_WarpingPointer = warpingFactory.Instantiate(val);
 
@@ -93,8 +77,8 @@ void KmaModel::SetDissimilarityMethod(const std::string &val)
 void KmaModel::SetOptimizerMethod(const std::string &val)
 {
   // Optimizer factory
-  util::SharedFactory<OptimizerMethod> optimizerFactory;
-  optimizerFactory.Register<Bobyqa>("bobyqa");
+  util::SharedFactory<BaseOptimizerFunction> optimizerFactory;
+  optimizerFactory.Register<BobyqaOptimizerFunction>("bobyqa");
 
   m_OptimizerPointer = optimizerFactory.Instantiate(val);
 
@@ -208,8 +192,8 @@ Rcpp::List KmaModel::FitModel()
   index_old.fill(10000);
 
   // inizializzo vettore per salare parametri ad ogni iterazione
-  unsigned int np = m_WarpingPointer->n_pars();
-  arma::cube parameters_vec(np, m_NumberOfObservations, m_MaximumNumberOfIterations);
+  unsigned int numberOfParameters = m_WarpingPointer->GetNumberOfParameters();
+  arma::cube parameters_vec(numberOfParameters, m_NumberOfObservations, m_MaximumNumberOfIterations);
   arma::mat x_reg = m_InputGrids;
 
   // flag for total similarity check
@@ -243,12 +227,12 @@ Rcpp::List KmaModel::FitModel()
 
     index_old = index;
     labels_old = labels;
-    mat parameters(np, m_NumberOfObservations);
+    arma::mat parameters(numberOfParameters, m_NumberOfObservations);
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Set bound: ";
 
-    m_WarpingPointer->set_bounds(warping_opt, x_reg);
+    m_WarpingPointer->SetParameterBounds(warping_opt, x_reg);
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Done" << std::endl;
@@ -261,38 +245,47 @@ Rcpp::List KmaModel::FitModel()
 #pragma omp parallel for num_threads(m_NumberOfThreads)
 #endif
 
-    for (unsigned int obs = 0;obs < m_NumberOfObservations;++obs)
+    // inizializzo container warp_temp
+    unsigned int numberOfTemplates = templates.n_rows;
+    arma::rowvec index_temp(numberOfTemplates);
+    arma::mat parameters_temp(numberOfParameters, numberOfTemplates);
+    arma::colvec arg(numberOfParameters);
+    arma::mat y_reg;
+    arma::mat t_in;
+    WarpingSet warpingSet;
+
+    for (unsigned int i = 0;i < m_NumberOfObservations;++i)
     {
-      // inizializzo container warp_temp
-      uword nt = templates.n_rows;
-      rowvec index_temp(nt);
-      mat parameters_temp(np,nt);
-      colvec arg(np);
-      mat y_reg = util::approx( x_reg.row(obs), util::GetObservation(m_InputValues, obs), x_out);
+      y_reg = util::approx(
+        x_reg.row(i),
+        util::GetObservation(m_InputValues, i),
+        m_InterpolationMethod
+      );
 
       // Compute warping parameters for each template
-      for (unsigned int t = 0;t < nt;++t)
+      for (unsigned int j = 0;j < numberOfTemplates;++j)
       {
-        mat t_in = templates(span(t),span::all,span::all);
-        if (m_NumberOfDimensions >1) t_in = t_in.t();
-        warping_set wset = m_WarpingPointer->set_function(x_out, x_out, y_reg, t_in, m_DissimilarityPointer);
+        t_in = templates(arma::span(j), arma::span::all, arma::span::all);
 
-        // Lambda function
-        auto fun = [this,&wset] (const arma::vec& arg)
+        if (m_NumberOfDimensions > 1)
+          t_in = t_in.t();
+
+        warpingSet = m_WarpingPointer->SetInputData(x_out, x_out, y_reg, t_in, m_DissimilarityPointer);
+
+        auto fun = [this, &warpingSet] (const arma::vec &arg)
         {
-          return this->m_WarpingPointer->warp(wset,arg);
+          return this->m_WarpingPointer->GetDissimilarityAfterWarping(warpingSet, arg);
         };
 
-        index_temp(t) = m_OptimizerPointer->optimize(arg, m_WarpingPointer, fun);
-        parameters_temp.col(t) = arg;
+        index_temp(j) = m_OptimizerPointer->Optimize(arg, m_WarpingPointer, fun);
+        parameters_temp.col(j) = arg;
       }
 
       //fine iterazioni per ogni tempalte
-      index(obs) = min( index_temp );
-      labels(obs) = ict( index_min(index_temp));
-      parameters.col(obs)= parameters_temp.col(index_min(index_temp));
-    }// fine iterazioni per ogni osservazione
-
+      index(i) = index_temp.min();
+      labels(i) = ict(arma::index_min(index_temp));
+      parameters.col(i) = parameters_temp.col(arma::index_min(index_temp));
+    }
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Done" << std::endl;
@@ -307,7 +300,7 @@ Rcpp::List KmaModel::FitModel()
     {
       Rcpp::Rcout << "current cluster vector updated" << std::endl;
       ict.print();
-      std::map<uword,uword> mcl = util::tableC(labels);
+      std::map<unsigned int,unsigned int> mcl = util::tableC(labels);
       for(auto it = mcl.cbegin(); it != mcl.cend(); ++it)
         Rcpp::Rcout <<"cluster num: "<< it->first << " has " << it->second << " elements;" << std::endl;
     }
@@ -328,7 +321,7 @@ Rcpp::List KmaModel::FitModel()
     if (m_UseVerbose)
       Rcpp::Rcout << "Parameter normalization: ";
 
-    m_WarpingPointer->normalize(parameters, ict, labels);
+    m_WarpingPointer->Normalize(parameters, ict, labels);
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Done" << std::endl;
@@ -340,7 +333,7 @@ Rcpp::List KmaModel::FitModel()
     if (m_UseVerbose)
       Rcpp::Rcout << "Update x_reg and x_out: ";
 
-    x_reg = m_WarpingPointer->apply_warping(x_reg, parameters);
+    x_reg = m_WarpingPointer->ApplyWarping(x_reg, parameters);
     x_out = arma::linspace<arma::rowvec>(
       util::GetCommonLowerBound(x_reg),
       util::GetCommonUpperBound(x_reg),
@@ -412,7 +405,7 @@ Rcpp::List KmaModel::FitModel()
 
   }//fine while
 
-  parameters_vec.resize(np, m_NumberOfObservations, iter);
+  parameters_vec.resize(numberOfParameters, m_NumberOfObservations, iter);
   templates_vec(iter) = templates;
 
   if (m_UseVerbose)
@@ -424,7 +417,7 @@ Rcpp::List KmaModel::FitModel()
   if (m_UseVerbose)
     Rcpp::Rcout << "Final warping: ";
 
-  mat final_par = m_WarpingPointer->final_warping(parameters_vec, labels, ict);
+  arma::mat final_par = m_WarpingPointer->GetFinalWarping(parameters_vec, labels, ict);
 
   if (m_UseVerbose)
     Rcpp::Rcout << "Done" << std::endl;
