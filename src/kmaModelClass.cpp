@@ -10,8 +10,8 @@
 #include "l2DissimilarityClass.h"
 
 #include "utilities.h"
-#include "fence.h"
-#include "newcenters.h"
+#include "fenceAlgorithm.h"
+#include "newCentersMethod.h"
 
 #include <Rcpp/Benchmark/Timer.h>
 

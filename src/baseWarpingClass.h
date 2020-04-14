@@ -1,10 +1,9 @@
 #ifndef BASEWARPINGCLASS_H
 #define BASEWARPINGCLASS_H
 
+#include "baseDissimilarityClass.h"
+
 #include <RcppArmadillo.h>
-#include <memory>
-#include "dissimilarity.h"
-#include "utilities.h"
 
 /**
  * Input for warp member function.
@@ -17,7 +16,7 @@ struct WarpingSet
   arma::rowvec inputGrid2;
   arma::mat inputValues1;
   arma::mat inputValues2;
-  std::shared_ptr<Dissimilarity> dissimilarityPointer;
+  std::shared_ptr<BaseDissimilarityFunction> dissimilarityPointer;
 };
 
 /// Base class for all warping functions
@@ -42,7 +41,7 @@ public:
       const arma::rowvec &grid2,
       const arma::mat &values1,
       const arma::mat &values2,
-      const std::shared_ptr<Dissimilarity> &dissimilarity
+      const std::shared_ptr<BaseDissimilarityFunction> &dissimilarity
   );
 
   arma::rowvec GetParameterLowerBounds() {return m_ParameterLowerBounds;}

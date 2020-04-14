@@ -4,7 +4,7 @@ WarpingSet BaseWarpingFunction::SetInputData(const arma::rowvec &grid1,
                                              const arma::rowvec &grid2,
                                              const arma::mat &values1,
                                              const arma::mat &values2,
-                                             const std::shared_ptr<Dissimilarity> &dissimilarity)
+                                             const std::shared_ptr<BaseDissimilarityFunction> &dissimilarity)
 {
     WarpingSet out;
 
