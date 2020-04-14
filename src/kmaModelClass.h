@@ -5,7 +5,7 @@
 
 #include "dissimilarity.h"
 #include "baseWarpingClass.h"
-#include "center_methods.h"
+#include "baseCenterClass.h"
 #include "baseOptimizerClass.h"
 
 /// Main class.
@@ -105,7 +105,7 @@ private:
 
     std::shared_ptr<BaseWarpingFunction> m_WarpingPointer;
     std::shared_ptr<Dissimilarity> m_DissimilarityPointer;
-    std::shared_ptr<CenterMethod> m_CenterPointer;
+    std::shared_ptr<BaseCenterMethod> m_CenterPointer;
     std::shared_ptr<BaseOptimizerFunction> m_OptimizerPointer;
 };
 

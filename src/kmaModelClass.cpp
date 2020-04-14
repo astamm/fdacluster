@@ -4,6 +4,8 @@
 #include "shiftWarpingClass.h"
 #include "dilationWarpingClass.h"
 #include "affineWarpingClass.h"
+#include "medoidCenterClass.h"
+#include "meanCenterClass.h"
 #include "fence.h"
 #include "newcenters.h"
 
@@ -43,12 +45,9 @@ void KmaModel::SetWarpingMethod(const std::string &val)
 void KmaModel::SetCenterMethod(const std::string &method, const double &span)
 {
   // Center factory
-  util::SharedFactory<CenterMethod> centerFactory;
-  centerFactory.Register<Medoid>("medoid");
-  centerFactory.Register<PseudoMedoid>("pseudomedoid");
-  centerFactory.Register<Mean>("mean");
-  centerFactory.Register<Median>("median");
-  centerFactory.Register<UnitQuaternionMean>("unit_quaternion_mean");
+  util::SharedFactory<BaseCenterMethod> centerFactory;
+  centerFactory.Register<MedoidCenterMethod>("medoid");
+  centerFactory.Register<MeanCenterMethod>("mean");
 
   m_CenterPointer = centerFactory.Instantiate(method);
 
@@ -149,7 +148,7 @@ Rcpp::List KmaModel::FitModel()
   {
     workingGrid = m_InputGrids.row(m_SeedVector(i));
     workingValues = m_InputValues(arma::span(m_SeedVector(i)), arma::span::all, arma::span::all);
-    workingList = util::approx(workingGrid, workingValues, m_NumberOfPoints, m_InterpolationMethod);
+    workingList = util::approx(workingGrid, workingValues, m_InterpolationMethod);
     x_out.col(i) = Rcpp::as<arma::vec>(workingList["grid"]);
     templates.slice(i) = Rcpp::as<arma::mat>(workingList["values"]);
   }
