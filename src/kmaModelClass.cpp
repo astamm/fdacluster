@@ -25,6 +25,9 @@ void KmaModel::SetInputData(const arma::mat &grids, const arma::cube &values)
   m_NumberOfObservations = values.n_rows;
   m_NumberOfDimensions = values.n_cols;
   m_NumberOfPoints = values.n_slices;
+  
+  if (m_InputGrids.n_rows != m_NumberOfObservations)
+    Rcpp::stop("The number of observations in the grids does not match the number of observations in the values.");
 
   if (m_InputGrids.n_cols != m_NumberOfPoints)
     Rcpp::stop("The number of points in the grids does not match the number of points in the values.");
@@ -105,8 +108,7 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << " - Interpolation method: " << m_InterpolationMethod << std::endl;
 
   Rcpp::Rcout << "Information about warping parameter bounds:" << std::endl;
-  Rcpp::Rcout << " - Shift upper bound: " << m_ShiftUpperBound << std::endl;
-  Rcpp::Rcout << " - Dilation upper bound: " << m_DilationUpperBound << std::endl;
+  Rcpp::Rcout << " - Warping options: " << m_WarpingOptions << std::endl;
 
   Rcpp::Rcout << "Information about convergence criteria:" << std::endl;
   Rcpp::Rcout << " - Maximum number of iterations: " << m_MaximumNumberOfIterations << std::endl;
@@ -274,12 +276,12 @@ Rcpp::List KmaModel::FitModel()
     if (m_UseVerbose)
       Rcpp::Rcout << "Set bound: ";
 
-    m_WarpingPointer->SetParameterBounds(warping_opt, warpedGrids);
+    m_WarpingPointer->SetParameterBounds(m_WarpingOptions, warpedGrids);
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Done" << std::endl;
 
-    //compute best warping parameters and assign new labels
+    // compute best warping parameters and assign new labels
     if (m_UseVerbose)
       Rcpp::Rcout << iter << ". Compute best warping: " << std::endl;
 

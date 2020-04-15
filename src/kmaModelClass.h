@@ -25,6 +25,7 @@ public:
         m_InputGrids.reset();
         m_InputValues.reset();
         m_SeedVector.reset();
+        m_WarpingOptions.reset();
 
         m_NumberOfClusters = 1;
         m_MaximumNumberOfIterations = 100;
@@ -34,8 +35,6 @@ public:
         m_NumberOfThreads = 1;
         m_ParallelMethod = ClusterLoop;
 
-        m_ShiftUpperBound = 0.15;
-        m_DilationUpperBound = 0.15;
         m_DistanceRelativeTolerance = 1.0e-3;
 
         m_UseFence = false;
@@ -57,14 +56,13 @@ public:
     void SetOptimizerMethod(const std::string &val);
 
     void SetSeedVector(const arma::urowvec &val) {m_SeedVector = val;}
+    void SetWarpingOptions(const arma::rowvec &val) {m_WarpingOptions = val;}
 
     void SetNumberOfClusters(const unsigned int &val) {m_NumberOfClusters = val;}
     void SetMaximumNumberOfIterations(const unsigned int &val) {m_MaximumNumberOfIterations = val;}
     void SetNumberOfThreads(const unsigned int &val) {m_NumberOfThreads = val;}
     void SetParallelMethod(const unsigned int &val) {m_ParallelMethod = ParallelType(val);}
 
-    void SetShiftUpperBound(const double &val) {m_ShiftUpperBound = val;}
-    void SetDilationUpperBound(const double &val) {m_DilationUpperBound = val;}
     void SetDistanceRelativeTolerance(const double &val) {m_DistanceRelativeTolerance = val;}
 
     void SetUseFence(const bool &val) {m_UseFence = val;}
@@ -97,6 +95,7 @@ private:
     arma::mat m_InputGrids;
     arma::cube m_InputValues;
     arma::urowvec m_SeedVector;
+    arma::rowvec m_WarpingOptions;
 
     unsigned int m_NumberOfClusters;
     unsigned int m_MaximumNumberOfIterations;
@@ -107,8 +106,6 @@ private:
 
     enum ParallelType m_ParallelMethod;
 
-    double m_ShiftUpperBound;
-    double m_DilationUpperBound;
     double m_DistanceRelativeTolerance;
 
     bool m_UseFence;

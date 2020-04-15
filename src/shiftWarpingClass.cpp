@@ -18,8 +18,9 @@ arma::mat ShiftWarpingFunction::ApplyWarping(const arma::mat &x, const arma::mat
 void ShiftWarpingFunction::SetParameterBounds(const arma::rowvec &warpingOptions,
                                               const arma::mat &x)
 {
-    double minRange = arma::as_scalar(arma::min(arma::max(x, 1) - arma::min(x, 1)));
     double sl = warpingOptions(0);
+    double minRange = arma::as_scalar(arma::min(arma::max(x, 1) - arma::min(x, 1)));
+        
     m_ParameterLowerBounds = { -sl * minRange };
     m_ParameterUpperBounds = {  sl * minRange };
 }

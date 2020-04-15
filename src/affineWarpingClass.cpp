@@ -15,11 +15,16 @@ arma::mat AffineWarpingFunction::ApplyWarping(const arma::mat &x, const arma::ma
     return out;
 }
 
-void AffineWarpingFunction::SetParameterBounds(const arma::rowvec &war_opt,
+void AffineWarpingFunction::SetParameterBounds(const arma::rowvec &warpingOptions,
                                                const arma::mat &x)
-{
+{   
+    double dl = warpingOptions(0);
+    if (df < 0 || dl > 1)
+        Rcpp::stop("The warping option dl for the dilation parameter should be in [0, 1], as the bounds are computed as [1-dl, 1+dl] centered around the unit dilation.");
+    
+    double sl = warpingOptions(1);
     double minRange = arma::as_scalar(arma::min(arma::max(x, 1) - arma::min(x, 1)));
-    double dl = war_opt(0), sl = war_opt(1);
+    
     m_ParameterLowerBounds = { 1 - dl, -sl * minRange};
     m_ParameterUpperBounds = { 1 + dl,  sl * minRange};
 }

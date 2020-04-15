@@ -8,8 +8,6 @@ Rcpp::List kmap(const arma::mat &x,
                 const unsigned int &maximum_number_of_iterations,
                 const unsigned int &number_of_threads,
                 const unsigned int &parallel_method,
-                const double &shift_upper_bound,
-                const double &dilation_upper_bound,
                 const double &distance_relative_tolerance,
                 const bool &use_fence,
                 const bool &check_total_similarity,
@@ -26,14 +24,13 @@ Rcpp::List kmap(const arma::mat &x,
     model.SetInputData(x, y);
 
     model.SetSeedVector(seeds);
+    model.SetWarpingOptions(warping_options);
 
     model.SetNumberOfClusters(n_clust);
     model.SetMaximumNumberOfIterations(maximum_number_of_iterations);
     model.SetNumberOfThreads(number_of_threads);
     model.SetParallelMethod(parallel_method);
 
-    model.SetShiftUpperBound(shift_upper_bound);
-    model.SetDilationUpperBound(dilation_upper_bound);
     model.SetDistanceRelativeTolerance(distance_relative_tolerance);
 
     model.SetUseFence(use_fence);
