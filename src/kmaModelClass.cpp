@@ -162,7 +162,7 @@ void KmaModel::UpdateTemplates(const arma::mat& x_reg,
     {
       selectedObservations = arma::find(labels == ict(i));
 
-      centerComputer = m_CenterPointer->GetCenterParallel(
+      centerComputer = m_CenterPointer->GetCenter(
         x_reg.rows(selectedObservations),
         util::GetObservations(m_InputValues, selectedObservations),
         m_DissimilarityPointer,
