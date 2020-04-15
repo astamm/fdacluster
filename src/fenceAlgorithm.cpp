@@ -1,5 +1,5 @@
 #include "fenceAlgorithm.h"
-#include "utilities.h"
+#include "utilityFunctions.h"
 
 void iterativeFence(arma::mat parameters,
                     const arma::uword iter,
@@ -24,13 +24,13 @@ void iterativeFence(arma::mat parameters,
     //compute sel_out : observation with outliers
     for(arma::uword i=0; i<n_par; i++)
     {
-        double q1=util::quantile(parameters.row(i),0.25);
-        double q3=util::quantile(parameters.row(i),0.75);
-        bounds(0,i)= q1 - 1.5 * (q3-q1);
-        bounds(1,i)= q3 + 1.5 * (q3-q1);
+        double q1 = quantile(parameters.row(i), 0.25);
+        double q3 = quantile(parameters.row(i), 0.75);
+        bounds(0,i) = q1 - 1.5 * (q3 - q1);
+        bounds(1,i) = q3 + 1.5 * (q3 - q1);
 
-        sel_out= join_horiz( sel_out,
-                             util::which_out(parameters.row(i),bounds(0,i),bounds(1,i))
+        sel_out = join_horiz( sel_out,
+                             which_out(parameters.row(i),bounds(0,i),bounds(1,i))
         );
     }
 
@@ -60,9 +60,9 @@ void iterativeFence(arma::mat parameters,
             arma::rowvec index_temp(nt);
             arma::mat parameters_temp(n_par,nt);
             arma::colvec arg(n_par);
-            Rcpp::List interpolationResults = util::approx(
+            Rcpp::List interpolationResults = approx(
                 x_reg.row(obs),
-                util::GetObservation(y, obs),
+                GetObservation(y, obs),
                 "Linear"
             );
             arma::mat y_reg = interpolationResults["values"];
@@ -96,14 +96,14 @@ void iterativeFence(arma::mat parameters,
 
         for(arma::uword i=0; i<n_par; i++)
         {
-            double q1=util::quantile(parameters.row(i),0.25);
-            double q3=util::quantile(parameters.row(i),0.75);
+            double q1 = quantile(parameters.row(i),0.25);
+            double q3 = quantile(parameters.row(i),0.75);
 
             bounds(0,i)= q1 - 1.5 * (q3-q1);
             bounds(1,i)= q3 + 1.5 * (q3-q1);
 
             sel_out= join_horiz( sel_out,
-                                 util::which_out(parameters.row(i),bounds(0,i),bounds(1,i))
+                                 which_out(parameters.row(i),bounds(0,i),bounds(1,i))
             );
         }
         sel_out = unique(sel_out);

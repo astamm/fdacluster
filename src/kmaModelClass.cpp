@@ -9,7 +9,7 @@
 #include "pearsonDissimilarityClass.h"
 #include "l2DissimilarityClass.h"
 
-#include "utilities.h"
+#include "utilityFunctions.h"
 #include "fenceAlgorithm.h"
 
 #include <Rcpp/Benchmark/Timer.h>
@@ -33,7 +33,7 @@ void KmaModel::SetInputData(const arma::mat &grids, const arma::cube &values)
 void KmaModel::SetWarpingMethod(const std::string &val)
 {
   // Warping factory
-  util::SharedFactory<BaseWarpingFunction> warpingFactory;
+  SharedFactory<BaseWarpingFunction> warpingFactory;
   warpingFactory.Register<NoWarpingFunction>("none");
   warpingFactory.Register<ShiftWarpingFunction>("shift");
   warpingFactory.Register<DilationWarpingFunction>("dilation");
@@ -48,7 +48,7 @@ void KmaModel::SetWarpingMethod(const std::string &val)
 void KmaModel::SetCenterMethod(const std::string &val)
 {
   // Center factory
-  util::SharedFactory<BaseCenterMethod> centerFactory;
+  SharedFactory<BaseCenterMethod> centerFactory;
   centerFactory.Register<MedoidCenterMethod>("medoid");
   centerFactory.Register<MeanCenterMethod>("mean");
 
@@ -61,7 +61,7 @@ void KmaModel::SetCenterMethod(const std::string &val)
 void KmaModel::SetDissimilarityMethod(const std::string &val)
 {
   // Dissimilarity factory
-  util::SharedFactory<BaseDissimilarityFunction> dissimilarityFactory;
+  SharedFactory<BaseDissimilarityFunction> dissimilarityFactory;
   dissimilarityFactory.Register<PearsonDissimilarityFunction>("pearson");
   dissimilarityFactory.Register<L2DissimilarityFunction>("l2");
 
@@ -74,7 +74,7 @@ void KmaModel::SetDissimilarityMethod(const std::string &val)
 void KmaModel::SetOptimizerMethod(const std::string &val)
 {
   // Optimizer factory
-  util::SharedFactory<BaseOptimizerFunction> optimizerFactory;
+  SharedFactory<BaseOptimizerFunction> optimizerFactory;
   optimizerFactory.Register<BobyqaOptimizerFunction>("bobyqa");
 
   m_OptimizerPointer = optimizerFactory.Instantiate(val);
@@ -148,7 +148,7 @@ void KmaModel::UpdateTemplates(const arma::mat& x_reg,
 
       centerComputer = m_CenterPointer->GetCenter(
         x_reg.rows(selectedObservations),
-        util::GetObservations(m_InputValues, selectedObservations),
+        GetObservations(m_InputValues, selectedObservations),
         m_DissimilarityPointer
       );
 
@@ -164,7 +164,7 @@ void KmaModel::UpdateTemplates(const arma::mat& x_reg,
 
       centerComputer = m_CenterPointer->GetCenter(
         x_reg.rows(selectedObservations),
-        util::GetObservations(m_InputValues, selectedObservations),
+        GetObservations(m_InputValues, selectedObservations),
         m_DissimilarityPointer,
         m_NumberOfThreads
       );
@@ -202,7 +202,7 @@ Rcpp::List KmaModel::FitModel()
   {
     workingGrid = m_InputGrids.row(m_SeedVector(i));
     workingValues = m_InputValues(arma::span(m_SeedVector(i)), arma::span::all, arma::span::all);
-    workingList = util::approx(workingGrid, workingValues, m_InterpolationMethod);
+    workingList = approx(workingGrid, workingValues, m_InterpolationMethod);
     x_out.col(i) = Rcpp::as<arma::vec>(workingList["grid"]);
     templates.slice(i) = Rcpp::as<arma::mat>(workingList["values"]);
   }
@@ -309,9 +309,9 @@ Rcpp::List KmaModel::FitModel()
 
     for (unsigned int i = 0;i < m_NumberOfObservations;++i)
     {
-      y_reg = util::approx(
+      y_reg = approx(
         x_reg.row(i),
-        util::GetObservation(m_InputValues, i),
+        GetObservation(m_InputValues, i),
         m_InterpolationMethod
       );
 
@@ -353,7 +353,7 @@ Rcpp::List KmaModel::FitModel()
     {
       Rcpp::Rcout << "current cluster vector updated" << std::endl;
       ict.print();
-      std::map<unsigned int,unsigned int> mcl = util::tableC(labels);
+      std::map<unsigned int,unsigned int> mcl = tableC(labels);
       for(auto it = mcl.cbegin(); it != mcl.cend(); ++it)
         Rcpp::Rcout <<"cluster num: "<< it->first << " has " << it->second << " elements;" << std::endl;
     }
@@ -388,8 +388,8 @@ Rcpp::List KmaModel::FitModel()
 
     x_reg = m_WarpingPointer->ApplyWarping(x_reg, parameters);
     x_out = arma::linspace<arma::rowvec>(
-      util::GetCommonLowerBound(x_reg),
-      util::GetCommonUpperBound(x_reg),
+      GetCommonLowerBound(x_reg),
+      GetCommonUpperBound(x_reg),
       m_NumberOfPoints
     );
 
@@ -493,7 +493,7 @@ Rcpp::List KmaModel::FitModel()
 
   timer.step( "output ");
 
-  return util::ListBuilder()
+  return ListBuilder()
     .add("iterations", iter)
     .add("n.clust", m_NumberOfClusters)
     .add("x.center.orig",out1)

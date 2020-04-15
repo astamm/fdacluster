@@ -1,5 +1,5 @@
-#ifndef UTILITIES_HPP_
-#define UTILITIES_HPP_
+#ifndef UTILITYFUNCTIONS_H
+#define UTILITYFUNCTIONS_H
 
 #include <RcppArmadillo.h>
 #include <functional> // for std::function
@@ -9,9 +9,6 @@
 #include <unordered_map> // for std::unordered_map
 #include <utility>
 #include <vector>
-
-namespace util
-{
 
 /// R table function in c++
 /**
@@ -42,9 +39,9 @@ double quantile(const arma::rowvec &inputValues, const double quantileOrder);
 
 /// Create a zipped vector.
 /** Fill the zipped vector with pairs consisting of the
-*   corresponding elements of a and b. (This assumes
-*   that the vectors have equal length).
-*/
+ *   corresponding elements of a and b. (This assumes
+ *   that the vectors have equal length).
+ */
 template <typename A, typename B>
 void zip(const std::vector<A> &a,
          const std::vector<B> &b,
@@ -63,9 +60,9 @@ void zip(const std::vector<A> &a,
 
 /// Unzip a zipped vector.
 /** Write the first and second element of the pairs in
-* the given zipped vector into a and b. (This assumes
-* that the vectors have equal length)
-*/
+ * the given zipped vector into a and b. (This assumes
+ * that the vectors have equal length)
+ */
 template <typename A, typename B>
 void unzip(const std::vector< std::pair<A, B> > &zipped,
            std::vector<A> &a,
@@ -125,7 +122,8 @@ arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationI
  */
 Rcpp::List approx(const arma::rowvec& inputGrid,
                   const arma::mat& inputValues,
-                  const std::string interpolationMethod = "Linear");
+                  const std::string interpolationMethod = "Linear"
+);
 
 /// List builder for build big list to return to R
 class ListBuilder
@@ -179,7 +177,6 @@ private:
     std::vector<SEXP> m_Elements;
 };
 
-
 /// Factory class
 template <typename ObjectType>
 class SharedFactory
@@ -207,6 +204,4 @@ private:
     RegistryMap m_Map;
 };
 
-}
-
-#endif
+#endif /* UTILITYFUNCTIONS_H */

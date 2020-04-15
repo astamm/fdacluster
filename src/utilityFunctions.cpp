@@ -1,28 +1,11 @@
-// Copyright (C) 2017 Alessandro Zito (zito.ales@gmail.com)
-//
-// This file is part of Fdakmapp.
-//
-// Fdakmapp is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-//
-// Fdakmapp is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-//   You should have received a copy of the GNU General Public License
-//   along with Fdakmapp.  If not, see <http://www.gnu.org/licenses/>.
-
-#include "utilities.h"
+#include "utilityFunctions.h"
 
 #include <squad.h>
 
 //
 // tableC
 //
-std::map<unsigned int, unsigned int> util::tableC(const arma::urowvec &inputLabels)
+std::map<unsigned int, unsigned int> tableC(const arma::urowvec &inputLabels)
 {
     std::map<unsigned int, unsigned int> outputCounts;
     unsigned int nbLabels = inputLabels.size();
@@ -36,7 +19,7 @@ std::map<unsigned int, unsigned int> util::tableC(const arma::urowvec &inputLabe
 //
 //  which_out
 //
-arma::urowvec util::which_out(const arma::rowvec &inputValues, const double lowerBound, const double upperBound)
+arma::urowvec which_out(const arma::rowvec &inputValues, const double lowerBound, const double upperBound)
 {
     unsigned int nbValues = inputValues.size();
     arma::urowvec outputIndices(nbValues);
@@ -59,7 +42,7 @@ arma::urowvec util::which_out(const arma::rowvec &inputValues, const double lowe
 //
 //  quantile
 //
-double util::quantile(const arma::rowvec &inputValues, const double quantileOrder)
+double quantile(const arma::rowvec &inputValues, const double quantileOrder)
 {
     if (quantileOrder <= 0 || quantileOrder >= 1)
         Rcpp::stop("The quantile order should be between 0 and 1 excluded.");
@@ -75,7 +58,7 @@ double util::quantile(const arma::rowvec &inputValues, const double quantileOrde
 //
 // GetCommonLowerBound
 //
-double util::GetCommonLowerBound(const arma::mat& inputGrids)
+double GetCommonLowerBound(const arma::mat& inputGrids)
 {
     // Assumption: Matrix is in format NOBS x NPTS
     unsigned int nObs = inputGrids.n_rows;
@@ -112,7 +95,7 @@ double util::GetCommonLowerBound(const arma::mat& inputGrids)
 //
 // GetCommonUpperBound
 //
-double util::GetCommonUpperBound(const arma::mat& inputGrids)
+double GetCommonUpperBound(const arma::mat& inputGrids)
 {
     // Assumption: Matrix is in format NOBS x NPTS
     unsigned int nObs = inputGrids.n_rows;
@@ -149,7 +132,7 @@ double util::GetCommonUpperBound(const arma::mat& inputGrids)
 //
 // observation
 //
-arma::mat util::GetObservation(const arma::cube& inputData, unsigned int observationIndex)
+arma::mat GetObservation(const arma::cube& inputData, unsigned int observationIndex)
 {
     return inputData(arma::span(observationIndex), arma::span::all, arma::span::all);
 }
@@ -157,7 +140,7 @@ arma::mat util::GetObservation(const arma::cube& inputData, unsigned int observa
 //
 // observations
 //
-arma::cube util::GetObservations(const arma::cube& inputData, arma::uvec& observationIndices)
+arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationIndices)
 {
     arma::cube outputCube(observationIndices.size(), inputData.n_cols, inputData.n_slices);
 
@@ -173,7 +156,7 @@ arma::cube util::GetObservations(const arma::cube& inputData, arma::uvec& observ
 //
 // approx
 //
-Rcpp::List util::approx(const arma::rowvec& inputGrid,
+Rcpp::List approx(const arma::rowvec& inputGrid,
                        const arma::mat& inputValues,
                        const std::string interpolationMethod)
 {
