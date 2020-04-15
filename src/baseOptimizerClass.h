@@ -12,7 +12,7 @@ public:
     using ParametersType = dlib::matrix<double,0,1>;
 
     virtual double Optimize(
-            arma::colvec &arg,
+            arma::rowvec &arg,
             std::shared_ptr<BaseWarpingFunction> &warpingFunction,
             std::function<double(arma::colvec)> fun) = 0;
 };

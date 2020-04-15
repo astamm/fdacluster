@@ -14,7 +14,7 @@ public:
     void SetEpsilonValue(const double &val) {m_EpsilonValue = val;}
 
     double Optimize(
-            arma::colvec &arg,
+            arma::rowvec &arg,
             std::shared_ptr<BaseWarpingFunction> &warpingFunction,
             std::function<double(arma::colvec)> fun);
 

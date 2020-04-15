@@ -1,16 +1,16 @@
 #include "bobyqaOptimizerClass.h"
 
-double BobyqaOptimizerFunction::Optimize(arma::colvec &arg,
+double BobyqaOptimizerFunction::Optimize(arma::rowvec &arg,
                                          std::shared_ptr<BaseWarpingFunction> &warpingFunction,
-                                         std::function<double(arma::colvec)> fun)
+                                         std::function<double(arma::rowvec)> costFunction)
 {
-    auto dlibCostFunction = [&fun] (const ParametersType& argt)
+    auto dlibCostFunction = [&fun] (const ParametersType& dlibParams)
     {
-        unsigned int numberOfParameters = argt.nr();
+        unsigned int numberOfParameters = dlibParams.nr();
 
-        arma::colvec args(numberOfParameters);
+        arma::rowvec params(numberOfParameters);
         for (unsigned int i = 0;i < numberOfParameters;++i)
-            args(i) = argt(i);
+            params(i) = dlibParams(i);
 
         return fun(args);
     };

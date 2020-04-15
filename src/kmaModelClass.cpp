@@ -156,6 +156,7 @@ void KmaModel::UpdateTemplates(const arma::mat& x_reg,
 
       templates.tube(arma::span(i), arma::span::all) = centerComputer.centerValues;
     }
+    
     break;
 
   case DistanceLoop:
@@ -176,6 +177,7 @@ void KmaModel::UpdateTemplates(const arma::mat& x_reg,
       if (m_UseVerbose)
         Rcpp::Rcout << "Template num. " << i << " updated." << std::endl;
     }
+    
     break;
   }
 }
@@ -291,41 +293,44 @@ Rcpp::List KmaModel::FitModel()
 
     // inizializzo container warp_temp
     unsigned int numberOfTemplates = templates.n_rows;
-    arma::rowvec index_temp(numberOfTemplates);
-    arma::mat parameters_temp(numberOfParameters, numberOfTemplates);
-    arma::colvec arg(numberOfParameters);
-    arma::mat y_reg;
-    arma::mat t_in;
+    arma::rowvec workingObservationDistances(numberOfTemplates);
+    arma::mat workingParameterValues(numberOfTemplates, numberOfParameters);
+    arma::rowvec startingParameters(numberOfParameters);
+    arma::rowvec workingWarpedGrid;
+    arma::rowvec workingTemplateGrid;
+    arma::mat workingValues;
+    arma::mat workingTemplateValues;
     WarpingSet warpingSet;
 
     for (unsigned int i = 0;i < m_NumberOfObservations;++i)
     {
-      y_reg = approx(
-        x_reg.row(i),
-        GetObservation(m_InputValues, i),
-        m_InterpolationMethod
-      );
-
+      workingWarpedGrid = warpedGrids.row(i);
+      workingValues = GetObservation(m_InputValues, i);
+      
       // Compute warping parameters for each template
       for (unsigned int j = 0;j < numberOfTemplates;++j)
       {
-        t_in = templates(arma::span(j), arma::span::all, arma::span::all);
+        workingTemplateGrid = templateGrids.row(j);
+        workingTemplateValues = templateValues.tube(arma::span(j), arma::span::all);
 
-        if (m_NumberOfDimensions > 1)
-          t_in = t_in.t();
-
-        warpingSet = m_WarpingPointer->SetInputData(x_out, x_out, y_reg, t_in, m_DissimilarityPointer);
+        warpingSet = m_WarpingPointer->SetInputData(
+          workingWarpedGrid, 
+          workingTemplateGrid, 
+          workingValues, 
+          workingTemplateValues, 
+          m_DissimilarityPointer
+        );
 
         auto fun = [this, &warpingSet] (const arma::vec &arg)
         {
           return this->m_WarpingPointer->GetDissimilarityAfterWarping(warpingSet, arg);
         };
 
-        index_temp(j) = m_OptimizerPointer->Optimize(arg, m_WarpingPointer, fun);
-        parameters_temp.col(j) = arg;
+        workingObservationDistances(j) = m_OptimizerPointer->Optimize(startingParameters, m_WarpingPointer, fun);
+        workingParameterValues.row(j) = startingParameters;
       }
 
-      //fine iterazioni per ogni tempalte
+      // fine iterazioni per ogni template
       index(i) = index_temp.min();
       labels(i) = ict(arma::index_min(index_temp));
       parameters.col(i) = parameters_temp.col(arma::index_min(index_temp));
