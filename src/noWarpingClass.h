@@ -12,24 +12,31 @@ class NoWarpingFunction : public BaseWarpingFunction
 public:
   unsigned int GetNumberOfParameters();
 
-  arma::mat ApplyWarping(const arma::mat &x, const arma::mat &par);
-  void SetParameterBounds(const arma::rowvec &warpingOptions, const arma::mat &x);
+  arma::mat ApplyWarping(
+      const arma::mat &inputGrids,
+      const arma::mat &warpingParameters
+  );
+
+  void SetParameterBounds(
+      const arma::rowvec &warpingOptions,
+      const arma::mat &inputGrids
+  );
 
   arma::mat GetFinalWarping(
-      const arma::cube &parameters_vec,
-      const arma::urowvec &labels,
-      const arma::urowvec &ict
+      const arma::cube &warpingParametersContainer,
+      const arma::urowvec &observationMemberships,
+      const arma::urowvec &clusterIndices
   );
 
   void Normalize(
-      arma::mat &par,
-      const arma::urowvec &ict,
-      const arma::urowvec &labels
+      arma::mat &warpingParameters,
+      const arma::urowvec &clusterIndices,
+      const arma::urowvec &observationMemberships
   );
 
   double GetDissimilarityAfterWarping(
       const WarpingSet &warpingSet,
-      const arma::colvec &arg
+      const arma::rowvec &warpingParameters
   );
 };
 

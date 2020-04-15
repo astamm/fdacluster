@@ -92,57 +92,75 @@
 #' @export
 #'
 #' @examples
-kmap <- function(x, y,
-                 seeds = NULL,
-                 n_clust = 1,
-                 warping_method = 'affine',
-                 center_method = 'mean',
-                 similarity_method = 'pearson',
-                 optim_method = 'bobyqa',
-                 warping_opt = c(0.15, 0.15),
-                 center_opt = c(0.01, 0.1),
-                 out_opt = c(100, 0.001, 100),
-                 fence = FALSE,
-                 check_total_similarity = TRUE,
-                 show_iter = TRUE,
-                 comp_original_center = FALSE,
-                 par_opt = c(1, 0))
+kma <- function(x, y,
+                seeds = NULL,
+                warping_options = c(0.15, 0.15),
+                n_clust = 1,
+                maximum_number_of_iterations = 100,
+                number_of_threads = 1,
+                parallel_method = 0,
+                space = 0,
+                distance_relative_tolerance = 0.001,
+                use_fence = FALSE,
+                check_total_similarity = TRUE,
+                use_verbose = TRUE,
+                compute_overall_center = FALSE,
+                warping_method = 'affine',
+                center_method = 'mean',
+                dissimilarity_method = 'pearson',
+                optimizer_method = 'bobyqa')
 {
-
-  if (is.null(y))
-    stop("Provide a valid function")
-
+  # Handle one-dimensional data
   if (length(dim(y)) == 2) {
-    y <- array(y, c(dim(y)[1], dim(y)[2], 1))
+    y <- array(y, c(dim(y)[1], 1, dim(y)[2]))
   }
 
+  # Handle vector grid
   if (is.vector(x))
-   x <- t(replicate(dim(y)[1],x,1))
+   x <- matrix(x, dim(y)[1], dim(y)[3], byrow = TRUE)
 
-  if(is.null(seeds)){
-    nseeds<-sample(0:(nrow(y)-1),n_clust)
-  }else{
-    nseeds<-(seeds-1)
-  }
-  if ((sum(nseeds<0)+sum(nseeds>=nrow(y)))!=0 )
-    stop("seeds indexes have to be in observations range")
+  # Handle seeds
+  if (is.null(seeds))
+    seeds <- sample(0:(dim(y)[1] - 1), n_clust)
+  else
+    seeds <- seeds - 1
 
-  out<-.Call('_fdakmapp_kmap', PACKAGE = 'fdakmapp', x, y, nseeds, n_clust, warping_method, center_method, similarity_method, optim_method, warping_opt, center_opt, out_opt, fence, check_total_similarity, show_iter, comp_original_center,par_opt)
+  out <- kmap(
+    x,
+    y,
+    seeds,
+    warping_options,
+    n_clust,
+    maximum_number_of_iterations,
+    number_of_threads,
+    parallel_method,
+    space,
+    distance_relative_tolerance,
+    use_fence,
+    check_total_similarity,
+    use_verbose,
+    compute_overall_center,
+    warping_method,
+    center_method,
+    dissimilarity_method,
+    optimizer_method
+  )
 
   ## gestione timer  ################################################
-  time<-diff(round(out$timer/1000000000,4))
-  t<-data.frame(0,0,0,0,0,0)
-  names(t)<-c("start","warping","fece/norm","templates","output","total")
-  rownames(t)<-c("sec")
-  t[1]<-time[1]
-  for(i in 0:(out$iterations-1)){
-    t[2]=t[2]+time[2+(i*3)]
-    t[3]=t[3]+time[3+(i*3)]
-    t[4]=t[4]+time[4+(i*3)]
+  time <- diff(round(out$timer / 1000000000, 4))
+  t <- data.frame(0, 0, 0, 0, 0, 0)
+  names(t) <-
+    c("start", "warping", "fece/norm", "templates", "output", "total")
+  rownames(t) <- c("sec")
+  t[1] <- time[1]
+  for (i in 0:(out$iterations - 1)) {
+    t[2] = t[2] + time[2 + (i * 3)]
+    t[3] = t[3] + time[3 + (i * 3)]
+    t[4] = t[4] + time[4 + (i * 3)]
   }
-  t[5]=time[out$iterations*3+2]
-  t[6]=out$timer[length(out$timer)]/1000000000
-  out$timer<-t
+  t[5] = time[out$iterations * 3 + 2]
+  t[6] = out$timer[length(out$timer)] / 1000000000
+  out$timer <- t
     #######################################################################
 
   out <- c(
@@ -155,7 +173,7 @@ kmap <- function(x, y,
     out
   )
 
-  class(out) <- "kmap"
+  class(out) <- "kma"
 
   out
 }

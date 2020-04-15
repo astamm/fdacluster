@@ -34,6 +34,7 @@ public:
         m_NumberOfPoints = 1;
         m_NumberOfThreads = 1;
         m_ParallelMethod = ClusterLoop;
+        m_Space = Euclidean;
 
         m_DistanceRelativeTolerance = 1.0e-3;
 
@@ -42,7 +43,6 @@ public:
         m_UseVerbose = true;
         m_ComputeOverallCenter = false;
 
-        std::string m_InterpolationMethod = "linear";
         std::string m_WarpingMethod = "affine";
         std::string m_CenterMethod = "mean";
         std::string m_DissimilarityMethod = "pearson";
@@ -62,6 +62,7 @@ public:
     void SetMaximumNumberOfIterations(const unsigned int &val) {m_MaximumNumberOfIterations = val;}
     void SetNumberOfThreads(const unsigned int &val) {m_NumberOfThreads = val;}
     void SetParallelMethod(const unsigned int &val) {m_ParallelMethod = ParallelType(val);}
+    void SetSpace(const unsigned int &val) {m_Space = SpaceType(val);}
 
     void SetDistanceRelativeTolerance(const double &val) {m_DistanceRelativeTolerance = val;}
 
@@ -69,8 +70,6 @@ public:
     void SetCheckTotalSimilarity(const bool &val) {m_CheckTotalSimilarity = val;}
     void SetUseVerbose(const bool &val) {m_UseVerbose = val;}
     void SetComputeOverallCenter(const bool &val) {m_ComputeOverallCenter = val;}
-
-    void SetInterpolationMethod(const std::string &val) {m_InterpolationMethod = val;}
 
     // Method to get a description of the model.
     void Print(
@@ -106,6 +105,7 @@ private:
     unsigned int m_NumberOfThreads;
 
     enum ParallelType m_ParallelMethod;
+    enum SpaceType m_Space;
 
     double m_DistanceRelativeTolerance;
 
@@ -113,8 +113,6 @@ private:
     bool m_CheckTotalSimilarity;
     bool m_UseVerbose;
     bool m_ComputeOverallCenter;
-
-    std::string m_InterpolationMethod;
 
     std::shared_ptr<BaseWarpingFunction> m_WarpingPointer;
     std::shared_ptr<BaseDissimilarityFunction> m_DissimilarityPointer;

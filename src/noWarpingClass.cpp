@@ -5,35 +5,36 @@ unsigned int NoWarpingFunction::GetNumberOfParameters()
     return 0;
 }
 
-arma::mat NoWarpingFunction::ApplyWarping(const arma::mat &x, const arma::mat &par)
+arma::mat NoWarpingFunction::ApplyWarping(const arma::mat &inputGrids,
+                                          const arma::mat &warpingParameters)
 {
-    return x;
+    return inputGrids;
 }
 
 void NoWarpingFunction::SetParameterBounds(const arma::rowvec &warpingOptions,
-                                           const arma::mat &x)
+                                           const arma::mat &inputGrids)
 {
     m_ParameterLowerBounds.set_size(0);
     m_ParameterUpperBounds.set_size(0);
 }
 
-arma::mat NoWarpingFunction::GetFinalWarping(const arma::cube &parameters_vec,
-                                             const arma::urowvec &labels,
-                                             const arma::urowvec &ict)
+arma::mat NoWarpingFunction::GetFinalWarping(const arma::cube &warpingParametersContainer,
+                                             const arma::urowvec &observationMemberships,
+                                             const arma::urowvec &clusterIndices)
 {
-    arma::mat out(0, labels.n_cols);
+    arma::mat out(observationMemberships.n_cols, 0);
     return out;
 }
 
-void NoWarpingFunction::Normalize(arma::mat &par,
-                                  const arma::urowvec &ict,
-                                  const arma::urowvec &labels)
+void NoWarpingFunction::Normalize(arma::mat &warpingParameters,
+                                  const arma::urowvec &clusterIndices,
+                                  const arma::urowvec &observationMemberships)
 {
     return;
 }
 
 double NoWarpingFunction::GetDissimilarityAfterWarping(const WarpingSet &warpingSet,
-                                                       const arma::colvec &arg)
+                                                       const arma::rowvec &warpingParameters)
 {
     return warpingSet.dissimilarityPointer->GetDistance(
             warpingSet.inputGrid1,

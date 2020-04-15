@@ -105,7 +105,6 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << " - Center method: " << centerMethod << std::endl;
   Rcpp::Rcout << " - Dissimilarity method: " << dissimilarityMethod << std::endl;
   Rcpp::Rcout << " - Optimization method: " << optimizerMethod << std::endl;
-  Rcpp::Rcout << " - Interpolation method: " << m_InterpolationMethod << std::endl;
 
   Rcpp::Rcout << "Information about warping parameter bounds:" << std::endl;
   Rcpp::Rcout << " - Warping options: " << m_WarpingOptions << std::endl;

@@ -5,18 +5,19 @@ unsigned int DilationWarpingFunction::GetNumberOfParameters()
     return 1;
 }
 
-arma::mat DilationWarpingFunction::ApplyWarping(const arma::mat &x, const arma::mat &par)
+arma::mat DilationWarpingFunction::ApplyWarping(const arma::mat &inputGrids,
+                                                const arma::mat &warpingParameters)
 {
-    arma::mat out(x.n_rows,x.n_cols);
+    arma::mat outputGrids(inputGrids.n_rows, inputGrids.n_cols);
 
-    for (unsigned int i = 0;i < x.n_rows;++i)
-        out.row(i) = par(0, i) * x.row(i);
+    for (unsigned int i = 0;i < inputGrids.n_rows;++i)
+        outputGrids.row(i) = inputGrids.row(i) * warpingParameters(i, 0);
 
-    return out;
+    return outputGrids;
 }
 
 void DilationWarpingFunction::SetParameterBounds(const arma::rowvec &warpingOptions,
-                                                 const arma::mat &x)
+                                                 const arma::mat &inputGrids)
 {
     double dl = warpingOptions(0);
     if (dl < 0 || dl > 1)
@@ -26,65 +27,55 @@ void DilationWarpingFunction::SetParameterBounds(const arma::rowvec &warpingOpti
     m_ParameterUpperBounds = { 1 + dl };
 }
 
-arma::mat DilationWarpingFunction::GetFinalWarping(const arma::cube &parameters_vec,
-                                                   const arma::urowvec &labels,
-                                                   const arma::urowvec &ict)
+arma::mat DilationWarpingFunction::GetFinalWarping(const arma::cube &warpingParametersContainer,
+                                                   const arma::urowvec &observationMemberships,
+                                                   const arma::urowvec &clusterIndices)
 {
-    unsigned int numberOfParameters = parameters_vec.n_rows;
-    unsigned int numberOfObservations = parameters_vec.n_cols;
-    unsigned int numberOfIterations = parameters_vec.n_slices;
-    arma::mat out(numberOfParameters, numberOfObservations);
-    out.row(0).ones();
-    arma::rowvec a;
+    unsigned int numberOfParameters = warpingParametersContainer.n_rows;
+    unsigned int numberOfObservations = warpingParametersContainer.n_cols;
+    unsigned int numberOfIterations = warpingParametersContainer.n_slices;
+    arma::mat outputWarpingParameters(numberOfObservations, numberOfParameters, arma::fill::ones);
+    arma::colvec dilationParameters;
 
     for (unsigned int i = 0;i < numberOfIterations;++i)
     {
-        a = parameters_vec(arma::span(0), arma::span::all, arma::span(i));
-        out.row(0) = out.row(0) % a;
+        dilationParameters = warpingParametersContainer.slice(i).col(0);
+        outputWarpingParameters.col(0) %= dilationParameters;
     }
 
-    arma::urowvec sel;
-    arma::colvec m;
+    arma::uvec observationIndices;
+    arma::rowvec meanParameters;
 
-    for (unsigned int k = 0;k < ict.size();++k)
+    for (unsigned int k = 0;k < clusterIndices.size();++k)
     {
-        sel = arma::find(labels == ict(k)).t();
-
-        // compute means
-        m = arma::mean(out.cols(sel), 1);
-
-        for (unsigned int i = 0;i < sel.size();++i)
-            out(0, sel(i)) = out(0, sel(i)) / m(0);
+        observationIndices = arma::find(observationMemberships == clusterIndices(k));
+        meanParameters = arma::mean(outputWarpingParameters.rows(observationIndices), 0);
+        outputWarpingParameters.rows(observationIndices) /= meanParameters(0);
     }
 
-    return out;
+    return outputWarpingParameters;
 }
 
-void DilationWarpingFunction::Normalize(arma::mat &par,
-                                        const arma::urowvec &ict,
-                                        const arma::urowvec &labels)
+void DilationWarpingFunction::Normalize(arma::mat &warpingParameters,
+                                        const arma::urowvec &clusterIndices,
+                                        const arma::urowvec &observationMemberships)
 {
-    arma::urowvec sel;
-    arma::colvec par_mean;
+    arma::uvec observationIndices;
+    arma::rowvec meanParameters;
 
-    for (unsigned int i = 0;i < ict.size();++i)
+    for (unsigned int i = 0;i < clusterIndices.size();++i)
     {
-        sel = arma::find(labels == ict(i)).t();
-
-        // calcolo medie cluster
-        par_mean = arma::mean(par.cols(sel), 1);
-
-        // aggiorno dilation
-        for (unsigned int j = 0;j < sel.size();++j)
-            par(0, sel(j))=  par(0, sel(j)) / par_mean(0);
+        observationIndices = arma::find(observationMemberships == clusterIndices(i));
+        meanParameters = arma::mean(warpingParameters.rows(observationIndices), 0);
+        warpingParameters.rows(observationIndices) /= meanParameters(0);
     }
 }
 
 double DilationWarpingFunction::GetDissimilarityAfterWarping(const WarpingSet &warpingSet,
-                                                             const arma::colvec &arg)
+                                                             const arma::rowvec &warpingParameters)
 {
     return warpingSet.dissimilarityPointer->GetDistance(
-            arg(0) * warpingSet.inputGrid1,
+            warpingParameters(0) * warpingSet.inputGrid1,
             warpingSet.inputGrid2,
             warpingSet.inputValues1,
             warpingSet.inputValues2);

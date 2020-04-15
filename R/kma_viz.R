@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-plot.kmap <- function(x, bp_sim = FALSE, wr_fun = FALSE, ...) {
+plot.kma <- function(x, bp_sim = FALSE, wr_fun = FALSE, ...) {
   Result <- x
   lwd.functions = 1
   lwd.centers = 3

@@ -49,12 +49,15 @@ public:
 
   /// Apply warping to a matrix.
   /**
-   * @param[x] abscissa to warp;
-   * @param[par] warping parameters to apply;
+   * @param[inputGrids] abscissa to warp;
+   * @param[warpingParameters] warping parameters to apply;
    *
    * return warped abscissas.
    */
-  virtual arma::mat ApplyWarping(const arma::mat &x, const arma::mat &par) = 0;
+  virtual arma::mat ApplyWarping(
+      const arma::mat &inputGrids,
+      const arma::mat &warpingParameters
+  ) = 0;
 
   /// Return number of parameters.
   virtual unsigned int GetNumberOfParameters() = 0;
@@ -62,9 +65,12 @@ public:
   /// Set bounds given the input option different for each warping function.
   /**
    * @param[warpingOptions] input warping option;
-   * @param[x] abscissa to warp.
+   * @param[inputGrids] abscissa to warp.
    */
-  virtual void SetParameterBounds(const arma::rowvec &warpingOptions, const arma::mat &x) = 0;
+  virtual void SetParameterBounds(
+      const arma::rowvec &warpingOptions,
+      const arma::mat &inputGrids
+  ) = 0;
 
   /// Set bounds given in a matrix.
   /**
@@ -74,38 +80,38 @@ public:
 
   /// Compute final warping.
   /**
-   * @param[parameters_vec] warping's parameters of each iteration;
-   * @param[labels] final labels;
-   * @param[ict] index current clusters;
+   * @param[warpingParametersContainer] warping parameters of each iteration;
+   * @param[observationMemberships] final labels;
+   * @param[clusterIndices] index current clusters;
    *
    * @return a matrix with the total warping parameters applied.
    */
   virtual arma::mat GetFinalWarping(
-      const arma::cube &parameters_vec,
-      const arma::urowvec &labels,
-      const arma::urowvec &ict
+      const arma::cube &warpingParametersContainer,
+      const arma::urowvec &observationMemberships,
+      const arma::urowvec &clusterIndices
   ) = 0;
 
   /// Normalize the warping parameters computed by clusters.
   /**
-   * @param[par] warping parameters computed;
-   * @param[ict] index current clusters;
-   * @param[labels] current labels;
+   * @param[warpingParameters] warping parameters computed;
+   * @param[clusterIndices] index current clusters;
+   * @param[observationMemberships] current labels;
    */
   virtual void Normalize(
-      arma::mat &par,
-      const arma::urowvec &ict,
-      const arma::urowvec &labels
+      arma::mat &warpingParameters,
+      const arma::urowvec &clusterIndices,
+      const arma::urowvec &observationMemberships
   ) = 0;
 
   /// Compute dissimilarity after warp for optimization.
   /**
-   * @param[w_set] warping_set element with the functions to warp.
-   * @param[arg] best parameters that will be computed.
+   * @param[warpingSet] warping_set element with the functions to warp.
+   * @param[warpingParameters] best parameters that will be computed.
    */
   virtual double GetDissimilarityAfterWarping(
       const WarpingSet &warpingSet,
-      const arma::colvec &arg) = 0;
+      const arma::rowvec &warpingParameters) = 0;
 
 protected:
   arma::rowvec m_ParameterLowerBounds;

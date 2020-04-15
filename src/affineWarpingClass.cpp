@@ -5,100 +5,105 @@ unsigned int AffineWarpingFunction::GetNumberOfParameters()
     return 2;
 }
 
-arma::mat AffineWarpingFunction::ApplyWarping(const arma::mat &x, const arma::mat &par)
+arma::mat AffineWarpingFunction::ApplyWarping(const arma::mat &inputGrids,
+                                              const arma::mat &warpingParameters)
 {
-    arma::mat out(x.n_rows, x.n_cols);
+    arma::mat outputGrids(inputGrids.n_rows, inputGrids.n_cols);
 
-    for (unsigned int i = 0;i < x.n_rows;++i)
-        out.row(i) = par(0, i) * x.row(i) + par(1, i);
+    for (unsigned int i = 0;i < inputGrids.n_rows;++i)
+        outputGrids.row(i) = inputGrids.row(i) * warpingParameters(i, 0) + warpingParameters(i, 1);
 
-    return out;
+    return outputGrids;
 }
 
 void AffineWarpingFunction::SetParameterBounds(const arma::rowvec &warpingOptions,
-                                               const arma::mat &x)
+                                               const arma::mat &inputGrids)
 {
     double dl = warpingOptions(0);
     if (dl < 0 || dl > 1)
         Rcpp::stop("The warping option dl for the dilation parameter should be in [0, 1], as the bounds are computed as [1-dl, 1+dl] centered around the unit dilation.");
 
     double sl = warpingOptions(1);
-    double minRange = arma::as_scalar(arma::min(arma::max(x, 1) - arma::min(x, 1)));
+    double minRange = arma::min(arma::max(inputGrids, 1) - arma::min(inputGrids, 1));
 
     m_ParameterLowerBounds = { 1 - dl, -sl * minRange};
     m_ParameterUpperBounds = { 1 + dl,  sl * minRange};
 }
 
-arma::mat AffineWarpingFunction::GetFinalWarping(const arma::cube &parameters_vec,
-                                                 const arma::urowvec &labels,
-                                                 const arma::urowvec &ict)
+arma::mat AffineWarpingFunction::GetFinalWarping(const arma::cube &warpingParametersContainer,
+                                                 const arma::urowvec &observationMemberships,
+                                                 const arma::urowvec &clusterIndices)
 {
-    unsigned int numberOfParameters = parameters_vec.n_rows;
-    unsigned int numberOfObservations = parameters_vec.n_cols;
-    unsigned int numberOfIterations = parameters_vec.n_slices;
-    arma::mat out(numberOfParameters, numberOfObservations);
-    out.row(0).ones();
-    arma::rowvec a;
-    arma::rowvec b;
+    unsigned int numberOfParameters = warpingParametersContainer.n_rows;
+    unsigned int numberOfObservations = warpingParametersContainer.n_cols;
+    unsigned int numberOfIterations = warpingParametersContainer.n_slices;
+    arma::mat outputWarpingParameters(numberOfObservations, numberOfParameters, arma::fill::zeros);
+    outputWarpingParameters.col(0).ones();
+    arma::colvec dilationParameters;
+    arma::colvec shiftParameters;
 
     for (unsigned int i = 0;i < numberOfIterations;++i)
     {
-        a = parameters_vec(arma::span(0), arma::span::all, arma::span(i));
-        b = parameters_vec(arma::span(1), arma::span::all, arma::span(i));
-        out.row(0) = out.row(0) % a;
-        out.row(1) = out.row(1) % a + b;
+        dilationParameters = warpingParametersContainer.slice(i).col(0);
+        shiftParameters = warpingParametersContainer.slice(i).col(1);
+        outputWarpingParameters.col(0) %= dilationParameters;
+        outputWarpingParameters.col(1) %= dilationParameters;
+        outputWarpingParameters.col(1) += shiftParameters;
     }
 
-    arma::urowvec sel;
-    arma::colvec m;
+    arma::uvec observationIndices;
+    arma::rowvec meanParameters;
+    arma::mat clusterValues;
 
-    for (unsigned int k = 0;k < ict.size();++k)
+    for (unsigned int k = 0;k < clusterIndices.size();++k)
     {
-        sel = arma::find(labels == ict(k)).t();
-
-        //compute means
-        m = arma::sum(out.cols(sel), 1) / sel.size();
-
-        for (unsigned int i = 0;i < sel.size();++i)
-        {
-            out(0, sel(i)) = out(0, sel(i)) / m(0);
-            out(1, sel(i)) = (out(1, sel(i)) - m(1)) / m(0);
-        }
+        observationIndices = arma::find(observationMemberships == clusterIndices(k));
+        meanParameters = arma::mean(outputWarpingParameters.rows(observationIndices), 0);
+        clusterValues = outputWarpingParameters.rows(observationIndices);
+        clusterValues.col(0) /= meanParameters(0);
+        clusterValues.col(1) -= meanParameters(1);
+        clusterValues.col(1) /= meanParameters(0);
+        outputWarpingParameters.rows(observationIndices) = clusterValues;
     }
 
-    return out;
+    return outputWarpingParameters;
 }
 
-void AffineWarpingFunction::Normalize(arma::mat &par,
-                                      const arma::urowvec &ict,
-                                      const arma::urowvec &labels)
+void AffineWarpingFunction::Normalize(arma::mat &warpingParameters,
+                                      const arma::urowvec &clusterIndices,
+                                      const arma::urowvec &observationMemberships)
 {
-    arma::urowvec sel;
-    arma::colvec par_mean;
+    arma::uvec observationIndices;
+    arma::rowvec meanParameters;
+    arma::mat clusterValues;
 
-    for (unsigned int i = 0;i < ict.size();++i)
+    for (unsigned int i = 0;i < clusterIndices.size();++i)
     {
-        sel = arma::find(labels == ict(i)).t();
+        observationIndices = arma::find(observationMemberships == clusterIndices(i));
+        meanParameters = arma::mean(warpingParameters.rows(observationIndices), 0);
 
-        // calcolo medie cluster
-        par_mean = arma::mean(par.cols(sel), 1);
+        clusterValues = warpingParameters.rows(observationIndices);
+        clusterValues.col(0) /= meanParameters(0);
+        clusterValues.col(1) -= meanParameters(1);
+        clusterValues.col(1) /= meanParameters(0);
+        warpingParameters.rows(observationIndices) = clusterValues;
 
-        // aggiorno shift e dilation
-        for (unsigned int j = 0;j < sel.size();++j)
-        {
-            // normalized dilation
-            par(0, sel(j)) = par(0, sel(j)) / par_mean(0);
-            // normalized shift
-            par(1, sel(j)) = -par(0, sel(j)) * par_mean(1) / par_mean(0) + par(1, sel(j));
-        }
+        // // aggiorno shift e dilation
+        // for (unsigned int j = 0;j < observationIndices.size();++j)
+        // {
+        //     // normalized dilation
+        //     warpingParameters(0, observationIndices(j)) = warpingParameters(0, observationIndices(j)) / meanParameters(0);
+        //     // normalized shift
+        //     warpingParameters(1, observationIndices(j)) = -warpingParameters(0, observationIndices(j)) * meanParameters(1) / meanParameters(0) + warpingParameters(1, observationIndices(j));
+        // }
     }
 }
 
 double AffineWarpingFunction::GetDissimilarityAfterWarping(const WarpingSet &warpingSet,
-                                                           const arma::colvec &arg)
+                                                           const arma::rowvec &warpingParameters)
 {
     return warpingSet.dissimilarityPointer->GetDistance(
-            arg(0) * warpingSet.inputGrid1 + arg(1),
+            warpingParameters(0) * warpingSet.inputGrid1 + warpingParameters(1),
             warpingSet.inputGrid2,
             warpingSet.inputValues1,
             warpingSet.inputValues2
