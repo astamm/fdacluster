@@ -87,6 +87,8 @@ FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::r
     if (m_Space == Euclidean)
     {
         arma::rowvec workVector;
+        outputPair.Values1.set_size(nDim, nPts);
+        outputPair.Values2.set_size(nDim, nPts);
 
         for (unsigned int i = 0;i < nDim;++i)
         {
