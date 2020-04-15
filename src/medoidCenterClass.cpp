@@ -11,7 +11,6 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
     CenterType outputCenter;
 
     unsigned int numberOfObservations = inputValues.n_rows;
-    unsigned int numberOfDimensions = inputValues.n_cols;
     unsigned int numberOfPoints = inputValues.n_slices;
 
     if (inputGrid.n_rows != numberOfObservations)
@@ -62,7 +61,6 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
     CenterType outputCenter;
 
     unsigned int numberOfObservations = inputValues.n_rows;
-    unsigned int numberOfDimensions = inputValues.n_cols;
     unsigned int numberOfPoints = inputValues.n_slices;
 
     if (inputGrid.n_rows != numberOfObservations)

@@ -19,9 +19,9 @@ void DilationWarpingFunction::SetParameterBounds(const arma::rowvec &warpingOpti
                                                  const arma::mat &x)
 {
     double dl = warpingOptions(0);
-    if (df < 0 || dl > 1)
+    if (dl < 0 || dl > 1)
         Rcpp::stop("The warping option dl for the dilation parameter should be in [0, 1], as the bounds are computed as [1-dl, 1+dl] centered around the unit dilation.");
-        
+
     m_ParameterLowerBounds = { 1 - dl };
     m_ParameterUpperBounds = { 1 + dl };
 }

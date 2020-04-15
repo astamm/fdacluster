@@ -25,7 +25,7 @@ void KmaModel::SetInputData(const arma::mat &grids, const arma::cube &values)
   m_NumberOfObservations = values.n_rows;
   m_NumberOfDimensions = values.n_cols;
   m_NumberOfPoints = values.n_slices;
-  
+
   if (m_InputGrids.n_rows != m_NumberOfObservations)
     Rcpp::stop("The number of observations in the grids does not match the number of observations in the values.");
 
@@ -124,10 +124,11 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << " - Compute overall center: " << m_ComputeOverallCenter << std::endl;
 }
 
-void KmaModel::UpdateTemplates(const arma::mat& x_reg,
-                               const arma::urowvec& ict,
-                               const arma::urowvec& labels,
-                               arma::cube& templates)
+void KmaModel::UpdateTemplates(const arma::mat& warpedGrids,
+                               const arma::urowvec& clusterIndices,
+                               const arma::urowvec& observationMemberships,
+                               arma::mat& templateGrids,
+                               arma::cube& templateValues)
 {
   // switch to choose how to parallelize
   // case ClusterLoop: each thread one cluster
@@ -144,40 +145,42 @@ void KmaModel::UpdateTemplates(const arma::mat& x_reg,
 #pragma omp parallel for num_threads(m_NumberOfThreads)
 #endif
 
-    for (unsigned int i = 0;i < ict.size();++i)
+    for (unsigned int i = 0;i < clusterIndices.size();++i)
     {
-      selectedObservations = arma::find(labels == ict(i));
+      selectedObservations = arma::find(observationMemberships == clusterIndices(i));
 
       centerComputer = m_CenterPointer->GetCenter(
-        x_reg.rows(selectedObservations),
+        warpedGrids.rows(selectedObservations),
         GetObservations(m_InputValues, selectedObservations),
         m_DissimilarityPointer
       );
 
-      templates.tube(arma::span(i), arma::span::all) = centerComputer.centerValues;
+      templateGrids.row(i) = centerComputer.centerGrid;
+      templateValues.tube(arma::span(i), arma::span::all) = centerComputer.centerValues;
     }
-    
+
     break;
 
   case DistanceLoop:
 
-    for (unsigned int i = 0;i < ict.size();++i)
+    for (unsigned int i = 0;i < clusterIndices.size();++i)
     {
-      selectedObservations = arma::find(labels == ict(i));
+      selectedObservations = arma::find(observationMemberships == clusterIndices(i));
 
       centerComputer = m_CenterPointer->GetCenter(
-        x_reg.rows(selectedObservations),
+        warpedGrids.rows(selectedObservations),
         GetObservations(m_InputValues, selectedObservations),
         m_DissimilarityPointer,
         m_NumberOfThreads
       );
 
-      templates.tube(arma::span(i), arma::span::all) = centerComputer.centerValues;
+      templateGrids.row(i) = centerComputer.centerGrid;
+      templateValues.tube(arma::span(i), arma::span::all) = centerComputer.centerValues;
 
       if (m_UseVerbose)
         Rcpp::Rcout << "Template num. " << i << " updated." << std::endl;
     }
-    
+
     break;
   }
 }
@@ -264,6 +267,7 @@ Rcpp::List KmaModel::FitModel()
   bool totalDissimilarityCondition = true;
 
   arma::mat warpingParameters(m_NumberOfObservations, numberOfParameters);
+  unsigned int numberOfClusters = m_NumberOfClusters;
 
   while (distanceCondition && membershipCondition && iterationCondition && totalDissimilarityCondition)
   {
@@ -287,14 +291,8 @@ Rcpp::List KmaModel::FitModel()
     if (m_UseVerbose)
       Rcpp::Rcout << iter << ". Compute best warping: " << std::endl;
 
-#ifdef _OPENMP
-#pragma omp parallel for num_threads(m_NumberOfThreads)
-#endif
-
-    // inizializzo container warp_temp
-    unsigned int numberOfTemplates = templates.n_rows;
-    arma::rowvec workingObservationDistances(numberOfTemplates);
-    arma::mat workingParameterValues(numberOfTemplates, numberOfParameters);
+    arma::rowvec workingObservationDistances(numberOfClusters);
+    arma::mat workingParameterValues(numberOfClusters, numberOfParameters);
     arma::rowvec startingParameters(numberOfParameters);
     arma::rowvec workingWarpedGrid;
     arma::rowvec workingTemplateGrid;
@@ -302,38 +300,47 @@ Rcpp::List KmaModel::FitModel()
     arma::mat workingTemplateValues;
     WarpingSet warpingSet;
 
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(m_NumberOfThreads)
+#endif
+
     for (unsigned int i = 0;i < m_NumberOfObservations;++i)
     {
       workingWarpedGrid = warpedGrids.row(i);
       workingValues = GetObservation(m_InputValues, i);
-      
+
       // Compute warping parameters for each template
-      for (unsigned int j = 0;j < numberOfTemplates;++j)
+      for (unsigned int j = 0;j < numberOfClusters;++j)
       {
         workingTemplateGrid = templateGrids.row(j);
         workingTemplateValues = templateValues.tube(arma::span(j), arma::span::all);
 
         warpingSet = m_WarpingPointer->SetInputData(
-          workingWarpedGrid, 
-          workingTemplateGrid, 
-          workingValues, 
-          workingTemplateValues, 
+          workingWarpedGrid,
+          workingTemplateGrid,
+          workingValues,
+          workingTemplateValues,
           m_DissimilarityPointer
         );
 
-        auto fun = [this, &warpingSet] (const arma::vec &arg)
+        auto costFunction = [this, &warpingSet] (const arma::rowvec &arg)
         {
           return this->m_WarpingPointer->GetDissimilarityAfterWarping(warpingSet, arg);
         };
 
-        workingObservationDistances(j) = m_OptimizerPointer->Optimize(startingParameters, m_WarpingPointer, fun);
+        workingObservationDistances(j) = m_OptimizerPointer->Optimize(
+          startingParameters,
+          m_WarpingPointer,
+          costFunction
+        );
+
         workingParameterValues.row(j) = startingParameters;
       }
 
-      // fine iterazioni per ogni template
-      index(i) = index_temp.min();
-      labels(i) = ict(arma::index_min(index_temp));
-      parameters.col(i) = parameters_temp.col(arma::index_min(index_temp));
+      observationDistances(i) = workingObservationDistances.min();
+      unsigned int assignedTemplateIndex = arma::index_min(workingObservationDistances);
+      observationMemberships(i) = clusterIndices(assignedTemplateIndex);
+      warpingParameters.row(i) = workingParameterValues.row(assignedTemplateIndex);
     }
 
     if (m_UseVerbose)
@@ -341,15 +348,16 @@ Rcpp::List KmaModel::FitModel()
 
     timer.step( "warping "+ std::to_string(iter) );
 
-    //update current template list
-    ict = unique(labels);
+    // Update current template list
+    clusterIndices = arma::unique(observationMemberships);
+    numberOfClusters = clusterIndices.size();
 
     //PRINT
     if (m_UseVerbose)
     {
       Rcpp::Rcout << "current cluster vector updated" << std::endl;
-      ict.print();
-      std::map<unsigned int,unsigned int> mcl = tableC(labels);
+      clusterIndices.print();
+      std::map<unsigned int,unsigned int> mcl = tableC(observationMemberships);
       for(auto it = mcl.cbegin(); it != mcl.cend(); ++it)
         Rcpp::Rcout <<"cluster num: "<< it->first << " has " << it->second << " elements;" << std::endl;
     }
@@ -359,40 +367,46 @@ Rcpp::List KmaModel::FitModel()
       if (m_UseVerbose)
         Rcpp::Rcout << "Fence algorithm: "<< std::endl;
 
-      iterativeFence(parameters, iter, labels, index, m_WarpingPointer, m_OptimizerPointer, templates,
-                     x_reg, m_InputValues, x_out, m_DissimilarityPointer, ict, m_UseVerbose);
+      iterativeFence(
+        warpingParameters,
+        iter,
+        observationMemberships,
+        observationDistances,
+        m_WarpingPointer,
+        m_OptimizerPointer,
+        templateValues,
+        warpedGrids,
+        m_InputValues,
+        templateGrids,
+        m_DissimilarityPointer,
+        clusterIndices,
+        m_UseVerbose
+      );
 
       if (m_UseVerbose)
         Rcpp::Rcout << "Done" << std::endl;
     }
 
-    // normalizzazione
+    // Normalization
     if (m_UseVerbose)
       Rcpp::Rcout << "Parameter normalization: ";
 
-    m_WarpingPointer->Normalize(parameters, ict, labels);
+    m_WarpingPointer->Normalize(warpingParameters, clusterIndices, observationMemberships);
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Done" << std::endl;
 
-    // salvo parametri
-    parameters_vec(arma::span::all, arma::span::all, arma::span(iter - 1)) = parameters;
+    // Store parameter values in container
+    warpingParametersContainer.slice(iter - 1) = warpingParameters;
 
-    //update x_reg and x_out
+    // Update individual warped grids
     if (m_UseVerbose)
-      Rcpp::Rcout << "Update x_reg and x_out: ";
+      Rcpp::Rcout << "Update individual warped grids: ";
 
-    x_reg = m_WarpingPointer->ApplyWarping(x_reg, parameters);
-    x_out = arma::linspace<arma::rowvec>(
-      GetCommonLowerBound(x_reg),
-      GetCommonUpperBound(x_reg),
-      m_NumberOfPoints
-    );
+    warpedGrids = m_WarpingPointer->ApplyWarping(warpedGrids, warpingParameters);
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Done" << std::endl;
-
-    x_out_vec(iter) = x_out;
 
     timer.step( "fence/norm/update "+ std::to_string(iter) );
 
@@ -400,23 +414,19 @@ Rcpp::List KmaModel::FitModel()
     if (m_UseVerbose)
       Rcpp::Rcout << "Compute new templates: " << std::endl;
 
-    templates_vec(iter - 1) = templates;
-    templates.set_size(ict.size(), m_NumberOfPoints, m_NumberOfDimensions);
+    templateGridsContainer.slice(iter- 1) = templateGrids;
+    templateValuesContainer(iter - 1) = templateValues;
+
+    templateGrids.set_size(numberOfClusters, m_NumberOfPoints);
+    templateValues.set_size(numberOfClusters, m_NumberOfDimensions, m_NumberOfPoints);
 
     this->UpdateTemplates(
-      x_reg,
-      ict,
-      labels,
-      templates
+      warpedGrids,
+      clusterIndices,
+      observationMemberships,
+      templateGrids,
+      templateValues
     );
-
-    if (m_UseVerbose)
-    {
-      Rcpp::Rcout <<"Templates updated" << std::endl;
-      Rcpp::Rcout << "While condition" << std::endl;
-      Rcpp::Rcout << "dissim cambiata piu di toll: " << (sum( abs(index-index_old) < m_Tolerance) < m_NumberOfObservations) << std::endl;
-      Rcpp::Rcout << "almeno un etichetta cambiata: " << (sum( labels == labels_old  ) != m_NumberOfObservations) << std::endl;
-    }
 
     //check total smilarity
     if (m_CheckTotalSimilarity)
@@ -424,20 +434,20 @@ Rcpp::List KmaModel::FitModel()
       if (m_UseVerbose)
         Rcpp::Rcout << "Check total similarity: ";
 
-      double tot = sum(index);
-      double tot_old = sum(index_old);
+      double totalDissimilarity = arma::sum(observationDistances);
+      double oldTotalDissimilarity = arma::sum(oldObservationDistances);
 
-      // sel la distanza totale aumenta
-      if (tot_old < tot)
+      // if total distance increased
+      if (oldTotalDissimilarity < totalDissimilarity)
       {
-        still_in = false;
-        templates = templates_vec(iter - 1);
-        index = index_old;
-        labels = labels_old;
-        x_out = x_out_vec(iter - 1);
+        totalDissimilarityCondition = false;
+        templateGrids = templateGridsContainer.slice(iter - 1);
+        templateValues = templateValuesContainer(iter - 1);
+        observationDistances = oldObservationDistances;
+        observationMemberships = oldObservationMemberships;
 
         if (m_UseVerbose)
-          Rcpp::Rcout << "Total similarity didn't increase. ";
+          Rcpp::Rcout << "Total dissimilarity did not decrease. ";
       }
 
       if (m_UseVerbose)
@@ -445,11 +455,11 @@ Rcpp::List KmaModel::FitModel()
     }
 
     timer.step( "newtemplates "+ std::to_string(iter) );
+  }
 
-  }//fine while
-
-  parameters_vec.resize(numberOfParameters, m_NumberOfObservations, iter);
-  templates_vec(iter) = templates;
+  warpingParametersContainer.resize(m_NumberOfObservations, numberOfParameters, iter);
+  templateGridsContainer.slice(iter) = templateGrids;
+  templateValuesContainer(iter) = templateValues;
 
   if (m_UseVerbose)
     Rcpp::Rcout << "End while iterations" << std::endl;
@@ -460,50 +470,60 @@ Rcpp::List KmaModel::FitModel()
   if (m_UseVerbose)
     Rcpp::Rcout << "Final warping: ";
 
-  arma::mat final_par = m_WarpingPointer->GetFinalWarping(parameters_vec, labels, ict);
+  arma::mat finalWarpingParameters = m_WarpingPointer->GetFinalWarping(
+    warpingParametersContainer,
+    observationMemberships,
+    clusterIndices
+  );
 
   if (m_UseVerbose)
     Rcpp::Rcout << "Done" << std::endl;
 
-  arma::field<arma::mat> par_vec(iter);
-  for(unsigned int k = 0;k < iter;++k)
-    par_vec(k) = parameters_vec.slice(k);
+  // Convert cube to field for conversion to List in R
+  arma::field<arma::mat> listOfEstimatedParameters(iter);
+  arma::field<arma::mat> listOfTemplateGrids(iter);
 
-  Rcpp::NumericVector out1 = Rcpp::wrap(original_center.centerGrid);
+  for (unsigned int k = 0;k < iter;++k)
+  {
+    listOfEstimatedParameters(k) = warpingParametersContainer.slice(k);
+    listOfTemplateGrids(k) = templateGridsContainer.slice(k);
+  }
+
+  Rcpp::NumericVector out1 = Rcpp::wrap(overallCenter.centerGrid);
   out1.attr("dim") = R_NilValue;
 
-  Rcpp::NumericVector out2 = Rcpp::wrap(original_center.distancesToCenter);
+  Rcpp::NumericVector out2 = Rcpp::wrap(overallCenter.distancesToCenter);
   out2.attr("dim") = R_NilValue;
 
-  Rcpp::NumericVector out3 = Rcpp::wrap(x_out);
+  Rcpp::NumericMatrix out3 = Rcpp::wrap(templateGrids);
   out3.attr("dim") = R_NilValue;
 
-  Rcpp::NumericVector out4 = Rcpp::wrap(index);
+  Rcpp::NumericVector out4 = Rcpp::wrap(observationDistances);
   out4.attr("dim") = R_NilValue;
 
-  Rcpp::NumericVector out7 = Rcpp::wrap(labels+1);
+  Rcpp::NumericVector out7 = Rcpp::wrap(observationMemberships + 1);
   out7.attr("dim") = R_NilValue;
 
-  arma::field<arma::cube> out8 = templates_vec.cols(0, iter);
-  arma::field<arma::rowvec> out9 = x_out_vec.cols(0, iter);
+  arma::field<arma::cube> out8 = templateValuesContainer.rows(0, iter);
+  arma::field<arma::mat> out9 = listOfTemplateGrids;
 
   timer.step( "output ");
 
   return ListBuilder()
-    .add("iterations", iter)
-    .add("n.clust", m_NumberOfClusters)
-    .add("x.center.orig",out1)
-    .add("y.center.orig",original_center.centerValues)
-    .add("similarity.origin",out2)
-    .add("x.final", x_reg)
-    .add("n.clust.final", ict.size())
-    .add("x.centers.final", out3)
-    .add("y.centers.final",templates)
-    .add("templates_vec",out8)
-    .add("x_out_vec",out9)
-    .add("labels",out7)
-    .add("similarity.final",out4)
-    .add("parameters.list", par_vec)
-    .add("parameters", final_par)
-    .add("timer",timer);
+    .add("iterations",        iter)
+    .add("n.clust",           m_NumberOfClusters)
+    .add("x.center.orig",     out1)
+    .add("y.center.orig",     overallCenter.centerValues)
+    .add("similarity.origin", out2)
+    .add("x.final",           warpedGrids)
+    .add("n.clust.final",     clusterIndices.size())
+    .add("x.centers.final",   out3)
+    .add("y.centers.final",   templateValues)
+    .add("templates_vec",     out8)
+    .add("x_out_vec",         out9)
+    .add("labels",            out7)
+    .add("similarity.final",  out4)
+    .add("parameters.list",   listOfEstimatedParameters)
+    .add("parameters",        finalWarpingParameters)
+    .add("timer",             timer);
 }

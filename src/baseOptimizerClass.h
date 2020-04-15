@@ -9,12 +9,13 @@
 class BaseOptimizerFunction
 {
 public:
-    using ParametersType = dlib::matrix<double,0,1>;
+  using ParametersType = dlib::matrix<double,0,1>;
 
-    virtual double Optimize(
-            arma::rowvec &arg,
-            std::shared_ptr<BaseWarpingFunction> &warpingFunction,
-            std::function<double(arma::colvec)> fun) = 0;
+  virtual double Optimize(
+      arma::rowvec &initialParameters,
+      const std::shared_ptr<BaseWarpingFunction> &warpingFunction,
+      const std::function<double(arma::rowvec)> &costFunction
+  ) = 0;
 };
 
 #endif /* BASEOPTIMIZERCLASS_H */

@@ -4,6 +4,7 @@
 Rcpp::List kmap(const arma::mat &x,
                 const arma::cube &y,
                 const arma::urowvec &seeds,
+                const arma::rowvec &warping_options,
                 const unsigned int &n_clust,
                 const unsigned int &maximum_number_of_iterations,
                 const unsigned int &number_of_threads,

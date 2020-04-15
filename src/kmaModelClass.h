@@ -82,10 +82,11 @@ public:
 
     // Update templates.
     void UpdateTemplates(
-            const arma::mat& x_reg,
-            const arma::urowvec& ict,
-            const arma::urowvec& labels,
-            arma::cube& templates
+            const arma::mat& warpedGrids,
+            const arma::urowvec& clusterIndices,
+            const arma::urowvec& observationMemberships,
+            arma::mat& templateGrids,
+            arma::cube& templateValues
     );
 
     /// Method to execute the algorithm.

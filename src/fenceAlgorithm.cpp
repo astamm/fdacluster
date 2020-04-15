@@ -59,7 +59,7 @@ void iterativeFence(arma::mat parameters,
             unsigned int nt = templates.n_rows;
             arma::rowvec index_temp(nt);
             arma::mat parameters_temp(n_par,nt);
-            arma::colvec arg(n_par);
+            arma::rowvec arg(n_par);
             Rcpp::List interpolationResults = approx(
                 x_reg.row(obs),
                 GetObservation(y, obs),
