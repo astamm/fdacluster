@@ -1,5 +1,10 @@
 #include "noWarpingClass.h"
 
+unsigned int NoWarpingFunction::GetNumberOfParameters()
+{
+    return 0;
+}
+
 arma::mat NoWarpingFunction::ApplyWarping(const arma::mat &x, const arma::mat &par)
 {
     return x;

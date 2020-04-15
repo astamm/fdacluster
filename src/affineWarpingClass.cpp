@@ -1,5 +1,10 @@
 #include "affineWarpingClass.h"
 
+unsigned int AffineWarpingFunction::GetNumberOfParameters()
+{
+    return 2;
+}
+
 arma::mat AffineWarpingFunction::ApplyWarping(const arma::mat &x, const arma::mat &par)
 {
     arma::mat out(x.n_rows, x.n_cols);

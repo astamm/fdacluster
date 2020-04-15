@@ -11,7 +11,7 @@ class ShiftWarpingFunction : public BaseWarpingFunction
    */
 
 public:
-  unsigned int GetNumberOfParameters() {return 1;}
+  unsigned int GetNumberOfParameters();
 
   arma::mat ApplyWarping(const arma::mat &x, const arma::mat &par);
   void SetParameterBounds(const arma::rowvec &war_opt, const arma::mat &x);

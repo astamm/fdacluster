@@ -1,5 +1,10 @@
 #include "shiftWarpingClass.h"
 
+unsigned int ShiftWarpingFunction::GetNumberOfParameters()
+{
+    return 1;
+}
+
 arma::mat ShiftWarpingFunction::ApplyWarping(const arma::mat &x, const arma::mat &par)
 {
     arma::mat out(x.n_rows,x.n_cols);
