@@ -11,7 +11,6 @@
 
 #include "utilities.h"
 #include "fenceAlgorithm.h"
-#include "newCentersMethod.h"
 
 #include <Rcpp/Benchmark/Timer.h>
 
@@ -123,6 +122,62 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << " - Compute original centers: " << m_ComputeOriginalCenters << std::endl;
 }
 
+void KmaModel::UpdateTemplates(const arma::mat& x_reg,
+                               const arma::urowvec& ict,
+                               const arma::urowvec& labels,
+                               arma::cube& templates)
+{
+  // switch to choose how to parallelize
+  // case ClusterLoop: each thread one cluster
+  // case DistanceLoop: each cluster all the threads (available only with medoid)
+
+  arma::uvec selectedObservations;
+  CenterType centerComputer;
+
+  switch(m_ParallelMethod)
+  {
+  case ClusterLoop:
+
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(m_NumberOfThreads)
+#endif
+
+    for (unsigned int i = 0;i < ict.size();++i)
+    {
+      selectedObservations = arma::find(labels == ict(i));
+
+      centerComputer = m_CenterPointer->GetCenter(
+        x_reg.rows(selectedObservations),
+        util::GetObservations(m_InputValues, selectedObservations),
+        m_DissimilarityPointer
+      );
+
+      templates.slice(i) = centerComputer.centerValues;
+    }
+    break;
+
+  case DistanceLoop:
+
+    for (unsigned int i = 0;i < ict.size();++i)
+    {
+      selectedObservations = arma::find(labels == ict(i));
+
+      centerComputer = m_CenterPointer->GetCenterParallel(
+        x_reg.rows(selectedObservations),
+        util::GetObservations(m_InputValues, selectedObservations),
+        m_DissimilarityPointer,
+        m_NumberOfThreads
+      );
+
+      templates.slice(i) = centerComputer.centerValues;
+
+      if (m_UseVerbose)
+        Rcpp::Rcout << "Template num. " << i << " updated." << std::endl;
+    }
+    break;
+  }
+}
+
 Rcpp::List KmaModel::FitModel()
 {
   if (m_UseVerbose)
@@ -171,7 +226,7 @@ Rcpp::List KmaModel::FitModel()
     if (m_UseVerbose)
       Rcpp::Rcout << "Compute center_origin and dissimilarity with others: ";
 
-    original_center = m_CenterPointer->GetCenter(m_InputGrids, m_InputValues, m_DissimilarityPointer, x_out);
+    original_center = m_CenterPointer->GetCenter(m_InputGrids, m_InputValues, m_DissimilarityPointer);
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Done" << std::endl;
@@ -352,17 +407,11 @@ Rcpp::List KmaModel::FitModel()
     templates_vec(iter - 1) = templates;
     templates.set_size(ict.size(), m_NumberOfPoints, m_NumberOfDimensions);
 
-    newCenters(
+    this->UpdateTemplates(
       x_reg,
-      m_InputValues,
-      x_out,
-      m_DissimilarityPointer,
-      m_CenterPointer,
-      parallel_opt,
-      templates,
       ict,
       labels,
-      m_UseVerbose
+      templates
     );
 
     if (m_UseVerbose)

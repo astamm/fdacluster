@@ -151,25 +151,21 @@ double util::GetCommonUpperBound(const arma::mat& inputGrids)
 //
 arma::mat util::GetObservation(const arma::cube& inputData, unsigned int observationIndex)
 {
-    arma::mat outputMatrix = inputData(arma::span(observationIndex), arma::span::all, arma::span::all);
-
-    if (inputData.n_slices > 1) // Output observation will be of size NDIM x NPTS
-        return outputMatrix.t();
-
-    // Otherwise of size NPTS x 1
-    // TODO: weird, better off always outputting NPTS x NDIM
-    return outputMatrix;
+    return inputData(arma::span(observationIndex), arma::span::all, arma::span::all);
 }
 
 //
 // observations
 //
-arma::cube util::GetObservations(const arma::cube& inputData, arma::urowvec& observationIndices)
+arma::cube util::GetObservations(const arma::cube& inputData, arma::uvec& observationIndices)
 {
     arma::cube outputCube(observationIndices.size(), inputData.n_cols, inputData.n_slices);
 
     for (unsigned int i = 0;i < observationIndices.size();++i)
-        outputCube(arma::span(i), arma::span::all, arma::span::all) = inputData(arma::span(observationIndices(i)), arma::span::all, arma::span::all);
+    {
+        unsigned int observationIndex = observationIndices(i);
+        outputCube.tube(arma::span(i), arma::span::all) = GetObservation(inputData, observationIndex);
+    }
 
     return outputCube;
 }

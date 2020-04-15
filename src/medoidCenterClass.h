@@ -13,7 +13,7 @@ public:
             const std::shared_ptr<BaseDissimilarityFunction>& dissimilarityPointer
     );
 
-    CenterType GetCenterParallel(
+    CenterType GetCenter(
             const arma::mat& inputGrid,
             const arma::cube& inputValues,
             const std::shared_ptr<BaseDissimilarityFunction>& dissimilarityPointer,

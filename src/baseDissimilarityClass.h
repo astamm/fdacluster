@@ -57,7 +57,7 @@ public:
   enum SpaceType GetSpace() {return m_Space;}
 
 private:
-  SpaceType m_Space;
+  enum SpaceType m_Space;
 };
 
 #endif /* BASEDISSIMILARITYCLASS_H */

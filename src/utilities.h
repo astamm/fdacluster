@@ -113,7 +113,7 @@ arma::mat GetObservation(const arma::cube& inputData, unsigned int observationIn
  *  @param[observationIndices] Indices of the observations to extract.
  *  @return Extracted observations.
  */
-arma::cube GetObservations(const arma::cube& inputData, arma::urowvec& observationIndices);
+arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationIndices);
 
 /// Approximate a function on a new grid by linear interpolation.
 /**

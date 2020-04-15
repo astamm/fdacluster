@@ -8,6 +8,12 @@
 #include "baseCenterClass.h"
 #include "baseOptimizerClass.h"
 
+enum ParallelType
+{
+    ClusterLoop,
+    DistanceLoop
+};
+
 /// Main class.
 /** This class handles loading of the problem and execution of the algorithm.
  */
@@ -55,7 +61,7 @@ public:
     void SetNumberOfClusters(const unsigned int &val) {m_NumberOfClusters = val;}
     void SetMaximumNumberOfIterations(const unsigned int &val) {m_MaximumNumberOfIterations = val;}
     void SetNumberOfThreads(const unsigned int &val) {m_NumberOfThreads = val;}
-    void SetParallelMethod(const unsigned int &val) {m_ParallelMethod = val;}
+    void SetParallelMethod(const unsigned int &val) {m_ParallelMethod = ParallelType(val);}
 
     void SetShiftUpperBound(const double &val) {m_ShiftUpperBound = val;}
     void SetDilationUpperBound(const double &val) {m_DilationUpperBound = val;}
@@ -76,6 +82,14 @@ public:
             const std::string &optimizerMethod
     );
 
+    // Update templates.
+    void UpdateTemplates(
+            const arma::mat& x_reg,
+            const arma::urowvec& ict,
+            const arma::urowvec& labels,
+            arma::cube& templates
+    );
+
     /// Method to execute the algorithm.
     Rcpp::List FitModel();
 
@@ -90,7 +104,8 @@ private:
     unsigned int m_NumberOfDimensions;
     unsigned int m_NumberOfPoints;
     unsigned int m_NumberOfThreads;
-    unsigned int m_ParallelMethod;
+
+    enum ParallelType m_ParallelMethod;
 
     double m_ShiftUpperBound;
     double m_DilationUpperBound;

@@ -24,7 +24,7 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
     // These auxiliary matrices will be of size nDim x nPts
     arma::mat workMatrix1, workMatrix2;
 
-    for (unsigned int i = 0;i < numberOfObservations;++i)
+    for (unsigned int i = 0;i < numberOfObservations - 1;++i)
     {
         workMatrix1 = inputValues(arma::span(i), arma::span::all, arma::span::all);
 
@@ -49,15 +49,15 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
 
     outputCenter.centerGrid = inputGrid.row(medoidIndex);
     outputCenter.centerValues = inputValues(arma::span(medoidIndex), arma::span::all, arma::span::all);
-    outputCenter.distancesToCenter = distanceVector.row(medoidIndex);
+    outputCenter.distancesToCenter = distanceMatrix.row(medoidIndex);
 
     return outputCenter;
 }
 
-CenterType MedoidCenterMethod::GetCenterParallel(const arma::mat& inputGrid,
-                                                 const arma::cube& inputValues,
-                                                 const std::shared_ptr<BaseDissimilarityFunction>& dissimilarityPointer,
-                                                 unsigned int nbThreads)
+CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
+                                         const arma::cube& inputValues,
+                                         const std::shared_ptr<BaseDissimilarityFunction>& dissimilarityPointer,
+                                         unsigned int nbThreads)
 {
     CenterType outputCenter;
 
@@ -74,10 +74,6 @@ CenterType MedoidCenterMethod::GetCenterParallel(const arma::mat& inputGrid,
     arma::mat distanceMatrix(numberOfObservations, numberOfObservations, arma::fill::zeros);
     // These auxiliary matrices will be of size nDim x nPts
     arma::mat workMatrix1, workMatrix2;
-
-    arma::field<arma::rowvec> distanceField(numberOfObservations);
-    for (unsigned int i = 0;i < numberOfObservations;++i)
-        distanceField(i).zeros(numberOfObservations);
 
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(nbThreads)
@@ -107,7 +103,7 @@ CenterType MedoidCenterMethod::GetCenterParallel(const arma::mat& inputGrid,
 
     outputCenter.centerGrid = inputGrid.row(medoidIndex);
     outputCenter.centerValues = inputValues(arma::span(medoidIndex), arma::span::all, arma::span::all);
-    outputCenter.distancesToCenter = distanceVector.row(medoidIndex);
+    outputCenter.distancesToCenter = distanceMatrix.row(medoidIndex);
 
     return outputCenter;
 }
