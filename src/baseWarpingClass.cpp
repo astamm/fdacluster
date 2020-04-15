@@ -16,3 +16,9 @@ WarpingSet BaseWarpingFunction::SetInputData(const arma::rowvec &grid1,
 
     return out;
 }
+
+void BaseWarpingFunction::SetParameterBounds(const arma::mat &bounds)
+{
+    m_ParameterLowerBounds = bounds.row(0);
+    m_ParameterUpperBounds = bounds.row(1);
+}

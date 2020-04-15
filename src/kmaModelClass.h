@@ -32,16 +32,16 @@ public:
         m_NumberOfDimensions = 1;
         m_NumberOfPoints = 1;
         m_NumberOfThreads = 1;
-        m_ParallelMethod = 0;
+        m_ParallelMethod = ClusterLoop;
 
         m_ShiftUpperBound = 0.15;
         m_DilationUpperBound = 0.15;
-        m_Tolerance = 0.001;
+        m_DistanceRelativeTolerance = 1.0e-3;
 
         m_UseFence = false;
         m_CheckTotalSimilarity = true;
         m_UseVerbose = true;
-        m_ComputeOriginalCenters = false;
+        m_ComputeOverallCenter = false;
 
         std::string m_InterpolationMethod = "linear";
         std::string m_WarpingMethod = "affine";
@@ -65,12 +65,12 @@ public:
 
     void SetShiftUpperBound(const double &val) {m_ShiftUpperBound = val;}
     void SetDilationUpperBound(const double &val) {m_DilationUpperBound = val;}
-    void SetTolerance(const double &val) {m_Tolerance = val;}
+    void SetDistanceRelativeTolerance(const double &val) {m_DistanceRelativeTolerance = val;}
 
     void SetUseFence(const bool &val) {m_UseFence = val;}
     void SetCheckTotalSimilarity(const bool &val) {m_CheckTotalSimilarity = val;}
     void SetUseVerbose(const bool &val) {m_UseVerbose = val;}
-    void SetComputeOriginalCenters(const bool &val) {m_ComputeOriginalCenters = val;}
+    void SetComputeOverallCenter(const bool &val) {m_ComputeOverallCenter = val;}
 
     void SetInterpolationMethod(const std::string &val) {m_InterpolationMethod = val;}
 
@@ -109,12 +109,12 @@ private:
 
     double m_ShiftUpperBound;
     double m_DilationUpperBound;
-    double m_Tolerance;
+    double m_DistanceRelativeTolerance;
 
     bool m_UseFence;
     bool m_CheckTotalSimilarity;
     bool m_UseVerbose;
-    bool m_ComputeOriginalCenters;
+    bool m_ComputeOverallCenter;
 
     std::string m_InterpolationMethod;
 

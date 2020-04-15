@@ -18,10 +18,10 @@ arma::mat AffineWarpingFunction::ApplyWarping(const arma::mat &x, const arma::ma
 void AffineWarpingFunction::SetParameterBounds(const arma::rowvec &war_opt,
                                                const arma::mat &x)
 {
-    double workScalar = arma::as_scalar(arma::min(arma::max(x, 1) - arma::min(x, 1)));
+    double minRange = arma::as_scalar(arma::min(arma::max(x, 1) - arma::min(x, 1)));
     double dl = war_opt(0), sl = war_opt(1);
-    m_ParameterLowerBounds = { 1 - dl, -sl * workScalar};
-    m_ParameterUpperBounds = { 1 + dl,  sl * workScalar};
+    m_ParameterLowerBounds = { 1 - dl, -sl * minRange};
+    m_ParameterUpperBounds = { 1 + dl,  sl * minRange};
 }
 
 arma::mat AffineWarpingFunction::GetFinalWarping(const arma::cube &parameters_vec,

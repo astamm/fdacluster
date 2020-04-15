@@ -10,11 +10,11 @@ Rcpp::List kmap(const arma::mat &x,
                 const unsigned int &parallel_method,
                 const double &shift_upper_bound,
                 const double &dilation_upper_bound,
-                const double &tolerance,
+                const double &distance_relative_tolerance,
                 const bool &use_fence,
                 const bool &check_total_similarity,
                 const bool &use_verbose,
-                const bool &compute_original_centers,
+                const bool &compute_overall_center,
                 const std::string &interpolation_method,
                 const std::string &warping_method,
                 const std::string &center_method,
@@ -34,12 +34,12 @@ Rcpp::List kmap(const arma::mat &x,
 
     model.SetShiftUpperBound(shift_upper_bound);
     model.SetDilationUpperBound(dilation_upper_bound);
-    model.SetTolerance(tolerance);
+    model.SetDistanceRelativeTolerance(distance_relative_tolerance);
 
     model.SetUseFence(use_fence);
     model.SetCheckTotalSimilarity(check_total_similarity);
     model.SetUseVerbose(use_verbose);
-    model.SetComputeOriginalCenters(compute_original_centers);
+    model.SetComputeOverallCenter(compute_overall_center);
 
     model.SetInterpolationMethod(interpolation_method);
     model.SetWarpingMethod(warping_method);

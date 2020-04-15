@@ -157,8 +157,8 @@ arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationI
 // approx
 //
 Rcpp::List approx(const arma::rowvec& inputGrid,
-                       const arma::mat& inputValues,
-                       const std::string interpolationMethod)
+                  const arma::mat& inputValues,
+                  const std::string interpolationMethod)
 {
     // inputGrid is assumed to be of size NDIM x NPTS
     // inputValues is assumed to be of size NPTS

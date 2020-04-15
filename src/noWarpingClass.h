@@ -13,7 +13,7 @@ public:
   unsigned int GetNumberOfParameters();
 
   arma::mat ApplyWarping(const arma::mat &x, const arma::mat &par);
-  void SetParameterBounds(const arma::rowvec &war_opt, const arma::mat &x);
+  void SetParameterBounds(const arma::rowvec &warpingOptions, const arma::mat &x);
 
   arma::mat GetFinalWarping(
       const arma::cube &parameters_vec,

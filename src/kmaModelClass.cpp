@@ -110,7 +110,7 @@ void KmaModel::Print(const std::string &warpingMethod,
 
   Rcpp::Rcout << "Information about convergence criteria:" << std::endl;
   Rcpp::Rcout << " - Maximum number of iterations: " << m_MaximumNumberOfIterations << std::endl;
-  Rcpp::Rcout << " - Tolerance: " << m_Tolerance << std::endl;
+  Rcpp::Rcout << " - Distance relative tolerance: " << m_DistanceRelativeTolerance << std::endl;
 
   Rcpp::Rcout << "Information about parallelization setup:" << std::endl;
   Rcpp::Rcout << " - Number of threads: " << m_NumberOfThreads << std::endl;
@@ -119,7 +119,7 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << "Other information:" << std::endl;
   Rcpp::Rcout << " - Use fence to robustify: " << m_UseFence << std::endl;
   Rcpp::Rcout << " - Check total similarity: " << m_CheckTotalSimilarity << std::endl;
-  Rcpp::Rcout << " - Compute original centers: " << m_ComputeOriginalCenters << std::endl;
+  Rcpp::Rcout << " - Compute overall center: " << m_ComputeOverallCenter << std::endl;
 }
 
 void KmaModel::UpdateTemplates(const arma::mat& x_reg,
@@ -152,7 +152,7 @@ void KmaModel::UpdateTemplates(const arma::mat& x_reg,
         m_DissimilarityPointer
       );
 
-      templates.slice(i) = centerComputer.centerValues;
+      templates.tube(arma::span(i), arma::span::all) = centerComputer.centerValues;
     }
     break;
 
@@ -169,7 +169,7 @@ void KmaModel::UpdateTemplates(const arma::mat& x_reg,
         m_NumberOfThreads
       );
 
-      templates.slice(i) = centerComputer.centerValues;
+      templates.tube(arma::span(i), arma::span::all) = centerComputer.centerValues;
 
       if (m_UseVerbose)
         Rcpp::Rcout << "Template num. " << i << " updated." << std::endl;
@@ -187,46 +187,43 @@ Rcpp::List KmaModel::FitModel()
   timer.step("start execution");
 
   //
-  //starting template approximated on x_out
+  // initial templates
   //
   if (m_UseVerbose)
     Rcpp::Rcout << "Compute initial templates: ";
 
-  arma::mat x_out(m_NumberOfPoints, m_NumberOfClusters);
-  arma::cube templates(m_NumberOfDimensions, m_NumberOfPoints, m_NumberOfClusters);
+  arma::mat templateGrids(m_NumberOfClusters, m_NumberOfPoints);
+  arma::cube templateValues(m_NumberOfClusters, m_NumberOfDimensions, m_NumberOfPoints);
 
-  arma::rowvec workingGrid;
-  arma::mat workingValues;
-  Rcpp::List workingList;
   for (unsigned int i = 0;i < m_NumberOfClusters;++i)
   {
-    workingGrid = m_InputGrids.row(m_SeedVector(i));
-    workingValues = m_InputValues(arma::span(m_SeedVector(i)), arma::span::all, arma::span::all);
-    workingList = approx(workingGrid, workingValues, m_InterpolationMethod);
-    x_out.col(i) = Rcpp::as<arma::vec>(workingList["grid"]);
-    templates.slice(i) = Rcpp::as<arma::mat>(workingList["values"]);
+    templateGrids.row(i) = m_InputGrids.row(m_SeedVector(i));
+    templateValues.tube(arma::span(i), arma::span::all) = GetObservation(m_InputValues, m_SeedVector(i));
   }
 
-  arma::field<arma::cube> templates_vec(1, m_MaximumNumberOfIterations);
-  arma::field<arma::mat> x_out_vec(1, m_MaximumNumberOfIterations);
-  x_out_vec(0) = x_out;
-  templates_vec(0) = templates;
+  // Initialize containers for storing
+  // template grids and values at each iteration
+  arma::cube templateGridsContainer(m_NumberOfClusters, m_NumberOfPoints, m_MaximumNumberOfIterations);
+  arma::field<arma::cube> templateValuesContainer(m_MaximumNumberOfIterations);
+
+  templateGridsContainer.slice(0) = templateGrids;
+  templateValuesContainer(0) = templateValues;
 
   if (m_UseVerbose)
     Rcpp::Rcout << "Done." << std::endl;
 
   //
-  //compute center_origin (to be fixed with new centers)
+  // compute center_origin (to be fixed with new centers)
   //
 
-  CenterType original_center;
+  CenterType overallCenter;
 
-  if (m_ComputeOriginalCenters)
+  if (m_ComputeOverallCenter)
   {
     if (m_UseVerbose)
-      Rcpp::Rcout << "Compute center_origin and dissimilarity with others: ";
+      Rcpp::Rcout << "Compute overall center: ";
 
-    original_center = m_CenterPointer->GetCenter(m_InputGrids, m_InputValues, m_DissimilarityPointer);
+    overallCenter = m_CenterPointer->GetCenter(m_InputGrids, m_InputValues, m_DissimilarityPointer);
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Done" << std::endl;
@@ -238,54 +235,46 @@ Rcpp::List KmaModel::FitModel()
   if (m_UseVerbose)
     Rcpp::Rcout << "Start while iteration" << std::endl;
 
-  // indici di similarità (distanza) ad ogni iterazione
-  arma::rowvec index(m_NumberOfObservations);
-  index.fill(1000);
-  arma::rowvec index_old(m_NumberOfObservations);
-  index_old.fill(10000);
+  // distances to template at each iteration
+  arma::rowvec observationDistances(m_NumberOfObservations, arma::fill::ones);
+  arma::rowvec oldObservationDistances(m_NumberOfObservations, arma::fill::zeros);
 
-  // inizializzo vettore per salare parametri ad ogni iterazione
+  // warping parameter container for storing parameter estimates at each iteration
   unsigned int numberOfParameters = m_WarpingPointer->GetNumberOfParameters();
-  arma::cube parameters_vec(numberOfParameters, m_NumberOfObservations, m_MaximumNumberOfIterations);
-  arma::mat x_reg = m_InputGrids;
+  arma::cube warpingParametersContainer(m_NumberOfObservations, numberOfParameters, m_MaximumNumberOfIterations);
+  arma::mat warpedGrids = m_InputGrids;
 
-  // flag for total similarity check
-  bool still_in = true;
+  // observation memberships at each iteration
+  arma::urowvec observationMemberships(m_NumberOfObservations, arma::fill::ones);
+  arma::urowvec oldObservationMemberships(m_NumberOfObservations, arma::fill::zeros);
 
-  // labels del cluster di appartenenza ad ogni iterazione
-  arma::urowvec labels(m_NumberOfObservations, arma::fill::ones);
-  arma::urowvec labels_old(m_NumberOfObservations);
-
-  // Indices of current clusters
-  arma::urowvec ict = arma::linspace<arma::urowvec>(0, m_NumberOfClusters - 1, m_NumberOfClusters);
+  // cluster indices
+  arma::urowvec clusterIndices = arma::linspace<arma::urowvec>(0, m_NumberOfClusters - 1, m_NumberOfClusters);
   unsigned int iter = 0;
 
   timer.step("seeds and original center");
 
-  // if n_clust == 1, I want to avoid the check on the labels because they don't change
-  unsigned int pn_obs = m_NumberOfObservations;
+  bool distanceCondition = arma::any(arma::abs(observationDistances - oldObservationDistances) > m_DistanceRelativeTolerance * observationDistances);
+  bool membershipCondition = arma::any(observationMemberships != oldObservationMemberships) || (m_NumberOfClusters == 1);
+  bool iterationCondition = iter < m_MaximumNumberOfIterations;
+  bool totalDissimilarityCondition = true;
 
-  if (m_NumberOfClusters == 1)
-    ++pn_obs;
+  arma::mat warpingParameters(m_NumberOfObservations, numberOfParameters);
 
-  while(  sum( abs(index-index_old) < m_Tolerance) < m_NumberOfObservations  && //
-  (sum( labels == labels_old  ) != pn_obs) && // non considerà il caso in cui i cluster sn uguali ma con diverse etichette
-  (still_in == true) &&
-  (iter < m_MaximumNumberOfIterations))
+  while (distanceCondition && membershipCondition && iterationCondition && totalDissimilarityCondition)
   {
-    iter++;
+    ++iter;
 
     if (m_UseVerbose)
-      Rcpp::Rcout << "Iteration num: " << iter << std::endl;
+      Rcpp::Rcout << "Iteration #" << iter << std::endl;
 
-    index_old = index;
-    labels_old = labels;
-    arma::mat parameters(numberOfParameters, m_NumberOfObservations);
+    oldObservationDistances = observationDistances;
+    oldObservationMemberships = observationMemberships;
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Set bound: ";
 
-    m_WarpingPointer->SetParameterBounds(warping_opt, x_reg);
+    m_WarpingPointer->SetParameterBounds(warping_opt, warpedGrids);
 
     if (m_UseVerbose)
       Rcpp::Rcout << "Done" << std::endl;

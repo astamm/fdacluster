@@ -15,13 +15,13 @@ arma::mat ShiftWarpingFunction::ApplyWarping(const arma::mat &x, const arma::mat
     return out;
 }
 
-void ShiftWarpingFunction::SetParameterBounds(const arma::rowvec &war_opt,
+void ShiftWarpingFunction::SetParameterBounds(const arma::rowvec &warpingOptions,
                                               const arma::mat &x)
 {
-    double workScalar = arma::as_scalar(arma::min(arma::max(x, 1) - arma::min(x, 1)));
-    double sl = war_opt(0);
-    m_ParameterLowerBounds = { -sl * workScalar };
-    m_ParameterUpperBounds = {  sl * workScalar };
+    double minRange = arma::as_scalar(arma::min(arma::max(x, 1) - arma::min(x, 1)));
+    double sl = warpingOptions(0);
+    m_ParameterLowerBounds = { -sl * minRange };
+    m_ParameterUpperBounds = {  sl * minRange };
 }
 
 arma::mat ShiftWarpingFunction::GetFinalWarping(const arma::cube &parameters_vec,

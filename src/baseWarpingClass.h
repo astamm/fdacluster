@@ -52,7 +52,7 @@ public:
    * @param[x] abscissa to warp;
    * @param[par] warping parameters to apply;
    *
-   * return abscissas warped;
+   * return warped abscissas.
    */
   virtual arma::mat ApplyWarping(const arma::mat &x, const arma::mat &par) = 0;
 
@@ -61,20 +61,16 @@ public:
 
   /// Set bounds given the input option different for each warping function.
   /**
-   * @param[war_opt] input warping option.
-   * @param[x] absissa to warp.
+   * @param[warpingOptions] input warping option;
+   * @param[x] abscissa to warp.
    */
-  virtual void SetParameterBounds(const arma::rowvec &war_opt, const arma::mat &x) = 0;
+  virtual void SetParameterBounds(const arma::rowvec &warpingOptions, const arma::mat &x) = 0;
 
   /// Set bounds given in a matrix.
   /**
-   * @param[bou] bounds already computed;
+   * @param[bounds] bounds already computed;
    */
-  void SetParameterBounds(const arma::mat &bou)
-  {
-    m_ParameterLowerBounds = bou.row(0);
-    m_ParameterUpperBounds = bou.row(1);
-  }
+  void SetParameterBounds(const arma::mat &bounds);
 
   /// Compute final warping.
   /**
@@ -87,7 +83,8 @@ public:
   virtual arma::mat GetFinalWarping(
       const arma::cube &parameters_vec,
       const arma::urowvec &labels,
-      const arma::urowvec &ict) = 0;
+      const arma::urowvec &ict
+  ) = 0;
 
   /// Normalize the warping parameters computed by clusters.
   /**
@@ -98,7 +95,8 @@ public:
   virtual void Normalize(
       arma::mat &par,
       const arma::urowvec &ict,
-      const arma::urowvec &labels) = 0;
+      const arma::urowvec &labels
+  ) = 0;
 
   /// Compute dissimilarity after warp for optimization.
   /**

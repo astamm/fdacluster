@@ -10,7 +10,7 @@ arma::mat NoWarpingFunction::ApplyWarping(const arma::mat &x, const arma::mat &p
     return x;
 }
 
-void NoWarpingFunction::SetParameterBounds(const arma::rowvec &war_opt,
+void NoWarpingFunction::SetParameterBounds(const arma::rowvec &warpingOptions,
                                            const arma::mat &x)
 {
     m_ParameterLowerBounds.set_size(0);
