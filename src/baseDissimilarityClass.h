@@ -21,6 +21,13 @@ struct FunctionPairType
 class BaseDissimilarityFunction
 {
 public:
+  BaseDissimilarityFunction()
+  {
+    m_Space = Euclidean;
+  }
+
+  virtual ~BaseDissimilarityFunction() {}
+
   /// compute dissimilarity method different for each derived class
   /**
    * @param[grid1] evaluation grid of the first function;

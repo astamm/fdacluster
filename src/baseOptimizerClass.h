@@ -11,6 +11,9 @@ class BaseOptimizerFunction
 public:
   using ParametersType = dlib::matrix<double,0,1>;
 
+  BaseOptimizerFunction() {}
+  virtual ~BaseOptimizerFunction() {}
+
   virtual double Optimize(
       arma::rowvec &initialParameters,
       const std::shared_ptr<BaseWarpingFunction> &warpingFunction,

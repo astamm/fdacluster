@@ -182,7 +182,7 @@ template <typename ObjectType>
 class SharedFactory
 {
 public:
-    using RegistryMap = std::unordered_map<std::string, std::function< std::shared_ptr<ObjectType>() > >;
+    using RegistryMap = std::unordered_map<std::string, std::function<std::shared_ptr<ObjectType>()> >;
 
     // use this to instantiate the proper Derived class
     std::shared_ptr<ObjectType> Instantiate(const std::string &name)

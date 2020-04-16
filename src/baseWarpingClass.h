@@ -26,6 +26,14 @@ struct WarpingSet
 class BaseWarpingFunction
 {
 public:
+  BaseWarpingFunction()
+  {
+    m_ParameterLowerBounds.reset();
+    m_ParameterUpperBounds.reset();
+  }
+
+  virtual ~BaseWarpingFunction() {}
+
   /// Member to create WarpingSet.
   /**
    * @param[grid1] evaluation grid of the first function;
