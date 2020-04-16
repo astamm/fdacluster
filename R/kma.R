@@ -44,29 +44,38 @@
 #' @param optimizer_method A string specifying the optimizer method. The only
 #'   choice for now is \code{"bobyqa"}.
 #'
-#' @return The function output is a \code{kmap} object, which is a list with the following elements:
-#' \item{x}{ as input.}
-#' \item{y}{ as input. }
-#' \item{seeds}{ vector with the indeces used in the algorithm.}
-#' \item{warping_method}{ as input.}
-#' \item{similarity_method}{ as input. }
-#' \item{center_method}{ as input. }
-#' \item{iterations}{scalar: total number of iterations performed by kma function.}
-#' \item{n_clust}{ as input. }
-#' \item{x.center.orig }{numeric vector \emph{n_out}: abscissa of the center computed if \emph{comp_original_center}=TRUE.}
-#' \item{y.center.orig }{numeric vector \emph{n_out} or matrix \emph{n_out} X \emph{n_dim}: value of the center computed if \emph{comp_original_center}=TRUE.}
-#' \item{similarity.origin}{numeric vector \emph{n_obs} dissimilarity,similarity or distance of the original center respect the obserbations computed if \emph{comp_original_center}=TRUE.}
-#' \item{x.final }{matrix [n.func X grid.size]: aligned abscissas.}
-#' \item{n.clust.final }{ scalar: final number of clusters. Note that n.clust.final may differ from initial number of clusters (i.e.,from n.clust) if some clusters are found to be empty.}
-#' \item{x.centers.final }{matrix [n.clust.final X grid.size]: abscissas of the final function centers.}
-#' \item{y.centers.final }{matrix [n.clust.final X n.out] or array [n.clust.final X n.out x n_dim] , contain the evaluations of the final functions centers.}
-#' \item{templates_vec }{list iteration : each element of the list contain centers of that iteration.}
-#' \item{x_out_vec }{list iteration : each element of the list contain the abscissa of the centers of that iteration.}
-#' \item{labels}{vector n_obs: cluster assignments.}
-#' \item{similarity.final}{vector [n_obs]: similarities,dissimilarities or distance between each function and the center of the cluster the function is assigned to.}
-#' \item{parameters.list}{list [iterations]: warping parameters at each iteration.}
-#' \item{parameters}{matrix [n_par X n_obs]: warping parameters applied to the original abscissas x to obtain the aligned abscissas x.final.}
-#' \item{timer}{vector: time of execution by step. }
+#' @return The function output is a \code{kmap} object, which is a list with the
+#'   following elements:
+#'   \item{x}{As input.}
+#'   \item{y}{As input.}
+#'   \item{seeds}{Indices used in the algorithm.}
+#'   \item{warping_method}{As input.}
+#'   \item{similarity_method}{As input.}
+#'   \item{center_method}{As input.}
+#'   \item{iterations}{Number of iterations before the KMA algorithm stops.}
+#'   \item{n_clust}{As input.}
+#'   \item{overall_center_grid}{Overall center grid if
+#'   \code{compute_overall_center} is set.}
+#'   \item{overall_center_values}{Overall center values if
+#'   \code{compute_overall_center} is set.}
+#'   \item{distances_to_overall_center}{Distances of each observation to the
+#'   overall center if \code{compute_overall_center} is set.}
+#'   \item{x_final}{Aligned observation grids.}
+#'   \item{n_clust_final}{Final number of clusters. Note that
+#'   \code{n_clust_final} may differ from initial number of clusters
+#'   \code{n_clust} if some clusters are empty.}
+#'   \item{x_centers_final}{Final center grids.}
+#'   \item{y_centers_final}{Final center values.}
+#'   \item{template_grids}{List of template grids at each iteration.}
+#'   \item{template_values}{List of template values at each iteration.}
+#'   \item{labels}{Cluster memberships.}
+#'   \item{final_dissimilarity}{Distances of each observation to the center of
+#'   its assigned cluster.}
+#'   \item{parameters_list}{List of estimated warping parameters at each
+#'   iteration.}
+#'   \item{parameters}{Final estimated warping parameters.}
+#'   \item{timer}{Execution time step by step.}
+#'
 #' @export
 #'
 #' @examples
