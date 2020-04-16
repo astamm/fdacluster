@@ -30,8 +30,7 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
     if (this->GetSpace() == Euclidean)
     {
         // First interpolate to common grid
-        arma::cube yIn(numberOfObservations, numberOfDimensions, numberOfPoints);
-        arma::vec workVector1, workVector2, tmpGrid;
+        arma::rowvec workVector1, workVector2, tmpGrid;
 
         for (unsigned int i = 0;i < numberOfObservations;++i)
         {
@@ -39,15 +38,15 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
 
             for (unsigned int j = 0;j < numberOfDimensions;++j)
             {
-                workVector1 = inputValues(arma::span(i), arma::span(j), arma::span::all);
+                workVector1 = inputValues.tube(i, j);
                 arma::interp1(tmpGrid, workVector1, outputGrid, workVector2, "*linear");
-                yIn(arma::span(i), arma::span(j), arma::span::all) = workVector2;
+                yIn.tube(i, j) = workVector2;
             }
         }
 
         // then, compute mean pointwise
         for (unsigned int i = 0;i < numberOfPoints;++i)
-            meanValue.col(i) = arma::mean(yIn.slice(i), 0);
+            meanValue.col(i) = arma::mean(yIn.slice(i), 0).t();
     }
     else if (this->GetSpace() == UnitQuaternion)
     {
@@ -58,7 +57,7 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
         for (unsigned int i = 0;i < numberOfObservations;++i)
         {
             tmpVec = Rcpp::wrap(inputGrid.row(i));
-            workMatrix = inputValues(arma::span(i), arma::span::all, arma::span::all);
+            workMatrix = inputValues.row(i);
             tmpMat = Rcpp::wrap(workMatrix);
             tmpMat = squad::RegularizeGrid(tmpVec, tmpMat, gridLowerBound, gridUpperBound, numberOfPoints);
             yIn.row(i) = Rcpp::as<arma::mat>(tmpMat);
@@ -78,7 +77,7 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
     arma::rowvec distancesToCenter(numberOfObservations);
     for (unsigned int i = 0;i < numberOfObservations;++i)
     {
-        workMatrix = inputValues(arma::span(i), arma::span::all, arma::span::all);
+        workMatrix = inputValues.row(i);
         distancesToCenter(i) = dissimilarityPointer->GetDistance(
             outputGrid,
             inputGrid.row(i),

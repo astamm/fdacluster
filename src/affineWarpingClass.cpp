@@ -34,8 +34,8 @@ arma::mat AffineWarpingFunction::GetFinalWarping(const arma::cube &warpingParame
                                                  const arma::urowvec &observationMemberships,
                                                  const arma::urowvec &clusterIndices)
 {
-    unsigned int numberOfParameters = warpingParametersContainer.n_rows;
-    unsigned int numberOfObservations = warpingParametersContainer.n_cols;
+    unsigned int numberOfObservations = warpingParametersContainer.n_rows;
+    unsigned int numberOfParameters = warpingParametersContainer.n_cols;
     unsigned int numberOfIterations = warpingParametersContainer.n_slices;
     arma::mat outputWarpingParameters(numberOfObservations, numberOfParameters, arma::fill::zeros);
     outputWarpingParameters.col(0).ones();

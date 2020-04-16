@@ -30,8 +30,8 @@ arma::mat ShiftWarpingFunction::GetFinalWarping(const arma::cube &warpingParamet
                                                 const arma::urowvec &observationMemberships,
                                                 const arma::urowvec &clusterIndices)
 {
-    unsigned int numberOfParameters = warpingParametersContainer.n_rows;
-    unsigned int numberOfObservations = warpingParametersContainer.n_cols;
+    unsigned int numberOfObservations = warpingParametersContainer.n_rows;
+    unsigned int numberOfParameters = warpingParametersContainer.n_cols;
     unsigned int numberOfIterations = warpingParametersContainer.n_slices;
     arma::mat outputWarpingParameters(numberOfObservations, numberOfParameters, arma::fill::zeros);
     arma::colvec shiftParameters;

@@ -25,11 +25,11 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
 
     for (unsigned int i = 0;i < numberOfObservations - 1;++i)
     {
-        workMatrix1 = inputValues(arma::span(i), arma::span::all, arma::span::all);
+        workMatrix1 = inputValues.row(i);
 
         for (unsigned int j = i + 1;j < numberOfObservations;++j)
         {
-            workMatrix2 = inputValues(arma::span(j), arma::span::all, arma::span::all);
+            workMatrix2 = inputValues.row(j);
 
             double workDistance = dissimilarityPointer->GetDistance(
                 inputGrid.row(i),
@@ -47,7 +47,7 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
     unsigned int medoidIndex = arma::index_min(distanceVector);
 
     outputCenter.centerGrid = inputGrid.row(medoidIndex);
-    outputCenter.centerValues = inputValues(arma::span(medoidIndex), arma::span::all, arma::span::all);
+    outputCenter.centerValues = inputValues.row(medoidIndex);
     outputCenter.distancesToCenter = distanceMatrix.row(medoidIndex);
 
     return outputCenter;
@@ -82,8 +82,8 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
         unsigned int i = std::floor((1 + std::sqrt(8 * (double)k - 7)) / 2);
         unsigned int j = k - (i - 1) * i / 2 - 1;
 
-        workMatrix1 = inputValues(arma::span(i), arma::span::all, arma::span::all);
-        workMatrix2 = inputValues(arma::span(j), arma::span::all, arma::span::all);
+        workMatrix1 = inputValues.row(i);
+        workMatrix2 = inputValues.row(j);
 
         double workDistance = dissimilarityPointer->GetDistance(
             inputGrid.row(i),
@@ -100,7 +100,7 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
     unsigned int medoidIndex = arma::index_min(distanceVector);
 
     outputCenter.centerGrid = inputGrid.row(medoidIndex);
-    outputCenter.centerValues = inputValues(arma::span(medoidIndex), arma::span::all, arma::span::all);
+    outputCenter.centerValues = inputValues.row(medoidIndex);
     outputCenter.distancesToCenter = distanceMatrix.row(medoidIndex);
 
     return outputCenter;

@@ -166,10 +166,10 @@ kma <- function(x, y,
   out <- c(
     x = list(x),
     y = list(y),
-    seeds = list(nseeds),
-    warping.method = list(warping_method),
-    similarity.method = list(similarity_method),
-    center.method = list(center_method),
+    seeds = list(seeds),
+    warping_method = list(warping_method),
+    similarity_method = list(dissimilarity_method),
+    center_method = list(center_method),
     out
   )
 

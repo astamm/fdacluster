@@ -31,8 +31,8 @@ arma::mat DilationWarpingFunction::GetFinalWarping(const arma::cube &warpingPara
                                                    const arma::urowvec &observationMemberships,
                                                    const arma::urowvec &clusterIndices)
 {
-    unsigned int numberOfParameters = warpingParametersContainer.n_rows;
-    unsigned int numberOfObservations = warpingParametersContainer.n_cols;
+    unsigned int numberOfObservations = warpingParametersContainer.n_rows;
+    unsigned int numberOfParameters = warpingParametersContainer.n_cols;
     unsigned int numberOfIterations = warpingParametersContainer.n_slices;
     arma::mat outputWarpingParameters(numberOfObservations, numberOfParameters, arma::fill::ones);
     arma::colvec dilationParameters;
