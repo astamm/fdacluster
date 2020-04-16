@@ -124,13 +124,9 @@ The function output is a \code{kmap} object, which is a list with the
 K-mean alignment and variants for functional data
 }
 \examples{
-x <- simulated30$x
-y <- array(dim = c(dim(x)[1], 1, dim(x)[2]))
-y[, 1, ] <- simulated30$y[, , 1]
-
 res <- kma(
-  x,
-  y,
+  simulated30$x,
+  simulated30$y,
   seeds = c(21, 13),
   n_clust = 2,
   center_method = "medoid",
