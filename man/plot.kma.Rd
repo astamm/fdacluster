@@ -24,3 +24,29 @@ The input \code{kmap} object invisibly.
 \description{
 Plot for \code{kmap} objects
 }
+\examples{
+x <- simulated30$x
+y <- array(dim = c(dim(x)[1], 1, dim(x)[2]))
+y[, 1, ] <- simulated30$y[, , 1]
+
+res <- kma(
+  x,
+  y,
+  seeds = c(21, 13),
+  n_clust = 2,
+  center_method = "medoid",
+  warping_method = "affine",
+  dissimilarity_method = "pearson"
+)
+
+tmp1 <- res$y
+tmp2 <- res$y_centers_final
+res$y <- array(dim = c(dim(tmp1)[1], dim(tmp1)[3], dim(tmp1)[2]))
+res$y_centers_final <- array(dim = c(dim(tmp2)[1], dim(tmp2)[3], dim(tmp2)[2]))
+for (i in 1) {
+  res$y[, , i] <- tmp1[, i, ]
+  res$y_centers_final[, , i] <- tmp2[, i, ]
+}
+
+plot(res)
+}

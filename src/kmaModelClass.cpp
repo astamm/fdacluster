@@ -98,7 +98,7 @@ void KmaModel::Print(const std::string &warpingMethod,
 
   Rcpp::Rcout << "Information about cluster initialization:" << std::endl;
   Rcpp::Rcout << " - Number of clusters: " << m_NumberOfClusters << std::endl;
-  Rcpp::Rcout << " - Initial seeds for cluster centers: " << m_SeedVector << std::endl;
+  Rcpp::Rcout << " - Initial seeds for cluster centers: " << m_SeedVector + 1 << std::endl;
 
   Rcpp::Rcout << "Information about the methods used within the algorithm:" << std::endl;
   Rcpp::Rcout << " - Warping method: " << warpingMethod << std::endl;
@@ -140,9 +140,9 @@ void KmaModel::UpdateTemplates(const arma::mat& warpedGrids,
   {
   case ClusterLoop:
 
-// #ifdef _OPENMP
-// #pragma omp parallel for num_threads(m_NumberOfThreads)
-// #endif
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(m_NumberOfThreads)
+#endif
 
     for (unsigned int i = 0;i < clusterIndices.size();++i)
     {
@@ -300,9 +300,9 @@ Rcpp::List KmaModel::FitModel()
     arma::mat workingTemplateValues;
     WarpingSet warpingSet;
 
-// #ifdef _OPENMP
-// #pragma omp parallel for num_threads(m_NumberOfThreads)
-// #endif
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(m_NumberOfThreads)
+#endif
 
     for (unsigned int i = 0;i < m_NumberOfObservations;++i)
     {

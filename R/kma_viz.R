@@ -14,6 +14,30 @@
 #' @export
 #'
 #' @examples
+#' x <- simulated30$x
+#' y <- array(dim = c(dim(x)[1], 1, dim(x)[2]))
+#' y[, 1, ] <- simulated30$y[, , 1]
+#'
+#' res <- kma(
+#'   x,
+#'   y,
+#'   seeds = c(21, 13),
+#'   n_clust = 2,
+#'   center_method = "medoid",
+#'   warping_method = "affine",
+#'   dissimilarity_method = "pearson"
+#' )
+#'
+#' tmp1 <- res$y
+#' tmp2 <- res$y_centers_final
+#' res$y <- array(dim = c(dim(tmp1)[1], dim(tmp1)[3], dim(tmp1)[2]))
+#' res$y_centers_final <- array(dim = c(dim(tmp2)[1], dim(tmp2)[3], dim(tmp2)[2]))
+#' for (i in 1) {
+#'   res$y[, , i] <- tmp1[, i, ]
+#'   res$y_centers_final[, , i] <- tmp2[, i, ]
+#' }
+#'
+#' plot(res)
 plot.kma <- function(x, bp_sim = FALSE, wr_fun = FALSE, ...) {
   Result <- x
   lwd.functions = 1
@@ -28,27 +52,27 @@ plot.kma <- function(x, bp_sim = FALSE, wr_fun = FALSE, ...) {
     iterations <- Result$iterations
     x <- as.matrix(Result$x)
     y0 <- Result$y
-    n.clust <- Result$n.clust
+    n.clust <- Result$n_clust
 
-    x.center.orig <- Result$x.center.orig
-    y0.center.orig <- Result$y.center.orig
-    sims.orig <- Result$similarity.orig
+    x.center.orig <- Result$x_center_orig
+    y0.center.orig <- Result$y_center_orig
+    sims.orig <- Result$similarity_orig
     cen_or<- TRUE
 
     if(length(x.center.orig)==0)
     cen_or<- FALSE
 
-    x.final <- Result$x.final
-    n.clust.final <- Result$n.clust.final
-    x.centers.final <- Result$x.centers.final
-    y0.centers.final <- Result$y.centers.final
+    x.final <- Result$x_final
+    n.clust.final <- Result$n_clust_final
+    x.centers.final <- Result$x_centers_final
+    y0.centers.final <- Result$y_centers_final
     labels <- Result$labels
-    sims.final <- Result$similarity.final
-    parameters.list <- Result$parameters.list
+    sims.final <- Result$final_dissimilarity
+    parameters.list <- Result$parameters_list
     parameters <- Result$parameters
-    warping.method <- Result$warping.method
-    similarity.method <- Result$similarity.method
-    center.method <- Result$center.method
+    warping.method <- Result$warping_method
+    similarity.method <- Result$similarity_method
+    center.method <- Result$center_method
 
 
 
@@ -129,9 +153,12 @@ plot.kma <- function(x, bp_sim = FALSE, wr_fun = FALSE, ...) {
       title2def <- c(title2, title22)
       title(main = title2def)
 
+      col_cl <- myrainbow
       for (k in labels.unique) {
-        col_cl<-myrainbow
-        lines(x.centers.final, y0.centers.final[k,,l], lwd = lwd.centers, col = col_cl[k])
+        lines(x.centers.final[k, ],
+              y0.centers.final[k, , l],
+              lwd = lwd.centers,
+              col = col_cl[k])
       }
 
       text <- rep(0, length(labels.unique))

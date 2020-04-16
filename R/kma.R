@@ -1,70 +1,48 @@
 #' K-mean alignment and variants for functional data
 #'
-#' This function jointly performs clustering and alignment of functional data
-#' sets with possibly multidimensional domains.
-#'
-#' @param x Numeric matrix [\emph{nObs} x \emph{nPts}] or vector [\emph{nPts}]:
-#'   the grid on which where each function is evaluated, where \emph{nObs} is
-#'   the number of observations and \emph{nPts} is the grid size. Grids are
-#'   allowed to be different for each observation. If \code{x} is a vector of
-#'   length \emph{nPts}, it is assumed to be the common grid on which all
-#'   observations are evaluated. Smaller grids are completed with missing values
-#'   to match the size of the largest.
-#' @param y Numeric matrix [\emph{nObs} x \emph{nPts}] or array [\emph{nObs} x
-#'   \emph{nPts} x \emph{nDim}]: values of the observed functions on the grid
-#'   \code{x}, where \emph{d} is the dimension of the domain of definition of
-#'   the functions.
-#' @param seeds Numeric vector [nClusters]: indices of the observations used as
-#'   initial centers for the k-mean algorithm. If \code{seeds = NULL} (default),
-#'   they are randomly chosen among the \emph{nObs} original functions.
-#' @param n_clust Scalar: number of clusters to look for (default: 1).
-#' @param warping_method Character: class of warping functions among
-#'   \code{noalign} for no alignment which is equivalent to performing k-means
-#'   clustering only, \code{shift}, \code{dilation} and \code{affine} (default).
-#' @param center_method Character: method to find the cluster representative
-#'   among \code{mean} (default), \code{medoid}, \code{pseudomedoid} and
-#'   \code{median}.
-#' @param similarity_method Character: metric to measure dissimilarity between
-#'   two observations. Choices are \code{pearson} (default), \code{l2},
-#'   \code{l2weighted} and \code{l2first}.
-#' @param optim_method Character: optimization method for searching the optimal
-#'   warping functions at each iteration. The only available method at the
-#'   moment is \code{bobyqa}.
-#' @param warping_opt Numeric vector. It depends on the class of warping
-#'   functions. For affine functions, it is a 2D vector specifying the upper
-#'   bounds for dilation and shift. For dilations, a scalar specifying the upper
-#'   bound for dilation. For shifts, a scalar specifying the upper bound for
-#'   shift. For no alignment, it is an empty vector. Default value is
-#'   \code{c(0.15, 0.15)} for affine warping functions.
-#' @param center_opt Numeric vector. It depends on the cluster representative
-#'   method. It is an empty vector for all methods except \code{mean}. In this
-#'   latter case, it is a 2D vector of the form \code{c(span, delta)} specifying
-#'   the parameters for the \code{lowess} approximation. Default value is
-#'   \code{c(0.01, 0.1)}.
-#' @param out_opt Numeric vector. It is a 3D vector of the form \code{c(nOut,
-#'   tol, maxIter)}. It contains the size of the output grid on which the
-#'   centers will be evaluated and two stopping criteria for the optimization
-#'   algorithm. The defaut value is \code{c(100, 0.001, 100)}.
-#' @param fence Boolean. When \code{TRUE}, a control is activated at the end of
-#'   each iteration. The aim of the control is to avoid warping outliers with
-#'   respect to their computed distributions. Default value is \code{FALSE}
-#'   because it is time-consuming.
-#' @param check_total_similarity Boolean. When \code{TRUE} (default), at each
-#'   iteration, the algorithm checks if the total similarity is improving and
-#'   stops if it is not.
-#' @param show_iter Boolean. When \code{TRUE} (default), information pertaining
-#'   to the current iteration is displayed in the console.
-#' @param comp_original_center Boolean. When \code{TRUE}, the initial center
-#'   with relative dissimilarities is computed. Otherwise, this step is skipped.
-#'   Default value is \code{FALSE} because it is time-consuming.
-#' @param par_opt Numeric vector. Parallel options as a 2D vector of the form
-#'   \code{c(nThreads, parVersion)}, where \code{nThreads} specifies the number
-#'   of threads to run on parallel and \code{parVersion} is either 0 for a
-#'   trivial parallelization in which each thread computes the center of a
-#'   cluster or 1 for a more efficient parallelization in which all threads
-#'   compute the centers sequentially. The latter parallelizatiobn mode is
-#'   available only when \code{center_method = 'medoid'}. Default value is
-#'   \code{c(1, 0)}.
+#' @param x A matrix of size nObs x nPts storing the evaluation grid of each
+#'   observation.
+#' @param y An 3D array of size nObs x nDim x nPts storing the observation
+#'   values.
+#' @param seeds A vector of integers of size \code{n_clust} specifying the
+#'   indices of the initial templates. Defaults to \code{NULL}, which boils down
+#'   to randomly sampled indices.
+#' @param warping_options A numeric vector supplied as a helper to the chosen
+#'   \code{warping_method} to decide on warping parameter bounds.
+#' @param n_clust An integer specifying the number of clusters (default: 1).
+#' @param maximum_number_of_iterations An integer specifying the maximum number
+#'   of iterations before the algorithm stops (default: 100).
+#' @param number_of_threads An integer specifying the number of threads used for
+#'   parallelization (default: 1). Not working for now.
+#' @param parallel_method An integer value specifying the type of desired
+#'   parallelization for template computation, If 0 (default), templates are
+#'   computed in parallel. If 1, parallelization occurs within a single template
+#'   computation (only for the medoid method as of now).
+#' @param space An integer value specifying the space according to which
+#'   operations should be performed. If 0 (default), the Eucliden space is used.
+#'   If 1, unit quaternion space is used instead.
+#' @param distance_relative_tolerance A number specifying a relative tolerance
+#'   on the distance update between two iterations. If all observations have not
+#'   sufficiently improved in that sense, the algorithm stops. Defaults to 1e-3.
+#' @param use_fence A boolean specifying whether the fence algorithm should be
+#'   used to robustify the algorithm against outliers (default: \code{FALSE}).
+#'   Not working for now.
+#' @param check_total_similarity A boolean specifying whether an additional
+#'   stopping criterion based on improvement of the total dissimilarity should
+#'   be used (default: \code{TRUE}).
+#' @param use_verbose A boolean specifying whether the algorithm should output
+#'   details of the steps to the console (default: \code{TRUE}).
+#' @param compute_overall_center A boolean specifying whether the overall center
+#'   should be also computed (default: \code{FALSE}).
+#' @param warping_method A string specifying the warping method. Choices are
+#'   \code{"none"}, \code{"shift"}, \code{"dilation"} and \code{"affine"}
+#'   (default).
+#' @param center_method A string specifying the center method. Choices are
+#'   \code{"medoid"} and \code{"mean"} (default).
+#' @param dissimilarity_method A string specifying the dissimilarity method.
+#'   Choices are \code{"pearson"} and \code{"l2"} (default).
+#' @param optimizer_method A string specifying the optimizer method. The only
+#'   choice for now is \code{"bobyqa"}.
 #'
 #' @return The function output is a \code{kmap} object, which is a list with the following elements:
 #' \item{x}{ as input.}
@@ -92,6 +70,19 @@
 #' @export
 #'
 #' @examples
+#' x <- simulated30$x
+#' y <- array(dim = c(dim(x)[1], 1, dim(x)[2]))
+#' y[, 1, ] <- simulated30$y[, , 1]
+#'
+#' res <- kma(
+#'   x,
+#'   y,
+#'   seeds = c(21, 13),
+#'   n_clust = 2,
+#'   center_method = "medoid",
+#'   warping_method = "affine",
+#'   dissimilarity_method = "pearson"
+#' )
 kma <- function(x, y,
                 seeds = NULL,
                 warping_options = c(0.15, 0.15),
@@ -107,7 +98,7 @@ kma <- function(x, y,
                 compute_overall_center = FALSE,
                 warping_method = 'affine',
                 center_method = 'mean',
-                dissimilarity_method = 'pearson',
+                dissimilarity_method = 'l2',
                 optimizer_method = 'bobyqa')
 {
   # Handle one-dimensional data
