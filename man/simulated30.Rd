@@ -3,18 +3,18 @@
 \docType{data}
 \name{simulated30}
 \alias{simulated30}
-\title{Data for Examples.}
+\title{Simulated data for examples.}
 \format{
 A list with abscissas x and values y:
 \describe{
-  \item{x}{matrix 30 x 200 }
-  \item{y}{array 30 x 200 x 1}
+  \item{x}{Matrix 30x200;}
+  \item{y}{Array 30x1x200.}
 }
 }
 \usage{
 simulated30
 }
 \description{
-A dataset containing 30 simulated unidimensional curves.
+A data set containing 30 simulated uni-dimensional curves.
 }
 \keyword{datasets}

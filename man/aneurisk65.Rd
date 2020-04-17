@@ -3,19 +3,20 @@
 \docType{data}
 \name{aneurisk65}
 \alias{aneurisk65}
-\title{Data for Examples.}
+\title{Subset of the Aneurisk data set}
 \format{
 A list with abscissas x and values y:
 \describe{
-  \item{x}{matrix 65 x 1380 }
-  \item{y}{array 65 x1380 x 3}
+  \item{x}{Matrix 65x1380;}
+  \item{y}{Array 65x3x1380.}
 }
 }
 \usage{
 aneurisk65
 }
 \description{
-A dataset containing 65 multidimensional curves from aneurisk project.
-The curves represent the first derivatives of the 65 ICA centerlines.
+A data set containing 65 multi-dimensional curves from the Aneurisk project.
+The curves represent the first derivatives of the 65 centerlines of the
+internal carotid artery.
 }
 \keyword{datasets}
