@@ -313,15 +313,10 @@ Rcpp::List KmaModel::FitModel()
           m_DissimilarityPointer
         );
 
-        auto costFunction = [this, &warpingSet] (const arma::rowvec &arg)
-        {
-          return this->m_WarpingPointer->GetDissimilarityAfterWarping(warpingSet, arg);
-        };
-
         workingObservationDistances(j) = m_OptimizerPointer->Optimize(
           startingParameters,
           m_WarpingPointer,
-          costFunction
+          warpingSet
         );
 
         workingParameterValues.row(j) = startingParameters;

@@ -15,8 +15,8 @@ public:
 
     double Optimize(
             arma::rowvec &initialParameters,
-            const std::shared_ptr<BaseWarpingFunction> &warpingFunction,
-            const std::function<double(arma::rowvec)> &costFunction
+            const std::shared_ptr<BaseWarpingFunction> &warpingPointer,
+            const WarpingSet &warpingSet
     );
 
 private:

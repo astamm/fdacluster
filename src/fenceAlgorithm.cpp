@@ -69,19 +69,14 @@ void iterativeFence(arma::mat parameters,
 
             for (unsigned int t = 0;t < nt;++t)
             {
-                arma::mat t_in = templates(arma::span(t), arma::span::all, arma::span::all);
+                arma::mat t_in = templates.row(t);
 
                 if (n_dim > 1)
                     t_in = t_in.t();
 
                 WarpingSet wset = warping->SetInputData(x_out, x_out, y_reg, t_in, dissim);
 
-                auto fun = [&] (const arma::rowvec& arg)
-                {
-                    return warping->GetDissimilarityAfterWarping(wset,arg);
-                };
-
-                index_temp(t) = optimizer->Optimize( arg, warping, fun);
+                index_temp(t) = optimizer->Optimize( arg, warping, wset);
                 parameters_temp.col(t) = arg;
             }// end iterations on templates
 

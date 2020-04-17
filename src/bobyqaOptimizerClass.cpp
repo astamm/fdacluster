@@ -1,28 +1,13 @@
 #include "bobyqaOptimizerClass.h"
 
 double BobyqaOptimizerFunction::Optimize(arma::rowvec &initialParameters,
-                                         const std::shared_ptr<BaseWarpingFunction> &warpingFunction,
-                                         const std::function<double(arma::rowvec)> &costFunction)
+                                         const std::shared_ptr<BaseWarpingFunction> &warpingPointer,
+                                         const WarpingSet &warpingSet)
 {
-    unsigned int numberOfParameters = warpingFunction->GetNumberOfParameters();
-    arma::rowvec lowerBounds = warpingFunction->GetParameterLowerBounds();
-    arma::rowvec upperBounds = warpingFunction->GetParameterUpperBounds();
+    unsigned int numberOfParameters = warpingPointer->GetNumberOfParameters();
+    arma::rowvec lowerBounds = warpingPointer->GetParameterLowerBounds();
+    arma::rowvec upperBounds = warpingPointer->GetParameterUpperBounds();
     initialParameters = (lowerBounds + upperBounds) / 2.0;
-
-    if (initialParameters.size() == 0)
-        return costFunction(initialParameters);
-
-    auto dlibCostFunction = [&costFunction] (const ParametersType& dlibParams)
-    {
-        unsigned int numberOfParameters = dlibParams.nr();
-
-        arma::rowvec params(numberOfParameters);
-        for (unsigned int i = 0;i < numberOfParameters;++i)
-            params(i) = dlibParams(i);
-
-        return costFunction(params);
-    };
-
     arma::rowvec d = upperBounds - lowerBounds;
 
     ParametersType dlibInitialParameters(numberOfParameters);
@@ -38,6 +23,19 @@ double BobyqaOptimizerFunction::Optimize(arma::rowvec &initialParameters,
 
     double radius = d.min() / 2.0 - m_EpsilonValue;
 
+    auto dlibCostFunction = [&warpingPointer, &warpingSet] (const ParametersType& dlibParams)
+    {
+        unsigned int numberOfParameters = dlibParams.nr();
+        arma::rowvec params(numberOfParameters);
+        for (unsigned int i = 0;i < numberOfParameters;++i)
+            params(i) = dlibParams(i);
+
+        return warpingPointer->GetDissimilarityAfterWarping(warpingSet, params);
+    };
+
+    if (initialParameters.size() == 0)
+        return dlibCostFunction(dlibInitialParameters);
+
     find_optimal_parameters(
         radius,
         m_EpsilonValue,
@@ -51,7 +49,7 @@ double BobyqaOptimizerFunction::Optimize(arma::rowvec &initialParameters,
     for (unsigned int i = 0;i < numberOfParameters;++i)
         initialParameters(i) = dlibInitialParameters(i);
 
-    return costFunction(initialParameters);
+    return dlibCostFunction(dlibInitialParameters);
 }
 
 
