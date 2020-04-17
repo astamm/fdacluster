@@ -1,10 +1,39 @@
 Package: fdakmapp
-Title: Functional Data Analysis : K-mean and K-medoid with Alignemnt
+Title: Functional Data Analysis: K-Mean and K-Medoid with Alignment
 Version: 2.1
 Type: Package
-Author: Alessandro Zito [aut, cre], Laura Sangalli[aut], Piercesare Secchi[aut], Simone Vantini[aut], Valeria Vitelli[aut]
-Maintainer: Alessandro Zito <zito.ales@gmail.com>
-Description: The fdakmapp package provides the kmap function that jointly performs clustering and alignment of a functional dataset (multidimensional or unidimensional). The centers can be computed by mean and medoid center methods. Many options are available as parallal version.
+Authors@R: c(
+    person(given = "Laura",
+           family = "Sangalli",
+           role = "aut",
+           email = "laura.sangalli@polimi.it"),
+    person(given = "Piercesare",
+           family = "Secchi",
+           role = "aut",
+           email = "piercesare.secchi@polimi.it"),
+    person(given = "Aymeric",
+           family = "Stamm",
+           role = c("aut", "cre"),
+           email = "aymeric.stamm@math.cnrs.fr",
+           comment = c(ORCID = "0000-0002-8725-3654")),
+    person(given = "Simone",
+           family = "Vantini",
+           role = "aut",
+           email = "simone.vantini@polimi.it"),
+    person(given = "Valeria",
+           family = "Vitelli",
+           role = "aut",
+           email = "valeria.vitelli@medisin.uio.no"),
+    person(given = "Alessandro",
+           family = "Zito",
+           role = "ctb",
+           email = "zito.ales@gmail.com"))
+Description: The fdakmapp package provides the kma function that 
+    jointly performs clustering and alignment of a functional 
+    data set (unidimensional or multidimensional). The warping is 
+    parametric. Currently supported classes of warping functions 
+    are shift, dilation and affine transformations. The algorithm 
+    is fully parallelized.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
