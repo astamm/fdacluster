@@ -62,7 +62,7 @@ void iterativeFence(arma::mat parameters,
             arma::rowvec arg(n_par);
             Rcpp::List interpolationResults = approx(
                 x_reg.row(obs),
-                GetObservation(y, obs),
+                y.row(obs),
                 "Linear"
             );
             arma::mat y_reg = interpolationResults["values"];

@@ -12,7 +12,7 @@ Rcpp::List kmap(const arma::mat &x,
                 const unsigned int &space,
                 const double &distance_relative_tolerance,
                 const bool &use_fence,
-                const bool &check_total_similarity,
+                const bool &check_total_dissimilarity,
                 const bool &use_verbose,
                 const bool &compute_overall_center,
                 const std::string &warping_method,
@@ -36,7 +36,7 @@ Rcpp::List kmap(const arma::mat &x,
     model.SetDistanceRelativeTolerance(distance_relative_tolerance);
 
     model.SetUseFence(use_fence);
-    model.SetCheckTotalSimilarity(check_total_similarity);
+    model.SetCheckTotalDissimilarity(check_total_dissimilarity);
     model.SetUseVerbose(use_verbose);
     model.SetComputeOverallCenter(compute_overall_center);
 

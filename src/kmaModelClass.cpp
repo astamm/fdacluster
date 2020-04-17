@@ -119,7 +119,7 @@ void KmaModel::Print(const std::string &warpingMethod,
 
   Rcpp::Rcout << "Other information:" << std::endl;
   Rcpp::Rcout << " - Use fence to robustify: " << m_UseFence << std::endl;
-  Rcpp::Rcout << " - Check total similarity: " << m_CheckTotalSimilarity << std::endl;
+  Rcpp::Rcout << " - Check total dissimilarity: " << m_CheckTotalDissimilarity << std::endl;
   Rcpp::Rcout << " - Compute overall center: " << m_ComputeOverallCenter << std::endl;
 }
 
@@ -133,9 +133,6 @@ void KmaModel::UpdateTemplates(const arma::mat& warpedGrids,
   // case ClusterLoop: each thread one cluster
   // case DistanceLoop: each cluster all the threads (available only with medoid)
 
-  arma::uvec selectedObservations;
-  CenterType centerComputer;
-
   switch(m_ParallelMethod)
   {
   case ClusterLoop:
@@ -146,21 +143,24 @@ void KmaModel::UpdateTemplates(const arma::mat& warpedGrids,
 
     for (unsigned int i = 0;i < clusterIndices.size();++i)
     {
-      selectedObservations = arma::find(observationMemberships == clusterIndices(i));
+      arma::uvec selectedObservations = arma::find(observationMemberships == clusterIndices(i));
 
-      centerComputer = m_CenterPointer->GetCenter(
+      CenterType centerComputer = m_CenterPointer->GetCenter(
         warpedGrids.rows(selectedObservations),
         GetObservations(m_InputValues, selectedObservations),
         m_DissimilarityPointer
       );
 
       templateGrids.row(i) = centerComputer.centerGrid;
-      templateValues.tube(arma::span(i), arma::span::all) = centerComputer.centerValues;
+      templateValues.row(i) = centerComputer.centerValues;
     }
 
     break;
 
   case DistanceLoop:
+
+    arma::uvec selectedObservations;
+    CenterType centerComputer;
 
     for (unsigned int i = 0;i < clusterIndices.size();++i)
     {
@@ -174,7 +174,7 @@ void KmaModel::UpdateTemplates(const arma::mat& warpedGrids,
       );
 
       templateGrids.row(i) = centerComputer.centerGrid;
-      templateValues.tube(arma::span(i), arma::span::all) = centerComputer.centerValues;
+      templateValues.row(i) = centerComputer.centerValues;
 
       if (m_UseVerbose)
         Rcpp::Rcout << "Template num. " << i << " updated." << std::endl;
@@ -204,7 +204,7 @@ Rcpp::List KmaModel::FitModel()
   for (unsigned int i = 0;i < m_NumberOfClusters;++i)
   {
     templateGrids.row(i) = m_InputGrids.row(m_SeedVector(i));
-    templateValues.tube(arma::span(i), arma::span::all) = GetObservation(m_InputValues, m_SeedVector(i));
+    templateValues.row(i) = m_InputValues.row(m_SeedVector(i));
   }
 
   // Initialize containers for storing
@@ -291,35 +291,25 @@ Rcpp::List KmaModel::FitModel()
     if (m_UseVerbose)
       Rcpp::Rcout << iter << ". Compute best warping: " << std::endl;
 
-    arma::rowvec workingObservationDistances(numberOfClusters);
-    arma::mat workingParameterValues(numberOfClusters, numberOfParameters);
-    arma::rowvec startingParameters(numberOfParameters);
-    arma::rowvec workingWarpedGrid;
-    arma::rowvec workingTemplateGrid;
-    arma::mat workingValues;
-    arma::mat workingTemplateValues;
-    WarpingSet warpingSet;
-
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(m_NumberOfThreads)
 #endif
 
     for (unsigned int i = 0;i < m_NumberOfObservations;++i)
     {
-      workingWarpedGrid = warpedGrids.row(i);
-      workingValues = GetObservation(m_InputValues, i);
+      arma::rowvec workingObservationDistances(numberOfClusters);
+      arma::mat workingParameterValues(numberOfClusters, numberOfParameters);
+      arma::rowvec startingParameters(numberOfParameters);
+      WarpingSet warpingSet;
 
       // Compute warping parameters for each template
       for (unsigned int j = 0;j < numberOfClusters;++j)
       {
-        workingTemplateGrid = templateGrids.row(j);
-        workingTemplateValues = templateValues.tube(arma::span(j), arma::span::all);
-
         warpingSet = m_WarpingPointer->SetInputData(
-          workingWarpedGrid,
-          workingTemplateGrid,
-          workingValues,
-          workingTemplateValues,
+          warpedGrids.row(i),
+          templateGrids.row(j),
+          m_InputValues.row(i),
+          templateValues.row(j),
           m_DissimilarityPointer
         );
 
@@ -430,8 +420,8 @@ Rcpp::List KmaModel::FitModel()
       templateValues
     );
 
-    //check total smilarity
-    if (m_CheckTotalSimilarity)
+    //check total similarity
+    if (m_CheckTotalDissimilarity)
     {
       if (m_UseVerbose)
         Rcpp::Rcout << "Check total similarity: ";

@@ -16,7 +16,7 @@ kma(
   space = 0,
   distance_relative_tolerance = 0.001,
   use_fence = FALSE,
-  check_total_similarity = TRUE,
+  check_total_dissimilarity = TRUE,
   use_verbose = TRUE,
   compute_overall_center = FALSE,
   warping_method = "affine",
@@ -45,7 +45,7 @@ to randomly sampled indices.}
 of iterations before the algorithm stops (default: 100).}
 
 \item{number_of_threads}{An integer specifying the number of threads used for
-parallelization (default: 1). Not working for now.}
+parallelization (default: 1).}
 
 \item{parallel_method}{An integer value specifying the type of desired
 parallelization for template computation, If 0 (default), templates are
@@ -64,7 +64,7 @@ sufficiently improved in that sense, the algorithm stops. Defaults to 1e-3.}
 used to robustify the algorithm against outliers (default: \code{FALSE}).
 Not working for now.}
 
-\item{check_total_similarity}{A boolean specifying whether an additional
+\item{check_total_dissimilarity}{A boolean specifying whether an additional
 stopping criterion based on improvement of the total dissimilarity should
 be used (default: \code{TRUE}).}
 

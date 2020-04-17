@@ -130,14 +130,6 @@ double GetCommonUpperBound(const arma::mat& inputGrids)
 }
 
 //
-// observation
-//
-arma::mat GetObservation(const arma::cube& inputData, unsigned int observationIndex)
-{
-    return inputData(arma::span(observationIndex), arma::span::all, arma::span::all);
-}
-
-//
 // observations
 //
 arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationIndices)
@@ -145,10 +137,7 @@ arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationI
     arma::cube outputCube(observationIndices.size(), inputData.n_cols, inputData.n_slices);
 
     for (unsigned int i = 0;i < observationIndices.size();++i)
-    {
-        unsigned int observationIndex = observationIndices(i);
-        outputCube.tube(arma::span(i), arma::span::all) = GetObservation(inputData, observationIndex);
-    }
+        outputCube.row(i) = inputData.row(observationIndices(i));
 
     return outputCube;
 }

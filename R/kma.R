@@ -13,7 +13,7 @@
 #' @param maximum_number_of_iterations An integer specifying the maximum number
 #'   of iterations before the algorithm stops (default: 100).
 #' @param number_of_threads An integer specifying the number of threads used for
-#'   parallelization (default: 1). Not working for now.
+#'   parallelization (default: 1).
 #' @param parallel_method An integer value specifying the type of desired
 #'   parallelization for template computation, If 0 (default), templates are
 #'   computed in parallel. If 1, parallelization occurs within a single template
@@ -27,7 +27,7 @@
 #' @param use_fence A boolean specifying whether the fence algorithm should be
 #'   used to robustify the algorithm against outliers (default: \code{FALSE}).
 #'   Not working for now.
-#' @param check_total_similarity A boolean specifying whether an additional
+#' @param check_total_dissimilarity A boolean specifying whether an additional
 #'   stopping criterion based on improvement of the total dissimilarity should
 #'   be used (default: \code{TRUE}).
 #' @param use_verbose A boolean specifying whether the algorithm should output
@@ -98,7 +98,7 @@ kma <- function(x, y,
                 space = 0,
                 distance_relative_tolerance = 0.001,
                 use_fence = FALSE,
-                check_total_similarity = TRUE,
+                check_total_dissimilarity = TRUE,
                 use_verbose = TRUE,
                 compute_overall_center = FALSE,
                 warping_method = 'affine',
@@ -133,7 +133,7 @@ kma <- function(x, y,
     space,
     distance_relative_tolerance,
     use_fence,
-    check_total_similarity,
+    check_total_dissimilarity,
     use_verbose,
     compute_overall_center,
     warping_method,

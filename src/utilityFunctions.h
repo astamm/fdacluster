@@ -95,16 +95,7 @@ double GetCommonLowerBound(const arma::mat& gridValues);
  */
 double GetCommonUpperBound(const arma::mat& gridValues);
 
-/// Extract one observation from a cube.
-/**
- *  @param[inputData] Data array in arma::cube format.
- *  @param[observationIndex] Index of the observation to extract.
- *
- *  @return Extracted observation.
- */
-arma::mat GetObservation(const arma::cube& inputData, unsigned int observationIndex);
-
-/// Extract several obsevations from a cube.
+/// Extract several observations from a cube.
 /**
  *  @param[inputData] Data array in arma::cube format.
  *  @param[observationIndices] Indices of the observations to extract.

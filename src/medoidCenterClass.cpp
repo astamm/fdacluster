@@ -70,8 +70,6 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
         Rcpp::stop("The number of columns in x should match the third dimension of y.");
 
     arma::mat distanceMatrix(numberOfObservations, numberOfObservations, arma::fill::zeros);
-    // These auxiliary matrices will be of size nDim x nPts
-    arma::mat workMatrix1, workMatrix2;
 
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(nbThreads)
@@ -82,14 +80,11 @@ CenterType MedoidCenterMethod::GetCenter(const arma::mat& inputGrid,
         unsigned int i = std::floor((1 + std::sqrt(8 * (double)k - 7)) / 2);
         unsigned int j = k - (i - 1) * i / 2 - 1;
 
-        workMatrix1 = inputValues.row(i);
-        workMatrix2 = inputValues.row(j);
-
         double workDistance = dissimilarityPointer->GetDistance(
             inputGrid.row(i),
             inputGrid.row(j),
-            workMatrix1,
-            workMatrix2
+            inputValues.row(i),
+            inputValues.row(j)
         );
 
         distanceMatrix(i, j) = workDistance;

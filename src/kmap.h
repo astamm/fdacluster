@@ -36,7 +36,7 @@ Rcpp::List kmap(
     const unsigned int &space,
     const double &distance_relative_tolerance,
     const bool &use_fence,
-    const bool &check_total_similarity,
+    const bool &check_total_dissimilarity,
     const bool &use_verbose,
     const bool &compute_overall_center,
     const std::string &warping_method,
