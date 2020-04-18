@@ -4,13 +4,18 @@
 #include "baseWarpingClass.h"
 
 #include <RcppArmadillo.h>
-#include <dlib/optimization/find_optimal_parameters.h>
+
+struct CostFunctionData
+{
+  std::shared_ptr<BaseWarpingFunction> warpingPointer;
+  WarpingSet warpingSet;
+};
+
+double GetCostFunctionValue(unsigned n, const double *x, double *grad, void *data);
 
 class BaseOptimizerFunction
 {
 public:
-  using ParametersType = dlib::matrix<double,0,1>;
-
   BaseOptimizerFunction() {}
   virtual ~BaseOptimizerFunction() {}
 

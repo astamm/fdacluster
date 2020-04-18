@@ -12,5 +12,6 @@
 #' @name fdakmapp
 #' @docType package
 #' @useDynLib fdakmapp, .registration=TRUE
+#' @import nloptr
 #' @importFrom Rcpp sourceCpp
 NULL

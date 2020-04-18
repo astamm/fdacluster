@@ -1,55 +1,38 @@
 #include "bobyqaOptimizerClass.h"
 
+#include <nloptrAPI.h>
+
 double BobyqaOptimizerFunction::Optimize(arma::rowvec &initialParameters,
                                          const std::shared_ptr<BaseWarpingFunction> &warpingPointer,
                                          const WarpingSet &warpingSet)
 {
     unsigned int numberOfParameters = warpingPointer->GetNumberOfParameters();
+    nlopt_opt optimizer = nlopt_create(NLOPT_LN_BOBYQA, numberOfParameters);
+
     arma::rowvec lowerBounds = warpingPointer->GetParameterLowerBounds();
     arma::rowvec upperBounds = warpingPointer->GetParameterUpperBounds();
     initialParameters = (lowerBounds + upperBounds) / 2.0;
-    arma::rowvec d = upperBounds - lowerBounds;
 
-    ParametersType dlibInitialParameters(numberOfParameters);
-    ParametersType dlibLowerBounds(numberOfParameters);
-    ParametersType dlibUpperBounds(numberOfParameters);
-
-    for (unsigned int i = 0;i < numberOfParameters;++i)
-    {
-        dlibInitialParameters(i) = initialParameters(i);
-        dlibLowerBounds(i) = lowerBounds(i);
-        dlibUpperBounds(i) = upperBounds(i);
-    }
-
-    double radius = d.min() / 2.0 - m_EpsilonValue;
-
-    auto dlibCostFunction = [&warpingPointer, &warpingSet] (const ParametersType& dlibParams)
-    {
-        unsigned int numberOfParameters = dlibParams.nr();
-        arma::rowvec params(numberOfParameters);
-        for (unsigned int i = 0;i < numberOfParameters;++i)
-            params(i) = dlibParams(i);
-
-        return warpingPointer->GetDissimilarityAfterWarping(warpingSet, params);
-    };
+    CostFunctionData data;
+    data.warpingPointer = warpingPointer;
+    data.warpingSet = warpingSet;
 
     if (initialParameters.size() == 0)
-        return dlibCostFunction(dlibInitialParameters);
+        return GetCostFunctionValue(numberOfParameters, &(initialParameters[0]), NULL, &data);
 
-    find_optimal_parameters(
-        radius,
-        m_EpsilonValue,
-        100,
-        dlibInitialParameters,
-        dlibLowerBounds,
-        dlibUpperBounds,
-        dlibCostFunction
-    );
+    nlopt_set_lower_bounds(optimizer, &(lowerBounds[0]));
+    nlopt_set_upper_bounds(optimizer, &(upperBounds[0]));
 
-    for (unsigned int i = 0;i < numberOfParameters;++i)
-        initialParameters(i) = dlibInitialParameters(i);
+    nlopt_set_min_objective(optimizer, GetCostFunctionValue, &data);
+    nlopt_set_xtol_rel(optimizer, 1e-4);
 
-    return dlibCostFunction(dlibInitialParameters);
+    double fVal;
+    int exitCode = nlopt_optimize(optimizer, &(initialParameters[0]), &fVal);
+
+    nlopt_destroy(optimizer);
+
+    if (exitCode < 0)
+        Rcpp::stop("NLOPT optimization failed.");
+
+    return fVal;
 }
-
-

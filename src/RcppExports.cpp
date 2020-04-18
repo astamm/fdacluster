@@ -3,8 +3,6 @@
 
 #include <RcppArmadillo.h>
 #include <Rcpp.h>
-// [[Rcpp::depends(dlib)]]
-// [[Rcpp::plugins(cpp11)]]
 
 using namespace Rcpp;
 

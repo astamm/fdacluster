@@ -2,6 +2,7 @@
 
 S3method(plot,kma)
 export(kma)
+import(nloptr)
 importFrom(Rcpp,sourceCpp)
 importFrom(grDevices,dev.new)
 importFrom(grDevices,rainbow)
