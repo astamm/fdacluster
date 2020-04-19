@@ -10,18 +10,18 @@
 #include <utility>
 #include <vector>
 
-/// R table function in c++
+/// R table function in C++
 /**
- * @param[inputLabels] Vector of input lables to count.
+ * @param[inputLabels] Vector of input labels to count.
  *
  * @return Table containing the label counts.
  */
-std::map<unsigned int, unsigned int> tableC(const arma::urowvec &inputLabels);
+std::map<unsigned int, unsigned int> tableCpp(const arma::urowvec &inputLabels);
 
 /// Find out-of-range elements.
 /**
- *  @param[inputValues] Input values to be filtered.
- *  @param[lowerBound] Lower bound of included values.
+ *  @param[inputValues] Input values to be filtered;
+ *  @param[lowerBound] Lower bound of included values;
  *  @param[upperBound] Upper bound of included values.
  *
  *  @return Indices of out-of-range elements.
@@ -36,64 +36,6 @@ arma::urowvec which_out(const arma::rowvec &inputValues, const double lowerBound
  *  @return Requested quantile.
  */
 double quantile(const arma::rowvec &inputValues, const double quantileOrder);
-
-/// Create a zipped vector.
-/** Fill the zipped vector with pairs consisting of the
- *   corresponding elements of a and b. (This assumes
- *   that the vectors have equal length).
- */
-template <typename A, typename B>
-void zip(const std::vector<A> &a,
-         const std::vector<B> &b,
-         std::vector< std::pair<A,B> > &zipped)
-{
-    unsigned int vecDim = a.size();
-
-    if (b.size() != a.size())
-        Rcpp::stop("a and b should be of same size.");
-
-    zipped.resize(vecDim);
-
-    for (unsigned int i = 0;i < vecDim;++i)
-        zipped[i] = std::make_pair(a[i], b[i]);
-}
-
-/// Unzip a zipped vector.
-/** Write the first and second element of the pairs in
- * the given zipped vector into a and b. (This assumes
- * that the vectors have equal length)
- */
-template <typename A, typename B>
-void unzip(const std::vector< std::pair<A, B> > &zipped,
-           std::vector<A> &a,
-           std::vector<B> &b)
-{
-    unsigned int vecDim = zipped.size();
-    a.resize(vecDim);
-    b.resize(vecDim);
-
-    for (unsigned i = 0;i < vecDim;++i)
-    {
-        a[i] = zipped[i].first;
-        b[i] = zipped[i].second;
-    }
-}
-
-/// Find the maximal lower bound of a set of grids.
-/**
- *  @param[gridValues] Matrix of input grids.
- *
- *  @return Common lower bound.
- */
-double GetCommonLowerBound(const arma::mat& gridValues);
-
-/// Find the minimal upper bound of a set of grids.
-/**
- *  @param[gridValues] Matrix of input grids.
- *
- *  @return Common upper bound.
- */
-double GetCommonUpperBound(const arma::mat& gridValues);
 
 /// Extract several observations from a cube.
 /**

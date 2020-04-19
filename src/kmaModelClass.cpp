@@ -10,7 +10,6 @@
 #include "l2DissimilarityClass.h"
 
 #include "utilityFunctions.h"
-#include "fenceAlgorithm.h"
 
 #include <Rcpp/Benchmark/Timer.h>
 
@@ -121,6 +120,98 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << " - Use fence to robustify: " << m_UseFence << std::endl;
   Rcpp::Rcout << " - Check total dissimilarity: " << m_CheckTotalDissimilarity << std::endl;
   Rcpp::Rcout << " - Compute overall center: " << m_ComputeOverallCenter << std::endl;
+}
+
+void KmaModel::RunAdaptiveFenceAlgorithm(arma::mat &warpingParameters,
+                                         arma::urowvec &observationMemberships,
+                                         arma::urowvec &observationDistances,
+                                         arma::urowvec &clusterIndices,
+                                         const arma::mat &warpedGrids,
+                                         const arma::mat &templateGrids,
+                                         const arma::cube &templateValues,
+                                         const unsigned int numberOfClusters,
+                                         const unsigned int maximumNumberOfIterations)
+{
+    unsigned int numberOfParameters = warpingParameters.n_cols;
+    arma::uvec quantileOrders = { 0.25, 0.75 };
+    arma::mat quantileValues;
+    arma::mat reasonableBounds;
+    arma::urowvec outlierIndices;
+    arma::urowvec workingIndices;
+    unsigned int runningIteration = 0;
+    bool continueLoop = true;
+    
+    while (continueLoop)
+    {
+      quantileValues = arma::quantile(warpingParameters, quantileOrders);
+      reasonableBounds = quantileValues;
+      reasonableBounds.row(0) -= 1.5 * (quantileValues.row(1) - quantileValues.row(0));
+      reasonableBounds.row(1) += 1.5 * (quantileValues.row(1) - quantileValues.row(0));
+      
+      outlierIndices.reset();
+      
+      for (unsigned int i = 0;i < numberOfParameters;++i)
+      {
+        workingIndices = arma::find(warpingParameters.col(i) < reasonableBounds(0, i) || warpingParameters.col(i) > reasonableBounds(1, i));
+        outlierIndices = arma::join_horiz(outlierIndices, workingIndices);
+      }
+      
+      outierIndices = arma::unique(outlierIndices);
+      
+      if (outlierIndices.size() == 0)
+      {
+        continueLoop = false;
+        continue;
+      }
+       
+        // Redo optimization foe each observation with outliers
+        m_WarpingPointer->SetParameterBounds(reasonableBounds);
+        
+#ifdef _OPENMP
+#pragma omp parallel for num_threads(m_NumberOfThreads)
+#endif
+
+    for (unsigned int i = 0;i < outlierIndices.size();++i)
+    {
+      unsigned int observationIndex = outlierIndices(i);
+      arma::rowvec workingObservationDistances(numberOfClusters);
+      arma::mat workingParameterValues(numberOfClusters, numberOfParameters);
+      arma::rowvec startingParameters(numberOfParameters);
+      WarpingSet warpingSet;
+
+      // Compute warping parameters for each template
+      for (unsigned int j = 0;j < numberOfClusters;++j)
+      {
+        warpingSet = m_WarpingPointer->SetInputData(
+          warpedGrids.row(i),
+          templateGrids.row(j),
+          m_InputValues.row(i),
+          templateValues.row(j),
+          m_DissimilarityPointer
+        );
+
+        workingObservationDistances(j) = m_OptimizerPointer->Optimize(
+          startingParameters,
+          m_WarpingPointer,
+          warpingSet
+        );
+
+        workingParameterValues.row(j) = startingParameters;
+      }
+
+      observationDistances(i) = workingObservationDistances.min();
+      unsigned int assignedTemplateIndex = arma::index_min(workingObservationDistances);
+      observationMemberships(i) = clusterIndices(assignedTemplateIndex);
+      warpingParameters.row(i) = workingParameterValues.row(assignedTemplateIndex);
+    }
+        
+      ++runningIteration;
+      
+      if (runningIteration >= maximumNumberOfIterations)
+        continueLoop = false;
+    }
+
+    return;
 }
 
 void KmaModel::UpdateTemplates(const arma::mat& warpedGrids,
@@ -344,30 +435,25 @@ Rcpp::List KmaModel::FitModel()
     if (m_UseVerbose)
     {
       clusterIndices.print(Rcpp::Rcout, "Cluster indices: ");
-      std::map<unsigned int,unsigned int> mcl = tableC(observationMemberships);
-      for(auto it = mcl.cbegin(); it != mcl.cend(); ++it)
-        Rcpp::Rcout <<" - Size of cluster #"<< it->first << ": " << it->second << std::endl;
+      std::map<unsigned int,unsigned int> labelCounts = tableCpp(observationMemberships);
+      for (auto it = labelCounts.cbegin();it != labelCounts.cend();++it)
+        Rcpp::Rcout <<" - Size of cluster #" << it->first << ": " << it->second << std::endl;
     }
 
     if (m_UseFence)
     {
       if (m_UseVerbose)
-        Rcpp::Rcout << "Fence algorithm: "<< std::endl;
-
-      iterativeFence(
+        Rcpp::Rcout << "Running the adaptive fence algorithm. ";
+        
+      this->RunAdaptiveFenceAlgorithm(
         warpingParameters,
-        iter,
         observationMemberships,
         observationDistances,
-        m_WarpingPointer,
-        m_OptimizerPointer,
-        templateValues,
-        warpedGrids,
-        m_InputValues,
-        templateGrids,
-        m_DissimilarityPointer,
         clusterIndices,
-        m_UseVerbose
+        warpedGrids,
+        templateGrids,
+        templateValues,
+        numberOfClusters
       );
 
       if (m_UseVerbose)

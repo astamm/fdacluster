@@ -78,6 +78,24 @@ public:
             const std::string &dissimilarityMethod,
             const std::string &optimizerMethod
     );
+    
+    /// Remove warping outliers
+    /** It is an optional check that can be activated by the user. After each computation
+     *  of best warping parameters, if the computed parameters are flagged as outliers, 
+     *  they are recomputed with stricter bounds. It is however computationally less 
+     *  expensive to rerun the kma function with stricter warping options.
+     */
+    void RunAdaptiveFenceAlgorithm(
+        arma::mat &warpingParameters,
+        arma::urowvec &observationMemberships,
+        arma::urowvec &observationDistances,
+        arma::urowvec &clusterIndices,
+        const arma::mat &warpedGrids,
+        const arma::mat &templateGrids,
+        const arma::cube &templateValues,
+        const unsigned int numberOfClusters,
+        const unsigned int maximumNumberOfIterations = 10
+    );
 
     // Update templates.
     void UpdateTemplates(

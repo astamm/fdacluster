@@ -3,14 +3,14 @@
 #include <squad.h>
 
 //
-// tableC
+// tableCpp
 //
-std::map<unsigned int, unsigned int> tableC(const arma::urowvec &inputLabels)
+std::map<unsigned int, unsigned int> tableCpp(const arma::urowvec &inputLabels)
 {
     std::map<unsigned int, unsigned int> outputCounts;
-    unsigned int nbLabels = inputLabels.size();
+    unsigned int numberOfObservations = inputLabels.size();
 
-    for (unsigned int i = 0;i < nbLabels;++i)
+    for (unsigned int i = 0;i < numberOfObservations;++i)
         ++outputCounts[inputLabels[i]];
 
     return outputCounts;
