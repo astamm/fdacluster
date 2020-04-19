@@ -6,21 +6,10 @@
 class BobyqaOptimizerFunction : public BaseOptimizerFunction
 {
 public:
-    BobyqaOptimizerFunction()
-    {
-        m_EpsilonValue = 1.0e-8;
-    }
+    BobyqaOptimizerFunction() {}
+    virtual ~BobyqaOptimizerFunction() {}
 
-    void SetEpsilonValue(const double &val) {m_EpsilonValue = val;}
-
-    double Optimize(
-            arma::rowvec &initialParameters,
-            const std::shared_ptr<BaseWarpingFunction> &warpingPointer,
-            const WarpingSet &warpingSet
-    );
-
-private:
-    double m_EpsilonValue;
+    nlopt_opt GetOptimizer(const unsigned int numberOfParameters);
 };
 
 #endif /* BOBYQAOPTIMIZERCLASS_H */

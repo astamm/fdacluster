@@ -4,26 +4,36 @@
 #include "baseWarpingClass.h"
 
 #include <RcppArmadillo.h>
-
-struct CostFunctionData
-{
-  std::shared_ptr<BaseWarpingFunction> warpingPointer;
-  WarpingSet warpingSet;
-};
-
-double GetCostFunctionValue(unsigned n, const double *x, double *grad, void *data);
+#include <nloptrAPI.h>
 
 class BaseOptimizerFunction
 {
 public:
-  BaseOptimizerFunction() {}
+  struct CostFunctionData
+  {
+    std::shared_ptr<BaseWarpingFunction> warpingPointer;
+    WarpingSet warpingSet;
+  };
+  
+  BaseOptimizerFunction()
+  {
+    m_ParameterRelativeTolerance = 1.0e-4;
+  }
+  
   virtual ~BaseOptimizerFunction() {}
-
-  virtual double Optimize(
+  
+  virtual nlopt_opt GetOtpimizer(const unsigned int numberOfParameters) = 0;
+  
+  double GetValue(unsigned n, const double *x, double *grad, void *data);
+  
+  double Optimize(
       arma::rowvec &initialParameters,
       const std::shared_ptr<BaseWarpingFunction> &warpingPointer,
       const WarpingSet &warpingSet
-  ) = 0;
+  );
+  
+private:
+  double m_ParameterRelativeTolerance;
 };
 
 #endif /* BASEOPTIMIZERCLASS_H */
