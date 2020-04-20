@@ -6,7 +6,7 @@
 #include <memory> // for std::shared_ptr...
 #include <map>
 #include <string>
-#include <unordered_map> // for std::unordered_map
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -18,25 +18,6 @@
  */
 std::map<unsigned int, unsigned int> tableCpp(const arma::urowvec &inputLabels);
 
-/// Find out-of-range elements.
-/**
- *  @param[inputValues] Input values to be filtered;
- *  @param[lowerBound] Lower bound of included values;
- *  @param[upperBound] Upper bound of included values.
- *
- *  @return Indices of out-of-range elements.
- */
-arma::urowvec which_out(const arma::rowvec &inputValues, const double lowerBound, const double upperBound);
-
-/// Find the requested quantile.
-/**
- *  @param[inputValues] Vector of input values.
- *  @param[quantileOrder] Order of the requested quantile (between 0 and 1).
- *
- *  @return Requested quantile.
- */
-double quantile(const arma::rowvec &inputValues, const double quantileOrder);
-
 /// Extract several observations from a cube.
 /**
  *  @param[inputData] Data array in arma::cube format.
@@ -44,19 +25,6 @@ double quantile(const arma::rowvec &inputValues, const double quantileOrder);
  *  @return Extracted observations.
  */
 arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationIndices);
-
-/// Approximate a function on a new grid by linear interpolation.
-/**
- *  @param[inputGrid] Original grid.
- *  @param[inputValues] Original values.
- *  @param[outputGrid] Interpolating grid.
- *
- *  @return Interpolated values.
- */
-Rcpp::List approx(const arma::rowvec& inputGrid,
-                  const arma::mat& inputValues,
-                  const std::string interpolationMethod = "Linear"
-);
 
 /// List builder for build big list to return to R
 class ListBuilder
