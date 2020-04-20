@@ -37,7 +37,7 @@ SharedFactory<BaseObjectType>::Instantiate(const std::string &name)
 
 template <class BaseObjectType>
 template <class DerivedObjectType>
-void SharedFactory<BaseObjectType>::Register(std::string name)
+void SharedFactory<BaseObjectType>::Register(const std::string &name)
 {
     m_Map[name] = []()
     {

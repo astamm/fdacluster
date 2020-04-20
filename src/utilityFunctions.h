@@ -37,7 +37,7 @@ public:
     // Use this to instantiate the proper Derived class
     SharedPointerType Instantiate(const std::string &name);
 
-    template <class DerivedObjectType> void Register(std::string name);
+    template <class DerivedObjectType> void Register(const std::string &name);
 
 private:
     RegistryMap m_Map;
