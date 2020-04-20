@@ -569,38 +569,29 @@ Rcpp::List KmaModel::FitModel()
     listOfTemplateGrids(k) = templateGridsContainer.slice(k);
   }
 
-  Rcpp::NumericVector out1 = Rcpp::wrap(overallCenter.centerGrid);
-  out1.attr("dim") = R_NilValue;
-
-  Rcpp::NumericVector out2 = Rcpp::wrap(overallCenter.distancesToCenter);
-  out2.attr("dim") = R_NilValue;
-
-  Rcpp::NumericVector out4 = Rcpp::wrap(observationDistances);
-  out4.attr("dim") = R_NilValue;
-
-  Rcpp::NumericVector out7 = Rcpp::wrap(observationMemberships + 1);
-  out7.attr("dim") = R_NilValue;
-
-  arma::field<arma::cube> out8 = templateValuesContainer.rows(0, iter);
-  arma::field<arma::mat> out9 = listOfTemplateGrids;
+  templateValuesContainer = templateValuesContainer.rows(0, iter);
 
   timer.step( "output ");
 
-  return ListBuilder()
-    .add("iterations",                  iter)
-    .add("n_clust",                     m_NumberOfClusters)
-    .add("overall_center_grid",         out1)
-    .add("overall_center_values",       overallCenter.centerValues)
-    .add("distances_to_overall_center", out2)
-    .add("x_final",                     warpedGrids)
-    .add("n_clust_final",               clusterIndices.size())
-    .add("x_centers_final",             templateGrids)
-    .add("y_centers_final",             templateValues)
-    .add("template_grids",              out9)
-    .add("template_values",             out8)
-    .add("labels",                      out7)
-    .add("final_dissimilarity",         out4)
-    .add("parameters_list",             listOfEstimatedParameters)
-    .add("parameters",                  finalWarpingParameters)
-    .add("timer",                       timer);
+  return Rcpp::List::create(
+    Rcpp::Named("x")                           = m_InputGrids,
+    Rcpp::Named("y")                           = m_InputValues,
+    Rcpp::Named("seeds")                       = m_SeedVector,
+    Rcpp::Named("iterations")                  = iter,
+    Rcpp::Named("n_clust")                     = m_NumberOfClusters,
+    Rcpp::Named("overall_center_grid")         = overallCenter.centerGrid,
+    Rcpp::Named("overall_center_values")       = overallCenter.centerValues,
+    Rcpp::Named("distances_to_overall_center") = overallCenter.distancesToCenter,
+    Rcpp::Named("x_final")                     = warpedGrids,
+    Rcpp::Named("n_clust_final")               = clusterIndices.size(),
+    Rcpp::Named("x_centers_final")             = templateGrids,
+    Rcpp::Named("y_centers_final")             = templateValues,
+    Rcpp::Named("template_grids")              = listOfTemplateGrids,
+    Rcpp::Named("template_values")             = templateValuesContainer,
+    Rcpp::Named("labels")                      = observationMemberships + 1,
+    Rcpp::Named("final_dissimilarity")         = observationDistances,
+    Rcpp::Named("parameters_list")             = listOfEstimatedParameters,
+    Rcpp::Named("parameters")                  = finalWarpingParameters,
+    Rcpp::Named("timer")                       = timer
+  );
 }

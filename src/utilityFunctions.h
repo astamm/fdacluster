@@ -26,80 +26,18 @@ std::map<unsigned int, unsigned int> tableCpp(const arma::urowvec &inputLabels);
  */
 arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationIndices);
 
-/// List builder for build big list to return to R
-class ListBuilder
-{
-public:
-    ListBuilder() {};
-    ~ListBuilder() {};
-
-    inline ListBuilder& add(const std::string& name, SEXP x)
-    {
-        m_Names.push_back(name);
-        m_Elements.push_back(PROTECT(x));
-
-        return *this;
-    }
-
-    template <typename T>
-    inline ListBuilder& add(const std::string& name, const T& x)
-    {
-        m_Names.push_back(name);
-        m_Elements.push_back(PROTECT(Rcpp::wrap(x)));
-
-        return *this;
-    }
-
-    inline operator Rcpp::List() const
-    {
-        Rcpp::List result(m_Elements.size());
-
-        for (unsigned int i = 0;i < m_Elements.size();++i)
-            result[i] = m_Elements[i];
-
-        result.attr("names") = Rcpp::wrap(m_Names);
-        UNPROTECT(m_Elements.size());
-
-        return result;
-    }
-
-    inline operator Rcpp::DataFrame() const
-    {
-        Rcpp::List result = static_cast<Rcpp::List>(*this);
-        result.attr("class") = "data.frame";
-        result.attr("row.names") = Rcpp::IntegerVector::create(NA_INTEGER, XLENGTH(m_Elements[0]));
-        return result;
-    }
-
-private:
-    ListBuilder(ListBuilder const&) {};
-
-    std::vector<std::string> m_Names;
-    std::vector<SEXP> m_Elements;
-};
-
 /// Factory class
-template <typename ObjectType>
+template <class BaseObjectType>
 class SharedFactory
 {
 public:
-    using RegistryMap = std::unordered_map<std::string, std::function<std::shared_ptr<ObjectType>()> >;
+    using SharedPointerType = std::shared_ptr<BaseObjectType>;
+    using RegistryMap = std::unordered_map<std::string, std::function<SharedPointerType()> >;
 
-    // use this to instantiate the proper Derived class
-    std::shared_ptr<ObjectType> Instantiate(const std::string &name)
-    {
-        auto it = m_Map.find(name);
-        return it == m_Map.end() ? nullptr : (it->second)();
-    }
+    // Use this to instantiate the proper Derived class
+    SharedPointerType Instantiate(const std::string &name);
 
-    template <typename T>
-    void Register(std::string name)
-    {
-        m_Map[name] = []()
-        {
-            return std::make_shared<T>();
-        };
-    }
+    template <class DerivedObjectType> void Register(std::string name);
 
 private:
     RegistryMap m_Map;
