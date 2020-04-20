@@ -11,7 +11,7 @@ double BaseOptimizerFunction::GetValue(unsigned n, const double *x, double *grad
   return d->warpingPointer->GetDissimilarityAfterWarping(d->warpingSet, params);
 }
 
-double BaseOptimizerFunction::Optimize(arma::rowvec &initialParameters
+double BaseOptimizerFunction::Optimize(arma::rowvec &initialParameters,
                                        const std::shared_ptr<BaseWarpingFunction> &warpingPointer,
                                        const WarpingSet &warpingSet)
 {

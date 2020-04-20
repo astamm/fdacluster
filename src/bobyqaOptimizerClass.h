@@ -6,9 +6,6 @@
 class BobyqaOptimizerFunction : public BaseOptimizerFunction
 {
 public:
-    BobyqaOptimizerFunction() {}
-    virtual ~BobyqaOptimizerFunction() {}
-
     nlopt_opt GetOptimizer(const unsigned int numberOfParameters);
 };
 

@@ -7,7 +7,7 @@
 
 /**
  * Input for warp member function.
- * It contains abscisa and values of the functions to warp and it is returned by
+ * It contains abscissa and values of the functions to warp and it is returned by
  * the set_function member function.
  */
 struct WarpingSet

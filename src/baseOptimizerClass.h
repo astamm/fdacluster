@@ -14,24 +14,25 @@ public:
     std::shared_ptr<BaseWarpingFunction> warpingPointer;
     WarpingSet warpingSet;
   };
-  
+
   BaseOptimizerFunction()
   {
     m_ParameterRelativeTolerance = 1.0e-4;
   }
-  
+
   virtual ~BaseOptimizerFunction() {}
-  
-  virtual nlopt_opt GetOtpimizer(const unsigned int numberOfParameters) = 0;
-  
-  double GetValue(unsigned n, const double *x, double *grad, void *data);
-  
+
+  virtual nlopt_opt GetOptimizer(const unsigned int numberOfParameters) = 0;
+
   double Optimize(
       arma::rowvec &initialParameters,
       const std::shared_ptr<BaseWarpingFunction> &warpingPointer,
       const WarpingSet &warpingSet
   );
-  
+
+protected:
+  static double GetValue(unsigned n, const double *x, double *grad, void *data);
+
 private:
   double m_ParameterRelativeTolerance;
 };

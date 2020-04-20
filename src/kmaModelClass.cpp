@@ -122,51 +122,93 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << " - Compute overall center: " << m_ComputeOverallCenter << std::endl;
 }
 
-void KmaModel::RunAdaptiveFenceAlgorithm(arma::mat &warpingParameters,
+void KmaModel::AlignAndAssignObservation(arma::mat &warpingParameters,
+                                         arma::rowvec &observationDistances,
                                          arma::urowvec &observationMemberships,
-                                         arma::urowvec &observationDistances,
-                                         arma::urowvec &clusterIndices,
+                                         const unsigned int observationIndex,
+                                         const unsigned int numberOfClusters,
+                                         const arma::urowvec &clusterIndices,
+                                         const arma::mat &warpedGrids,
+                                         const arma::mat &templateGrids,
+                                         const arma::cube &templateValues)
+{
+  unsigned int numberOfParameters = warpingParameters.n_cols;
+  arma::rowvec workingObservationDistances(numberOfClusters);
+  arma::mat workingParameterValues(numberOfClusters, numberOfParameters);
+  arma::rowvec startingParameters(numberOfParameters);
+  WarpingSet warpingSet;
+
+  // Compute warping parameters for each template
+  for (unsigned int i = 0;i < numberOfClusters;++i)
+  {
+    warpingSet = m_WarpingPointer->SetInputData(
+      warpedGrids.row(observationIndex),
+      templateGrids.row(i),
+      m_InputValues.row(observationIndex),
+      templateValues.row(i),
+      m_DissimilarityPointer
+    );
+
+    workingObservationDistances(i) = m_OptimizerPointer->Optimize(
+      startingParameters,
+      m_WarpingPointer,
+      warpingSet
+    );
+
+    workingParameterValues.row(i) = startingParameters;
+  }
+
+  observationDistances(observationIndex) = workingObservationDistances.min();
+  unsigned int assignedTemplateIndex = arma::index_min(workingObservationDistances);
+  observationMemberships(observationIndex) = clusterIndices(assignedTemplateIndex);
+  warpingParameters.row(observationIndex) = workingParameterValues.row(assignedTemplateIndex);
+}
+
+void KmaModel::RunAdaptiveFenceAlgorithm(arma::mat &warpingParameters,
+                                         arma::rowvec &observationDistances,
+                                         arma::urowvec &observationMemberships,
+                                         const arma::urowvec &clusterIndices,
                                          const arma::mat &warpedGrids,
                                          const arma::mat &templateGrids,
                                          const arma::cube &templateValues,
                                          const unsigned int numberOfClusters,
                                          const unsigned int maximumNumberOfIterations)
 {
-    unsigned int numberOfParameters = warpingParameters.n_cols;
-    arma::uvec quantileOrders = { 0.25, 0.75 };
-    arma::mat quantileValues;
-    arma::mat reasonableBounds;
-    arma::urowvec outlierIndices;
-    arma::urowvec workingIndices;
-    unsigned int runningIteration = 0;
-    bool continueLoop = true;
-    
-    while (continueLoop)
+  unsigned int numberOfParameters = warpingParameters.n_cols;
+  arma::vec quantileOrders = { 0.25, 0.75 };
+  arma::mat quantileValues;
+  arma::mat reasonableBounds;
+  arma::urowvec outlierIndices;
+  arma::urowvec workingIndices;
+  unsigned int runningIteration = 0;
+  bool continueLoop = true;
+
+  while (continueLoop)
+  {
+    quantileValues = arma::quantile(warpingParameters, quantileOrders);
+    reasonableBounds = quantileValues;
+    reasonableBounds.row(0) -= 1.5 * (quantileValues.row(1) - quantileValues.row(0));
+    reasonableBounds.row(1) += 1.5 * (quantileValues.row(1) - quantileValues.row(0));
+
+    outlierIndices.reset();
+
+    for (unsigned int i = 0;i < numberOfParameters;++i)
     {
-      quantileValues = arma::quantile(warpingParameters, quantileOrders);
-      reasonableBounds = quantileValues;
-      reasonableBounds.row(0) -= 1.5 * (quantileValues.row(1) - quantileValues.row(0));
-      reasonableBounds.row(1) += 1.5 * (quantileValues.row(1) - quantileValues.row(0));
-      
-      outlierIndices.reset();
-      
-      for (unsigned int i = 0;i < numberOfParameters;++i)
-      {
-        workingIndices = arma::find(warpingParameters.col(i) < reasonableBounds(0, i) || warpingParameters.col(i) > reasonableBounds(1, i));
-        outlierIndices = arma::join_horiz(outlierIndices, workingIndices);
-      }
-      
-      outierIndices = arma::unique(outlierIndices);
-      
-      if (outlierIndices.size() == 0)
-      {
-        continueLoop = false;
-        continue;
-      }
-       
-        // Redo optimization foe each observation with outliers
-        m_WarpingPointer->SetParameterBounds(reasonableBounds);
-        
+      workingIndices = arma::find(warpingParameters.col(i) < reasonableBounds(0, i) || warpingParameters.col(i) > reasonableBounds(1, i));
+      outlierIndices = arma::join_horiz(outlierIndices, workingIndices);
+    }
+
+    outlierIndices = arma::unique(outlierIndices);
+
+    if (outlierIndices.size() == 0)
+    {
+      continueLoop = false;
+      continue;
+    }
+
+    // Redo optimization foe each observation with outliers
+    m_WarpingPointer->SetParameterBounds(reasonableBounds);
+
 #ifdef _OPENMP
 #pragma omp parallel for num_threads(m_NumberOfThreads)
 #endif
@@ -174,44 +216,27 @@ void KmaModel::RunAdaptiveFenceAlgorithm(arma::mat &warpingParameters,
     for (unsigned int i = 0;i < outlierIndices.size();++i)
     {
       unsigned int observationIndex = outlierIndices(i);
-      arma::rowvec workingObservationDistances(numberOfClusters);
-      arma::mat workingParameterValues(numberOfClusters, numberOfParameters);
-      arma::rowvec startingParameters(numberOfParameters);
-      WarpingSet warpingSet;
 
-      // Compute warping parameters for each template
-      for (unsigned int j = 0;j < numberOfClusters;++j)
-      {
-        warpingSet = m_WarpingPointer->SetInputData(
-          warpedGrids.row(i),
-          templateGrids.row(j),
-          m_InputValues.row(i),
-          templateValues.row(j),
-          m_DissimilarityPointer
-        );
-
-        workingObservationDistances(j) = m_OptimizerPointer->Optimize(
-          startingParameters,
-          m_WarpingPointer,
-          warpingSet
-        );
-
-        workingParameterValues.row(j) = startingParameters;
-      }
-
-      observationDistances(i) = workingObservationDistances.min();
-      unsigned int assignedTemplateIndex = arma::index_min(workingObservationDistances);
-      observationMemberships(i) = clusterIndices(assignedTemplateIndex);
-      warpingParameters.row(i) = workingParameterValues.row(assignedTemplateIndex);
-    }
-        
-      ++runningIteration;
-      
-      if (runningIteration >= maximumNumberOfIterations)
-        continueLoop = false;
+      this->AlignAndAssignObservation(
+          warpingParameters,
+          observationDistances,
+          observationMemberships,
+          observationIndex,
+          numberOfClusters,
+          clusterIndices,
+          warpedGrids,
+          templateGrids,
+          templateValues
+      );
     }
 
-    return;
+    ++runningIteration;
+
+    if (runningIteration >= maximumNumberOfIterations)
+      continueLoop = false;
+  }
+
+  return;
 }
 
 void KmaModel::UpdateTemplates(const arma::mat& warpedGrids,
@@ -388,35 +413,17 @@ Rcpp::List KmaModel::FitModel()
 
     for (unsigned int i = 0;i < m_NumberOfObservations;++i)
     {
-      arma::rowvec workingObservationDistances(numberOfClusters);
-      arma::mat workingParameterValues(numberOfClusters, numberOfParameters);
-      arma::rowvec startingParameters(numberOfParameters);
-      WarpingSet warpingSet;
-
-      // Compute warping parameters for each template
-      for (unsigned int j = 0;j < numberOfClusters;++j)
-      {
-        warpingSet = m_WarpingPointer->SetInputData(
-          warpedGrids.row(i),
-          templateGrids.row(j),
-          m_InputValues.row(i),
-          templateValues.row(j),
-          m_DissimilarityPointer
-        );
-
-        workingObservationDistances(j) = m_OptimizerPointer->Optimize(
-          startingParameters,
-          m_WarpingPointer,
-          warpingSet
-        );
-
-        workingParameterValues.row(j) = startingParameters;
-      }
-
-      observationDistances(i) = workingObservationDistances.min();
-      unsigned int assignedTemplateIndex = arma::index_min(workingObservationDistances);
-      observationMemberships(i) = clusterIndices(assignedTemplateIndex);
-      warpingParameters.row(i) = workingParameterValues.row(assignedTemplateIndex);
+      this->AlignAndAssignObservation(
+          warpingParameters,
+          observationDistances,
+          observationMemberships,
+          i,
+          numberOfClusters,
+          clusterIndices,
+          warpedGrids,
+          templateGrids,
+          templateValues
+      );
     }
 
     if (m_UseVerbose)
@@ -444,16 +451,16 @@ Rcpp::List KmaModel::FitModel()
     {
       if (m_UseVerbose)
         Rcpp::Rcout << "Running the adaptive fence algorithm. ";
-        
+
       this->RunAdaptiveFenceAlgorithm(
-        warpingParameters,
-        observationMemberships,
-        observationDistances,
-        clusterIndices,
-        warpedGrids,
-        templateGrids,
-        templateValues,
-        numberOfClusters
+          warpingParameters,
+          observationDistances,
+          observationMemberships,
+          clusterIndices,
+          warpedGrids,
+          templateGrids,
+          templateValues,
+          numberOfClusters
       );
 
       if (m_UseVerbose)
@@ -494,11 +501,11 @@ Rcpp::List KmaModel::FitModel()
     templateValues.set_size(numberOfClusters, m_NumberOfDimensions, m_NumberOfPoints);
 
     this->UpdateTemplates(
-      warpedGrids,
-      clusterIndices,
-      observationMemberships,
-      templateGrids,
-      templateValues
+        warpedGrids,
+        clusterIndices,
+        observationMemberships,
+        templateGrids,
+        templateValues
     );
 
     //check total similarity
