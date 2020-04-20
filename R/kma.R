@@ -101,25 +101,26 @@ kma <- function(x, y,
                 check_total_dissimilarity = TRUE,
                 use_verbose = TRUE,
                 compute_overall_center = FALSE,
-                warping_method = 'affine',
-                center_method = 'mean',
-                dissimilarity_method = 'l2',
-                optimizer_method = 'bobyqa')
-{
+                warping_method = "affine",
+                center_method = "mean",
+                dissimilarity_method = "l2",
+                optimizer_method = "bobyqa") {
   # Handle one-dimensional data
   if (length(dim(y)) == 2) {
     y <- array(y, c(dim(y)[1], 1, dim(y)[2]))
   }
 
   # Handle vector grid
-  if (is.vector(x))
-   x <- matrix(x, dim(y)[1], dim(y)[3], byrow = TRUE)
+  if (is.vector(x)) {
+    x <- matrix(x, dim(y)[1], dim(y)[3], byrow = TRUE)
+  }
 
   # Handle seeds
-  if (is.null(seeds))
+  if (is.null(seeds)) {
     seeds <- sample(0:(dim(y)[1] - 1), n_clust)
-  else
+  } else {
     seeds <- seeds - 1
+  }
 
   out <- kmap(
     x,
@@ -150,14 +151,14 @@ kma <- function(x, y,
   rownames(t) <- c("sec")
   t[1] <- time[1]
   for (i in 0:(out$iterations - 1)) {
-    t[2] = t[2] + time[2 + (i * 3)]
-    t[3] = t[3] + time[3 + (i * 3)]
-    t[4] = t[4] + time[4 + (i * 3)]
+    t[2] <- t[2] + time[2 + (i * 3)]
+    t[3] <- t[3] + time[3 + (i * 3)]
+    t[4] <- t[4] + time[4 + (i * 3)]
   }
-  t[5] = time[out$iterations * 3 + 2]
-  t[6] = out$timer[length(out$timer)] / 1000000000
+  t[5] <- time[out$iterations * 3 + 2]
+  t[6] <- out$timer[length(out$timer)] / 1000000000
   out$timer <- t
-    #######################################################################
+  #######################################################################
 
   out <- c(
     x = list(x),
