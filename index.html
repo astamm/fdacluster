@@ -64,12 +64,12 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-
-
 <div id="fdakmapp" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#fdakmapp" class="anchor"></a>fdakmapp</h1></div>
-<p>The fdakmapp package provides the kmap function that jointly performs clustering and alignment of a functional dataset (multidimensional or unidimensional). The centers can be computed by mean or medoid center methods. The parallel version is available.</p>
+<!-- badges: start -->
+
+<p>The <strong>fdakmapp</strong> package provides the <code><a href="reference/kma.html">kma()</a></code> function that jointly performs clustering and alignment of a functional data set. Mean and medoid center methods are available. The algorithm is fully parallelized.</p>
 <div id="getting-started" class="section level2">
 <h2 class="hasAnchor">
 <a href="#getting-started" class="anchor"></a>Getting Started</h2>
@@ -77,42 +77,114 @@
 <div id="prerequisites" class="section level3">
 <h3 class="hasAnchor">
 <a href="#prerequisites" class="anchor"></a>Prerequisites</h3>
-<p>The package is linked against OpenMP, the BLAS and LAPACK libraries in Makevars.</p>
-<p>To install the package locally the packages Rcpp and RcppArmadillo needs to be installed. Using install_github() will install the dependencies (Rcpp and RcppArmadillo) automatically.</p>
+<p>The package is linked against OpenMP, the BLAS and LAPACK libraries. Therefore, you should make sure that your R / RStudio environment is ready</p>
+<ul>
+<li>to build packages: to check this, type in the console</li>
+</ul>
+<!-- end list --><div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># install.packages("pkgbuild")</span></span>
+<span id="cb1-2"><a href="#cb1-2"></a>pkgbuild<span class="op">::</span><span class="kw">has_devel</span>()</span></code></pre></div>
+<ul>
+<li>
+<p>to build packages with compiled code:</p>
+<ul>
+<li>on Linux: it should be ready;</li>
+<li>on Windows: you should install <a href="https://cloud.r-project.org/bin/windows/Rtools/">Rtools</a>;</li>
+<li>on macOS: you should install a <a href="https://cloud.r-project.org/bin/macosx/tools/">set of tools</a>.</li>
+</ul>
+</li>
+<li><p>to build packages with C++ code through Rcpp: on macOS, you can for instance follow this <a href="https://thecoatlessprofessor.com/programming/cpp/r-compiler-tools-for-rcpp-on-macos/">tutorial</a>.</p></li>
+</ul>
 </div>
-<div id="installing" class="section level3">
+<div id="installation" class="section level3">
 <h3 class="hasAnchor">
-<a href="#installing" class="anchor"></a>Installing</h3>
-<p>The package can be installed directly from github but devtools is required.</p>
-<p>If devtools is not installed use the following comand to install it</p>
-<pre><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages('devtools') </a></code></pre>
-<p>and then install the package</p>
-<pre><code><a href="https://rdrr.io/pkg/devtools/man">library(devtools)
-install_github('zitale/fdakmapp')</a></code></pre>
-<p>Usually the clag compiler doesn’t support OpenMP. For this reason is available a release without -fopenmp.</p>
-<pre><code><a href="https://rdrr.io/pkg/devtools/man">library(devtools)
-install_github('zitale/fdakmapp@v2.0.2.noomp')</a></code></pre>
-<p>Othewise the problem can be solved following the tutorial at: <a href="https://clang-omp.github.io/" class="uri">https://clang-omp.github.io/</a>.</p>
-</div>
-<div id="automatic-tests" class="section level3">
-<h3 class="hasAnchor">
-<a href="#automatic-tests" class="anchor"></a>Automatic tests</h3>
-<pre><code>devtools::test()</code></pre>
+<a href="#installation" class="anchor"></a>Installation</h3>
+<p>The <strong>fdakmapp</strong> package is currently only available on GitHub. You can install it as follows:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="co"># install.packages("remotes")</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>remotes<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"astamm/fdakmapp"</span>)</span></code></pre></div>
 </div>
 <div id="example" class="section level3">
 <h3 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h3>
-<pre><code>res&lt;-kmap(x=aneurisk65$x, y=aneurisk65$y, n_clust=2)
-kmap_show_results(res,FALSE,FALSE)</code></pre>
-</div>
-</div>
-<div id="documentation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#documentation" class="anchor"></a>Documentation</h2>
-<p>The R documentation can be found in the main directory in fdakmapp.pdf. The C++ documentation can be found at <a href="https://zitale.github.io/fdakmapp/" class="uri">https://zitale.github.io/fdakmapp/</a>.</p>
-</div>
-</div>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">fdakmapp</span>)
+<span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/kma.html">kma</a></span>(
+  <span class="no">simulated30</span>$<span class="no">x</span>,
+  <span class="no">simulated30</span>$<span class="no">y</span>,
+  <span class="kw">seeds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">21</span>, <span class="fl">13</span>),
+  <span class="kw">n_clust</span> <span class="kw">=</span> <span class="fl">2</span>,
+  <span class="kw">center_method</span> <span class="kw">=</span> <span class="st">"medoid"</span>,
+  <span class="kw">warping_method</span> <span class="kw">=</span> <span class="st">"affine"</span>,
+  <span class="kw">dissimilarity_method</span> <span class="kw">=</span> <span class="st">"pearson"</span>
+)
+<span class="co">#&gt; Information about the data set:</span>
+<span class="co">#&gt;  - Number of observations: 30</span>
+<span class="co">#&gt;  - Number of dimensions: 1</span>
+<span class="co">#&gt;  - Number of points: 200</span>
+<span class="co">#&gt; Information about cluster initialization:</span>
+<span class="co">#&gt;  - Number of clusters: 2</span>
+<span class="co">#&gt;  - Initial seeds for cluster centers:         21        13</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Information about the methods used within the algorithm:</span>
+<span class="co">#&gt;  - Warping method: affine</span>
+<span class="co">#&gt;  - Center method: medoid</span>
+<span class="co">#&gt;  - Dissimilarity method: pearson</span>
+<span class="co">#&gt;  - Optimization method: bobyqa</span>
+<span class="co">#&gt; Information about warping parameter bounds:</span>
+<span class="co">#&gt;  - Warping options:    0.1500   0.1500</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Information about convergence criteria:</span>
+<span class="co">#&gt;  - Maximum number of iterations: 100</span>
+<span class="co">#&gt;  - Distance relative tolerance: 0.001</span>
+<span class="co">#&gt; Information about parallelization setup:</span>
+<span class="co">#&gt;  - Number of threads: 1</span>
+<span class="co">#&gt;  - Parallel method: 0</span>
+<span class="co">#&gt; Other information:</span>
+<span class="co">#&gt;  - Use fence to robustify: 0</span>
+<span class="co">#&gt;  - Check total dissimilarity: 1</span>
+<span class="co">#&gt;  - Compute overall center: 0</span>
+<span class="co">#&gt; Start execution.</span>
+<span class="co">#&gt; Compute initial templates: Done.</span>
+<span class="co">#&gt; Start while iteration</span>
+<span class="co">#&gt; Iteration #1</span>
+<span class="co">#&gt; Set bound: Done</span>
+<span class="co">#&gt; 1. Compute best warping: </span>
+<span class="co">#&gt; Done</span>
+<span class="co">#&gt; Cluster indices: </span>
+<span class="co">#&gt;         0        1</span>
+<span class="co">#&gt;  - Size of cluster #0: 10</span>
+<span class="co">#&gt;  - Size of cluster #1: 20</span>
+<span class="co">#&gt; Parameter normalization: Done</span>
+<span class="co">#&gt; Update individual warped grids: Done</span>
+<span class="co">#&gt; Compute new templates: </span>
+<span class="co">#&gt; Check total similarity: Done</span>
+<span class="co">#&gt; Iteration #2</span>
+<span class="co">#&gt; Set bound: Done</span>
+<span class="co">#&gt; 2. Compute best warping: </span>
+<span class="co">#&gt; Done</span>
+<span class="co">#&gt; Cluster indices: </span>
+<span class="co">#&gt;         0        1</span>
+<span class="co">#&gt;  - Size of cluster #0: 10</span>
+<span class="co">#&gt;  - Size of cluster #1: 20</span>
+<span class="co">#&gt; Parameter normalization: Done</span>
+<span class="co">#&gt; Update individual warped grids: Done</span>
+<span class="co">#&gt; Compute new templates: </span>
+<span class="co">#&gt; Check total similarity: Done</span>
+<span class="co">#&gt; End while iterations</span>
+<span class="co">#&gt; Final warping: Done</span>
 
+<span class="no">tmp1</span> <span class="kw">&lt;-</span> <span class="no">res</span>$<span class="no">y</span>
+<span class="no">tmp2</span> <span class="kw">&lt;-</span> <span class="no">res</span>$<span class="no">y_centers_final</span>
+<span class="no">res</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span>(<span class="kw">dim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp1</span>)[<span class="fl">1</span>], <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp1</span>)[<span class="fl">3</span>], <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp1</span>)[<span class="fl">2</span>]))
+<span class="no">res</span>$<span class="no">y_centers_final</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span>(<span class="kw">dim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp2</span>)[<span class="fl">1</span>], <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp2</span>)[<span class="fl">3</span>], <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp2</span>)[<span class="fl">2</span>]))
+<span class="kw">for</span> (<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>) {
+  <span class="no">res</span>$<span class="no">y</span>[, , <span class="no">i</span>] <span class="kw">&lt;-</span> <span class="no">tmp1</span>[, <span class="no">i</span>, ]
+  <span class="no">res</span>$<span class="no">y_centers_final</span>[, , <span class="no">i</span>] <span class="kw">&lt;-</span> <span class="no">tmp2</span>[, <span class="no">i</span>, ]
+}
+
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>)</pre></div>
+<p><img src="reference/figures/README-example-simulated30-1.png" width="100%"></p>
+</div>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
