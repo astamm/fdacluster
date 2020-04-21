@@ -3,6 +3,8 @@
 
 #include "baseDissimilarityClass.h"
 
+#include <memory>
+
 struct CenterType
 {
     arma::rowvec centerGrid;
