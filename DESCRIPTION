@@ -13,7 +13,7 @@ Authors@R: c(
            email = "piercesare.secchi@polimi.it"),
     person(given = "Aymeric",
            family = "Stamm",
-           role = c("aut", "cre"),
+           role = c("cre", "ctb"),
            email = "aymeric.stamm@math.cnrs.fr",
            comment = c(ORCID = "0000-0002-8725-3654")),
     person(given = "Simone",
@@ -37,14 +37,15 @@ Description: The fdakmapp package provides the kma function that
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-LinkingTo: Rcpp, RcppArmadillo, squad, nloptr
+LinkingTo: Rcpp, RcppArmadillo, nloptr, squad
 SystemRequirements: C++11
 RoxygenNote: 7.1.0
 Suggests: testthat
 Imports: 
     Rcpp,
     nloptr
-Remotes: 
+Remotes:
+    astamm/nloptr
     astamm/squad
 Depends: 
     R (>= 2.10)
