@@ -7,34 +7,36 @@
 using namespace Rcpp;
 
 // kmap
-Rcpp::List kmap(const arma::mat& x, const arma::cube& y, const arma::rowvec& seeds, const arma::uword n_clust, const std::string warping_method, const std::string center_method, const std::string similarity_method, const std::string optim_method, const arma::rowvec& warping_opt, const arma::rowvec& center_opt, const arma::rowvec& out_opt, const bool fence, const bool check_total_similarity, const bool show_iter, const bool comp_original_center, const arma::urowvec& par_opt);
-RcppExport SEXP _fdakmapp_kmap(SEXP xSEXP, SEXP ySEXP, SEXP seedsSEXP, SEXP n_clustSEXP, SEXP warping_methodSEXP, SEXP center_methodSEXP, SEXP similarity_methodSEXP, SEXP optim_methodSEXP, SEXP warping_optSEXP, SEXP center_optSEXP, SEXP out_optSEXP, SEXP fenceSEXP, SEXP check_total_similaritySEXP, SEXP show_iterSEXP, SEXP comp_original_centerSEXP, SEXP par_optSEXP) {
+Rcpp::List kmap(const arma::mat& x, const arma::cube& y, const arma::urowvec& seeds, const arma::rowvec& warping_options, const unsigned int& n_clust, const unsigned int& maximum_number_of_iterations, const unsigned int& number_of_threads, const unsigned int& parallel_method, const unsigned int& space, const double& distance_relative_tolerance, const bool& use_fence, const bool& check_total_dissimilarity, const bool& use_verbose, const bool& compute_overall_center, const std::string& warping_method, const std::string& center_method, const std::string& dissimilarity_method, const std::string& optimizer_method);
+RcppExport SEXP _fdakmapp_kmap(SEXP xSEXP, SEXP ySEXP, SEXP seedsSEXP, SEXP warping_optionsSEXP, SEXP n_clustSEXP, SEXP maximum_number_of_iterationsSEXP, SEXP number_of_threadsSEXP, SEXP parallel_methodSEXP, SEXP spaceSEXP, SEXP distance_relative_toleranceSEXP, SEXP use_fenceSEXP, SEXP check_total_dissimilaritySEXP, SEXP use_verboseSEXP, SEXP compute_overall_centerSEXP, SEXP warping_methodSEXP, SEXP center_methodSEXP, SEXP dissimilarity_methodSEXP, SEXP optimizer_methodSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const arma::cube& >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const arma::rowvec& >::type seeds(seedsSEXP);
-    Rcpp::traits::input_parameter< const arma::uword >::type n_clust(n_clustSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type warping_method(warping_methodSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type center_method(center_methodSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type similarity_method(similarity_methodSEXP);
-    Rcpp::traits::input_parameter< const std::string >::type optim_method(optim_methodSEXP);
-    Rcpp::traits::input_parameter< const arma::rowvec& >::type warping_opt(warping_optSEXP);
-    Rcpp::traits::input_parameter< const arma::rowvec& >::type center_opt(center_optSEXP);
-    Rcpp::traits::input_parameter< const arma::rowvec& >::type out_opt(out_optSEXP);
-    Rcpp::traits::input_parameter< const bool >::type fence(fenceSEXP);
-    Rcpp::traits::input_parameter< const bool >::type check_total_similarity(check_total_similaritySEXP);
-    Rcpp::traits::input_parameter< const bool >::type show_iter(show_iterSEXP);
-    Rcpp::traits::input_parameter< const bool >::type comp_original_center(comp_original_centerSEXP);
-    Rcpp::traits::input_parameter< const arma::urowvec& >::type par_opt(par_optSEXP);
-    rcpp_result_gen = Rcpp::wrap(kmap(x, y, seeds, n_clust, warping_method, center_method, similarity_method, optim_method, warping_opt, center_opt, out_opt, fence, check_total_similarity, show_iter, comp_original_center, par_opt));
+    Rcpp::traits::input_parameter< const arma::urowvec& >::type seeds(seedsSEXP);
+    Rcpp::traits::input_parameter< const arma::rowvec& >::type warping_options(warping_optionsSEXP);
+    Rcpp::traits::input_parameter< const unsigned int& >::type n_clust(n_clustSEXP);
+    Rcpp::traits::input_parameter< const unsigned int& >::type maximum_number_of_iterations(maximum_number_of_iterationsSEXP);
+    Rcpp::traits::input_parameter< const unsigned int& >::type number_of_threads(number_of_threadsSEXP);
+    Rcpp::traits::input_parameter< const unsigned int& >::type parallel_method(parallel_methodSEXP);
+    Rcpp::traits::input_parameter< const unsigned int& >::type space(spaceSEXP);
+    Rcpp::traits::input_parameter< const double& >::type distance_relative_tolerance(distance_relative_toleranceSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type use_fence(use_fenceSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type check_total_dissimilarity(check_total_dissimilaritySEXP);
+    Rcpp::traits::input_parameter< const bool& >::type use_verbose(use_verboseSEXP);
+    Rcpp::traits::input_parameter< const bool& >::type compute_overall_center(compute_overall_centerSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type warping_method(warping_methodSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type center_method(center_methodSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type dissimilarity_method(dissimilarity_methodSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type optimizer_method(optimizer_methodSEXP);
+    rcpp_result_gen = Rcpp::wrap(kmap(x, y, seeds, warping_options, n_clust, maximum_number_of_iterations, number_of_threads, parallel_method, space, distance_relative_tolerance, use_fence, check_total_dissimilarity, use_verbose, compute_overall_center, warping_method, center_method, dissimilarity_method, optimizer_method));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_fdakmapp_kmap", (DL_FUNC) &_fdakmapp_kmap, 16},
+    {"_fdakmapp_kmap", (DL_FUNC) &_fdakmapp_kmap, 18},
     {NULL, NULL, 0}
 };
 

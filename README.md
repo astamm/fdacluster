@@ -1,3 +1,9 @@
+<!-- badges: start -->
+[![R build status](https://github.com/astamm/fdakmapp/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![Coverage](https://github.com/astamm/fdakmapp/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![Website](https://github.com/astamm/fdakmapp/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+<!-- badges: end -->
+
 # fdakmapp
 The fdakmapp package provides the kmap function that jointly performs clustering and alignment of a functional 
 dataset (multidimensional or unidimensional). The centers can be computed by mean or medoid center methods.

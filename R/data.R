@@ -1,24 +1,25 @@
-#' Data for Examples.
+#' Simulated data for examples.
 #'
-#' A dataset containing 30 simulated unidimensional curves.
+#' A data set containing 30 simulated uni-dimensional curves.
 #'
 #' @format A list with abscissas x and values y:
 #' \describe{
-#'   \item{x}{matrix 30 x 200 }
-#'   \item{y}{array 30 x 200 x 1}
+#'   \item{x}{Matrix 30x200;}
+#'   \item{y}{Array 30x1x200.}
 #' }
 #'
 "simulated30"
 
-#' Data for Examples.
+#' Subset of the Aneurisk data set
 #'
-#' A dataset containing 65 multidimensional curves from aneurisk project.
-#' The curves represent the first derivatives of the 65 ICA centerlines.
+#' A data set containing 65 multi-dimensional curves from the Aneurisk project.
+#' The curves represent the first derivatives of the 65 centerlines of the
+#' internal carotid artery.
 #'
 #' @format A list with abscissas x and values y:
 #' \describe{
-#'   \item{x}{matrix 65 x 1380 }
-#'   \item{y}{array 65 x1380 x 3}
+#'   \item{x}{Matrix 65x1380;}
+#'   \item{y}{Array 65x3x1380.}
 #' }
 #'
 "aneurisk65"
