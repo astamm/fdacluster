@@ -26,21 +26,3 @@ arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationI
 
     return outputCube;
 }
-
-template <class BaseObjectType>
-typename SharedFactory<BaseObjectType>::SharedPointerType
-SharedFactory<BaseObjectType>::Instantiate(const std::string &name)
-{
-    auto it = m_Map.find(name);
-    return it == m_Map.end() ? nullptr : (it->second)();
-}
-
-template <class BaseObjectType>
-template <class DerivedObjectType>
-void SharedFactory<BaseObjectType>::Register(const std::string &name)
-{
-    m_Map[name] = []()
-    {
-        return std::make_shared<DerivedObjectType>();
-    };
-}
