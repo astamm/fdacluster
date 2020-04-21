@@ -11,7 +11,7 @@ test_that(" the warping methods work", {
       warping_method = "affine",
       use_verbose = FALSE
     )
-  ), 22)
+  ), 23)
 
   expect_equal(length(
     kma(
@@ -22,7 +22,7 @@ test_that(" the warping methods work", {
       warping_method = "dilation",
       use_verbose = FALSE
     )
-  ), 22)
+  ), 23)
 
   expect_equal(length(
     kma(
@@ -33,7 +33,7 @@ test_that(" the warping methods work", {
       warping_method = "shift",
       use_verbose = FALSE
     )
-  ), 22)
+  ), 23)
 
   expect_equal(length(
     kma(
@@ -44,5 +44,5 @@ test_that(" the warping methods work", {
       warping_method = "none",
       use_verbose = FALSE
     )
-  ), 22)
+  ), 23)
 })

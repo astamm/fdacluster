@@ -11,7 +11,7 @@ test_that(" the warping methods work", {
       center_method = "mean",
       use_verbose = FALSE
     )
-  ), 22)
+  ), 23)
 
   expect_equal(length(
     kma(
@@ -22,5 +22,5 @@ test_that(" the warping methods work", {
       center_method = "medoid",
       use_verbose = FALSE
     )
-  ), 22)
+  ), 23)
 })
