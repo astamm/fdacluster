@@ -61,8 +61,7 @@ on the distance update between two iterations. If all observations have not
 sufficiently improved in that sense, the algorithm stops. Defaults to 1e-3.}
 
 \item{use_fence}{A boolean specifying whether the fence algorithm should be
-used to robustify the algorithm against outliers (default: \code{FALSE}).
-Not working for now.}
+used to robustify the algorithm against outliers (default: \code{FALSE}).}
 
 \item{check_total_dissimilarity}{A boolean specifying whether an additional
 stopping criterion based on improvement of the total dissimilarity should
@@ -93,9 +92,6 @@ The function output is a \code{kmap} object, which is a list with the
   \item{x}{As input.}
   \item{y}{As input.}
   \item{seeds}{Indices used in the algorithm.}
-  \item{warping_method}{As input.}
-  \item{similarity_method}{As input.}
-  \item{center_method}{As input.}
   \item{iterations}{Number of iterations before the KMA algorithm stops.}
   \item{n_clust}{As input.}
   \item{overall_center_grid}{Overall center grid if
@@ -119,6 +115,10 @@ The function output is a \code{kmap} object, which is a list with the
   iteration.}
   \item{parameters}{Final estimated warping parameters.}
   \item{timer}{Execution time step by step.}
+  \item{warping_method}{As input.}
+  \item{dissimilarity_method}{As input.}
+  \item{center_method}{As input.}
+  \item{optimizer_method}{As input.}
 }
 \description{
 K-mean alignment and variants for functional data

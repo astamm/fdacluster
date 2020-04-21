@@ -10,6 +10,7 @@
 #include "l2DissimilarityClass.h"
 
 #include "utilityFunctions.h"
+#include "sharedFactoryClass.h"
 
 #include <Rcpp/Benchmark/Timer.h>
 
