@@ -4,6 +4,7 @@
 #include "baseDissimilarityClass.h"
 
 #include <RcppArmadillo.h>
+#include <memory>
 
 /**
  * Input for warp member function.
