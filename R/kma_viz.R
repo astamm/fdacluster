@@ -119,7 +119,7 @@ plot.kma <- function(x, bp_sim = FALSE, wr_fun = FALSE, ...) {
 
   # print original data -----------------------------------------------------
 
-  dev.new()
+  # dev.new()
   par(mfrow = c(2, n.dim))
 
   for (l in 1:n.dim) {

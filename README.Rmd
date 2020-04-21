@@ -1,0 +1,81 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# fdakmapp
+
+<!-- badges: start -->
+[![R build status](https://github.com/astamm/fdakmapp/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![Coverage](https://github.com/astamm/fdakmapp/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![Website](https://github.com/astamm/fdakmapp/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+<!-- badges: end -->
+
+The **fdakmapp** package provides the `kma()` function that jointly performs clustering and alignment of a functional data set. Mean and medoid center methods are available. The algorithm is fully parallelized.
+
+## Getting Started
+
+The source code can be cloned or downloaded directly from github.
+An R studio project file is provided to open the project in RStudio.
+
+### Prerequisites
+
+The package is linked against OpenMP, the BLAS and LAPACK libraries. Therefore, you should make sure that your R / RStudio environment is ready
+
+- to build packages: to check this, type in the console
+```
+# install.packages("pkgbuild")
+pkgbuild::has_devel()
+```
+
+- to build packages with compiled code: 
+
+    - on Linux: it should be ready;
+    - on Windows: you should install [Rtools](https://cloud.r-project.org/bin/windows/Rtools/);
+    - on macOS: you should install a [set of tools](https://cloud.r-project.org/bin/macosx/tools/).
+
+- to build packages with C++ code through Rcpp: on macOS, you can for instance follow this [tutorial](https://thecoatlessprofessor.com/programming/cpp/r-compiler-tools-for-rcpp-on-macos/).
+
+### Installation
+
+The **fdakmapp** package is currently only available on GitHub. You can install it as follows:
+```
+# install.packages("remotes")
+remotes::install_github("astamm/fdakmapp")
+```
+
+### Example
+
+```{r example-simulated30}
+library(fdakmapp)
+res <- kma(
+  simulated30$x,
+  simulated30$y,
+  seeds = c(21, 13),
+  n_clust = 2,
+  center_method = "medoid",
+  warping_method = "affine",
+  dissimilarity_method = "pearson"
+)
+
+tmp1 <- res$y
+tmp2 <- res$y_centers_final
+res$y <- array(dim = c(dim(tmp1)[1], dim(tmp1)[3], dim(tmp1)[2]))
+res$y_centers_final <- array(dim = c(dim(tmp2)[1], dim(tmp2)[3], dim(tmp2)[2]))
+for (i in 1) {
+  res$y[, , i] <- tmp1[, i, ]
+  res$y_centers_final[, , i] <- tmp2[, i, ]
+}
+
+plot(res)
+```
