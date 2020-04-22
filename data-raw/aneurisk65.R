@@ -52,7 +52,11 @@ aneurisk_values <- array(dim = c(n, d, p))
 
 for (i in 1:n) {
   s <- selected_data$grids[[i]]$s
-  sout <- modelr::seq_range(s, n = p)
+  sout <- seq(
+    from = min(s, na.rm = TRUE),
+    to = max(s, na.rm = TRUE),
+    length.out = p
+  )
   x <- selected_data$values[[i]]$x
   y <- selected_data$values[[i]]$y
   z <- selected_data$values[[i]]$z
