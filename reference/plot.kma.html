@@ -118,24 +118,20 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for kma</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>bp_sim</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>wr_fun</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>x</span>, <span class='kw'>number_of_displayed_points</span> <span class='kw'>=</span> <span class='fl'>50</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>The <code>kmap</code> object to be plotted.</p></td>
+      <td><p>The <code>kma</code> object to be plotted.</p></td>
     </tr>
     <tr>
-      <th>bp_sim</th>
-      <td><p>Boolean. When <code>TRUE</code>, dissimilarity boxplot are
-additionally plotted. Default is <code>FALSE</code>.</p></td>
-    </tr>
-    <tr>
-      <th>wr_fun</th>
-      <td><p>Boolean. When <code>TRUE</code>, the warping functions are
-additionally plotted. Default is <code>FALSE</code>.</p></td>
+      <th>number_of_displayed_points</th>
+      <td><p>The number of points to graphically
+represents. It is set as the minimum between this parameter and the number
+of points in the original data set. Defaults to 50.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -146,14 +142,14 @@ function.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The input <code>kmap</code> object invisibly.</p>
+    <p>A <code>ggplot</code> object invisibly.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='kma.html'>kma</a></span>(
   <span class='no'>simulated30</span>$<span class='no'>x</span>,
   <span class='no'>simulated30</span>$<span class='no'>y</span>,
-  <span class='kw'>seeds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>21</span>, <span class='fl'>13</span>),
-  <span class='kw'>n_clust</span> <span class='kw'>=</span> <span class='fl'>2</span>,
+  <span class='kw'>seeds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>11</span>, <span class='fl'>21</span>),
+  <span class='kw'>n_clust</span> <span class='kw'>=</span> <span class='fl'>3</span>,
   <span class='kw'>center_method</span> <span class='kw'>=</span> <span class='st'>"medoid"</span>,
   <span class='kw'>warping_method</span> <span class='kw'>=</span> <span class='st'>"affine"</span>,
   <span class='kw'>dissimilarity_method</span> <span class='kw'>=</span> <span class='st'>"pearson"</span>
@@ -162,8 +158,8 @@ function.</p></td>
 #&gt;  - Number of dimensions: 1
 #&gt;  - Number of points: 200
 #&gt; Information about cluster initialization:
-#&gt;  - Number of clusters: 2
-#&gt;  - Initial seeds for cluster centers:         21        13
+#&gt;  - Number of clusters: 3
+#&gt;  - Initial seeds for cluster centers:          1        11        21
 #&gt; 
 #&gt; Information about the methods used within the algorithm:
 #&gt;  - Warping method: affine
@@ -191,9 +187,10 @@ function.</p></td>
 #&gt; 1. Compute best warping: 
 #&gt; Done
 #&gt; Cluster indices: 
-#&gt;         0        1
-#&gt;  - Size of cluster #0: 10
-#&gt;  - Size of cluster #1: 20
+#&gt;         0        1        2
+#&gt;  - Size of cluster #0: 8
+#&gt;  - Size of cluster #1: 12
+#&gt;  - Size of cluster #2: 10
 #&gt; Parameter normalization: Done
 #&gt; Update individual warped grids: Done
 #&gt; Compute new templates: 
@@ -203,24 +200,16 @@ function.</p></td>
 #&gt; 2. Compute best warping: 
 #&gt; Done
 #&gt; Cluster indices: 
-#&gt;         0        1
-#&gt;  - Size of cluster #0: 10
-#&gt;  - Size of cluster #1: 20
+#&gt;         0        1        2
+#&gt;  - Size of cluster #0: 8
+#&gt;  - Size of cluster #1: 12
+#&gt;  - Size of cluster #2: 10
 #&gt; Parameter normalization: Done
 #&gt; Update individual warped grids: Done
 #&gt; Compute new templates: 
 #&gt; Check total similarity: Done
 #&gt; End while iterations
 #&gt; Final warping: Done</div><div class='input'>
-<span class='no'>tmp1</span> <span class='kw'>&lt;-</span> <span class='no'>res</span>$<span class='no'>y</span>
-<span class='no'>tmp2</span> <span class='kw'>&lt;-</span> <span class='no'>res</span>$<span class='no'>y_centers_final</span>
-<span class='no'>res</span>$<span class='no'>y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>(<span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>tmp1</span>)[<span class='fl'>1</span>], <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>tmp1</span>)[<span class='fl'>3</span>], <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>tmp1</span>)[<span class='fl'>2</span>]))
-<span class='no'>res</span>$<span class='no'>y_centers_final</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span>(<span class='kw'>dim</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>tmp2</span>)[<span class='fl'>1</span>], <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>tmp2</span>)[<span class='fl'>3</span>], <span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span>(<span class='no'>tmp2</span>)[<span class='fl'>2</span>]))
-<span class='kw'>for</span> (<span class='no'>i</span> <span class='kw'>in</span> <span class='fl'>1</span>) {
-  <span class='no'>res</span>$<span class='no'>y</span>[, , <span class='no'>i</span>] <span class='kw'>&lt;-</span> <span class='no'>tmp1</span>[, <span class='no'>i</span>, ]
-  <span class='no'>res</span>$<span class='no'>y_centers_final</span>[, , <span class='no'>i</span>] <span class='kw'>&lt;-</span> <span class='no'>tmp2</span>[, <span class='no'>i</span>, ]
-}
-
 <span class='fu'><a href='https://rdrr.io/r/graphics/plot.html'>plot</a></span>(<span class='no'>res</span>)</div><div class='img'><img src='plot.kma-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
