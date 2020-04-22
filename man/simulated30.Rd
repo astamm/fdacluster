@@ -7,8 +7,8 @@
 \format{
 A list with abscissas x and values y:
 \describe{
-  \item{x}{Matrix 30x200;}
-  \item{y}{Array 30x1x200.}
+\item{x}{Matrix 30x200;}
+\item{y}{Array 30x1x200.}
 }
 }
 \usage{

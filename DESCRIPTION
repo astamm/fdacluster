@@ -40,12 +40,14 @@ LazyData: true
 LinkingTo: Rcpp, RcppArmadillo, nloptr, squad
 SystemRequirements: C++11
 RoxygenNote: 7.1.0
+Roxygen: list(markdown = TRUE)
 Suggests: testthat
 Imports: 
     Rcpp,
-    nloptr
-Remotes:
-    astamm/nloptr,
+    nloptr (>= 1.2.2)
+Remotes: 
+    astamm/nloptr
     astamm/squad
 Depends: 
     R (>= 2.10)
+URL: https://astamm.github.io/fdakmapp/index.html, https://github.com/astamm/fdakmapp

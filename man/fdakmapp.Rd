@@ -5,12 +5,15 @@
 \alias{fdakmapp}
 \title{K-mean alignment algorithm and variants for functional data}
 \description{
-The package \code{fdakmapp} allows to jointly perform clustering
+The \strong{fdakmapp} package allows to jointly perform clustering
 and alignment of functional data.
 }
 \references{
-\itemize{
-\item Sangalli, L.M., Secchi, P., Vantini, S., Vitelli, V., 2010. \emph{"K-mean alignment for curve clustering"}. Computational Statistics and Data Analysis, 54, 1219-1233.
-\item Sangalli, L.M., Secchi, P., Vantini, S., 2014. \emph{"Analysis of AneuRisk65 data: K-mean Alignment"}. Electronic Journal of Statistics, Special Section on "Statistics of Time Warpings and Phase Variations", Vol. 8, No. 2, 1891-1904.
+\enumerate{
+\item Sangalli, L.M., Secchi, P., Vantini, S. and Vitelli, V. (2010),
+\href{https://www.sciencedirect.com/science/article/abs/pii/S0167947309004605}{K-mean alignment for curve clustering},
+Computational Statistics and Data Analysis, 54, 1219-1233.
+\item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), \href{http://projecteuclid.org/euclid.ejs/1414588177}{Analysis of AneuRisk65 data: K-mean Alignment}, Electronic
+Journal of Statistics, 8 (2), 1891-1904.
 }
 }

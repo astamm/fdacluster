@@ -88,37 +88,37 @@ choice for now is \code{"bobyqa"}.}
 }
 \value{
 The function output is a \code{kmap} object, which is a list with the
-  following elements:
-  \item{x}{As input.}
-  \item{y}{As input.}
-  \item{seeds}{Indices used in the algorithm.}
-  \item{iterations}{Number of iterations before the KMA algorithm stops.}
-  \item{n_clust}{As input.}
-  \item{overall_center_grid}{Overall center grid if
-  \code{compute_overall_center} is set.}
-  \item{overall_center_values}{Overall center values if
-  \code{compute_overall_center} is set.}
-  \item{distances_to_overall_center}{Distances of each observation to the
-  overall center if \code{compute_overall_center} is set.}
-  \item{x_final}{Aligned observation grids.}
-  \item{n_clust_final}{Final number of clusters. Note that
-  \code{n_clust_final} may differ from initial number of clusters
-  \code{n_clust} if some clusters are empty.}
-  \item{x_centers_final}{Final center grids.}
-  \item{y_centers_final}{Final center values.}
-  \item{template_grids}{List of template grids at each iteration.}
-  \item{template_values}{List of template values at each iteration.}
-  \item{labels}{Cluster memberships.}
-  \item{final_dissimilarity}{Distances of each observation to the center of
-  its assigned cluster.}
-  \item{parameters_list}{List of estimated warping parameters at each
-  iteration.}
-  \item{parameters}{Final estimated warping parameters.}
-  \item{timer}{Execution time step by step.}
-  \item{warping_method}{As input.}
-  \item{dissimilarity_method}{As input.}
-  \item{center_method}{As input.}
-  \item{optimizer_method}{As input.}
+following elements:
+\item{x}{As input.}
+\item{y}{As input.}
+\item{seeds}{Indices used in the algorithm.}
+\item{iterations}{Number of iterations before the KMA algorithm stops.}
+\item{n_clust}{As input.}
+\item{overall_center_grid}{Overall center grid if
+\code{compute_overall_center} is set.}
+\item{overall_center_values}{Overall center values if
+\code{compute_overall_center} is set.}
+\item{distances_to_overall_center}{Distances of each observation to the
+overall center if \code{compute_overall_center} is set.}
+\item{x_final}{Aligned observation grids.}
+\item{n_clust_final}{Final number of clusters. Note that
+\code{n_clust_final} may differ from initial number of clusters
+\code{n_clust} if some clusters are empty.}
+\item{x_centers_final}{Final center grids.}
+\item{y_centers_final}{Final center values.}
+\item{template_grids}{List of template grids at each iteration.}
+\item{template_values}{List of template values at each iteration.}
+\item{labels}{Cluster memberships.}
+\item{final_dissimilarity}{Distances of each observation to the center of
+its assigned cluster.}
+\item{parameters_list}{List of estimated warping parameters at each
+iteration.}
+\item{parameters}{Final estimated warping parameters.}
+\item{timer}{Execution time step by step.}
+\item{warping_method}{As input.}
+\item{dissimilarity_method}{As input.}
+\item{center_method}{As input.}
+\item{optimizer_method}{As input.}
 }
 \description{
 K-mean alignment and variants for functional data

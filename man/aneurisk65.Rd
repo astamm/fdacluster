@@ -3,20 +3,34 @@
 \docType{data}
 \name{aneurisk65}
 \alias{aneurisk65}
-\title{Subset of the Aneurisk data set}
+\title{Subset of the AneuRisk65 benchmark data set}
 \format{
-A list with abscissas x and values y:
+A list with 2 components:
 \describe{
-  \item{x}{Matrix 65x1380;}
-  \item{y}{Array 65x3x1380.}
+\item{x}{A 65 x 1380 matrix containing, in each row, the evaluation grid
+for each patient;}
+\item{y}{A 65 x 3 x 1380 array containing, in each row, the values of the
+first derivative of each of the 3D coordinates of the ICA centerline,
+stored by a row in a matrix.}
 }
+}
+\source{
+This is a subset of the \href{https://statistics.mox.polimi.it/aneurisk/}{AneuRisk65 benchmark data set} provided by the AneuRisk
+project.
 }
 \usage{
 aneurisk65
 }
 \description{
-A data set containing 65 multi-dimensional curves from the Aneurisk project.
-The curves represent the first derivatives of the 65 centerlines of the
-internal carotid artery.
+A data set containing the first derivative of the three-dimensional
+coordinates of the centerline of the internal carotid artery of 65 patients.
+}
+\references{
+\enumerate{
+\item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), \href{http://projecteuclid.org/euclid.ejs/1414588176}{AneuRisk65: three-dimensional cerebral vascular geometries}, Electronic
+Journal of Statistics, 8 (2), 1879-1890.
+\item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), \href{http://projecteuclid.org/euclid.ejs/1414588177}{Analysis of AneuRisk65 data: K-mean Alignment}, Electronic
+Journal of Statistics, 8 (2), 1891-1904.
+}
 }
 \keyword{datasets}
