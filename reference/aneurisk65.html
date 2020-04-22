@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Subset of the Aneurisk data set — aneurisk65 • fdakmapp</title>
+<title>Subset of the AneuRisk65 benchmark data set — aneurisk65 • fdakmapp</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,9 @@
 
 
 
-<meta property="og:title" content="Subset of the Aneurisk data set — aneurisk65" />
-<meta property="og:description" content="A data set containing 65 multi-dimensional curves from the Aneurisk project.
-The curves represent the first derivatives of the 65 centerlines of the
-internal carotid artery." />
+<meta property="og:title" content="Subset of the AneuRisk65 benchmark data set — aneurisk65" />
+<meta property="og:description" content="A data set containing the first derivative of the three-dimensional
+coordinates of the centerline of the internal carotid artery of 65 patients." />
 
 
 
@@ -91,7 +90,12 @@ internal carotid artery." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/astamm/fdakmapp/">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -105,15 +109,14 @@ internal carotid artery." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Subset of the Aneurisk data set</h1>
-    
+    <h1>Subset of the AneuRisk65 benchmark data set</h1>
+    <small class="dont-index">Source: <a href='https://github.com/astamm/fdakmapp/blob/master/R/data.R'><code>R/data.R</code></a></small>
     <div class="hidden name"><code>aneurisk65.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A data set containing 65 multi-dimensional curves from the Aneurisk project.
-The curves represent the first derivatives of the 65 centerlines of the
-internal carotid artery.</p>
+    <p>A data set containing the first derivative of the three-dimensional
+coordinates of the centerline of the internal carotid artery of 65 patients.</p>
     </div>
 
     <pre class="usage"><span class='no'>aneurisk65</span></pre>
@@ -121,11 +124,28 @@ internal carotid artery.</p>
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>A list with abscissas x and values y:</p><dl'>
-  <dt>x</dt><dd><p>Matrix 65x1380;</p></dd>
-  <dt>y</dt><dd><p>Array 65x3x1380.</p></dd>
+    <p>A list with 2 components:</p><dl'>
+<dt>x</dt><dd><p>A 65 x 1380 matrix containing, in each row, the evaluation grid
+for each patient;</p></dd>
+<dt>y</dt><dd><p>A 65 x 3 x 1380 array containing, in each row, the values of the
+first derivative of each of the 3D coordinates of the ICA centerline,
+stored by a row in a matrix.</p></dd>
 
 </dl>
+
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p>This is a subset of the <a href='https://statistics.mox.polimi.it/aneurisk/'>AneuRisk65 benchmark data set</a> provided by the AneuRisk
+project.</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    
+<ol>
+<li><p>Sangalli, L.M., Secchi, P. and Vantini, S. (2014), <a href='http://projecteuclid.org/euclid.ejs/1414588176'>AneuRisk65: three-dimensional cerebral vascular geometries</a>, Electronic
+Journal of Statistics, 8 (2), 1879-1890.</p></li>
+<li><p>Sangalli, L.M., Secchi, P. and Vantini, S. (2014), <a href='http://projecteuclid.org/euclid.ejs/1414588177'>Analysis of AneuRisk65 data: K-mean Alignment</a>, Electronic
+Journal of Statistics, 8 (2), 1891-1904.</p></li>
+</ol>
 
 
   </div>
