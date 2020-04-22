@@ -58,24 +58,16 @@ remotes::install_github("astamm/fdakmapp")
 
 ```{r example-simulated30}
 library(fdakmapp)
+
 res <- kma(
   simulated30$x,
   simulated30$y,
-  seeds = c(21, 13),
-  n_clust = 2,
+  seeds = c(1, 11, 21),
+  n_clust = 3,
   center_method = "medoid",
   warping_method = "affine",
   dissimilarity_method = "pearson"
 )
-
-tmp1 <- res$y
-tmp2 <- res$y_centers_final
-res$y <- array(dim = c(dim(tmp1)[1], dim(tmp1)[3], dim(tmp1)[2]))
-res$y_centers_final <- array(dim = c(dim(tmp2)[1], dim(tmp2)[3], dim(tmp2)[2]))
-for (i in 1) {
-  res$y[, , i] <- tmp1[, i, ]
-  res$y_centers_final[, , i] <- tmp2[, i, ]
-}
 
 plot(res)
 ```

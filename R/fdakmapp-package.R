@@ -19,5 +19,7 @@
 #' @docType package
 #' @useDynLib fdakmapp, .registration=TRUE
 #' @import nloptr
+#' @import ggplot2
+#' @import tibble
 #' @importFrom Rcpp sourceCpp
 NULL

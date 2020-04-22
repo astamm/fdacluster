@@ -4,22 +4,20 @@
 \alias{plot.kma}
 \title{Plot for \code{kmap} objects}
 \usage{
-\method{plot}{kma}(x, bp_sim = FALSE, wr_fun = FALSE, ...)
+\method{plot}{kma}(x, number_of_displayed_points = 50, ...)
 }
 \arguments{
-\item{x}{The \code{kmap} object to be plotted.}
+\item{x}{The \code{kma} object to be plotted.}
 
-\item{bp_sim}{Boolean. When \code{TRUE}, dissimilarity boxplot are
-additionally plotted. Default is \code{FALSE}.}
-
-\item{wr_fun}{Boolean. When \code{TRUE}, the warping functions are
-additionally plotted. Default is \code{FALSE}.}
+\item{number_of_displayed_points}{The number of points to graphically
+represents. It is set as the minimum between this parameter and the number
+of points in the original data set. Defaults to 50.}
 
 \item{...}{Additional parameters passed to the \code{\link[graphics]{plot}}
 function.}
 }
 \value{
-The input \code{kmap} object invisibly.
+A \code{ggplot} object invisibly.
 }
 \description{
 Plot for \code{kmap} objects
@@ -28,21 +26,12 @@ Plot for \code{kmap} objects
 res <- kma(
   simulated30$x,
   simulated30$y,
-  seeds = c(21, 13),
-  n_clust = 2,
+  seeds = c(1, 11, 21),
+  n_clust = 3,
   center_method = "medoid",
   warping_method = "affine",
   dissimilarity_method = "pearson"
 )
-
-tmp1 <- res$y
-tmp2 <- res$y_centers_final
-res$y <- array(dim = c(dim(tmp1)[1], dim(tmp1)[3], dim(tmp1)[2]))
-res$y_centers_final <- array(dim = c(dim(tmp2)[1], dim(tmp2)[3], dim(tmp2)[2]))
-for (i in 1) {
-  res$y[, , i] <- tmp1[, i, ]
-  res$y_centers_final[, , i] <- tmp2[, i, ]
-}
 
 plot(res)
 }
