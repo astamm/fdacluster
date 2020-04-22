@@ -2,9 +2,8 @@ on:
   push:
     paths:
       - README.Rmd
-      - *.yaml
 
-name: Render README
+name: render-readme
 
 jobs:
   render:
