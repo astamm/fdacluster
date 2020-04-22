@@ -46,7 +46,7 @@ Imports:
     Rcpp,
     nloptr (>= 1.2.2)
 Remotes: 
-    astamm/nloptr
+    astamm/nloptr,
     astamm/squad
 Depends: 
     R (>= 2.10)
