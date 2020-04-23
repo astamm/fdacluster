@@ -9,8 +9,6 @@
 status](https://github.com/astamm/fdakmapp/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdakmapp/actions)
 [![Coverage](https://github.com/astamm/fdakmapp/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdakmapp/actions)
 [![Website](https://github.com/astamm/fdakmapp/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdakmapp/actions)
-[![Render
-README](https://github.com/astamm/fdakmapp/workflows/render-readme/badge.svg)](https://github.com/astamm/fdakmapp/actions)
 <!-- badges: end -->
 
 The **fdakmapp** package provides the `kma()` function that jointly
