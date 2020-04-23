@@ -26,8 +26,8 @@ Plot for \code{kmap} objects
 res <- kma(
   simulated30$x,
   simulated30$y,
-  seeds = c(1, 11, 21),
-  n_clust = 3,
+  seeds = c(1, 21),
+  n_clust = 2,
   center_method = "medoid",
   warping_method = "affine",
   dissimilarity_method = "pearson"

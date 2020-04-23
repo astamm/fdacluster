@@ -14,8 +14,8 @@
 #' res <- kma(
 #'   simulated30$x,
 #'   simulated30$y,
-#'   seeds = c(1, 11, 21),
-#'   n_clust = 3,
+#'   seeds = c(1, 21),
+#'   n_clust = 2,
 #'   center_method = "medoid",
 #'   warping_method = "affine",
 #'   dissimilarity_method = "pearson"
@@ -28,7 +28,7 @@ plot.kma <- function(x, number_of_displayed_points = 50, ...) {
   p <- dim(x$y)[3]
 
   original_grids <- 1:p %>%
-    purrr::map(~ x$x[, .x, drop=FALSE]) %>%
+    purrr::map(~ x$x[, .x, drop = FALSE]) %>%
     purrr::set_names(paste0("P", 1:p)) %>%
     as_tibble() %>%
     dplyr::mutate(curve_id = 1:dplyr::n()) %>%
@@ -40,7 +40,7 @@ plot.kma <- function(x, number_of_displayed_points = 50, ...) {
     dplyr::mutate(type = "Original Curves")
 
   warped_grids <- 1:p %>%
-    purrr::map(~ x$x_final[, .x, drop=FALSE]) %>%
+    purrr::map(~ x$x_final[, .x, drop = FALSE]) %>%
     purrr::set_names(paste0("P", 1:p)) %>%
     as_tibble() %>%
     dplyr::mutate(curve_id = 1:dplyr::n()) %>%
@@ -53,7 +53,7 @@ plot.kma <- function(x, number_of_displayed_points = 50, ...) {
 
   original_values <- 1:p %>%
     purrr::map(~ {
-      df <- as.matrix(x$y[, , .x, drop=FALSE])
+      df <- matrix(x$y[, , .x], ncol = d)
       colnames(df) <- paste("Dimension", 1:d)
       as_tibble(df) %>%
         dplyr::mutate(curve_id = 1:dplyr::n())
@@ -67,7 +67,7 @@ plot.kma <- function(x, number_of_displayed_points = 50, ...) {
     )
 
   center_grids <- 1:p %>%
-    purrr::map(~ x$x_centers_final[, .x, drop=FALSE]) %>%
+    purrr::map(~ x$x_centers_final[, .x, drop = FALSE]) %>%
     purrr::set_names(paste0("P", 1:p)) %>%
     as_tibble() %>%
     dplyr::mutate(curve_id = 1:dplyr::n()) %>%
@@ -80,7 +80,7 @@ plot.kma <- function(x, number_of_displayed_points = 50, ...) {
 
   center_values <- 1:p %>%
     purrr::map(~ {
-      df <- as.matrix(x$y_centers_final[, , .x, drop=FALSE])
+      df <- matrix(x$y_centers_final[, , .x], ncol = d)
       colnames(df) <- paste("Dimension", 1:d)
       as_tibble(df) %>%
         dplyr::mutate(curve_id = 1:dplyr::n())
