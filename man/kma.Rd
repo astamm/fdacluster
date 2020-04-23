@@ -127,7 +127,7 @@ K-mean alignment and variants for functional data
 res <- kma(
   simulated30$x,
   simulated30$y,
-  seeds = c(21, 13),
+  seeds = c(1, 21),
   n_clust = 2,
   center_method = "medoid",
   warping_method = "affine",
