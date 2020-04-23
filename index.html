@@ -113,10 +113,11 @@
 <h3 class="hasAnchor">
 <a href="#example" class="anchor"></a>Example</h3>
 <div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">fdakmapp</span>)
+
 <span class="no">res</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/kma.html">kma</a></span>(
   <span class="no">simulated30</span>$<span class="no">x</span>,
   <span class="no">simulated30</span>$<span class="no">y</span>,
-  <span class="kw">seeds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">21</span>, <span class="fl">13</span>),
+  <span class="kw">seeds</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">1</span>, <span class="fl">21</span>),
   <span class="kw">n_clust</span> <span class="kw">=</span> <span class="fl">2</span>,
   <span class="kw">center_method</span> <span class="kw">=</span> <span class="st">"medoid"</span>,
   <span class="kw">warping_method</span> <span class="kw">=</span> <span class="st">"affine"</span>,
@@ -126,24 +127,28 @@
 <span class="co">#&gt;  - Number of observations: 30</span>
 <span class="co">#&gt;  - Number of dimensions: 1</span>
 <span class="co">#&gt;  - Number of points: 200</span>
+<span class="co">#&gt; </span>
 <span class="co">#&gt; Information about cluster initialization:</span>
 <span class="co">#&gt;  - Number of clusters: 2</span>
-<span class="co">#&gt;  - Initial seeds for cluster centers:         21        13</span>
+<span class="co">#&gt;  - Initial seeds for cluster centers:          1        21</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Information about the methods used within the algorithm:</span>
 <span class="co">#&gt;  - Warping method: affine</span>
 <span class="co">#&gt;  - Center method: medoid</span>
 <span class="co">#&gt;  - Dissimilarity method: pearson</span>
 <span class="co">#&gt;  - Optimization method: bobyqa</span>
+<span class="co">#&gt; </span>
 <span class="co">#&gt; Information about warping parameter bounds:</span>
 <span class="co">#&gt;  - Warping options:    0.1500   0.1500</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Information about convergence criteria:</span>
 <span class="co">#&gt;  - Maximum number of iterations: 100</span>
 <span class="co">#&gt;  - Distance relative tolerance: 0.001</span>
+<span class="co">#&gt; </span>
 <span class="co">#&gt; Information about parallelization setup:</span>
 <span class="co">#&gt;  - Number of threads: 1</span>
 <span class="co">#&gt;  - Parallel method: 0</span>
+<span class="co">#&gt; </span>
 <span class="co">#&gt; Other information:</span>
 <span class="co">#&gt;  - Use fence to robustify: 0</span>
 <span class="co">#&gt;  - Check total dissimilarity: 1</span>
@@ -157,8 +162,8 @@
 <span class="co">#&gt; Done</span>
 <span class="co">#&gt; Cluster indices: </span>
 <span class="co">#&gt;         0        1</span>
-<span class="co">#&gt;  - Size of cluster #0: 10</span>
-<span class="co">#&gt;  - Size of cluster #1: 20</span>
+<span class="co">#&gt;  - Size of cluster #0: 20</span>
+<span class="co">#&gt;  - Size of cluster #1: 10</span>
 <span class="co">#&gt; Parameter normalization: Done</span>
 <span class="co">#&gt; Update individual warped grids: Done</span>
 <span class="co">#&gt; Compute new templates: </span>
@@ -169,23 +174,14 @@
 <span class="co">#&gt; Done</span>
 <span class="co">#&gt; Cluster indices: </span>
 <span class="co">#&gt;         0        1</span>
-<span class="co">#&gt;  - Size of cluster #0: 10</span>
-<span class="co">#&gt;  - Size of cluster #1: 20</span>
+<span class="co">#&gt;  - Size of cluster #0: 20</span>
+<span class="co">#&gt;  - Size of cluster #1: 10</span>
 <span class="co">#&gt; Parameter normalization: Done</span>
 <span class="co">#&gt; Update individual warped grids: Done</span>
 <span class="co">#&gt; Compute new templates: </span>
 <span class="co">#&gt; Check total similarity: Done</span>
 <span class="co">#&gt; End while iterations</span>
 <span class="co">#&gt; Final warping: Done</span>
-
-<span class="no">tmp1</span> <span class="kw">&lt;-</span> <span class="no">res</span>$<span class="no">y</span>
-<span class="no">tmp2</span> <span class="kw">&lt;-</span> <span class="no">res</span>$<span class="no">y_centers_final</span>
-<span class="no">res</span>$<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span>(<span class="kw">dim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp1</span>)[<span class="fl">1</span>], <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp1</span>)[<span class="fl">3</span>], <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp1</span>)[<span class="fl">2</span>]))
-<span class="no">res</span>$<span class="no">y_centers_final</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/array.html">array</a></span>(<span class="kw">dim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp2</span>)[<span class="fl">1</span>], <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp2</span>)[<span class="fl">3</span>], <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span>(<span class="no">tmp2</span>)[<span class="fl">2</span>]))
-<span class="kw">for</span> (<span class="no">i</span> <span class="kw">in</span> <span class="fl">1</span>) {
-  <span class="no">res</span>$<span class="no">y</span>[, , <span class="no">i</span>] <span class="kw">&lt;-</span> <span class="no">tmp1</span>[, <span class="no">i</span>, ]
-  <span class="no">res</span>$<span class="no">y_centers_final</span>[, , <span class="no">i</span>] <span class="kw">&lt;-</span> <span class="no">tmp2</span>[, <span class="no">i</span>, ]
-}
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.html">plot</a></span>(<span class="no">res</span>)</pre></div>
 <p><img src="reference/figures/README-example-simulated30-1.png" width="100%"></p>
