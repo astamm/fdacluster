@@ -4,10 +4,14 @@
 \alias{plot.kma}
 \title{Plot for \code{kmap} objects}
 \usage{
-\method{plot}{kma}(x, number_of_displayed_points = 50, ...)
+\method{plot}{kma}(x, type = "data", number_of_displayed_points = 50, ...)
 }
 \arguments{
 \item{x}{The \code{kma} object to be plotted.}
+
+\item{type}{A string specifying the type of information to display. Choices
+are \code{"data"} for plotting the original and aligned curves \link{default} or
+\code{"warping"} for plotting the corresponding warping functions.}
 
 \item{number_of_displayed_points}{The number of points to graphically
 represents. It is set as the minimum between this parameter and the number
@@ -33,5 +37,6 @@ res <- kma(
   dissimilarity_method = "pearson"
 )
 
-plot(res)
+plot(res, type = "data")
+plot(res, type = "warping")
 }

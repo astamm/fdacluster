@@ -107,7 +107,13 @@ res <- kma(
 #>    - Size of cluster #0: 20
 #>    - Size of cluster #1: 10
 
-plot(res)
+plot(res, type = "data")
 ```
 
 <img src="man/figures/README-example-simulated30-1.png" width="100%" />
+
+``` r
+plot(res, type = "warping")
+```
+
+<img src="man/figures/README-example-simulated30-2.png" width="100%" />

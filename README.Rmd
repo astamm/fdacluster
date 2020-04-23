@@ -69,5 +69,6 @@ res <- kma(
   dissimilarity_method = "pearson"
 )
 
-plot(res)
+plot(res, type = "data")
+plot(res, type = "warping")
 ```

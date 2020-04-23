@@ -1,6 +1,9 @@
 #' Plot for \code{kmap} objects
 #'
 #' @param x The \code{kma} object to be plotted.
+#' @param type A string specifying the type of information to display. Choices
+#'   are \code{"data"} for plotting the original and aligned curves [default] or
+#'   \code{"warping"} for plotting the corresponding warping functions.
 #' @param number_of_displayed_points The number of points to graphically
 #'   represents. It is set as the minimum between this parameter and the number
 #'   of points in the original data set. Defaults to 50.
@@ -21,8 +24,18 @@
 #'   dissimilarity_method = "pearson"
 #' )
 #'
-#' plot(res)
-plot.kma <- function(x, number_of_displayed_points = 50, ...) {
+#' plot(res, type = "data")
+#' plot(res, type = "warping")
+plot.kma <- function(x, type = "data", number_of_displayed_points = 50, ...) {
+  if (type == "data")
+    plot_data(x, number_of_displayed_points)
+  else if (type == "warping")
+    plot_warping(x, number_of_displayed_points)
+  else
+    stop("Unsupported type of display for kma objects.")
+}
+
+plot_data <- function(x, type = "data", number_of_displayed_points = 50, ...) {
   n <- dim(x$y)[1]
   d <- dim(x$y)[2]
   p <- dim(x$y)[3]
@@ -127,4 +140,28 @@ plot.kma <- function(x, number_of_displayed_points = 50, ...) {
     facet_grid(rows = vars(type), cols = vars(dimension_id)) +
     theme_bw() +
     theme(legend.position = "top")
+}
+
+plot_warping <- function(obj, number_of_displayed_points = 50, ...) {
+  obj$parameters %>%
+    `colnames<-`(c("slope", "intercept")) %>%
+    as_tibble() %>%
+    dplyr::mutate(
+      x = purrr::map2(
+        .x = slope,
+        .y = intercept,
+        .f = ~ seq(0, 1, length.out = number_of_displayed_points)
+      ),
+      y = purrr::map2(
+        .x = slope,
+        .y = intercept,
+        .f = ~ .x * seq(0, 1, length.out = number_of_displayed_points) + .y
+      ),
+      id = 1:dplyr::n(),
+      membership = as.factor(obj$labels)
+    ) %>%
+    tidyr::unnest(cols = x:y) %>%
+    ggplot(aes(x, y, color = membership, group = id)) +
+    geom_line() +
+    theme_bw()
 }
