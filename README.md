@@ -98,35 +98,14 @@ res <- kma(
 #>  - Use fence to robustify: 0
 #>  - Check total dissimilarity: 1
 #>  - Compute overall center: 0
-#> Start execution.
-#> Compute initial templates: Done.
-#> Start while iteration
-#> Iteration #1
-#> Set bound: Done
-#> 1. Compute best warping: 
-#> Done
-#> Cluster indices: 
-#>         0        1
-#>  - Size of cluster #0: 20
-#>  - Size of cluster #1: 10
-#> Parameter normalization: Done
-#> Update individual warped grids: Done
-#> Compute new templates: 
-#> Check total similarity: Done
-#> Iteration #2
-#> Set bound: Done
-#> 2. Compute best warping: 
-#> Done
-#> Cluster indices: 
-#>         0        1
-#>  - Size of cluster #0: 20
-#>  - Size of cluster #1: 10
-#> Parameter normalization: Done
-#> Update individual warped grids: Done
-#> Compute new templates: 
-#> Check total similarity: Done
-#> End while iterations
-#> Final warping: Done
+#> 
+#> Running k-centroid algorithm:
+#>  * Iteration #1
+#>    - Size of cluster #0: 20
+#>    - Size of cluster #1: 10
+#>  * Iteration #2
+#>    - Size of cluster #0: 20
+#>    - Size of cluster #1: 10
 
 plot(res)
 ```
