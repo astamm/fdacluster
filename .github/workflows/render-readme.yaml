@@ -15,6 +15,10 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v1
       - name: Install rmarkdown
         run: Rscript -e 'install.packages("rmarkdown")'
+      - name: Install remotes
+        run: Rscript -e 'install.packages("remotes")'
+      - name: Install fdakmapp
+        run: Rscript -e 'remotes::install_github("astamm/fdakmapp")'
       - name: Render README
         run: Rscript -e 'rmarkdown::render("README.Rmd")'
       - name: Commit results
