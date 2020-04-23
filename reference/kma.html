@@ -279,7 +279,7 @@ iteration.</p></dd>
     <pre class="examples"><div class='input'><span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>kma</span>(
   <span class='no'>simulated30</span>$<span class='no'>x</span>,
   <span class='no'>simulated30</span>$<span class='no'>y</span>,
-  <span class='kw'>seeds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>21</span>, <span class='fl'>13</span>),
+  <span class='kw'>seeds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>21</span>),
   <span class='kw'>n_clust</span> <span class='kw'>=</span> <span class='fl'>2</span>,
   <span class='kw'>center_method</span> <span class='kw'>=</span> <span class='st'>"medoid"</span>,
   <span class='kw'>warping_method</span> <span class='kw'>=</span> <span class='st'>"affine"</span>,
@@ -288,24 +288,28 @@ iteration.</p></dd>
 #&gt;  - Number of observations: 30
 #&gt;  - Number of dimensions: 1
 #&gt;  - Number of points: 200
+#&gt; 
 #&gt; Information about cluster initialization:
 #&gt;  - Number of clusters: 2
-#&gt;  - Initial seeds for cluster centers:         21        13
+#&gt;  - Initial seeds for cluster centers:          1        21
 #&gt; 
 #&gt; Information about the methods used within the algorithm:
 #&gt;  - Warping method: affine
 #&gt;  - Center method: medoid
 #&gt;  - Dissimilarity method: pearson
 #&gt;  - Optimization method: bobyqa
+#&gt; 
 #&gt; Information about warping parameter bounds:
 #&gt;  - Warping options:    0.1500   0.1500
 #&gt; 
 #&gt; Information about convergence criteria:
 #&gt;  - Maximum number of iterations: 100
 #&gt;  - Distance relative tolerance: 0.001
+#&gt; 
 #&gt; Information about parallelization setup:
 #&gt;  - Number of threads: 1
 #&gt;  - Parallel method: 0
+#&gt; 
 #&gt; Other information:
 #&gt;  - Use fence to robustify: 0
 #&gt;  - Check total dissimilarity: 1
@@ -319,8 +323,8 @@ iteration.</p></dd>
 #&gt; Done
 #&gt; Cluster indices: 
 #&gt;         0        1
-#&gt;  - Size of cluster #0: 10
-#&gt;  - Size of cluster #1: 20
+#&gt;  - Size of cluster #0: 20
+#&gt;  - Size of cluster #1: 10
 #&gt; Parameter normalization: Done
 #&gt; Update individual warped grids: Done
 #&gt; Compute new templates: 
@@ -331,8 +335,8 @@ iteration.</p></dd>
 #&gt; Done
 #&gt; Cluster indices: 
 #&gt;         0        1
-#&gt;  - Size of cluster #0: 10
-#&gt;  - Size of cluster #1: 20
+#&gt;  - Size of cluster #0: 20
+#&gt;  - Size of cluster #1: 10
 #&gt; Parameter normalization: Done
 #&gt; Update individual warped grids: Done
 #&gt; Compute new templates: 
