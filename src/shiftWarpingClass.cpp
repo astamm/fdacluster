@@ -33,26 +33,18 @@ arma::mat ShiftWarpingFunction::GetFinalWarping(const arma::cube &warpingParamet
     unsigned int numberOfObservations = warpingParametersContainer.n_rows;
     unsigned int numberOfParameters = warpingParametersContainer.n_cols;
     unsigned int numberOfIterations = warpingParametersContainer.n_slices;
-    arma::mat outputWarpingParameters(numberOfObservations, numberOfParameters, arma::fill::zeros);
+    arma::mat warpingParameters(numberOfObservations, numberOfParameters, arma::fill::zeros);
     arma::colvec shiftParameters;
 
     for (unsigned int i = 0;i < numberOfIterations;++i)
     {
         shiftParameters = warpingParametersContainer.slice(i).col(0);
-        outputWarpingParameters.col(0) += shiftParameters;
+        warpingParameters.col(0) += shiftParameters;
     }
 
-    arma::uvec observationIndices;
-    arma::rowvec meanParameters;
+    this->Normalize(warpingParameters, clusterIndices, observationMemberships);
 
-    for (unsigned int k = 0;k < clusterIndices.size();++k)
-    {
-        observationIndices = arma::find(observationMemberships == clusterIndices(k));
-        meanParameters = arma::mean(outputWarpingParameters.rows(observationIndices), 0);
-        outputWarpingParameters.rows(observationIndices) -= meanParameters(0);
-    }
-
-    return outputWarpingParameters;
+    return warpingParameters;
 }
 
 void ShiftWarpingFunction::Normalize(arma::mat &warpingParameters,

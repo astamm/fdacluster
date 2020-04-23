@@ -95,6 +95,7 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << " - Number of observations: " << m_NumberOfObservations << std::endl;
   Rcpp::Rcout << " - Number of dimensions: " << m_NumberOfDimensions << std::endl;
   Rcpp::Rcout << " - Number of points: " << m_NumberOfPoints << std::endl;
+  Rcpp::Rcout << std::endl;
 
   Rcpp::Rcout << "Information about cluster initialization:" << std::endl;
   Rcpp::Rcout << " - Number of clusters: " << m_NumberOfClusters << std::endl;
@@ -105,6 +106,7 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << " - Center method: " << centerMethod << std::endl;
   Rcpp::Rcout << " - Dissimilarity method: " << dissimilarityMethod << std::endl;
   Rcpp::Rcout << " - Optimization method: " << optimizerMethod << std::endl;
+  Rcpp::Rcout << std::endl;
 
   Rcpp::Rcout << "Information about warping parameter bounds:" << std::endl;
   Rcpp::Rcout << " - Warping options: " << m_WarpingOptions << std::endl;
@@ -112,10 +114,12 @@ void KmaModel::Print(const std::string &warpingMethod,
   Rcpp::Rcout << "Information about convergence criteria:" << std::endl;
   Rcpp::Rcout << " - Maximum number of iterations: " << m_MaximumNumberOfIterations << std::endl;
   Rcpp::Rcout << " - Distance relative tolerance: " << m_DistanceRelativeTolerance << std::endl;
+  Rcpp::Rcout << std::endl;
 
   Rcpp::Rcout << "Information about parallelization setup:" << std::endl;
   Rcpp::Rcout << " - Number of threads: " << m_NumberOfThreads << std::endl;
   Rcpp::Rcout << " - Parallel method: " << m_ParallelMethod << std::endl;
+  Rcpp::Rcout << std::endl;
 
   Rcpp::Rcout << "Other information:" << std::endl;
   Rcpp::Rcout << " - Use fence to robustify: " << m_UseFence << std::endl;
@@ -494,9 +498,6 @@ Rcpp::List KmaModel::FitModel()
     // Compute new templates
     if (m_UseVerbose)
       Rcpp::Rcout << "Compute new templates: " << std::endl;
-
-    templateGridsContainer.slice(iter - 1) = templateGrids;
-    templateValuesContainer(iter - 1) = templateValues;
 
     templateGrids.set_size(numberOfClusters, m_NumberOfPoints);
     templateValues.set_size(numberOfClusters, m_NumberOfDimensions, m_NumberOfPoints);

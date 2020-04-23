@@ -37,8 +37,8 @@ arma::mat AffineWarpingFunction::GetFinalWarping(const arma::cube &warpingParame
     unsigned int numberOfObservations = warpingParametersContainer.n_rows;
     unsigned int numberOfParameters = warpingParametersContainer.n_cols;
     unsigned int numberOfIterations = warpingParametersContainer.n_slices;
-    arma::mat outputWarpingParameters(numberOfObservations, numberOfParameters, arma::fill::zeros);
-    outputWarpingParameters.col(0).ones();
+    arma::mat warpingParameters(numberOfObservations, numberOfParameters, arma::fill::zeros);
+    warpingParameters.col(0).ones();
     arma::colvec dilationParameters;
     arma::colvec shiftParameters;
 
@@ -46,27 +46,14 @@ arma::mat AffineWarpingFunction::GetFinalWarping(const arma::cube &warpingParame
     {
         dilationParameters = warpingParametersContainer.slice(i).col(0);
         shiftParameters = warpingParametersContainer.slice(i).col(1);
-        outputWarpingParameters.col(0) %= dilationParameters;
-        outputWarpingParameters.col(1) %= dilationParameters;
-        outputWarpingParameters.col(1) += shiftParameters;
+        warpingParameters.col(0) %= dilationParameters;
+        warpingParameters.col(1) %= dilationParameters;
+        warpingParameters.col(1) += shiftParameters;
     }
 
-    arma::uvec observationIndices;
-    arma::rowvec meanParameters;
-    arma::mat clusterValues;
+    this->Normalize(warpingParameters, clusterIndices, observationMemberships);
 
-    for (unsigned int k = 0;k < clusterIndices.size();++k)
-    {
-        observationIndices = arma::find(observationMemberships == clusterIndices(k));
-        meanParameters = arma::mean(outputWarpingParameters.rows(observationIndices), 0);
-        clusterValues = outputWarpingParameters.rows(observationIndices);
-        clusterValues.col(0) /= meanParameters(0);
-        clusterValues.col(1) -= meanParameters(1);
-        clusterValues.col(1) /= meanParameters(0);
-        outputWarpingParameters.rows(observationIndices) = clusterValues;
-    }
-
-    return outputWarpingParameters;
+    return warpingParameters;
 }
 
 void AffineWarpingFunction::Normalize(arma::mat &warpingParameters,
@@ -80,22 +67,11 @@ void AffineWarpingFunction::Normalize(arma::mat &warpingParameters,
     for (unsigned int i = 0;i < clusterIndices.size();++i)
     {
         observationIndices = arma::find(observationMemberships == clusterIndices(i));
-        meanParameters = arma::mean(warpingParameters.rows(observationIndices), 0);
-
         clusterValues = warpingParameters.rows(observationIndices);
+        meanParameters = arma::mean(clusterValues, 0);
         clusterValues.col(0) /= meanParameters(0);
-        clusterValues.col(1) -= meanParameters(1);
-        clusterValues.col(1) /= meanParameters(0);
+        clusterValues.col(1) -= (meanParameters(1) * clusterValues.col(0));
         warpingParameters.rows(observationIndices) = clusterValues;
-
-        // // aggiorno shift e dilation
-        // for (unsigned int j = 0;j < observationIndices.size();++j)
-        // {
-        //     // normalized dilation
-        //     warpingParameters(0, observationIndices(j)) = warpingParameters(0, observationIndices(j)) / meanParameters(0);
-        //     // normalized shift
-        //     warpingParameters(1, observationIndices(j)) = -warpingParameters(0, observationIndices(j)) * meanParameters(1) / meanParameters(0) + warpingParameters(1, observationIndices(j));
-        // }
     }
 }
 
