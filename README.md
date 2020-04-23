@@ -9,6 +9,8 @@
 status](https://github.com/astamm/fdakmapp/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdakmapp/actions)
 [![Coverage](https://github.com/astamm/fdakmapp/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdakmapp/actions)
 [![Website](https://github.com/astamm/fdakmapp/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![Render
+README](https://github.com/astamm/fdakmapp/workflows/render-readme/badge.svg)](https://github.com/astamm/fdakmapp/actions)
 <!-- badges: end -->
 
 The **fdakmapp** package provides the `kma()` function that jointly
@@ -58,10 +60,11 @@ install it as follows:
 
 ``` r
 library(fdakmapp)
+
 res <- kma(
   simulated30$x,
   simulated30$y,
-  seeds = c(21, 13),
+  seeds = c(1, 21),
   n_clust = 2,
   center_method = "medoid",
   warping_method = "affine",
@@ -71,24 +74,28 @@ res <- kma(
 #>  - Number of observations: 30
 #>  - Number of dimensions: 1
 #>  - Number of points: 200
+#> 
 #> Information about cluster initialization:
 #>  - Number of clusters: 2
-#>  - Initial seeds for cluster centers:         21        13
+#>  - Initial seeds for cluster centers:          1        21
 #> 
 #> Information about the methods used within the algorithm:
 #>  - Warping method: affine
 #>  - Center method: medoid
 #>  - Dissimilarity method: pearson
 #>  - Optimization method: bobyqa
+#> 
 #> Information about warping parameter bounds:
 #>  - Warping options:    0.1500   0.1500
 #> 
 #> Information about convergence criteria:
 #>  - Maximum number of iterations: 100
 #>  - Distance relative tolerance: 0.001
+#> 
 #> Information about parallelization setup:
 #>  - Number of threads: 1
 #>  - Parallel method: 0
+#> 
 #> Other information:
 #>  - Use fence to robustify: 0
 #>  - Check total dissimilarity: 1
@@ -102,8 +109,8 @@ res <- kma(
 #> Done
 #> Cluster indices: 
 #>         0        1
-#>  - Size of cluster #0: 10
-#>  - Size of cluster #1: 20
+#>  - Size of cluster #0: 20
+#>  - Size of cluster #1: 10
 #> Parameter normalization: Done
 #> Update individual warped grids: Done
 #> Compute new templates: 
@@ -114,23 +121,14 @@ res <- kma(
 #> Done
 #> Cluster indices: 
 #>         0        1
-#>  - Size of cluster #0: 10
-#>  - Size of cluster #1: 20
+#>  - Size of cluster #0: 20
+#>  - Size of cluster #1: 10
 #> Parameter normalization: Done
 #> Update individual warped grids: Done
 #> Compute new templates: 
 #> Check total similarity: Done
 #> End while iterations
 #> Final warping: Done
-
-tmp1 <- res$y
-tmp2 <- res$y_centers_final
-res$y <- array(dim = c(dim(tmp1)[1], dim(tmp1)[3], dim(tmp1)[2]))
-res$y_centers_final <- array(dim = c(dim(tmp2)[1], dim(tmp2)[3], dim(tmp2)[2]))
-for (i in 1) {
-  res$y[, , i] <- tmp1[, i, ]
-  res$y_centers_final[, , i] <- tmp2[, i, ]
-}
 
 plot(res)
 ```
