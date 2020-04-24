@@ -473,11 +473,6 @@ Rcpp::List KmaModel::FitModel()
     timer.step( "newtemplates "+ std::to_string(numberOfIterations) );
   }
 
-  Rcpp::Rcout << "Distance condition: " << distanceCondition << std::endl;
-  Rcpp::Rcout << "Membership condition: " << membershipCondition << std::endl;
-  Rcpp::Rcout << "Total dissimilarity condition: " << totalDissimilarityCondition << std::endl;
-  Rcpp::Rcout << "Iteration condition: " << iterationCondition << std::endl;
-
   warpingParametersContainer.resize(m_NumberOfObservations, numberOfParameters, numberOfIterations);
 
   // Compute final warping
