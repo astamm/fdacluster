@@ -449,6 +449,9 @@ Rcpp::List KmaModel::FitModel()
         templateValues
     );
 
+    templateGridsContainer.slice(numberOfIterations) = templateGrids;
+    templateValuesContainer(numberOfIterations) = templateValues;
+
     // Check total dissimilarity
     if (m_CheckTotalDissimilarity)
     {
@@ -456,22 +459,26 @@ Rcpp::List KmaModel::FitModel()
       double oldTotalDissimilarity = arma::sum(oldObservationDistances);
 
       // if total distance increased
-      if (oldTotalDissimilarity < totalDissimilarity)
+      if (oldTotalDissimilarity <= totalDissimilarity)
       {
         totalDissimilarityCondition = false;
         templateGrids = templateGridsContainer.slice(numberOfIterations - 1);
         templateValues = templateValuesContainer(numberOfIterations - 1);
         observationDistances = oldObservationDistances;
         observationMemberships = oldObservationMemberships;
+        --numberOfIterations;
       }
     }
 
     timer.step( "newtemplates "+ std::to_string(numberOfIterations) );
   }
 
+  Rcpp::Rcout << "Distance condition: " << distanceCondition << std::endl;
+  Rcpp::Rcout << "Membership condition: " << membershipCondition << std::endl;
+  Rcpp::Rcout << "Total dissimilarity condition: " << totalDissimilarityCondition << std::endl;
+  Rcpp::Rcout << "Iteration condition: " << iterationCondition << std::endl;
+
   warpingParametersContainer.resize(m_NumberOfObservations, numberOfParameters, numberOfIterations);
-  templateGridsContainer.slice(numberOfIterations) = templateGrids;
-  templateValuesContainer(numberOfIterations) = templateValues;
 
   // Compute final warping
   arma::mat finalWarpingParameters = m_WarpingPointer->GetFinalWarping(
@@ -482,12 +489,13 @@ Rcpp::List KmaModel::FitModel()
 
   // Convert cube to field for conversion to List in R
   arma::field<arma::mat> listOfEstimatedParameters(numberOfIterations);
-  arma::field<arma::mat> listOfTemplateGrids(numberOfIterations);
+  arma::field<arma::mat> listOfTemplateGrids(numberOfIterations + 1);
 
+  listOfTemplateGrids(0) = templateGridsContainer.slice(0);
   for (unsigned int k = 0;k < numberOfIterations;++k)
   {
     listOfEstimatedParameters(k) = warpingParametersContainer.slice(k);
-    listOfTemplateGrids(k) = templateGridsContainer.slice(k);
+    listOfTemplateGrids(k + 1) = templateGridsContainer.slice(k + 1);
   }
 
   templateValuesContainer = templateValuesContainer.rows(0, numberOfIterations);
