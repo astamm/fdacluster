@@ -22,3 +22,14 @@ void BaseWarpingFunction::SetParameterBounds(const arma::mat &bounds)
     m_ParameterLowerBounds = bounds.row(0);
     m_ParameterUpperBounds = bounds.row(1);
 }
+
+double BaseWarpingFunction::GetDissimilarityAfterWarping(const WarpingSet &warpingSet,
+                                                         const arma::rowvec &warpingParameters)
+{
+    return warpingSet.dissimilarityPointer->GetDistance(
+            this->ApplyWarping(warpingSet.inputGrid1, warpingParameters),
+            warpingSet.inputGrid2,
+            warpingSet.inputValues1,
+            warpingSet.inputValues2
+    );
+}

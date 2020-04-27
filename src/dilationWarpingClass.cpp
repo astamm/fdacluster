@@ -5,6 +5,11 @@ unsigned int DilationWarpingFunction::GetNumberOfParameters()
     return 1;
 }
 
+arma::rowvec DilationWarpingFunction::GetInitialPoint()
+{
+    return { 1 };
+}
+
 arma::mat DilationWarpingFunction::ApplyWarping(const arma::mat &inputGrids,
                                                 const arma::mat &warpingParameters)
 {
@@ -61,14 +66,4 @@ void DilationWarpingFunction::Normalize(arma::mat &warpingParameters,
         meanParameters = arma::mean(warpingParameters.rows(observationIndices), 0);
         warpingParameters.rows(observationIndices) /= meanParameters(0);
     }
-}
-
-double DilationWarpingFunction::GetDissimilarityAfterWarping(const WarpingSet &warpingSet,
-                                                             const arma::rowvec &warpingParameters)
-{
-    return warpingSet.dissimilarityPointer->GetDistance(
-            warpingParameters(0) * warpingSet.inputGrid1,
-            warpingSet.inputGrid2,
-            warpingSet.inputValues1,
-            warpingSet.inputValues2);
 }

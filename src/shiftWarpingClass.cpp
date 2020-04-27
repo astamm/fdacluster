@@ -5,6 +5,11 @@ unsigned int ShiftWarpingFunction::GetNumberOfParameters()
     return 1;
 }
 
+arma::rowvec ShiftWarpingFunction::GetInitialPoint()
+{
+    return { 0 };
+}
+
 arma::mat ShiftWarpingFunction::ApplyWarping(const arma::mat &inputGrids,
                                              const arma::mat &warpingParameters)
 {
@@ -60,15 +65,4 @@ void ShiftWarpingFunction::Normalize(arma::mat &warpingParameters,
         meanParameters = arma::mean(warpingParameters.rows(observationIndices), 0);
         warpingParameters.rows(observationIndices) -= meanParameters(0);
     }
-}
-
-double ShiftWarpingFunction::GetDissimilarityAfterWarping(const WarpingSet &warpingSet,
-                                                          const arma::rowvec &warpingParameters)
-{
-    return warpingSet.dissimilarityPointer->GetDistance(
-            warpingSet.inputGrid1 + warpingParameters(0),
-            warpingSet.inputGrid2,
-            warpingSet.inputValues1,
-            warpingSet.inputValues2
-    );
 }

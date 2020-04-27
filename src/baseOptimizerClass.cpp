@@ -20,7 +20,7 @@ double BaseOptimizerFunction::Optimize(arma::rowvec &initialParameters,
 
     arma::rowvec lowerBounds = warpingPointer->GetParameterLowerBounds();
     arma::rowvec upperBounds = warpingPointer->GetParameterUpperBounds();
-    initialParameters = (lowerBounds + upperBounds) / 2.0;
+    initialParameters = warpingPointer->GetInitialPoint();
 
     CostFunctionData data;
     data.warpingPointer = warpingPointer;

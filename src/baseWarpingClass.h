@@ -56,6 +56,12 @@ public:
   arma::rowvec GetParameterLowerBounds() {return m_ParameterLowerBounds;}
   arma::rowvec GetParameterUpperBounds() {return m_ParameterUpperBounds;}
 
+  /// Return number of parameters.
+  virtual unsigned int GetNumberOfParameters() = 0;
+
+  /// Return a initial guess at the parameters to start optimization with
+  virtual arma::rowvec GetInitialPoint() = 0;
+
   /// Apply warping to a matrix.
   /**
    * @param[inputGrids] abscissa to warp;
@@ -67,9 +73,6 @@ public:
       const arma::mat &inputGrids,
       const arma::mat &warpingParameters
   ) = 0;
-
-  /// Return number of parameters.
-  virtual unsigned int GetNumberOfParameters() = 0;
 
   /// Set bounds given the input option different for each warping function.
   /**
@@ -118,9 +121,10 @@ public:
    * @param[warpingSet] warping_set element with the functions to warp.
    * @param[warpingParameters] best parameters that will be computed.
    */
-  virtual double GetDissimilarityAfterWarping(
+  double GetDissimilarityAfterWarping(
       const WarpingSet &warpingSet,
-      const arma::rowvec &warpingParameters) = 0;
+      const arma::rowvec &warpingParameters
+  );
 
 protected:
   arma::rowvec m_ParameterLowerBounds;

@@ -5,6 +5,11 @@ unsigned int NoWarpingFunction::GetNumberOfParameters()
     return 0;
 }
 
+arma::rowvec NoWarpingFunction::GetInitialPoint()
+{
+    return {};
+}
+
 arma::mat NoWarpingFunction::ApplyWarping(const arma::mat &inputGrids,
                                           const arma::mat &warpingParameters)
 {
@@ -31,15 +36,4 @@ void NoWarpingFunction::Normalize(arma::mat &warpingParameters,
                                   const arma::urowvec &observationMemberships)
 {
     return;
-}
-
-double NoWarpingFunction::GetDissimilarityAfterWarping(const WarpingSet &warpingSet,
-                                                       const arma::rowvec &warpingParameters)
-{
-    return warpingSet.dissimilarityPointer->GetDistance(
-            warpingSet.inputGrid1,
-            warpingSet.inputGrid2,
-            warpingSet.inputValues1,
-            warpingSet.inputValues2
-    );
 }

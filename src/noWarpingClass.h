@@ -12,6 +12,8 @@ class NoWarpingFunction : public BaseWarpingFunction
 public:
   unsigned int GetNumberOfParameters();
 
+  arma::rowvec GetInitialPoint();
+
   arma::mat ApplyWarping(
       const arma::mat &inputGrids,
       const arma::mat &warpingParameters
@@ -32,11 +34,6 @@ public:
       arma::mat &warpingParameters,
       const arma::urowvec &clusterIndices,
       const arma::urowvec &observationMemberships
-  );
-
-  double GetDissimilarityAfterWarping(
-      const WarpingSet &warpingSet,
-      const arma::rowvec &warpingParameters
   );
 };
 
