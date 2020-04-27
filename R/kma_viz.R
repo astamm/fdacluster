@@ -137,25 +137,45 @@ plot_data <- function(obj, type = "data", number_of_displayed_points = 50, ...) 
     ggplot(aes(grid, value, group = curve_id, color = membership)) +
     geom_line(alpha = 0.3) +
     geom_line(data = df_mean, size = 1.5) +
-    facet_grid(rows = vars(type), cols = vars(dimension_id)) +
+    facet_wrap(vars(type, dimension_id), nrow = 2, scales = "free") +
     theme_bw() +
-    theme(legend.position = "top")
+    theme(legend.position = "top") +
+    labs(
+      title = "Functional Data",
+      subtitle = paste("Class of warping functions:", toupper(obj$warping_method)),
+      x = "Grid",
+      y = "Values",
+      color = "Group membership"
+    )
 }
 
 plot_warping <- function(obj, number_of_displayed_points = 50, ...) {
   if (obj$warping_method == "affine")
-    plot_affine(obj, number_of_displayed_points)
+    df <- data_affine(obj, number_of_displayed_points)
   else if (obj$warping_method == "dilation")
-    plot_dilation(obj, number_of_displayed_points)
+    df <- data_dilation(obj, number_of_displayed_points)
   else if (obj$warping_method == "power")
-    plot_power(obj, number_of_displayed_points)
+    df <- data_power(obj, number_of_displayed_points)
   else if (obj$warping_method == "shift")
-    plot_shift(obj, number_of_displayed_points)
+    df <- data_shift(obj, number_of_displayed_points)
   else
     stop("Unsupported warping family for display.")
+  df %>%
+    tidyr::unnest(cols = x:y) %>%
+    ggplot(aes(x, y, color = membership, group = id)) +
+    geom_line() +
+    theme_bw() +
+    theme(legend.position = "top") +
+    labs(
+      title = "Estimated Warping Functions",
+      subtitle = paste("Class of warping functions:", toupper(obj$warping_method)),
+      x = "Original grids",
+      y = "Warped grids",
+      color = "Group membership"
+    )
 }
 
-plot_affine <- function(obj, number_of_displayed_points = 50, ...) {
+data_affine <- function(obj, number_of_displayed_points = 50, ...) {
   obj$parameters %>%
     `colnames<-`(c("slope", "intercept")) %>%
     as_tibble() %>%
@@ -172,14 +192,10 @@ plot_affine <- function(obj, number_of_displayed_points = 50, ...) {
       ),
       id = 1:dplyr::n(),
       membership = as.factor(obj$labels)
-    ) %>%
-    tidyr::unnest(cols = x:y) %>%
-    ggplot(aes(x, y, color = membership, group = id)) +
-    geom_line() +
-    theme_bw()
+    )
 }
 
-plot_dilation <- function(obj, number_of_displayed_points = 50, ...) {
+data_dilation <- function(obj, number_of_displayed_points = 50, ...) {
   obj$parameters %>%
     `colnames<-`("slope") %>%
     as_tibble() %>%
@@ -194,14 +210,10 @@ plot_dilation <- function(obj, number_of_displayed_points = 50, ...) {
       ),
       id = 1:dplyr::n(),
       membership = as.factor(obj$labels)
-    ) %>%
-    tidyr::unnest(cols = x:y) %>%
-    ggplot(aes(x, y, color = membership, group = id)) +
-    geom_line() +
-    theme_bw()
+    )
 }
 
-plot_power <- function(obj, number_of_displayed_points = 50, ...) {
+data_power <- function(obj, number_of_displayed_points = 50, ...) {
   obj$parameters %>%
     `colnames<-`("power") %>%
     as_tibble() %>%
@@ -216,14 +228,10 @@ plot_power <- function(obj, number_of_displayed_points = 50, ...) {
       ),
       id = 1:dplyr::n(),
       membership = as.factor(obj$labels)
-    ) %>%
-    tidyr::unnest(cols = x:y) %>%
-    ggplot(aes(x, y, color = membership, group = id)) +
-    geom_line() +
-    theme_bw()
+    )
 }
 
-plot_shift <- function(obj, number_of_displayed_points = 50, ...) {
+data_shift <- function(obj, number_of_displayed_points = 50, ...) {
   obj$parameters %>%
     `colnames<-`("intercept") %>%
     as_tibble() %>%
@@ -238,9 +246,5 @@ plot_shift <- function(obj, number_of_displayed_points = 50, ...) {
       ),
       id = 1:dplyr::n(),
       membership = as.factor(obj$labels)
-    ) %>%
-    tidyr::unnest(cols = x:y) %>%
-    ggplot(aes(x, y, color = membership, group = id)) +
-    geom_line() +
-    theme_bw()
+    )
 }
