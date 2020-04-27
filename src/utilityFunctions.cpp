@@ -1,8 +1,5 @@
 #include "utilityFunctions.h"
 
-//
-// tableCpp
-//
 std::map<unsigned int, unsigned int> tableCpp(const arma::urowvec &inputLabels)
 {
     std::map<unsigned int, unsigned int> outputCounts;
@@ -14,9 +11,6 @@ std::map<unsigned int, unsigned int> tableCpp(const arma::urowvec &inputLabels)
     return outputCounts;
 }
 
-//
-// GetObservations
-//
 arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationIndices)
 {
     arma::cube outputCube(observationIndices.size(), inputData.n_cols, inputData.n_slices);
@@ -25,4 +19,18 @@ arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationI
         outputCube.row(i) = inputData.row(observationIndices(i));
 
     return outputCube;
+}
+
+Rcpp::NumericVector FormatVectorForOutput(const arma::rowvec &inputVector)
+{
+    Rcpp::NumericVector outputVector = Rcpp::wrap(inputVector);
+    outputVector.attr("dim") = R_NilValue;
+    return outputVector;
+}
+
+Rcpp::NumericVector FormatVectorForOutput(const arma::urowvec &inputVector)
+{
+    Rcpp::NumericVector outputVector = Rcpp::wrap(inputVector);
+    outputVector.attr("dim") = R_NilValue;
+    return outputVector;
 }

@@ -499,17 +499,10 @@ Rcpp::List KmaModel::FitModel()
 
   // Convert arma vector types to Rcpp::NumericVector
   // since arma types consistently converts to matrix in R
-  Rcpp::NumericVector outputSeedVector = Rcpp::wrap(m_SeedVector);
-  outputSeedVector.attr("dim") = R_NilValue;
-
-  Rcpp::NumericVector outputDistancesToOverallCenter = Rcpp::wrap(overallCenter.distancesToCenter);
-  outputDistancesToOverallCenter.attr("dim") = R_NilValue;
-
-  Rcpp::NumericVector outputObservationMemberships = Rcpp::wrap(observationMemberships + 1);
-  outputObservationMemberships.attr("dim") = R_NilValue;
-
-  Rcpp::NumericVector outputObservationDistances = Rcpp::wrap(observationDistances);
-  outputObservationDistances.attr("dim") = R_NilValue;
+  Rcpp::NumericVector outputSeedVector = FormatVectorForOutput(m_SeedVector);
+  Rcpp::NumericVector outputDistancesToOverallCenter = FormatVectorForOutput(overallCenter.distancesToCenter);
+  Rcpp::NumericVector outputObservationMemberships = FormatVectorForOutput(observationMemberships + 1);
+  Rcpp::NumericVector outputObservationDistances = FormatVectorForOutput(observationDistances);
 
   return Rcpp::List::create(
     Rcpp::Named("x")                           = m_InputGrids,

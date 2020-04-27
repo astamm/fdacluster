@@ -20,4 +20,8 @@ std::map<unsigned int, unsigned int> tableCpp(const arma::urowvec &inputLabels);
  */
 arma::cube GetObservations(const arma::cube& inputData, arma::uvec& observationIndices);
 
+/// Convert arma::rowvec to a type that converts to vector in R
+Rcpp::NumericVector FormatVectorForOutput(const arma::rowvec &inputVector);
+Rcpp::NumericVector FormatVectorForOutput(const arma::urowvec &inputVector);
+
 #endif /* UTILITYFUNCTIONS_H */
