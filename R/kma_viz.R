@@ -147,6 +147,8 @@ plot_warping <- function(obj, number_of_displayed_points = 50, ...) {
     plot_affine(obj, number_of_displayed_points)
   else if (obj$warping_method == "dilation")
     plot_dilation(obj, number_of_displayed_points)
+  else if (obj$warping_method == "power")
+    plot_power(obj, number_of_displayed_points)
   else if (obj$warping_method == "shift")
     plot_shift(obj, number_of_displayed_points)
   else
@@ -189,6 +191,28 @@ plot_dilation <- function(obj, number_of_displayed_points = 50, ...) {
       y = purrr::map(
         .x = slope,
         .f = ~ .x * seq(0, 1, length.out = number_of_displayed_points)
+      ),
+      id = 1:dplyr::n(),
+      membership = as.factor(obj$labels)
+    ) %>%
+    tidyr::unnest(cols = x:y) %>%
+    ggplot(aes(x, y, color = membership, group = id)) +
+    geom_line() +
+    theme_bw()
+}
+
+plot_power <- function(obj, number_of_displayed_points = 50, ...) {
+  obj$parameters %>%
+    `colnames<-`("power") %>%
+    as_tibble() %>%
+    dplyr::mutate(
+      x = purrr::map(
+        .x = power,
+        .f = ~ seq(0, 1, length.out = number_of_displayed_points)
+      ),
+      y = purrr::map(
+        .x = power,
+        .f = ~ seq(0, 1, length.out = number_of_displayed_points)^.x
       ),
       id = 1:dplyr::n(),
       membership = as.factor(obj$labels)

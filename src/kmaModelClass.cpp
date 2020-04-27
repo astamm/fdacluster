@@ -4,10 +4,12 @@
 #include "shiftWarpingClass.h"
 #include "dilationWarpingClass.h"
 #include "affineWarpingClass.h"
+#include "powerWarpingClass.h"
 #include "medoidCenterClass.h"
 #include "meanCenterClass.h"
 #include "pearsonDissimilarityClass.h"
 #include "l2DissimilarityClass.h"
+#include "powerDissimilarityClass.h"
 
 #include "utilityFunctions.h"
 #include "sharedFactoryClass.h"
@@ -41,6 +43,7 @@ void KmaModel::SetWarpingMethod(const std::string &val)
   warpingFactory.Register<ShiftWarpingFunction>("shift");
   warpingFactory.Register<DilationWarpingFunction>("dilation");
   warpingFactory.Register<AffineWarpingFunction>("affine");
+  warpingFactory.Register<PowerWarpingFunction>("power");
 
   m_WarpingPointer = warpingFactory.Instantiate(val);
 
@@ -67,6 +70,7 @@ void KmaModel::SetDissimilarityMethod(const std::string &val)
   SharedFactory<BaseDissimilarityFunction> dissimilarityFactory;
   dissimilarityFactory.Register<PearsonDissimilarityFunction>("pearson");
   dissimilarityFactory.Register<L2DissimilarityFunction>("l2");
+  dissimilarityFactory.Register<PowerDissimilarityFunction>("power");
 
   m_DissimilarityPointer = dissimilarityFactory.Instantiate(val);
 
