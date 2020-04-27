@@ -18,9 +18,9 @@ double L2DissimilarityFunction::GetDistance(const arma::rowvec& grid1,
     if (nPts <= 1.0)
         return DBL_MAX;
 
-    arma::rowvec diffVector = pair.Grid.cols(1, nPts - 1) - pair.Grid.cols(0, nPts - 2);
-    double rangeValue = pair.Grid(nPts - 1) - pair.Grid(0);
     double squaredDistanceValue = 0.0;
+    double squaredNorm1Value = 0.0;
+    double squaredNorm2Value = 0.0;
 
     if (this->GetSpace() == Euclidean)
     {
@@ -28,29 +28,48 @@ double L2DissimilarityFunction::GetDistance(const arma::rowvec& grid1,
 
         for (unsigned int k = 0;k < nDim;++k)
         {
-            workVector = arma::sqrt(diffVector) % (pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1));
+            workVector = pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1);
             squaredDistanceValue += arma::dot(workVector, workVector);
+            workVector = pair.Values1.row(k).cols(1, nPts - 1);
+            squaredNorm1Value += arma::dot(workVector, workVector);
+            workVector = pair.Values2.row(k).cols(1, nPts - 1);
+            squaredNorm2Value += arma::dot(workVector, workVector);
         }
-
-        squaredDistanceValue /= (rangeValue * (double)nDim);
     }
     else if (this->GetSpace() == UnitQuaternion)
     {
+        arma::mat neutralMatrix(nDim, nPts, arma::fill::zeros);
+        neutralMatrix.row(0).ones();
+
         for (unsigned int j = 0;j < nPts - 1;++j)
         {
-            double tmpDistance = squad::GeodesicQuaternionDistance(
+            double workValue = squad::GeodesicQuaternionDistance(
                 Rcpp::wrap(pair.Values1),
                 Rcpp::wrap(pair.Values2),
                 j + 1, j + 1
             );
 
-            squaredDistanceValue += diffVector[j] * tmpDistance * tmpDistance;
-        }
+            squaredDistanceValue += workValue * workValue;
 
-        squaredDistanceValue /= rangeValue;
+            workValue = squad::GeodesicQuaternionDistance(
+                Rcpp::wrap(pair.Values1),
+                Rcpp::wrap(neutralMatrix),
+                j + 1, j + 1
+            );
+
+            squaredNorm1Value += workValue * workValue;
+
+            workValue = squad::GeodesicQuaternionDistance(
+                Rcpp::wrap(pair.Values2),
+                Rcpp::wrap(neutralMatrix),
+                j + 1, j + 1
+            );
+
+            squaredNorm2Value += workValue * workValue;
+        }
     }
     else
         Rcpp::Rcout << "Distance operations for the requested space are not yet implemented." << std::endl;
 
-    return std::sqrt(squaredDistanceValue);
+    return std::sqrt(squaredDistanceValue) / (std::sqrt(squaredNorm1Value) + std::sqrt(squaredNorm2Value));
 }
