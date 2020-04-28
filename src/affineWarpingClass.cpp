@@ -74,36 +74,9 @@ void AffineWarpingFunction::Normalize(arma::mat &warpingParameters,
         observationIndices = arma::find(observationMemberships == clusterIndices(i));
         clusterValues = warpingParameters.rows(observationIndices);
 
-        // meanParameters = arma::mean(clusterValues, 0);
-        // clusterValues.col(0) /= meanParameters(0);
-        // clusterValues.col(1) -= (meanParameters(1) * clusterValues.col(0));
-        // warpingParameters.rows(observationIndices) = clusterValues;
-
-        double meanDilation = 1.0;
-
-        for (unsigned int j = 0;j < observationIndices.size();++j)
-            meanDilation *= clusterValues(j, 0);
-
-        meanDilation = std::pow(meanDilation, 1.0 / (double)observationIndices.size());
-
-        double workNumerator = 0.0;
-        double workDenominator = 0.0;
-
-        for (unsigned int j = 0;j < observationIndices.size();++j)
-        {
-            double workProduct = 1.0;
-
-            for (unsigned int k = j + 1;k < observationIndices.size();++k)
-                workProduct *= clusterValues(k, 0);
-
-            workNumerator += clusterValues(j, 1) * std::pow(meanDilation, (double)j) * workProduct;
-            workDenominator += clusterValues(j, 0) * std::pow(meanDilation, (double)j) * workProduct;
-        }
-
-        double meanShift = meanDilation * workNumerator / workDenominator;
-
-        clusterValues.col(0) /= meanDilation;
-        clusterValues.col(1) -= (meanShift * clusterValues.col(0));
+        meanParameters = arma::mean(clusterValues, 0);
+        clusterValues.col(0) /= meanParameters(0);
+        clusterValues.col(1) -= (meanParameters(1) * clusterValues.col(0));
         warpingParameters.rows(observationIndices) = clusterValues;
     }
 }
