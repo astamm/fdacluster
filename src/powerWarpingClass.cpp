@@ -66,11 +66,7 @@ void PowerWarpingFunction::Normalize(arma::mat &warpingParameters,
         observationIndices = arma::find(observationMemberships == clusterIndices(i));
         clusterValues = warpingParameters.rows(observationIndices);
 
-        double meanPower = 1.0;
-        for (unsigned int j = 0;j < observationIndices.size();++j)
-            meanPower *= clusterValues(j, 0);
-
-        meanPower = std::pow(meanPower, 1.0 / (double)observationIndices.size());
+        double meanPower = std::exp(arma::mean(arma::log(clusterValues.col(0))));
         clusterValues.col(0) /= meanPower;
         warpingParameters.rows(observationIndices) = clusterValues;
     }
