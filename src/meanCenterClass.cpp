@@ -18,11 +18,12 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
     if (inputGrid.n_cols != numberOfPoints)
         Rcpp::stop("The number of columns in x should match the third dimension of y.");
 
-    // Find common grid
-    double gridLowerBound = arma::max(arma::min(inputGrid, 1));
-    double gridUpperBound = arma::min(arma::max(inputGrid, 1));
-    arma::rowvec outputGrid = arma::linspace<arma::rowvec>(gridLowerBound, gridUpperBound, numberOfPoints);
+    // Find largest grid
+    double gridLowerBound = inputGrid.min();
+    double gridUpperBound = inputGrid.max();
+    arma::rowvec outGrid = arma::linspace<arma::rowvec>(gridLowerBound, gridUpperBound, numberOfPoints);
 
+    arma::uvec finiteIndices;
     arma::mat meanValue(numberOfDimensions, numberOfPoints, arma::fill::zeros);
     arma::mat workMatrix;
     arma::cube yIn(numberOfObservations, numberOfDimensions, numberOfPoints);
@@ -30,23 +31,28 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
     if (this->GetSpace() == Euclidean)
     {
         // First interpolate to common grid
-        arma::rowvec workVector1, workVector2, tmpGrid;
+        arma::rowvec inGrid;
+        arma::rowvec inValue;
+        arma::rowvec outValue;
 
         for (unsigned int i = 0;i < numberOfObservations;++i)
         {
-            tmpGrid = inputGrid.row(i);
+            inGrid = inputGrid.row(i);
 
             for (unsigned int j = 0;j < numberOfDimensions;++j)
             {
-                workVector1 = inputValues.tube(i, j);
-                arma::interp1(tmpGrid, workVector1, outputGrid, workVector2, "*linear");
-                yIn.tube(i, j) = workVector2;
+                inValue = inputValues.tube(i, j);
+                arma::interp1(inGrid, inValue, outGrid, outValue, "*linear");
+                yIn.tube(i, j) = outValue;
             }
         }
 
-        // then, compute mean pointwise
         for (unsigned int i = 0;i < numberOfPoints;++i)
-            meanValue.col(i) = arma::mean(yIn.slice(i), 0).t();
+        {
+            finiteIndices = arma::find_finite(yIn.slice(i).col(0));
+            workMatrix = yIn.slice(i).rows(finiteIndices);
+            meanValue.col(i) = arma::mean(workMatrix, 0).as_col();
+        }
     }
     else if (this->GetSpace() == UnitQuaternion)
     {
@@ -63,10 +69,11 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
             yIn.row(i) = Rcpp::as<arma::mat>(tmpMat);
         }
 
-        // then, compute mean pointwise
         for (unsigned int i = 0;i < numberOfPoints;++i)
         {
-            tmpMat = squad::GetGeodesicMean(Rcpp::wrap(yIn.slice(i)));
+            finiteIndices = arma::find_finite(yIn.slice(i).col(0));
+            workMatrix = yIn.slice(i).rows(finiteIndices);
+            tmpMat = squad::GetGeodesicMean(Rcpp::wrap(workMatrix));
             meanValue.col(i) = Rcpp::as<arma::vec>(tmpMat);
         }
     }
@@ -79,14 +86,14 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
     {
         workMatrix = inputValues.row(i);
         distancesToCenter(i) = dissimilarityPointer->GetDistance(
-            outputGrid,
+            outGrid,
             inputGrid.row(i),
             meanValue,
             workMatrix
         );
     }
 
-    outputCenter.centerGrid = outputGrid;
+    outputCenter.centerGrid = outGrid;
     outputCenter.centerValues = meanValue;
     outputCenter.distancesToCenter = distancesToCenter;
 

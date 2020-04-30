@@ -65,6 +65,8 @@ void AffineWarpingFunction::Normalize(arma::mat &warpingParameters,
                                       const arma::urowvec &clusterIndices,
                                       const arma::urowvec &observationMemberships)
 {
+    return;
+
     arma::uvec observationIndices;
     arma::rowvec meanParameters;
     arma::mat clusterValues;
