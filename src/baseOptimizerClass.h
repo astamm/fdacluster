@@ -17,6 +17,7 @@ public:
     arma::mat templateValues;
     std::shared_ptr<BaseDissimilarityFunction> dissimilarityPointer;
     std::shared_ptr<BaseWarpingFunction> warpingPointer;
+    double penalizationWeight;
   };
 
   struct CenterTemplateData
@@ -27,14 +28,18 @@ public:
     arma::cube inputValues;
     std::shared_ptr<BaseDissimilarityFunction> dissimilarityPointer;
     std::shared_ptr<BaseWarpingFunction> warpingPointer;
+    double penalizationWeight;
   };
 
   BaseOptimizerFunction()
   {
     m_ParameterRelativeTolerance = 1.0e-4;
+    m_PenalizationWeight = 0.0;
   }
 
   virtual ~BaseOptimizerFunction() {}
+
+  void SetPenalizationWeight(const double &val) {m_PenalizationWeight = val;}
 
   virtual nlopt_opt GetOptimizer(const unsigned int numberOfParameters) = 0;
 
@@ -74,6 +79,7 @@ protected:
 
 private:
   double m_ParameterRelativeTolerance;
+  double m_PenalizationWeight;
 };
 
 #endif /* BASEOPTIMIZERCLASS_H */

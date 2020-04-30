@@ -18,7 +18,14 @@ double BaseOptimizerFunction::AlignToTemplateCostFunction(unsigned n,
   warpingSet.inputValues2 = d->templateValues;
   warpingSet.dissimilarityPointer = d->dissimilarityPointer;
 
-  return d->warpingPointer->GetDissimilarityAfterWarping(warpingSet, params);
+  double resValue = d->warpingPointer->GetDissimilarityAfterWarping(warpingSet, params);
+
+  resValue *= (1.0 - d->penalizationWeight);
+
+  double normValue = arma::norm(params - d->warpingPointer->GetInitialPoint());
+  resValue += d->penalizationWeight * normValue * normValue;
+
+  return resValue;
 }
 
 double BaseOptimizerFunction::CenterTemplateCostFunction(unsigned n,
@@ -48,6 +55,11 @@ double BaseOptimizerFunction::CenterTemplateCostFunction(unsigned n,
     resValue += distanceValue * distanceValue;
   }
 
+  resValue *= (1.0 - d->penalizationWeight);
+
+  double normValue = arma::norm(params - d->warpingPointer->GetInitialPoint());
+  resValue += d->penalizationWeight * numberOfObservations * normValue * normValue;
+
   return resValue;
 }
 
@@ -73,6 +85,7 @@ double BaseOptimizerFunction::AlignToTemplate(arma::rowvec &initialParameters,
     extraData.templateValues = templateValues;
     extraData.dissimilarityPointer = dissimilarityPointer;
     extraData.warpingPointer = warpingPointer;
+    extraData.penalizationWeight = m_PenalizationWeight;
 
     if (initialParameters.size() == 0)
         return this->AlignToTemplateCostFunction(
@@ -124,6 +137,7 @@ double BaseOptimizerFunction::CenterTemplate(arma::rowvec &initialParameters,
   extraData.inputValues = inputValues;
   extraData.dissimilarityPointer = dissimilarityPointer;
   extraData.warpingPointer = warpingPointer;
+  extraData.penalizationWeight = m_PenalizationWeight;
 
   if (initialParameters.size() == 0)
     return this->CenterTemplateCostFunction(
