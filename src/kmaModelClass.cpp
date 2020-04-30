@@ -482,19 +482,6 @@ Rcpp::List KmaModel::FitModel()
     clusterIndices
   );
 
-  // Convert cube to field for conversion to List in R
-  arma::field<arma::mat> listOfEstimatedParameters(numberOfIterations);
-  arma::field<arma::mat> listOfTemplateGrids(numberOfIterations + 1);
-
-  listOfTemplateGrids(0) = templateGridsContainer.slice(0);
-  for (unsigned int k = 0;k < numberOfIterations;++k)
-  {
-    listOfEstimatedParameters(k) = warpingParametersContainer.slice(k);
-    listOfTemplateGrids(k + 1) = templateGridsContainer.slice(k + 1);
-  }
-
-  templateValuesContainer = templateValuesContainer.rows(0, numberOfIterations);
-
   timer.step( "output ");
 
   // Convert arma vector types to Rcpp::NumericVector
@@ -503,6 +490,21 @@ Rcpp::List KmaModel::FitModel()
   Rcpp::NumericVector outputDistancesToOverallCenter = FormatVectorForOutput(overallCenter.distancesToCenter);
   Rcpp::NumericVector outputObservationMemberships = FormatVectorForOutput(observationMemberships + 1);
   Rcpp::NumericVector outputObservationDistances = FormatVectorForOutput(observationDistances);
+
+  // Convert containers into Rcpp::List for conversion to list in R
+  Rcpp::List listOfEstimatedParameters(numberOfIterations);
+  Rcpp::List listOfTemplateGrids(numberOfIterations + 1);
+  Rcpp::List listOfTemplateValues(numberOfIterations + 1);
+
+  listOfTemplateGrids[0]  = templateGridsContainer.slice(0);
+  listOfTemplateValues[0] = templateValuesContainer(0);
+
+  for (unsigned int k = 0;k < numberOfIterations;++k)
+  {
+    listOfEstimatedParameters[k] = warpingParametersContainer.slice(k);
+    listOfTemplateGrids[k + 1]   = templateGridsContainer.slice(k + 1);
+    listOfTemplateValues[k + 1]  = templateValuesContainer(k + 1);
+  }
 
   return Rcpp::List::create(
     Rcpp::Named("x")                           = m_InputGrids,
@@ -518,7 +520,7 @@ Rcpp::List KmaModel::FitModel()
     Rcpp::Named("x_centers_final")             = templateGrids,
     Rcpp::Named("y_centers_final")             = templateValues,
     Rcpp::Named("template_grids")              = listOfTemplateGrids,
-    Rcpp::Named("template_values")             = templateValuesContainer,
+    Rcpp::Named("template_values")             = listOfTemplateValues,
     Rcpp::Named("labels")                      = outputObservationMemberships,
     Rcpp::Named("final_dissimilarity")         = outputObservationDistances,
     Rcpp::Named("parameters_list")             = listOfEstimatedParameters,
