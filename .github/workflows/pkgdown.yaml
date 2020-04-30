@@ -30,8 +30,8 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages("remotes")
-          remotes::install_deps(dependencies = TRUE)
-          remotes::install_dev("pkgdown", force = TRUE)
+          remotes::install_deps(dependencies = TRUE, upgrade = TRUE)
+          remotes::install_dev("pkgdown", force = TRUE, dependencies = TRUE, upgrade = TRUE)
         shell: Rscript {0}
 
       - name: Install package
