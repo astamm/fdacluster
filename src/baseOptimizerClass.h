@@ -9,10 +9,24 @@
 class BaseOptimizerFunction
 {
 public:
-  struct CostFunctionData
+  struct AlignToTemplateData
   {
+    arma::rowvec inputGrid;
+    arma::mat inputValues;
+    arma::rowvec templateGrid;
+    arma::mat templateValues;
+    std::shared_ptr<BaseDissimilarityFunction> dissimilarityPointer;
     std::shared_ptr<BaseWarpingFunction> warpingPointer;
-    WarpingSet warpingSet;
+  };
+
+  struct CenterTemplateData
+  {
+    arma::rowvec templateGrid;
+    arma::mat templateValues;
+    arma::mat inputGrids;
+    arma::cube inputValues;
+    std::shared_ptr<BaseDissimilarityFunction> dissimilarityPointer;
+    std::shared_ptr<BaseWarpingFunction> warpingPointer;
   };
 
   BaseOptimizerFunction()
@@ -24,14 +38,39 @@ public:
 
   virtual nlopt_opt GetOptimizer(const unsigned int numberOfParameters) = 0;
 
-  double Optimize(
+  double AlignToTemplate(
       arma::rowvec &initialParameters,
-      const std::shared_ptr<BaseWarpingFunction> &warpingPointer,
-      const WarpingSet &warpingSet
+      const arma::rowvec &inputGrid,
+      const arma::mat &inputValues,
+      const arma::rowvec &templateGrid,
+      const arma::mat &templateValues,
+      const std::shared_ptr<BaseDissimilarityFunction> &dissimilarityPointer,
+      const std::shared_ptr<BaseWarpingFunction> &warpingPointer
+  );
+
+  double CenterTemplate(
+      arma::rowvec &initialParameters,
+      const arma::rowvec &templateGrid,
+      const arma::mat &templateValues,
+      const arma::mat &inputGrids,
+      const arma::cube &inputValues,
+      const std::shared_ptr<BaseDissimilarityFunction> &dissimilarityPointer,
+      const std::shared_ptr<BaseWarpingFunction> &warpingPointer
   );
 
 protected:
-  static double GetValue(unsigned n, const double *x, double *grad, void *data);
+  static double AlignToTemplateCostFunction(
+      unsigned n,
+      const double *x,
+      double *grad,
+      void *data
+  );
+  static double CenterTemplateCostFunction(
+      unsigned n,
+      const double *x,
+      double *grad,
+      void *data
+  );
 
 private:
   double m_ParameterRelativeTolerance;

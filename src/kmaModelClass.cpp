@@ -155,10 +155,14 @@ void KmaModel::AlignAndAssignObservation(arma::mat &warpingParameters,
       m_DissimilarityPointer
     );
 
-    workingObservationDistances(i) = m_OptimizerPointer->Optimize(
+    workingObservationDistances(i) = m_OptimizerPointer->AlignToTemplate(
       startingParameters,
-      m_WarpingPointer,
-      warpingSet
+      warpedGrids.row(observationIndex),
+      m_InputValues.row(observationIndex),
+      templateGrids.row(i),
+      templateValues.row(i),
+      m_DissimilarityPointer,
+      m_WarpingPointer
     );
 
     workingParameterValues.row(i) = startingParameters;
