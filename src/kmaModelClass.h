@@ -79,11 +79,10 @@ public:
             const std::string &optimizerMethod
     );
 
-    void AlignAndAssignObservation(
+    void AlignAndAssignObservations(
             arma::mat &warpingParameters,
             arma::rowvec &observationDistances,
             arma::urowvec &observationMemberships,
-            const unsigned int observationIndex,
             const unsigned int numberOfClusters,
             const arma::urowvec &clusterIndices,
             const arma::mat &warpedGrids,
@@ -98,24 +97,26 @@ public:
      *  expensive to rerun the kma function with stricter warping options.
      */
     void RunAdaptiveFenceAlgorithm(
-        arma::mat &warpingParameters,
-        arma::rowvec &observationDistances,
-        arma::urowvec &observationMemberships,
-        const arma::urowvec &clusterIndices,
-        const arma::mat &warpedGrids,
-        const arma::mat &templateGrids,
-        const arma::cube &templateValues,
-        const unsigned int numberOfClusters,
-        const unsigned int maximumNumberOfIterations = 10
+            arma::mat &warpingParameters,
+            arma::rowvec &observationDistances,
+            arma::urowvec &observationMemberships,
+            const arma::urowvec &clusterIndices,
+            const arma::mat &warpedGrids,
+            const arma::mat &templateGrids,
+            const arma::cube &templateValues,
+            const unsigned int numberOfClusters,
+            const double penalizationStep = 0.05
     );
 
     // Update templates.
     void UpdateTemplates(
-            const arma::mat& warpedGrids,
-            const arma::urowvec& clusterIndices,
-            const arma::urowvec& observationMemberships,
-            arma::mat& templateGrids,
-            arma::cube& templateValues
+            const unsigned int numberOfIterations,
+            const arma::urowvec &clusterIndices,
+            const arma::urowvec &observationMemberships,
+            arma::mat &warpedGrids,
+            arma::mat &templateGrids,
+            arma::cube &templateValues,
+            arma::cube &warpingParametersContainer
     );
 
     /// Method to execute the algorithm.
