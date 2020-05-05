@@ -414,7 +414,7 @@ Rcpp::List KmaModel::FitModel()
     iterationCondition = numberOfIterations < m_MaximumNumberOfIterations;
 
     if (m_UseVerbose)
-      Rcpp::Rcout << " * Iteration #" << numberOfIterations << std::endl;
+      Rcpp::Rcout << " - Iteration #" << numberOfIterations << std::endl;
 
     oldObservationDistances = observationDistances;
     oldObservationMemberships = observationMemberships;
@@ -459,7 +459,7 @@ Rcpp::List KmaModel::FitModel()
     {
       std::map<unsigned int,unsigned int> labelCounts = tableCpp(observationMemberships);
       for (auto it = labelCounts.cbegin();it != labelCounts.cend();++it)
-        Rcpp::Rcout <<"   - Size of cluster #" << it->first << ": " << it->second << std::endl;
+        Rcpp::Rcout <<"   * Size of cluster #" << it->first << ": " << it->second << std::endl;
     }
 
     // Normalization
@@ -509,6 +509,24 @@ Rcpp::List KmaModel::FitModel()
     }
 
     timer.step( "newtemplates "+ std::to_string(numberOfIterations) );
+  }
+
+  if (m_UseVerbose)
+  {
+    Rcpp::Rcout << std::endl;
+    Rcpp::Rcout << "Active stopping criteria:" << std::endl;
+
+    if (!distanceCondition)
+      Rcpp::Rcout << " - Individual distances did not change within the user-defined relative tolerance (" << m_DistanceRelativeTolerance << ")." << std::endl;
+
+    if (!membershipCondition)
+      Rcpp::Rcout << " - Memberships did not change." << std::endl;
+
+    if (!iterationCondition)
+      Rcpp::Rcout << " - Maximum number of iterations reached (" << m_MaximumNumberOfIterations << ")." << std::endl;
+
+    if (m_CheckTotalDissimilarity && !totalDissimilarityCondition)
+      Rcpp::Rcout << " - The total dissimilarity did not decrease." << std::endl;
   }
 
   warpingParametersContainer.resize(m_NumberOfObservations, numberOfParameters, 2 * numberOfIterations);
