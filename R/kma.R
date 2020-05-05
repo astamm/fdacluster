@@ -105,6 +105,12 @@ kma <- function(x, y,
                 center_method = "mean",
                 dissimilarity_method = "l2",
                 optimizer_method = "bobyqa") {
+  if (anyNA(x))
+    stop("The input parameter x should not contain non-finite values.")
+
+  if (anyNA(y))
+    stop("The input parameter y should not contain non-finite values.")
+
   # Handle one-dimensional data
   if (length(dim(y)) == 2) {
     y <- array(y, c(dim(y)[1], 1, dim(y)[2]))
