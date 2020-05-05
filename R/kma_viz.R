@@ -1,16 +1,16 @@
 #' Plot for \code{kmap} objects
 #'
-#' @param x The \code{kma} object to be plotted.
+#' @param x The [kma] object to be plotted.
 #' @param type A string specifying the type of information to display. Choices
-#'   are \code{"data"} for plotting the original and aligned curves [default] or
+#'   are \code{"data"} for plotting the original and aligned curves (default) or
 #'   \code{"warping"} for plotting the corresponding warping functions.
-#' @param number_of_displayed_points The number of points to graphically
-#'   represents. It is set as the minimum between this parameter and the number
-#'   of points in the original data set. Defaults to 50.
-#' @param ... Additional parameters passed to the \code{\link[graphics]{plot}}
-#'   function.
+#' @param number_of_displayed_points The number of points to used for display.
+#'   It is set as the minimum between this parameter and the number of points in
+#'   the original data set. Defaults to 50.
+#' @param ... Other graphical parameters (see [par][graphics::par]). Ignored for
+#'   now.
 #'
-#' @return A `ggplot` object invisibly.
+#' @return A [ggplot][ggplot2::ggplot] object invisibly.
 #' @export
 #'
 #' @examples

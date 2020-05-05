@@ -7,21 +7,21 @@
 \method{plot}{kma}(x, type = "data", number_of_displayed_points = 50, ...)
 }
 \arguments{
-\item{x}{The \code{kma} object to be plotted.}
+\item{x}{The \link{kma} object to be plotted.}
 
 \item{type}{A string specifying the type of information to display. Choices
-are \code{"data"} for plotting the original and aligned curves \link{default} or
+are \code{"data"} for plotting the original and aligned curves (default) or
 \code{"warping"} for plotting the corresponding warping functions.}
 
-\item{number_of_displayed_points}{The number of points to graphically
-represents. It is set as the minimum between this parameter and the number
-of points in the original data set. Defaults to 50.}
+\item{number_of_displayed_points}{The number of points to used for display.
+It is set as the minimum between this parameter and the number of points in
+the original data set. Defaults to 50.}
 
-\item{...}{Additional parameters passed to the \code{\link[graphics]{plot}}
-function.}
+\item{...}{Other graphical parameters (see \link[graphics:par]{par}). Ignored for
+now.}
 }
 \value{
-A \code{ggplot} object invisibly.
+A \link[ggplot2:ggplot]{ggplot} object invisibly.
 }
 \description{
 Plot for \code{kmap} objects
