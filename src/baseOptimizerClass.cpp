@@ -18,9 +18,9 @@ double BaseOptimizerFunction::AlignToTemplateCostFunction(unsigned n,
   warpingSet.inputValues2 = d->templateValues;
   warpingSet.dissimilarityPointer = d->dissimilarityPointer;
 
-  double resValue = d->warpingPointer->GetDissimilarityAfterWarping(warpingSet, params);
+  double distanceValue = d->warpingPointer->GetDissimilarityAfterWarping(warpingSet, params);
 
-  resValue *= (1.0 - d->penalizationWeight);
+  double resValue = (1.0 - d->penalizationWeight) * distanceValue * distanceValue;
 
   double normValue = arma::norm(params - d->warpingPointer->GetInitialPoint());
   resValue += d->penalizationWeight * normValue * normValue;
@@ -55,10 +55,11 @@ double BaseOptimizerFunction::CenterTemplateCostFunction(unsigned n,
     resValue += distanceValue * distanceValue;
   }
 
+  resValue /= (double)numberOfObservations;
   resValue *= (1.0 - d->penalizationWeight);
 
   double normValue = arma::norm(params - d->warpingPointer->GetInitialPoint());
-  resValue += d->penalizationWeight * numberOfObservations * normValue * normValue;
+  resValue += d->penalizationWeight * normValue * normValue;
 
   return resValue;
 }
