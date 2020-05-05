@@ -35,7 +35,7 @@ plot.kma <- function(x, type = "data", number_of_displayed_points = 50, ...) {
     stop("Unsupported type of display for kma objects.")
 }
 
-plot_data <- function(obj, type = "data", number_of_displayed_points = 50, ...) {
+plot_data <- function(obj, type = "data", number_of_displayed_points = 50) {
   n <- dim(obj$y)[1]
   d <- dim(obj$y)[2]
   p <- dim(obj$y)[3]
@@ -46,7 +46,7 @@ plot_data <- function(obj, type = "data", number_of_displayed_points = 50, ...) 
     as_tibble() %>%
     dplyr::mutate(curve_id = 1:dplyr::n()) %>%
     tidyr::pivot_longer(
-      cols = -curve_id,
+      cols = -.data$curve_id,
       names_to = "point_id",
       values_to = "grid"
     ) %>%
@@ -58,7 +58,7 @@ plot_data <- function(obj, type = "data", number_of_displayed_points = 50, ...) 
     as_tibble() %>%
     dplyr::mutate(curve_id = 1:dplyr::n()) %>%
     tidyr::pivot_longer(
-      cols = -curve_id,
+      cols = -.data$curve_id,
       names_to = "point_id",
       values_to = "grid"
     ) %>%
@@ -85,7 +85,7 @@ plot_data <- function(obj, type = "data", number_of_displayed_points = 50, ...) 
     as_tibble() %>%
     dplyr::mutate(curve_id = 1:dplyr::n()) %>%
     tidyr::pivot_longer(
-      cols = -curve_id,
+      cols = -.data$curve_id,
       names_to = "point_id",
       values_to = "grid"
     ) %>%
@@ -114,30 +114,30 @@ plot_data <- function(obj, type = "data", number_of_displayed_points = 50, ...) 
     original_values %>%
       dplyr::left_join(warped_grids, by = c("point_id", "curve_id"))
   ) %>%
-    dplyr::mutate(type = factor(type, c("Original Curves", "Aligned Curves"))) %>%
+    dplyr::mutate(type = factor(.data$type, c("Original Curves", "Aligned Curves"))) %>%
     dplyr::left_join(tibble(
       curve_id = 1:n,
       membership = as.factor(obj$labels)
     ), by = "curve_id") %>%
-    dplyr::group_by(curve_id, dimension_id, type) %>%
+    dplyr::group_by(.data$curve_id, .data$dimension_id, .data$type) %>%
     dplyr::slice(seq(1, dplyr::n(), by = (dplyr::n() - 1) / number_of_displayed_points)) %>%
     dplyr::ungroup()
 
   df_mean <- center_values %>%
     dplyr::left_join(center_grids, by = c("point_id", "curve_id")) %>%
     dplyr::mutate(
-      membership = as.factor(curve_id),
-      type = factor(type, c("Original Curves", "Aligned Curves"))
+      membership = as.factor(.data$curve_id),
+      type = factor(.data$type, c("Original Curves", "Aligned Curves"))
     ) %>%
-    dplyr::group_by(curve_id, dimension_id, type) %>%
+    dplyr::group_by(.data$curve_id, .data$dimension_id, .data$type) %>%
     dplyr::slice(seq(1, dplyr::n(), by = (dplyr::n() - 1) / number_of_displayed_points)) %>%
     dplyr::ungroup()
 
   df %>%
-    ggplot(aes(grid, value, group = curve_id, color = membership)) +
+    ggplot(aes(.data$grid, .data$value, group = .data$curve_id, color = .data$membership)) +
     geom_line(alpha = 0.3) +
     geom_line(data = df_mean, size = 1.5) +
-    facet_wrap(vars(type, dimension_id), nrow = 2, scales = "free") +
+    facet_wrap(vars(.data$type, .data$dimension_id), nrow = 2, scales = "free") +
     theme_bw() +
     theme(legend.position = "top") +
     labs(
@@ -149,7 +149,7 @@ plot_data <- function(obj, type = "data", number_of_displayed_points = 50, ...) 
     )
 }
 
-plot_warping <- function(obj, number_of_displayed_points = 50, ...) {
+plot_warping <- function(obj, number_of_displayed_points = 50) {
   if (obj$warping_method == "affine")
     df <- data_affine(obj, number_of_displayed_points)
   else if (obj$warping_method == "dilation")
@@ -159,8 +159,8 @@ plot_warping <- function(obj, number_of_displayed_points = 50, ...) {
   else
     stop("Unsupported warping family for display.")
   df %>%
-    tidyr::unnest(cols = x:y) %>%
-    ggplot(aes(x, y, color = membership, group = id)) +
+    tidyr::unnest(cols = .data$x:.data$y) %>%
+    ggplot(aes(.data$x, .data$y, color = .data$membership, group = .data$id)) +
     geom_line() +
     theme_bw() +
     theme(legend.position = "top") +
@@ -173,19 +173,19 @@ plot_warping <- function(obj, number_of_displayed_points = 50, ...) {
     )
 }
 
-data_affine <- function(obj, number_of_displayed_points = 50, ...) {
+data_affine <- function(obj, number_of_displayed_points = 50) {
   obj$parameters %>%
     `colnames<-`(c("slope", "intercept")) %>%
     as_tibble() %>%
     dplyr::mutate(
       x = purrr::map2(
-        .x = slope,
-        .y = intercept,
+        .x = .data$slope,
+        .y = .data$intercept,
         .f = ~ seq(0, 1, length.out = number_of_displayed_points)
       ),
       y = purrr::map2(
-        .x = slope,
-        .y = intercept,
+        .x = .data$slope,
+        .y = .data$intercept,
         .f = ~ .x * seq(0, 1, length.out = number_of_displayed_points) + .y
       ),
       id = 1:dplyr::n(),
@@ -193,17 +193,17 @@ data_affine <- function(obj, number_of_displayed_points = 50, ...) {
     )
 }
 
-data_dilation <- function(obj, number_of_displayed_points = 50, ...) {
+data_dilation <- function(obj, number_of_displayed_points = 50) {
   obj$parameters %>%
     `colnames<-`("slope") %>%
     as_tibble() %>%
     dplyr::mutate(
       x = purrr::map(
-        .x = slope,
+        .x = .data$slope,
         .f = ~ seq(0, 1, length.out = number_of_displayed_points)
       ),
       y = purrr::map(
-        .x = slope,
+        .x = .data$slope,
         .f = ~ .x * seq(0, 1, length.out = number_of_displayed_points)
       ),
       id = 1:dplyr::n(),
@@ -211,17 +211,17 @@ data_dilation <- function(obj, number_of_displayed_points = 50, ...) {
     )
 }
 
-data_shift <- function(obj, number_of_displayed_points = 50, ...) {
+data_shift <- function(obj, number_of_displayed_points = 50) {
   obj$parameters %>%
     `colnames<-`("intercept") %>%
     as_tibble() %>%
     dplyr::mutate(
       x = purrr::map(
-        .x = intercept,
+        .x = .data$intercept,
         .f = ~ seq(0, 1, length.out = number_of_displayed_points)
       ),
       y = purrr::map(
-        .x = intercept,
+        .x = .data$intercept,
         .f = ~ seq(0, 1, length.out = number_of_displayed_points) + .x
       ),
       id = 1:dplyr::n(),
