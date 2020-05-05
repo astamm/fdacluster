@@ -125,30 +125,30 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>The <code>kma</code> object to be plotted.</p></td>
+      <td><p>The <a href='kma.html'>kma</a> object to be plotted.</p></td>
     </tr>
     <tr>
       <th>type</th>
       <td><p>A string specifying the type of information to display. Choices
-are <code>"data"</code> for plotting the original and aligned curves default or
+are <code>"data"</code> for plotting the original and aligned curves (default) or
 <code>"warping"</code> for plotting the corresponding warping functions.</p></td>
     </tr>
     <tr>
       <th>number_of_displayed_points</th>
-      <td><p>The number of points to graphically
-represents. It is set as the minimum between this parameter and the number
-of points in the original data set. Defaults to 50.</p></td>
+      <td><p>The number of points to used for display.
+It is set as the minimum between this parameter and the number of points in
+the original data set. Defaults to 50.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional parameters passed to the <code><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></code>
-function.</p></td>
+      <td><p>Other graphical parameters (see <a href='https://rdrr.io/r/graphics/par.html'>par</a>). Ignored for
+now.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A <code>ggplot</code> object invisibly.</p>
+    <p>A <a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a> object invisibly.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='kma.html'>kma</a></span>(
