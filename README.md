@@ -100,12 +100,15 @@ res <- kma(
 #>  - Compute overall center: 0
 #> 
 #> Running k-centroid algorithm:
-#>  * Iteration #1
-#>    - Size of cluster #0: 20
-#>    - Size of cluster #1: 10
-#>  * Iteration #2
-#>    - Size of cluster #0: 20
-#>    - Size of cluster #1: 10
+#>  - Iteration #1
+#>    * Size of cluster #0: 20
+#>    * Size of cluster #1: 10
+#>  - Iteration #2
+#>    * Size of cluster #0: 20
+#>    * Size of cluster #1: 10
+#> 
+#> Active stopping criteria:
+#>  - Memberships did not change.
 
 plot(res, type = "data")
 ```
