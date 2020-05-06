@@ -10,6 +10,18 @@
 #'
 "simulated30"
 
+#' Simulated data from the CSDA paper
+#'
+#' A data set containing 90 simulated uni-dimensional curves.
+#'
+#' @format A list with abscissas x and values y:
+#' \describe{
+#'   \item{x}{Vector of size 100;}
+#'   \item{y}{Matrix if size 90x100.}
+#' }
+#'
+"simulated90"
+
 #' Subset of the AneuRisk65 benchmark data set
 #'
 #' A data set containing the first derivative of the three-dimensional
