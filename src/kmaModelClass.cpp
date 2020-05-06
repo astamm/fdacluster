@@ -365,10 +365,10 @@ Rcpp::List KmaModel::FitModel()
 
   // Initialize containers for storing
   // template grids and values at each iteration
-  arma::cube templateGridsContainer(m_NumberOfClusters, m_NumberOfPoints, m_MaximumNumberOfIterations);
+  arma::field<arma::mat> templateGridsContainer(m_MaximumNumberOfIterations);
   arma::field<arma::cube> templateValuesContainer(m_MaximumNumberOfIterations);
 
-  templateGridsContainer.slice(0) = templateGrids;
+  templateGridsContainer(0) = templateGrids;
   templateValuesContainer(0) = templateValues;
 
   //
@@ -487,7 +487,7 @@ Rcpp::List KmaModel::FitModel()
         warpingParametersContainer
     );
 
-    templateGridsContainer.slice(numberOfIterations) = templateGrids;
+    templateGridsContainer(numberOfIterations) = templateGrids;
     templateValuesContainer(numberOfIterations) = templateValues;
 
     // Check total dissimilarity
@@ -500,7 +500,7 @@ Rcpp::List KmaModel::FitModel()
       if (oldTotalDissimilarity <= totalDissimilarity)
       {
         totalDissimilarityCondition = false;
-        templateGrids = templateGridsContainer.slice(numberOfIterations - 1);
+        templateGrids = templateGridsContainer(numberOfIterations - 1);
         templateValues = templateValuesContainer(numberOfIterations - 1);
         observationDistances = oldObservationDistances;
         observationMemberships = oldObservationMemberships;
@@ -552,13 +552,13 @@ Rcpp::List KmaModel::FitModel()
   Rcpp::List listOfTemplateGrids(numberOfIterations + 1);
   Rcpp::List listOfTemplateValues(numberOfIterations + 1);
 
-  listOfTemplateGrids[0]  = templateGridsContainer.slice(0);
+  listOfTemplateGrids[0]  = templateGridsContainer(0);
   listOfTemplateValues[0] = templateValuesContainer(0);
 
   for (unsigned int k = 0;k < numberOfIterations;++k)
   {
     listOfEstimatedParameters[k] = warpingParametersContainer.slice(k);
-    listOfTemplateGrids[k + 1]   = templateGridsContainer.slice(k + 1);
+    listOfTemplateGrids[k + 1]   = templateGridsContainer(k + 1);
     listOfTemplateValues[k + 1]  = templateValuesContainer(k + 1);
   }
 
