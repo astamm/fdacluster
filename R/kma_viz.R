@@ -120,7 +120,11 @@ plot_data <- function(obj, type = "data", number_of_displayed_points = 50) {
       membership = as.factor(obj$labels)
     ), by = "curve_id") %>%
     dplyr::group_by(.data$curve_id, .data$dimension_id, .data$type) %>%
-    dplyr::slice(seq(1, dplyr::n(), by = (dplyr::n() - 1) / number_of_displayed_points)) %>%
+    dplyr::slice(seq(
+      from = 1,
+      to = dplyr::n(),
+      by = round((dplyr::n() - 1) / number_of_displayed_points)
+    )) %>%
     dplyr::ungroup()
 
   df_mean <- center_values %>%
@@ -130,7 +134,11 @@ plot_data <- function(obj, type = "data", number_of_displayed_points = 50) {
       type = factor(.data$type, c("Original Curves", "Aligned Curves"))
     ) %>%
     dplyr::group_by(.data$curve_id, .data$dimension_id, .data$type) %>%
-    dplyr::slice(seq(1, dplyr::n(), by = (dplyr::n() - 1) / number_of_displayed_points)) %>%
+    dplyr::slice(seq(
+      from = 1,
+      to = dplyr::n(),
+      by = round((dplyr::n() - 1) / number_of_displayed_points)
+    )) %>%
     dplyr::ungroup()
 
   df %>%
