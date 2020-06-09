@@ -5,10 +5,10 @@
 
 <!-- badges: start -->
 
-[![R build
-status](https://github.com/astamm/fdakmapp/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdakmapp/actions)
-[![Coverage](https://github.com/astamm/fdakmapp/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdakmapp/actions)
-[![Website](https://github.com/astamm/fdakmapp/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![check-standard](https://github.com/astamm/fdakmapp/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![test-coverage](https://github.com/astamm/fdakmapp/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![codecov](https://codecov.io/gh/astamm/fdakmapp/branch/master/graph/badge.svg)](https://codecov.io/gh/astamm/fdakmapp)
+[![pkgdown](https://github.com/astamm/fdakmapp/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdakmapp/actions)
 <!-- badges: end -->
 
 The **fdakmapp** package provides the `kma()` function that jointly
