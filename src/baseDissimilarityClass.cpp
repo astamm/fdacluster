@@ -76,7 +76,7 @@ FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::r
 
     if (xMin >= xMax)
     {
-        Rcpp::warning("Disimilarity: domain intersection is empty.");
+        Rcpp::warning("Dissimilarity: domain intersection is empty.");
         Rcpp::Rcout << grid1 << std::endl;
         Rcpp::Rcout << grid2 << std::endl;
         return outputPair;

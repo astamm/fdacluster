@@ -365,8 +365,8 @@ Rcpp::List KmaModel::FitModel()
 
   // Initialize containers for storing
   // template grids and values at each iteration
-  arma::field<arma::mat> templateGridsContainer(m_MaximumNumberOfIterations);
-  arma::field<arma::cube> templateValuesContainer(m_MaximumNumberOfIterations);
+  arma::field<arma::mat> templateGridsContainer(m_MaximumNumberOfIterations + 1);
+  arma::field<arma::cube> templateValuesContainer(m_MaximumNumberOfIterations + 1);
 
   templateGridsContainer(0) = templateGrids;
   templateValuesContainer(0) = templateValues;
