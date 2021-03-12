@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -91,7 +91,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/astamm/fdakmapp/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -117,26 +117,26 @@
     <p>K-mean alignment and variants for functional data</p>
     </div>
 
-    <pre class="usage"><span class='fu'>kma</span>(
-  <span class='no'>x</span>,
-  <span class='no'>y</span>,
-  <span class='kw'>seeds</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>warping_options</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.15</span>, <span class='fl'>0.15</span>),
-  <span class='kw'>n_clust</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>maximum_number_of_iterations</span> <span class='kw'>=</span> <span class='fl'>100</span>,
-  <span class='kw'>number_of_threads</span> <span class='kw'>=</span> <span class='fl'>1</span>,
-  <span class='kw'>parallel_method</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>space</span> <span class='kw'>=</span> <span class='fl'>0</span>,
-  <span class='kw'>distance_relative_tolerance</span> <span class='kw'>=</span> <span class='fl'>0.001</span>,
-  <span class='kw'>use_fence</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>check_total_dissimilarity</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>use_verbose</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>compute_overall_center</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>warping_method</span> <span class='kw'>=</span> <span class='st'>"affine"</span>,
-  <span class='kw'>center_method</span> <span class='kw'>=</span> <span class='st'>"mean"</span>,
-  <span class='kw'>dissimilarity_method</span> <span class='kw'>=</span> <span class='st'>"l2"</span>,
-  <span class='kw'>optimizer_method</span> <span class='kw'>=</span> <span class='st'>"bobyqa"</span>
-)</pre>
+    <pre class="usage"><span class='fu'>kma</span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  <span class='va'>y</span>,
+  seeds <span class='op'>=</span> <span class='cn'>NULL</span>,
+  warping_options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.15</span>, <span class='fl'>0.15</span><span class='op'>)</span>,
+  n_clust <span class='op'>=</span> <span class='fl'>1</span>,
+  maximum_number_of_iterations <span class='op'>=</span> <span class='fl'>100</span>,
+  number_of_threads <span class='op'>=</span> <span class='fl'>1</span>,
+  parallel_method <span class='op'>=</span> <span class='fl'>0</span>,
+  space <span class='op'>=</span> <span class='fl'>0</span>,
+  distance_relative_tolerance <span class='op'>=</span> <span class='fl'>0.001</span>,
+  use_fence <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  check_total_dissimilarity <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  use_verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  compute_overall_center <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  warping_method <span class='op'>=</span> <span class='st'>"affine"</span>,
+  center_method <span class='op'>=</span> <span class='st'>"mean"</span>,
+  dissimilarity_method <span class='op'>=</span> <span class='st'>"l2"</span>,
+  optimizer_method <span class='op'>=</span> <span class='st'>"bobyqa"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -276,15 +276,16 @@ iteration.</p></dd>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>res</span> <span class='kw'>&lt;-</span> <span class='fu'>kma</span>(
-  <span class='no'>simulated30</span>$<span class='no'>x</span>,
-  <span class='no'>simulated30</span>$<span class='no'>y</span>,
-  <span class='kw'>seeds</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>21</span>),
-  <span class='kw'>n_clust</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>center_method</span> <span class='kw'>=</span> <span class='st'>"medoid"</span>,
-  <span class='kw'>warping_method</span> <span class='kw'>=</span> <span class='st'>"affine"</span>,
-  <span class='kw'>dissimilarity_method</span> <span class='kw'>=</span> <span class='st'>"pearson"</span>
-)</div><div class='output co'>#&gt; Information about the data set:
+    <pre class="examples"><div class='input'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>kma</span><span class='op'>(</span>
+  <span class='va'>simulated30</span><span class='op'>$</span><span class='va'>x</span>,
+  <span class='va'>simulated30</span><span class='op'>$</span><span class='va'>y</span>,
+  seeds <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>21</span><span class='op'>)</span>,
+  n_clust <span class='op'>=</span> <span class='fl'>2</span>,
+  center_method <span class='op'>=</span> <span class='st'>"medoid"</span>,
+  warping_method <span class='op'>=</span> <span class='st'>"affine"</span>,
+  dissimilarity_method <span class='op'>=</span> <span class='st'>"pearson"</span>
+<span class='op'>)</span>
+</div><div class='output co'>#&gt; Information about the data set:
 #&gt;  - Number of observations: 30
 #&gt;  - Number of dimensions: 1
 #&gt;  - Number of points: 200
@@ -340,7 +341,7 @@ iteration.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
