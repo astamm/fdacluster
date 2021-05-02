@@ -1,6 +1,6 @@
 #include "pearsonDissimilarityClass.h"
 
-#include <squad.h>
+#include <squat.h>
 
 double PearsonDissimilarityFunction::GetDistance(const arma::rowvec& grid1,
                                                  const arma::rowvec& grid2,
@@ -48,7 +48,7 @@ double PearsonDissimilarityFunction::GetDistance(const arma::rowvec& grid1,
 
         for (unsigned int j = 0;j < nPts - 1;++j)
         {
-            double workValue = squad::GeodesicQuaternionDistance(
+            double workValue = squat::GeodesicQuaternionDistance(
                 Rcpp::wrap(pair.Values1),
                 Rcpp::wrap(neutralMatrix),
                 j + 1, j + 1
@@ -56,7 +56,7 @@ double PearsonDissimilarityFunction::GetDistance(const arma::rowvec& grid1,
 
             squaredNorm1Value += workValue * workValue;
 
-            workValue = squad::GeodesicQuaternionDistance(
+            workValue = squat::GeodesicQuaternionDistance(
                 Rcpp::wrap(pair.Values2),
                 Rcpp::wrap(neutralMatrix),
                 j + 1, j + 1
@@ -70,7 +70,7 @@ double PearsonDissimilarityFunction::GetDistance(const arma::rowvec& grid1,
 
         for (unsigned int j = 0;j < nPts - 1;++j)
         {
-            double workValue = squad::GeodesicQuaternionDistance(
+            double workValue = squat::GeodesicQuaternionDistance(
                 Rcpp::wrap(pair.Values1 / std::sqrt(squaredNorm1Value)),
                 Rcpp::wrap(pair.Values2 / std::sqrt(squaredNorm2Value)),
                 j + 1, j + 1

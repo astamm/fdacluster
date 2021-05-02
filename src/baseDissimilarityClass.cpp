@@ -1,6 +1,6 @@
 #include "baseDissimilarityClass.h"
 
-#include <squad.h>
+#include <squat.h>
 
 FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::rowvec& grid1,
                                                                    const arma::rowvec& grid2,
@@ -102,13 +102,13 @@ FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::r
     }
     else if (m_Space == UnitQuaternion)
     {
-        outputPair.Values1 = Rcpp::as<arma::mat>(squad::RegularizeGrid(
+        outputPair.Values1 = Rcpp::as<arma::mat>(squat::RegularizeGrid(
             Rcpp::wrap(cleanGrid1),
             Rcpp::wrap(cleanValues1),
             xMin, xMax, nPts
         ));
 
-        outputPair.Values2 = Rcpp::as<arma::mat>(squad::RegularizeGrid(
+        outputPair.Values2 = Rcpp::as<arma::mat>(squat::RegularizeGrid(
             Rcpp::wrap(cleanGrid2),
             Rcpp::wrap(cleanValues2),
             xMin, xMax, nPts

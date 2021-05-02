@@ -37,7 +37,7 @@ Description: The fdakmapp package provides the kma function that
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-LinkingTo: Rcpp, RcppArmadillo, nloptr, squad
+LinkingTo: Rcpp, RcppArmadillo, RcppEigen, nloptr, squat
 SystemRequirements: C++11
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
@@ -53,7 +53,7 @@ Imports:
     ggplot2
 Remotes: 
     astamm/nloptr,
-    astamm/squad
+    astamm/squat
 Depends: 
     R (>= 2.10)
 URL: https://astamm.github.io/fdakmapp/index.html, https://github.com/astamm/fdakmapp

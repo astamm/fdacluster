@@ -1,6 +1,6 @@
 #include "meanCenterClass.h"
 
-#include <squad.h>
+#include <squat.h>
 
 CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
                                        const arma::cube& inputValues,
@@ -65,7 +65,7 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
             tmpVec = Rcpp::wrap(inputGrid.row(i));
             workMatrix = inputValues.row(i);
             tmpMat = Rcpp::wrap(workMatrix);
-            tmpMat = squad::RegularizeGrid(tmpVec, tmpMat, gridLowerBound, gridUpperBound, numberOfPoints);
+            tmpMat = squat::RegularizeGrid(tmpVec, tmpMat, gridLowerBound, gridUpperBound, numberOfPoints);
             yIn.row(i) = Rcpp::as<arma::mat>(tmpMat);
         }
 
@@ -73,7 +73,7 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
         {
             finiteIndices = arma::find_finite(yIn.slice(i).col(0));
             workMatrix = yIn.slice(i).rows(finiteIndices);
-            tmpMat = squad::GetGeodesicMean(Rcpp::wrap(workMatrix));
+            tmpMat = squat::GetGeodesicMean(Rcpp::wrap(workMatrix));
             meanValue.col(i) = Rcpp::as<arma::vec>(tmpMat);
         }
     }
