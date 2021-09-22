@@ -1,6 +1,6 @@
 Package: fdacluster
 Title: Functional Data Analysis: K-Mean and K-Medoid with Alignment
-Version: 2.1
+Version: 0.1.0
 Type: Package
 Authors@R: c(
     person(given = "Laura",
@@ -34,10 +34,10 @@ Description: The fdacluster package provides the kma function that
     parametric. Currently supported classes of warping functions 
     are shift, dilation and affine transformations. The algorithm 
     is fully parallelized.
-License: GPL-3
+License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-LinkingTo: Rcpp, RcppArmadillo, RcppEigen, nloptr, squat
+LinkingTo: Rcpp, RcppArmadillo, nloptr
 SystemRequirements: C++11
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
@@ -52,8 +52,7 @@ Imports:
     purrr,
     ggplot2
 Remotes: 
-    astamm/nloptr,
-    astamm/squat
+    astamm/nloptr
 Depends: 
     R (>= 2.10)
 URL: https://astamm.github.io/fdacluster/index.html, https://github.com/astamm/fdacluster

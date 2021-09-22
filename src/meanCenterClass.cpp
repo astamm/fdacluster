@@ -1,7 +1,5 @@
 #include "meanCenterClass.h"
 
-#include <squat.h>
-
 CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
                                        const arma::cube& inputValues,
                                        const std::shared_ptr<BaseDissimilarityFunction>& dissimilarityPointer)
@@ -52,29 +50,6 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
             finiteIndices = arma::find_finite(yIn.slice(i).col(0));
             workMatrix = yIn.slice(i).rows(finiteIndices);
             meanValue.col(i) = arma::mean(workMatrix, 0).as_col();
-        }
-    }
-    else if (this->GetSpace() == UnitQuaternion)
-    {
-        // First interpolate to common grid
-        Rcpp::NumericVector tmpVec;
-        Rcpp::NumericMatrix tmpMat;
-
-        for (unsigned int i = 0;i < numberOfObservations;++i)
-        {
-            tmpVec = Rcpp::wrap(inputGrid.row(i));
-            workMatrix = inputValues.row(i);
-            tmpMat = Rcpp::wrap(workMatrix);
-            tmpMat = squat::RegularizeGrid(tmpVec, tmpMat, gridLowerBound, gridUpperBound, numberOfPoints);
-            yIn.row(i) = Rcpp::as<arma::mat>(tmpMat);
-        }
-
-        for (unsigned int i = 0;i < numberOfPoints;++i)
-        {
-            finiteIndices = arma::find_finite(yIn.slice(i).col(0));
-            workMatrix = yIn.slice(i).rows(finiteIndices);
-            tmpMat = squat::GetGeodesicMean(Rcpp::wrap(workMatrix));
-            meanValue.col(i) = Rcpp::as<arma::vec>(tmpMat);
         }
     }
     else

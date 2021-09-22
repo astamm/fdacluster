@@ -1,7 +1,5 @@
 #include "baseDissimilarityClass.h"
 
-#include <squat.h>
-
 FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::rowvec& grid1,
                                                                    const arma::rowvec& grid2,
                                                                    const arma::mat& values1,
@@ -99,20 +97,6 @@ FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::r
             arma::interp1(cleanGrid2, cleanValues2.row(i), xCommon, workVector, "*linear");
             outputPair.Values2.row(i) = workVector;
         }
-    }
-    else if (m_Space == UnitQuaternion)
-    {
-        outputPair.Values1 = Rcpp::as<arma::mat>(squat::RegularizeGrid(
-            Rcpp::wrap(cleanGrid1),
-            Rcpp::wrap(cleanValues1),
-            xMin, xMax, nPts
-        ));
-
-        outputPair.Values2 = Rcpp::as<arma::mat>(squat::RegularizeGrid(
-            Rcpp::wrap(cleanGrid2),
-            Rcpp::wrap(cleanValues2),
-            xMin, xMax, nPts
-        ));
     }
     else
         Rcpp::Rcout << "Interpolation operations for the requested space are not yet implemented." << std::endl;
