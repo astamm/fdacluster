@@ -13,16 +13,16 @@ knitr::opts_chunk$set(
 )
 ```
 
-# fdakmapp
+# fdacluster
 
 <!-- badges: start -->
-[![check-standard](https://github.com/astamm/fdakmapp/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdakmapp/actions)
-[![test-coverage](https://github.com/astamm/fdakmapp/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdakmapp/actions)
-[![codecov](https://codecov.io/gh/astamm/fdakmapp/branch/master/graph/badge.svg)](https://codecov.io/gh/astamm/fdakmapp)
-[![pkgdown](https://github.com/astamm/fdakmapp/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![check-standard](https://github.com/astamm/fdacluster/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdacluster/actions)
+[![test-coverage](https://github.com/astamm/fdacluster/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdacluster/actions)
+[![codecov](https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg)](https://codecov.io/gh/astamm/fdacluster)
+[![pkgdown](https://github.com/astamm/fdacluster/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdacluster/actions)
 <!-- badges: end -->
 
-The **fdakmapp** package provides the `kma()` function that jointly performs clustering and alignment of a functional data set. Mean and medoid center methods are available. The algorithm is fully parallelized.
+The **fdacluster** package provides the `kma()` function that jointly performs clustering and alignment of a functional data set. Mean and medoid center methods are available. The algorithm is fully parallelized.
 
 ## Getting Started
 
@@ -49,16 +49,16 @@ pkgbuild::has_devel()
 
 ### Installation
 
-The **fdakmapp** package is currently only available on GitHub. You can install it as follows:
+The **fdacluster** package is currently only available on GitHub. You can install it as follows:
 ```
 # install.packages("remotes")
-remotes::install_github("astamm/fdakmapp")
+remotes::install_github("astamm/fdacluster")
 ```
 
 ### Example
 
 ```{r example-simulated30}
-library(fdakmapp)
+library(fdacluster)
 
 res <- kma(
   simulated30$x,

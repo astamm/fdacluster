@@ -1,3 +1,3 @@
 .onUnload <- function(libpath) {
-  library.dynam.unload("fdakmapp", libpath)
+  library.dynam.unload("fdacluster", libpath)
 }

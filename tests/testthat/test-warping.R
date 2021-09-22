@@ -1,4 +1,4 @@
-library(fdakmapp)
+library(fdacluster)
 context("Warping Method")
 
 test_that(" the warping methods work", {

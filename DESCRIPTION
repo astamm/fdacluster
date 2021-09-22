@@ -1,4 +1,4 @@
-Package: fdakmapp
+Package: fdacluster
 Title: Functional Data Analysis: K-Mean and K-Medoid with Alignment
 Version: 2.1
 Type: Package
@@ -28,7 +28,7 @@ Authors@R: c(
            family = "Zito",
            role = "ctb",
            email = "zito.ales@gmail.com"))
-Description: The fdakmapp package provides the kma function that 
+Description: The fdacluster package provides the kma function that 
     jointly performs clustering and alignment of a functional 
     data set (unidimensional or multidimensional). The warping is 
     parametric. Currently supported classes of warping functions 
@@ -39,7 +39,7 @@ Encoding: UTF-8
 LazyData: true
 LinkingTo: Rcpp, RcppArmadillo, RcppEigen, nloptr, squat
 SystemRequirements: C++11
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Suggests: testthat
 Imports: 
@@ -56,4 +56,4 @@ Remotes:
     astamm/squat
 Depends: 
     R (>= 2.10)
-URL: https://astamm.github.io/fdakmapp/index.html, https://github.com/astamm/fdakmapp
+URL: https://astamm.github.io/fdacluster/index.html, https://github.com/astamm/fdacluster

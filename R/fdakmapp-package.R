@@ -1,6 +1,6 @@
 #' K-mean alignment algorithm and variants for functional data
 #'
-#' The **fdakmapp** package allows to jointly perform clustering
+#' The **fdacluster** package allows to jointly perform clustering
 #' and alignment of functional data.
 #'
 #' @references
@@ -15,9 +15,9 @@
 #'   Journal of Statistics, 8 (2), 1891-1904.
 #' }
 #'
-#' @name fdakmapp
+#' @name fdacluster
 #' @docType package
-#' @useDynLib fdakmapp, .registration=TRUE
+#' @useDynLib fdacluster, .registration=TRUE
 #' @import nloptr
 #' @import ggplot2
 #' @import tibble

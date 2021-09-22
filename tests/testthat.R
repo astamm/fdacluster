@@ -1,4 +1,4 @@
 library(testthat)
-library(fdakmapp)
+library(fdacluster)
 
-test_check("fdakmapp")
+test_check("fdacluster")

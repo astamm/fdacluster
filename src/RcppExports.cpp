@@ -7,9 +7,14 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // kmap
 Rcpp::List kmap(const arma::mat& x, const arma::cube& y, const arma::urowvec& seeds, const arma::rowvec& warping_options, const unsigned int& n_clust, const unsigned int& maximum_number_of_iterations, const unsigned int& number_of_threads, const unsigned int& parallel_method, const unsigned int& space, const double& distance_relative_tolerance, const bool& use_fence, const bool& check_total_dissimilarity, const bool& use_verbose, const bool& compute_overall_center, const std::string& warping_method, const std::string& center_method, const std::string& dissimilarity_method, const std::string& optimizer_method);
-RcppExport SEXP _fdakmapp_kmap(SEXP xSEXP, SEXP ySEXP, SEXP seedsSEXP, SEXP warping_optionsSEXP, SEXP n_clustSEXP, SEXP maximum_number_of_iterationsSEXP, SEXP number_of_threadsSEXP, SEXP parallel_methodSEXP, SEXP spaceSEXP, SEXP distance_relative_toleranceSEXP, SEXP use_fenceSEXP, SEXP check_total_dissimilaritySEXP, SEXP use_verboseSEXP, SEXP compute_overall_centerSEXP, SEXP warping_methodSEXP, SEXP center_methodSEXP, SEXP dissimilarity_methodSEXP, SEXP optimizer_methodSEXP) {
+RcppExport SEXP _fdacluster_kmap(SEXP xSEXP, SEXP ySEXP, SEXP seedsSEXP, SEXP warping_optionsSEXP, SEXP n_clustSEXP, SEXP maximum_number_of_iterationsSEXP, SEXP number_of_threadsSEXP, SEXP parallel_methodSEXP, SEXP spaceSEXP, SEXP distance_relative_toleranceSEXP, SEXP use_fenceSEXP, SEXP check_total_dissimilaritySEXP, SEXP use_verboseSEXP, SEXP compute_overall_centerSEXP, SEXP warping_methodSEXP, SEXP center_methodSEXP, SEXP dissimilarity_methodSEXP, SEXP optimizer_methodSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -37,11 +42,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_fdakmapp_kmap", (DL_FUNC) &_fdakmapp_kmap, 18},
+    {"_fdacluster_kmap", (DL_FUNC) &_fdacluster_kmap, 18},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_fdakmapp(DllInfo *dll) {
+RcppExport void R_init_fdacluster(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
