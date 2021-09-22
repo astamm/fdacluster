@@ -1,17 +1,19 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# fdakmapp
+# fdacluster
 
 <!-- badges: start -->
 
-[![check-standard](https://github.com/astamm/fdakmapp/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdakmapp/actions)
-[![test-coverage](https://github.com/astamm/fdakmapp/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdakmapp/actions)
-[![codecov](https://codecov.io/gh/astamm/fdakmapp/branch/master/graph/badge.svg)](https://codecov.io/gh/astamm/fdakmapp)
-[![pkgdown](https://github.com/astamm/fdakmapp/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdakmapp/actions)
+[![check-standard](https://github.com/astamm/fdacluster/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdacluster/actions)
+[![test-coverage](https://github.com/astamm/fdacluster/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdacluster/actions)
+[![codecov](https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg)](https://codecov.io/gh/astamm/fdacluster)
+[![pkgdown](https://github.com/astamm/fdacluster/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdacluster/actions)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/fdacluster)](https://CRAN.R-project.org/package=fdacluster)
 <!-- badges: end -->
 
-The **fdakmapp** package provides the `kma()` function that jointly
+The **fdacluster** package provides the `kma()` function that jointly
 performs clustering and alignment of a functional data set. Mean and
 medoid center methods are available. The algorithm is fully
 parallelized.
@@ -27,37 +29,46 @@ The package is linked against OpenMP, the BLAS and LAPACK libraries.
 Therefore, you should make sure that your R / RStudio environment is
 ready
 
-  - to build packages: to check this, type in the console
+-   to build packages: to check this, type in the console
 
-<!-- end list -->
+<!-- -->
 
     # install.packages("pkgbuild")
     pkgbuild::has_devel()
 
-  - to build packages with compiled code:
-    
-      - on Linux: it should be ready;
-      - on Windows: you should install
+-   to build packages with compiled code:
+
+    -   on Linux: it should be ready;
+    -   on Windows: you should install
         [Rtools](https://cloud.r-project.org/bin/windows/Rtools/);
-      - on macOS: you should install a [set of
+    -   on macOS: you should install a [set of
         tools](https://cloud.r-project.org/bin/macosx/tools/).
 
-  - to build packages with C++ code through Rcpp: on macOS, you can for
+-   to build packages with C++ code through Rcpp: on macOS, you can for
     instance follow this
     [tutorial](https://thecoatlessprofessor.com/programming/cpp/r-compiler-tools-for-rcpp-on-macos/).
 
 ### Installation
 
-The **fdakmapp** package is currently only available on GitHub. You can
-install it as follows:
+You can install the latest stable version of **fdacluster** on CRAN
+with:
 
-    # install.packages("remotes")
-    remotes::install_github("astamm/fdakmapp")
+``` r
+install.packages("fdacluster")
+```
+
+Or you can install the development version from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("astamm/fdacluster")
+```
 
 ### Example
 
 ``` r
-library(fdakmapp)
+library(fdacluster)
 
 res <- kma(
   simulated30$x,
@@ -109,7 +120,6 @@ res <- kma(
 #> 
 #> Active stopping criteria:
 #>  - Memberships did not change.
-
 plot(res, type = "data")
 ```
 

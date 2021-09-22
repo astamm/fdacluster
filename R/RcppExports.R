@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 kmap <- function(x, y, seeds, warping_options, n_clust, maximum_number_of_iterations, number_of_threads, parallel_method, space, distance_relative_tolerance, use_fence, check_total_dissimilarity, use_verbose, compute_overall_center, warping_method, center_method, dissimilarity_method, optimizer_method) {
-    .Call('_fdacluster_kmap', PACKAGE = 'fdacluster', x, y, seeds, warping_options, n_clust, maximum_number_of_iterations, number_of_threads, parallel_method, space, distance_relative_tolerance, use_fence, check_total_dissimilarity, use_verbose, compute_overall_center, warping_method, center_method, dissimilarity_method, optimizer_method)
+    .Call(`_fdacluster_kmap`, x, y, seeds, warping_options, n_clust, maximum_number_of_iterations, number_of_threads, parallel_method, space, distance_relative_tolerance, use_fence, check_total_dissimilarity, use_verbose, compute_overall_center, warping_method, center_method, dissimilarity_method, optimizer_method)
 }
 

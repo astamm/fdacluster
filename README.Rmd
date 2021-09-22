@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 [![test-coverage](https://github.com/astamm/fdacluster/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdacluster/actions)
 [![codecov](https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg)](https://codecov.io/gh/astamm/fdacluster)
 [![pkgdown](https://github.com/astamm/fdacluster/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdacluster/actions)
+[![CRAN status](https://www.r-pkg.org/badges/version/fdacluster)](https://CRAN.R-project.org/package=fdacluster)
 <!-- badges: end -->
 
 The **fdacluster** package provides the `kma()` function that jointly performs clustering and alignment of a functional data set. Mean and medoid center methods are available. The algorithm is fully parallelized.
@@ -49,8 +50,14 @@ pkgbuild::has_devel()
 
 ### Installation
 
-The **fdacluster** package is currently only available on GitHub. You can install it as follows:
+You can install the latest stable version of **fdacluster** on CRAN with:
+``` r
+install.packages("fdacluster")
 ```
+
+Or you can install the development version from [GitHub](https://github.com/) with:
+
+``` r
 # install.packages("remotes")
 remotes::install_github("astamm/fdacluster")
 ```
