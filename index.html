@@ -24,6 +24,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -36,25 +38,19 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fdacluster</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="reference/index.html">Reference</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/astamm/fdacluster/">
+  <a href="https://github.com/astamm/fdacluster/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -71,19 +67,19 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="fdacluster" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#fdacluster" class="anchor"></a>fdacluster</h1></div>
+<div class="section level1">
+<div class="page-header"><h1 id="fdacluster">fdacluster<a class="anchor" aria-label="anchor" href="#fdacluster"></a>
+</h1></div>
 <!-- badges: start -->
 
 <p>The <strong>fdacluster</strong> package provides the <code><a href="reference/kma.html">kma()</a></code> function that jointly performs clustering and alignment of a functional data set. Mean and medoid center methods are available. The algorithm is fully parallelized.</p>
-<div id="getting-started" class="section level2">
-<h2 class="hasAnchor">
-<a href="#getting-started" class="anchor"></a>Getting Started</h2>
+<div class="section level2">
+<h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+</h2>
 <p>The source code can be cloned or downloaded directly from github. An R studio project file is provided to open the project in RStudio.</p>
-<div id="prerequisites" class="section level3">
-<h3 class="hasAnchor">
-<a href="#prerequisites" class="anchor"></a>Prerequisites</h3>
+<div class="section level3">
+<h3 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
+</h3>
 <p>The package is linked against OpenMP, the BLAS and LAPACK libraries. Therefore, you should make sure that your R / RStudio environment is ready</p>
 <ul>
 <li>to build packages: to check this, type in the console</li>
@@ -95,34 +91,34 @@
 <p>to build packages with compiled code:</p>
 <ul>
 <li>on Linux: it should be ready;</li>
-<li>on Windows: you should install <a href="https://cloud.r-project.org/bin/windows/Rtools/">Rtools</a>;</li>
-<li>on macOS: you should install a <a href="https://cloud.r-project.org/bin/macosx/tools/">set of tools</a>.</li>
+<li>on Windows: you should install <a href="https://cloud.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a>;</li>
+<li>on macOS: you should install a <a href="https://cloud.r-project.org/bin/macosx/tools/" class="external-link">set of tools</a>.</li>
 </ul>
 </li>
-<li><p>to build packages with C++ code through Rcpp: on macOS, you can for instance follow this <a href="https://thecoatlessprofessor.com/programming/cpp/r-compiler-tools-for-rcpp-on-macos/">tutorial</a>.</p></li>
+<li><p>to build packages with C++ code through Rcpp: on macOS, you can for instance follow this <a href="https://thecoatlessprofessor.com/programming/cpp/r-compiler-tools-for-rcpp-on-macos/" class="external-link">tutorial</a>.</p></li>
 </ul>
 </div>
-<div id="installation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h3>
+<div class="section level3">
+<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h3>
 <p>You can install the latest stable version of <strong>fdacluster</strong> on CRAN with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"fdacluster"</span><span class="op">)</span></code></pre></div>
-<p>Or you can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fdacluster"</span><span class="op">)</span></code></pre></div>
+<p>Or you can install the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"astamm/fdacluster"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="example" class="section level3">
-<h3 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h3>
+<div class="section level3">
+<h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h3>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html">fdacluster</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span>
 
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/kma.html">kma</a></span><span class="op">(</span>
   <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,
   <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,
-  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,
+  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,
   n_clust <span class="op">=</span> <span class="fl">2</span>,
   center_method <span class="op">=</span> <span class="st">"medoid"</span>,
   warping_method <span class="op">=</span> <span class="st">"affine"</span>,
@@ -169,10 +165,10 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Active stopping criteria:</span>
 <span class="co">#&gt;  - Memberships did not change.</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span></code></pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-example-simulated30-1.png" width="100%"></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"warping"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"warping"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-example-simulated30-2.png" width="100%"></p>
 </div>
 </div>
@@ -181,51 +177,63 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/astamm/fdacluster/">https://​github.com/​astamm/​fdacluster/​</a>
-</li>
+<li><a href="https://github.com/astamm/fdacluster/" class="external-link">Browse source code</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
 <li><small>GPL (&gt;= 3)</small></li>
 </ul>
 </div>
-<div class="developers">
-<h2>Developers</h2>
+
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li>Laura Sangalli <br><small class="roles"> Author </small>  </li>
-<li>Piercesare Secchi <br><small class="roles"> Author </small>  </li>
-<li>Aymeric Stamm <br><small class="roles"> Maintainer, contributor </small> <a href="https://orcid.org/0000-0002-8725-3654" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
-<li>Simone Vantini <br><small class="roles"> Author </small>  </li>
-<li>Valeria Vitelli <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html#citation">Citing fdacluster</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="developers">
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/astamm/fdacluster/actions"><img src="https://github.com/astamm/fdacluster/workflows/R-CMD-check/badge.svg" alt="check-standard"></a></li>
-<li><a href="https://github.com/astamm/fdacluster/actions"><img src="https://github.com/astamm/fdacluster/workflows/test-coverage/badge.svg" alt="test-coverage"></a></li>
-<li><a href="https://codecov.io/gh/astamm/fdacluster"><img src="https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg" alt="codecov"></a></li>
-<li><a href="https://github.com/astamm/fdacluster/actions"><img src="https://github.com/astamm/fdacluster/workflows/pkgdown/badge.svg" alt="pkgdown"></a></li>
-<li><a href="https://CRAN.R-project.org/package=fdacluster"><img src="https://www.r-pkg.org/badges/version/fdacluster" alt="CRAN status"></a></li>
+<li>Laura Sangalli <br><small class="roles"> Author </small>  </li>
+<li>Piercesare Secchi <br><small class="roles"> Author </small>  </li>
+<li>Aymeric Stamm <br><small class="roles"> Maintainer, contributor </small> <a href="https://orcid.org/0000-0002-8725-3654" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Simone Vantini <br><small class="roles"> Author </small>  </li>
+<li>Valeria Vitelli <br><small class="roles"> Author </small>  </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
+
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/astamm/fdacluster/actions" class="external-link"><img src="https://github.com/astamm/fdacluster/workflows/R-CMD-check/badge.svg" alt="check-standard"></a></li>
+<li><a href="https://github.com/astamm/fdacluster/actions" class="external-link"><img src="https://github.com/astamm/fdacluster/workflows/test-coverage/badge.svg" alt="test-coverage"></a></li>
+<li><a href="https://codecov.io/gh/astamm/fdacluster" class="external-link"><img src="https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg" alt="codecov"></a></li>
+<li><a href="https://github.com/astamm/fdacluster/actions" class="external-link"><img src="https://github.com/astamm/fdacluster/workflows/pkgdown/badge.svg" alt="pkgdown"></a></li>
+<li><a href="https://CRAN.R-project.org/package=fdacluster" class="external-link"><img src="https://www.r-pkg.org/badges/version/fdacluster" alt="CRAN status"></a></li>
+</ul>
 </div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Laura Sangalli, Piercesare Secchi, Aymeric Stamm, Simone Vantini, Valeria Vitelli.</p>
+  <p></p>
+<p>Developed by Laura Sangalli, Piercesare Secchi, Aymeric Stamm, Simone Vantini, Valeria Vitelli.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -233,6 +241,8 @@
 
   
 
+
+  
 
   </body>
 </html>
