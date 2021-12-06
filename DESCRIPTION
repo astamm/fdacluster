@@ -44,7 +44,6 @@ Roxygen: list(markdown = TRUE)
 Suggests: testthat
 Imports: 
     Rcpp,
-    nloptr (>= 1.2.2),
     magrittr,
     tibble,
     dplyr,
