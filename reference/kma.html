@@ -59,7 +59,6 @@
   maximum_number_of_iterations <span class="op">=</span> <span class="fl">100</span>,
   number_of_threads <span class="op">=</span> <span class="fl">1</span>,
   parallel_method <span class="op">=</span> <span class="fl">0</span>,
-  space <span class="op">=</span> <span class="fl">0</span>,
   distance_relative_tolerance <span class="op">=</span> <span class="fl">0.001</span>,
   use_fence <span class="op">=</span> <span class="cn">FALSE</span>,
   check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,
@@ -100,10 +99,6 @@ parallelization (default: 1).</p></dd>
 parallelization for template computation, If 0 (default), templates are
 computed in parallel. If 1, parallelization occurs within a single template
 computation (only for the medoid method as of now).</p></dd>
-<dt>space</dt>
-<dd><p>An integer value specifying the space according to which
-operations should be performed. If 0 (default), the Eucliden space is used.
-If 1, unit quaternion space is used instead.</p></dd>
 <dt>distance_relative_tolerance</dt>
 <dd><p>A number specifying a relative tolerance
 on the distance update between two iterations. If all observations have not
