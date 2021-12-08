@@ -33,7 +33,6 @@ Rcpp::List kmap(
     const unsigned int &maximum_number_of_iterations,
     const unsigned int &number_of_threads,
     const unsigned int &parallel_method,
-    const unsigned int &space,
     const double &distance_relative_tolerance,
     const bool &use_fence,
     const bool &check_total_dissimilarity,

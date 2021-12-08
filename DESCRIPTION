@@ -37,8 +37,10 @@ Description: The fdacluster package provides the kma function that
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
-LinkingTo: Rcpp, RcppArmadillo, nloptr
-SystemRequirements: C++11
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo,
+    nloptr
 RoxygenNote: 7.1.2
 Roxygen: list(markdown = TRUE)
 Suggests: testthat

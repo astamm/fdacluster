@@ -84,23 +84,17 @@ FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::r
     arma::rowvec xCommon = arma::linspace<arma::rowvec>(xMin, xMax, nPts);
     outputPair.Grid = xCommon;
 
-    if (m_Space == Euclidean)
+    arma::rowvec workVector;
+    outputPair.Values1.set_size(nDim, nPts);
+    outputPair.Values2.set_size(nDim, nPts);
+
+    for (unsigned int i = 0;i < nDim;++i)
     {
-        arma::rowvec workVector;
-        outputPair.Values1.set_size(nDim, nPts);
-        outputPair.Values2.set_size(nDim, nPts);
-
-        for (unsigned int i = 0;i < nDim;++i)
-        {
-            arma::interp1(cleanGrid1, cleanValues1.row(i), xCommon, workVector, "*linear");
-            outputPair.Values1.row(i) = workVector;
-            arma::interp1(cleanGrid2, cleanValues2.row(i), xCommon, workVector, "*linear");
-            outputPair.Values2.row(i) = workVector;
-        }
+      arma::interp1(cleanGrid1, cleanValues1.row(i), xCommon, workVector, "*linear");
+      outputPair.Values1.row(i) = workVector;
+      arma::interp1(cleanGrid2, cleanValues2.row(i), xCommon, workVector, "*linear");
+      outputPair.Values2.row(i) = workVector;
     }
-    else
-        Rcpp::Rcout << "Interpolation operations for the requested space are not yet implemented." << std::endl;
-
 
     return outputPair;
 }

@@ -26,34 +26,29 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
     arma::mat workMatrix;
     arma::cube yIn(numberOfObservations, numberOfDimensions, numberOfPoints);
 
-    if (this->GetSpace() == Euclidean)
+    // First interpolate to common grid
+    arma::rowvec inGrid;
+    arma::rowvec inValue;
+    arma::rowvec outValue;
+
+    for (unsigned int i = 0;i < numberOfObservations;++i)
     {
-        // First interpolate to common grid
-        arma::rowvec inGrid;
-        arma::rowvec inValue;
-        arma::rowvec outValue;
+      inGrid = inputGrid.row(i);
 
-        for (unsigned int i = 0;i < numberOfObservations;++i)
-        {
-            inGrid = inputGrid.row(i);
-
-            for (unsigned int j = 0;j < numberOfDimensions;++j)
-            {
-                inValue = inputValues.tube(i, j);
-                arma::interp1(inGrid, inValue, outGrid, outValue, "*linear");
-                yIn.tube(i, j) = outValue;
-            }
-        }
-
-        for (unsigned int i = 0;i < numberOfPoints;++i)
-        {
-            finiteIndices = arma::find_finite(yIn.slice(i).col(0));
-            workMatrix = yIn.slice(i).rows(finiteIndices);
-            meanValue.col(i) = arma::mean(workMatrix, 0).as_col();
-        }
+      for (unsigned int j = 0;j < numberOfDimensions;++j)
+      {
+        inValue = inputValues.tube(i, j);
+        arma::interp1(inGrid, inValue, outGrid, outValue, "*linear");
+        yIn.tube(i, j) = outValue;
+      }
     }
-    else
-        Rcpp::Rcout << "Mean operations for the requested space are not yet implemented." << std::endl;
+
+    for (unsigned int i = 0;i < numberOfPoints;++i)
+    {
+      finiteIndices = arma::find_finite(yIn.slice(i).col(0));
+      workMatrix = yIn.slice(i).rows(finiteIndices);
+      meanValue.col(i) = arma::mean(workMatrix, 0).as_col();
+    }
 
     // compute dissimilarity between observations and center
     arma::rowvec distancesToCenter(numberOfObservations);

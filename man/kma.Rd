@@ -13,7 +13,6 @@ kma(
   maximum_number_of_iterations = 100,
   number_of_threads = 1,
   parallel_method = 0,
-  space = 0,
   distance_relative_tolerance = 0.001,
   use_fence = FALSE,
   check_total_dissimilarity = TRUE,
@@ -51,10 +50,6 @@ parallelization (default: 1).}
 parallelization for template computation, If 0 (default), templates are
 computed in parallel. If 1, parallelization occurs within a single template
 computation (only for the medoid method as of now).}
-
-\item{space}{An integer value specifying the space according to which
-operations should be performed. If 0 (default), the Eucliden space is used.
-If 1, unit quaternion space is used instead.}
 
 \item{distance_relative_tolerance}{A number specifying a relative tolerance
 on the distance update between two iterations. If all observations have not

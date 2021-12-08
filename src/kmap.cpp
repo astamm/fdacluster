@@ -9,7 +9,6 @@ Rcpp::List kmap(const arma::mat &x,
                 const unsigned int &maximum_number_of_iterations,
                 const unsigned int &number_of_threads,
                 const unsigned int &parallel_method,
-                const unsigned int &space,
                 const double &distance_relative_tolerance,
                 const bool &use_fence,
                 const bool &check_total_dissimilarity,
@@ -31,7 +30,6 @@ Rcpp::List kmap(const arma::mat &x,
     model.SetMaximumNumberOfIterations(maximum_number_of_iterations);
     model.SetNumberOfThreads(number_of_threads);
     model.SetParallelMethod(parallel_method);
-    model.SetSpace(space);
 
     model.SetDistanceRelativeTolerance(distance_relative_tolerance);
 

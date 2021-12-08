@@ -20,22 +20,17 @@ double L2DissimilarityFunction::GetDistance(const arma::rowvec& grid1,
     double squaredNorm1Value = 0.0;
     double squaredNorm2Value = 0.0;
 
-    if (this->GetSpace() == Euclidean)
-    {
-        arma::rowvec workVector;
+    arma::rowvec workVector;
 
-        for (unsigned int k = 0;k < nDim;++k)
-        {
-            workVector = pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1);
-            squaredDistanceValue += arma::dot(workVector, workVector);
-            workVector = pair.Values1.row(k).cols(1, nPts - 1);
-            squaredNorm1Value += arma::dot(workVector, workVector);
-            workVector = pair.Values2.row(k).cols(1, nPts - 1);
-            squaredNorm2Value += arma::dot(workVector, workVector);
-        }
+    for (unsigned int k = 0;k < nDim;++k)
+    {
+      workVector = pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1);
+      squaredDistanceValue += arma::dot(workVector, workVector);
+      workVector = pair.Values1.row(k).cols(1, nPts - 1);
+      squaredNorm1Value += arma::dot(workVector, workVector);
+      workVector = pair.Values2.row(k).cols(1, nPts - 1);
+      squaredNorm2Value += arma::dot(workVector, workVector);
     }
-    else
-        Rcpp::Rcout << "Distance operations for the requested space are not yet implemented." << std::endl;
 
     return std::sqrt(squaredDistanceValue) / (std::sqrt(squaredNorm1Value) + std::sqrt(squaredNorm2Value));
 }

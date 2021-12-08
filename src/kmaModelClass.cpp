@@ -56,7 +56,6 @@ void KmaModel::SetCenterMethod(const std::string &val)
   centerFactory.Register<MeanCenterMethod>("mean");
 
   m_CenterPointer = centerFactory.Instantiate(val);
-  m_CenterPointer->SetSpace(m_Space);
 
   if (!m_CenterPointer)
     Rcpp::stop("The center method is not available.");
@@ -70,7 +69,6 @@ void KmaModel::SetDissimilarityMethod(const std::string &val)
   dissimilarityFactory.Register<L2DissimilarityFunction>("l2");
 
   m_DissimilarityPointer = dissimilarityFactory.Instantiate(val);
-  m_DissimilarityPointer->SetSpace(m_Space);
 
   if (!m_DissimilarityPointer)
     Rcpp::stop("The dissimilarity method is not available.");

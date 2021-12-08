@@ -18,9 +18,6 @@
 #'   parallelization for template computation, If 0 (default), templates are
 #'   computed in parallel. If 1, parallelization occurs within a single template
 #'   computation (only for the medoid method as of now).
-#' @param space An integer value specifying the space according to which
-#'   operations should be performed. If 0 (default), the Eucliden space is used.
-#'   If 1, unit quaternion space is used instead.
 #' @param distance_relative_tolerance A number specifying a relative tolerance
 #'   on the distance update between two iterations. If all observations have not
 #'   sufficiently improved in that sense, the algorithm stops. Defaults to 1e-3.
@@ -95,7 +92,6 @@ kma <- function(x, y,
                 maximum_number_of_iterations = 100,
                 number_of_threads = 1,
                 parallel_method = 0,
-                space = 0,
                 distance_relative_tolerance = 0.001,
                 use_fence = FALSE,
                 check_total_dissimilarity = TRUE,
@@ -137,7 +133,6 @@ kma <- function(x, y,
     maximum_number_of_iterations,
     number_of_threads,
     parallel_method,
-    space,
     distance_relative_tolerance,
     use_fence,
     check_total_dissimilarity,

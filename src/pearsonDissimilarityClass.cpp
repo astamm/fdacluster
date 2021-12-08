@@ -17,30 +17,25 @@ double PearsonDissimilarityFunction::GetDistance(const arma::rowvec& grid1,
     double squaredNorm1Value = 0.0;
     double squaredNorm2Value = 0.0;
 
-    if (this->GetSpace() == Euclidean)
+    arma::rowvec workVector;
+
+    for (unsigned int k = 0;k < nDim;++k)
     {
-        arma::rowvec workVector;
-
-        for (unsigned int k = 0;k < nDim;++k)
-        {
-            workVector = pair.Values1.row(k).cols(1, nPts - 1);
-            squaredNorm1Value += arma::dot(workVector, workVector);
-            workVector = pair.Values2.row(k).cols(1, nPts - 1);
-            squaredNorm2Value += arma::dot(workVector, workVector);
-        }
-
-        squaredNorm1Value /= ((double)nPts - 1.0);
-        squaredNorm2Value /= ((double)nPts - 1.0);
-
-        for (unsigned int k = 0;k < nDim;++k)
-        {
-            workVector  = pair.Values1.row(k).cols(1, nPts - 1) / std::sqrt(squaredNorm1Value);
-            workVector -= pair.Values2.row(k).cols(1, nPts - 1) / std::sqrt(squaredNorm2Value);
-            squaredDistanceValue += arma::dot(workVector, workVector);
-        }
+      workVector = pair.Values1.row(k).cols(1, nPts - 1);
+      squaredNorm1Value += arma::dot(workVector, workVector);
+      workVector = pair.Values2.row(k).cols(1, nPts - 1);
+      squaredNorm2Value += arma::dot(workVector, workVector);
     }
-    else
-        Rcpp::Rcout << "Distance operations for the requested space are not yet implemented." << std::endl;
+
+    squaredNorm1Value /= ((double)nPts - 1.0);
+    squaredNorm2Value /= ((double)nPts - 1.0);
+
+    for (unsigned int k = 0;k < nDim;++k)
+    {
+      workVector  = pair.Values1.row(k).cols(1, nPts - 1) / std::sqrt(squaredNorm1Value);
+      workVector -= pair.Values2.row(k).cols(1, nPts - 1) / std::sqrt(squaredNorm2Value);
+      squaredDistanceValue += arma::dot(workVector, workVector);
+    }
 
     squaredDistanceValue /= ((double)nPts - 1.0);
 

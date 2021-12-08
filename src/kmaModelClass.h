@@ -34,7 +34,6 @@ public:
         m_NumberOfPoints = 1;
         m_NumberOfThreads = 1;
         m_ParallelMethod = ClusterLoop;
-        m_Space = Euclidean;
 
         m_DistanceRelativeTolerance = 1.0e-3;
 
@@ -62,7 +61,6 @@ public:
     void SetMaximumNumberOfIterations(const unsigned int &val) {m_MaximumNumberOfIterations = val;}
     void SetNumberOfThreads(const unsigned int &val) {m_NumberOfThreads = val;}
     void SetParallelMethod(const unsigned int &val) {m_ParallelMethod = ParallelType(val);}
-    void SetSpace(const unsigned int &val) {m_Space = SpaceType(val);}
 
     void SetDistanceRelativeTolerance(const double &val) {m_DistanceRelativeTolerance = val;}
 
@@ -136,7 +134,6 @@ private:
     unsigned int m_NumberOfThreads;
 
     enum ParallelType m_ParallelMethod;
-    enum SpaceType m_Space;
 
     double m_DistanceRelativeTolerance;
 
