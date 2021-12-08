@@ -15,11 +15,7 @@ struct CenterType
 class BaseCenterMethod
 {
 public:
-    BaseCenterMethod()
-    {
-        m_Space = Euclidean;
-    }
-
+    BaseCenterMethod() {}
     virtual ~BaseCenterMethod() {};
 
     /// Compute center method.
@@ -45,12 +41,6 @@ public:
         CenterType outputCenter;
         return outputCenter;
     }
-
-    void SetSpace(const enum SpaceType &val) {m_Space = val;}
-    enum SpaceType GetSpace() {return m_Space;}
-
-private:
-    enum SpaceType m_Space;
 };
 
 #endif /* BASECENTERCLASS_H */

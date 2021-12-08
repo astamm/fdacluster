@@ -3,12 +3,6 @@
 
 #include <RcppArmadillo.h>
 
-enum SpaceType
-{
-  Euclidean,
-  UnitQuaternion
-};
-
 /// Element with approximated abscissa and approximated functions to compute dissimilarity.
 struct FunctionPairType
 {
@@ -21,11 +15,7 @@ struct FunctionPairType
 class BaseDissimilarityFunction
 {
 public:
-  BaseDissimilarityFunction()
-  {
-    m_Space = Euclidean;
-  }
-
+  BaseDissimilarityFunction() {}
   virtual ~BaseDissimilarityFunction() {}
 
   /// compute dissimilarity method different for each derived class
@@ -59,12 +49,6 @@ public:
       const arma::mat& values1,
       const arma::mat& values2
   );
-
-  void SetSpace(const enum SpaceType &val) {m_Space = val;}
-  enum SpaceType GetSpace() {return m_Space;}
-
-private:
-  enum SpaceType m_Space;
 };
 
 #endif /* BASEDISSIMILARITYCLASS_H */
