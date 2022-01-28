@@ -1,5 +1,5 @@
 Package: fdacluster
-Title: Functional Data Analysis: K-Mean and K-Medoid with Alignment
+Title: Joint Clustering and Alignment of Functional Data
 Version: 0.1.0
 Type: Package
 Authors@R: c(
@@ -28,12 +28,12 @@ Authors@R: c(
            family = "Zito",
            role = "ctb",
            email = "zito.ales@gmail.com"))
-Description: The fdacluster package provides the kma function that 
-    jointly performs clustering and alignment of a functional 
-    data set (unidimensional or multidimensional). The warping is 
-    parametric. Currently supported classes of warping functions 
-    are shift, dilation and affine transformations. The algorithm 
-    is fully parallelized.
+Description: Revisited clustering approaches to accommodate functional 
+    data by allowing to jointly align the data during the clustering 
+    process. Currently, shift, dilation and affine transformations 
+    only are available to perform alignment. The k-mean algorithm has 
+    been extended to integrate alignment and is fully parallelized. 
+    Hierarchical clustering will soon be available as well.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
@@ -53,8 +53,6 @@ Imports:
     purrr,
     ggplot2,
     nloptr
-Remotes: 
-    astamm/nloptr
 Depends: 
     R (>= 2.10)
 URL: https://astamm.github.io/fdacluster/index.html, https://github.com/astamm/fdacluster
