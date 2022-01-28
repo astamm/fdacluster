@@ -11,8 +11,8 @@
 #'   Computational Statistics and Data Analysis, 54, 1219-1233.
 #'   \item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), [Analysis of
 #'   AneuRisk65 data: K-mean
-#'   Alignment](http://projecteuclid.org/euclid.ejs/1414588177), Electronic
-#'   Journal of Statistics, 8 (2), 1891-1904.
+#'   Alignment](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-8/issue-2/Analysis-of-AneuRisk65-data-k-mean-alignment/10.1214/14-EJS938A.full),
+#'   Electronic Journal of Statistics, 8 (2), 1891-1904.
 #' }
 #'
 #' @name fdacluster

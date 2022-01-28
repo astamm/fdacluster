@@ -15,7 +15,7 @@ stored by a row in a matrix.}
 }
 }
 \source{
-This is a subset of the \href{https://statistics.mox.polimi.it/aneurisk/}{AneuRisk65 benchmark data set} provided by the AneuRisk
+This is a subset of the \href{https://mox.polimi.it/research-areas/statistics/}{AneuRisk65 benchmark data set} provided by the AneuRisk
 project.
 }
 \usage{
@@ -27,10 +27,10 @@ coordinates of the centerline of the internal carotid artery of 65 patients.
 }
 \references{
 \enumerate{
-\item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), \href{http://projecteuclid.org/euclid.ejs/1414588176}{AneuRisk65: three-dimensional cerebral vascular geometries}, Electronic
-Journal of Statistics, 8 (2), 1879-1890.
-\item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), \href{http://projecteuclid.org/euclid.ejs/1414588177}{Analysis of AneuRisk65 data: K-mean Alignment}, Electronic
-Journal of Statistics, 8 (2), 1891-1904.
+\item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), \href{https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-8/issue-2/AneuRisk65-A-dataset-of-three-dimensional-cerebral-vascular-geometries/10.1214/14-EJS938.full}{AneuRisk65: A dataset of three-dimensional cerebral vascular geometries},
+Electronic Journal of Statistics, 8 (2), 1879-1890.
+\item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), \href{https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-8/issue-2/Analysis-of-AneuRisk65-data-k-mean-alignment/10.1214/14-EJS938A.full}{Analysis of AneuRisk65 data: K-mean Alignment},
+Electronic Journal of Statistics, 8 (2), 1891-1904.
 }
 }
 \keyword{datasets}

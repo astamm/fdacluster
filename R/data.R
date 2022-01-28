@@ -37,18 +37,18 @@
 #' }
 #'
 #' @source This is a subset of the [AneuRisk65 benchmark data
-#'   set](https://statistics.mox.polimi.it/aneurisk/) provided by the AneuRisk
+#'   set](https://mox.polimi.it/research-areas/statistics/) provided by the AneuRisk
 #'   project.
 #'
 #' @references \enumerate{
-#'   \item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), [AneuRisk65:
-#'   three-dimensional cerebral vascular
-#'   geometries](http://projecteuclid.org/euclid.ejs/1414588176), Electronic
-#'   Journal of Statistics, 8 (2), 1879-1890.
+#'   \item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), [AneuRisk65: A
+#'   dataset of three-dimensional cerebral vascular
+#'   geometries](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-8/issue-2/AneuRisk65-A-dataset-of-three-dimensional-cerebral-vascular-geometries/10.1214/14-EJS938.full),
+#'   Electronic Journal of Statistics, 8 (2), 1879-1890.
 #'   \item Sangalli, L.M., Secchi, P. and Vantini, S. (2014), [Analysis of
 #'   AneuRisk65 data: K-mean
-#'   Alignment](http://projecteuclid.org/euclid.ejs/1414588177), Electronic
-#'   Journal of Statistics, 8 (2), 1891-1904.
+#'   Alignment](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-8/issue-2/Analysis-of-AneuRisk65-data-k-mean-alignment/10.1214/14-EJS938A.full),
+#'   Electronic Journal of Statistics, 8 (2), 1891-1904.
 #' }
 #'
 "aneurisk65"
