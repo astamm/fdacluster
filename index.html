@@ -5,19 +5,19 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Functional Data Analysis: K-Mean and K-Medoid with Alignment • fdacluster</title>
+<title>Joint Clustering and Alignment of Functional Data • fdacluster</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
 <script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Functional Data Analysis: K-Mean and K-Medoid with Alignment">
-<meta property="og:description" content="The fdacluster package provides the kma function that 
-    jointly performs clustering and alignment of a functional 
-    data set (unidimensional or multidimensional). The warping is 
-    parametric. Currently supported classes of warping functions 
-    are shift, dilation and affine transformations. The algorithm 
-    is fully parallelized.">
+<script src="pkgdown.js"></script><meta property="og:title" content="Joint Clustering and Alignment of Functional Data">
+<meta property="og:description" content="Revisited clustering approaches to accommodate functional 
+    data by allowing to jointly align the data during the clustering 
+    process. Currently, shift, dilation and affine transformations 
+    only are available to perform alignment. The k-mean algorithm has 
+    been extended to integrate alignment and is fully parallelized. 
+    Hierarchical clustering will soon be available as well.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -72,47 +72,36 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The <strong>fdacluster</strong> package provides the <code><a href="reference/kma.html">kma()</a></code> function that jointly performs clustering and alignment of a functional data set. Mean and medoid center methods are available. The algorithm is fully parallelized.</p>
+<p>The <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> package provides the <a href="https://astamm.github.io/fdacluster/reference/kma.html" class="external-link"><code>kma()</code></a> function that jointly performs clustering and alignment of a functional data set.</p>
 <div class="section level2">
 <h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>The source code can be cloned or downloaded directly from github. An R studio project file is provided to open the project in RStudio.</p>
 <div class="section level3">
 <h3 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
 </h3>
-<p>The package is linked against OpenMP, the BLAS and LAPACK libraries. Therefore, you should make sure that your R / RStudio environment is ready</p>
-<ul>
-<li>to build packages: to check this, type in the console</li>
-</ul>
-<!-- --><div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="co"># install.packages("pkgbuild")</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a>pkgbuild<span class="op">::</span><span class="kw">has_devel</span>()</span></code></pre></div>
-<ul>
-<li>
-<p>to build packages with compiled code:</p>
+<p>The package is linked against OpenMP and the BLAS and LAPACK libraries. Hence, you will need to set up an appropriate development environment for the package to install properly. Specifically:</p>
 <ul>
 <li>on Linux: it should be ready;</li>
-<li>on Windows: you should install <a href="https://cloud.r-project.org/bin/windows/Rtools/" class="external-link">Rtools</a>;</li>
-<li>on macOS: you should install a <a href="https://cloud.r-project.org/bin/macosx/tools/" class="external-link">set of tools</a>.</li>
-</ul>
-</li>
-<li><p>to build packages with C++ code through Rcpp: on macOS, you can for instance follow this <a href="https://thecoatlessprofessor.com/programming/cpp/r-compiler-tools-for-rcpp-on-macos/" class="external-link">tutorial</a>.</p></li>
+<li>on Windows: you should install <a href="https://cran.r-project.org/bin/windows/Rtools/rtools40.html" class="external-link">Rtools</a>;</li>
+<li>on macOS: you should refer to <a href="https://mac.r-project.org/tools/" class="external-link uri">https://mac.r-project.org/tools/</a> and install the relevant tools.</li>
 </ul>
 </div>
 <div class="section level3">
 <h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h3>
-<p>You can install the latest stable version of <strong>fdacluster</strong> on CRAN with:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p>You can install the latest stable version of <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> from CRAN with:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fdacluster"</span><span class="op">)</span></code></pre></div>
-<p>Or you can install the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<p>Or you can install the development version from <a href="https://github.com/astamm/fdacluster" class="external-link">GitHub</a> with:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"astamm/fdacluster"</span><span class="op">)</span></code></pre></div>
 </div>
-<div class="section level3">
-<h3 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
-</h3>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span>
 
 <span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/kma.html">kma</a></span><span class="op">(</span>
@@ -165,12 +154,12 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Active stopping criteria:</span>
 <span class="co">#&gt;  - Memberships did not change.</span>
+
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-example-simulated30-1.png" width="100%"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"warping"</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-example-simulated30-2.png" width="100%"></p>
-</div>
 </div>
 </div>
   </div>
@@ -216,7 +205,7 @@
 <ul class="list-unstyled">
 <li><a href="https://github.com/astamm/fdacluster/actions" class="external-link"><img src="https://github.com/astamm/fdacluster/workflows/R-CMD-check/badge.svg" alt="check-standard"></a></li>
 <li><a href="https://github.com/astamm/fdacluster/actions" class="external-link"><img src="https://github.com/astamm/fdacluster/workflows/test-coverage/badge.svg" alt="test-coverage"></a></li>
-<li><a href="https://codecov.io/gh/astamm/fdacluster" class="external-link"><img src="https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg" alt="codecov"></a></li>
+<li><a href="https://app.codecov.io/gh/astamm/fdacluster" class="external-link"><img src="https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg" alt="codecov"></a></li>
 <li><a href="https://github.com/astamm/fdacluster/actions" class="external-link"><img src="https://github.com/astamm/fdacluster/workflows/pkgdown/badge.svg" alt="pkgdown"></a></li>
 <li><a href="https://CRAN.R-project.org/package=fdacluster" class="external-link"><img src="https://www.r-pkg.org/badges/version/fdacluster" alt="CRAN status"></a></li>
 </ul>
@@ -233,7 +222,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
