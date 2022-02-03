@@ -91,19 +91,19 @@ double BaseOptimizerFunction::AlignToTemplate(arma::rowvec &initialParameters,
     if (initialParameters.size() == 0)
         return this->AlignToTemplateCostFunction(
             numberOfParameters,
-            &(initialParameters[0]),
+            NULL,
             NULL,
             &extraData
         );
 
-    nlopt_set_lower_bounds(optimizer, &(lowerBounds[0]));
-    nlopt_set_upper_bounds(optimizer, &(upperBounds[0]));
+    nlopt_set_lower_bounds(optimizer, &(lowerBounds(0)));
+    nlopt_set_upper_bounds(optimizer, &(upperBounds(0)));
 
     nlopt_set_min_objective(optimizer, this->AlignToTemplateCostFunction, &extraData);
     nlopt_set_xtol_rel(optimizer, m_ParameterRelativeTolerance);
 
     double fVal;
-    int exitCode = nlopt_optimize(optimizer, &(initialParameters[0]), &fVal);
+    int exitCode = nlopt_optimize(optimizer, &(initialParameters(0)), &fVal);
 
     nlopt_destroy(optimizer);
 
@@ -143,19 +143,19 @@ double BaseOptimizerFunction::CenterTemplate(arma::rowvec &initialParameters,
   if (initialParameters.size() == 0)
     return this->CenterTemplateCostFunction(
         numberOfParameters,
-        &(initialParameters[0]),
+        NULL,
         NULL,
         &extraData
     );
 
-  nlopt_set_lower_bounds(optimizer, &(lowerBounds[0]));
-  nlopt_set_upper_bounds(optimizer, &(upperBounds[0]));
+  nlopt_set_lower_bounds(optimizer, &(lowerBounds(0)));
+  nlopt_set_upper_bounds(optimizer, &(upperBounds(0)));
 
   nlopt_set_min_objective(optimizer, this->CenterTemplateCostFunction, &extraData);
   nlopt_set_xtol_rel(optimizer, m_ParameterRelativeTolerance);
 
   double fVal;
-  int exitCode = nlopt_optimize(optimizer, &(initialParameters[0]), &fVal);
+  int exitCode = nlopt_optimize(optimizer, &(initialParameters(0)), &fVal);
 
   nlopt_destroy(optimizer);
 
