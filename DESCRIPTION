@@ -33,7 +33,9 @@ Description: Revisited clustering approaches to accommodate functional
     process. Currently, shift, dilation and affine transformations 
     only are available to perform alignment. The k-mean algorithm has 
     been extended to integrate alignment and is fully parallelized. 
-    Hierarchical clustering will soon be available as well.
+    Hierarchical clustering will soon be available as well. References: 
+    Sangalli L.M., Secchi P., Vantini S., Vitelli V. (2010) "k-mean 
+    alignment for curve clustering" <doi:10.1016/j.csda.2009.12.008>.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
