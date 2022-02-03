@@ -171,13 +171,16 @@ void KmaModel::AlignAndAssignObservations(arma::mat &warpingParameters,
         m_WarpingPointer
       );
 
-      workingParameterValues.row(i) = startingParameters;
+      if (numberOfParameters > 0)
+        workingParameterValues.row(i) = startingParameters;
     }
 
     observationDistances(j) = workingObservationDistances.min();
     unsigned int assignedTemplateIndex = arma::index_min(workingObservationDistances);
     observationMemberships(j) = clusterIndices(assignedTemplateIndex);
-    warpingParameters.row(j) = workingParameterValues.row(assignedTemplateIndex);
+
+    if (numberOfParameters > 0)
+      warpingParameters.row(j) = workingParameterValues.row(assignedTemplateIndex);
   }
 }
 
