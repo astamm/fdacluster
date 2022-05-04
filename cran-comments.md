@@ -1,6 +1,8 @@
 ## Resubmission
 This is a resubmission. In this version, I have:
-* Fixed UBSAN runtime errors due to trying to access empty vectors.
+
+* Fixed undefined behavior sanitizer issues spotted by UBSAN.
+* Added reference to published work related to the package in `DESCRIPTION`.
 
 ## Test environments
 * local macOS R installation, R 4.1.2
@@ -18,14 +20,17 @@ This is a resubmission. In this version, I have:
 ## R CMD check results
 There was no ERROR and no WARNINGs.
 
-There was 1 NOTE:
+There was 2 NOTEs:
 
     * Maintainer: 'Aymeric Stamm <aymeric.stamm@math.cnrs.fr>'
 
-      New submission
-
-      Possibly mis-spelled words in DESCRIPTION:
-        affine (33:45)
+      Days since last update: 2
+      
+      Possibly misspelled words in DESCRIPTION:
+        Sangalli (37:5)
+        Secchi (37:20)
+        Vantini (37:31)
+        Vitelli (37:43)
 
       Found the following (possibly) invalid URLs:
         URL: https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-8/issue-2/Analysis-of-AneuRisk65-data-k-mean-alignment/10.1214/14-EJS938A.full
@@ -38,4 +43,9 @@ There was 1 NOTE:
           Status: 500
           Message: Internal Server Error
 
-This is indeed a new submission. The word 'affine' is well defined and the two URLs are in fact valid.
+Possibly misspelled words are in fact names and the two URLs are in fact valid.
+
+    * installed size is 10.6Mb
+      sub-directories of 1Mb or more:
+        data   2.7Mb
+        libs   7.5Mb
