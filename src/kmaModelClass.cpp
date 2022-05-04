@@ -195,6 +195,10 @@ void KmaModel::RunAdaptiveFenceAlgorithm(arma::mat &warpingParameters,
                                          const double penalizationStep)
 {
   unsigned int numberOfParameters = warpingParameters.n_cols;
+
+  if (numberOfParameters == 0)
+    return;
+
   arma::vec quantileOrders = { 0.25, 0.75 };
   arma::mat quantileValues;
   arma::mat fenceValues;
@@ -301,7 +305,9 @@ void KmaModel::UpdateTemplates(const unsigned int numberOfIterations,
       {
         unsigned int observationIndex = selectedObservations(j);
         warpedGrids.row(observationIndex) = m_WarpingPointer->ApplyWarping(warpedGrids.row(observationIndex), warpingParameters);
-        warpingParametersContainer.slice(2 * (numberOfIterations - 1) + 1).row(observationIndex) = warpingParameters;
+
+        if (warpingParameters.size() > 0)
+          warpingParametersContainer.slice(2 * (numberOfIterations - 1) + 1).row(observationIndex) = warpingParameters;
       }
     }
 
@@ -341,7 +347,9 @@ void KmaModel::UpdateTemplates(const unsigned int numberOfIterations,
       {
         unsigned int observationIndex = selectedObservations(j);
         warpedGrids.row(observationIndex) = m_WarpingPointer->ApplyWarping(warpedGrids.row(observationIndex), warpingParameters);
-        warpingParametersContainer.slice(2 * (numberOfIterations - 1) + 1).row(observationIndex) = warpingParameters;
+
+        if (warpingParameters.size() > 0)
+          warpingParametersContainer.slice(2 * (numberOfIterations - 1) + 1).row(observationIndex) = warpingParameters;
       }
     }
 
