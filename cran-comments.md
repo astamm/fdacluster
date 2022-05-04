@@ -1,3 +1,7 @@
+## Resubmission
+This is a resubmission. In this version, I have:
+* Fixed UBSAN runtime errors due to trying to access empty vectors.
+
 ## Test environments
 * local macOS R installation, R 4.1.2
 * continuous integration via GH actions:
