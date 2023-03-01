@@ -98,52 +98,12 @@ now.</p></dd>
 <span class="r-in"><span>  warping_method <span class="op">=</span> <span class="st">"affine"</span>,</span></span>
 <span class="r-in"><span>  dissimilarity_method <span class="op">=</span> <span class="st">"pearson"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about the data set:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of observations: 30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of dimensions: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of points: 200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about cluster initialization:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of clusters: 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Initial seeds for cluster centers:          1        21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about the methods used within the algorithm:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping method: affine</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Center method: medoid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Dissimilarity method: pearson</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Optimization method: bobyqa</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about warping parameter bounds:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping options:    0.1500   0.1500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about convergence criteria:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Maximum number of iterations: 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Distance relative tolerance: 0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about parallelization setup:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of threads: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Parallel method: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Other information:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Use fence to robustify: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Check total dissimilarity: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Compute overall center: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Running k-centroid algorithm:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Active stopping criteria:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Memberships did not change.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in kma(simulated30$x, simulated30$y, seeds = c(1, 21), n_clust = 2,     center_method = "medoid", warping_method = "affine", dissimilarity_method = "pearson"):</span> unused arguments (center_method = "medoid", warping_method = "affine", dissimilarity_method = "pearson")</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="plot.kma-1.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot(res, type = "data"):</span> object 'res' not found</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"warping"</span><span class="op">)</span></span></span>
-<span class="r-plt img"><img src="plot.kma-2.png" alt="" width="700" height="433"></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot(res, type = "warping"):</span> object 'res' not found</span>
 </code></pre></div>
     </div>
   </div>

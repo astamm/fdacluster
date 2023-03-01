@@ -56,199 +56,163 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">kma</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
+<span>  n_clusters <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
 <span>  seeds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100L</span>,</span>
+<span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span><span class="op">)</span>,</span>
+<span>  distance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
 <span>  warping_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.15</span>, <span class="fl">0.15</span><span class="op">)</span>,</span>
-<span>  n_clust <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  number_of_threads <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  parallel_method <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  number_of_threads <span class="op">=</span> <span class="fl">1L</span>,</span>
+<span>  parallel_method <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  distance_relative_tolerance <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  use_fence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  use_verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  warping_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
-<span>  center_method <span class="op">=</span> <span class="st">"mean"</span>,</span>
-<span>  dissimilarity_method <span class="op">=</span> <span class="st">"l2"</span>,</span>
-<span>  optimizer_method <span class="op">=</span> <span class="st">"bobyqa"</span></span>
+<span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
-<dd><p>A matrix of size nObs x nPts storing the evaluation grid of each
-observation.</p></dd>
+<dd><p>A numeric matrix of shape <code>nObs x nPts</code> specifying the evaluation
+grid of each observation.</p></dd>
 
 
 <dt>y</dt>
-<dd><p>A 3D array of size nObs x nDim x nPts storing the observation
-values.</p></dd>
+<dd><p>A numeric array of shape <code>nObs x nDim x nPts</code> specifying the
+observation values.</p></dd>
+
+
+<dt>n_clusters</dt>
+<dd><p>An integer value specifying the number of clusters.
+Defaults to <code>1L</code>.</p></dd>
+
+
+<dt>warping_class</dt>
+<dd><p>A string specifying the warping class Choices are
+<code>"affine"</code>, <code>"dilation"</code>, <code>"none"</code>, <code>"shift"</code> or <code>"srsf"</code>. Defaults to
+<code>"affine"</code>. The SRSF class is the only class which is boundary-preserving.</p></dd>
 
 
 <dt>seeds</dt>
-<dd><p>A vector of integers of size <code>n_clust</code> specifying the
-indices of the initial templates. Defaults to <code>NULL</code>, which boils down
-to randomly sampled indices.</p></dd>
-
-
-<dt>warping_options</dt>
-<dd><p>A numeric vector supplied as a helper to the chosen
-<code>warping_method</code> to decide on warping parameter bounds.</p></dd>
-
-
-<dt>n_clust</dt>
-<dd><p>An integer specifying the number of clusters (default: 1).</p></dd>
+<dd><p>An integer vector of length <code>n_clust</code> specifying the indices of
+the initial templates. Defaults to <code>NULL</code>, which boils down to randomly
+sampled indices.</p></dd>
 
 
 <dt>maximum_number_of_iterations</dt>
 <dd><p>An integer specifying the maximum number
-of iterations before the algorithm stops (default: 100).</p></dd>
+of iterations before the algorithm stops (default: 100L).</p></dd>
+
+
+<dt>centroid_type</dt>
+<dd><p>A string specifying the type of centroid to compute.
+Choices are <code>"mean"</code> or <code>"medoid"</code>. Defaults to <code>"mean"</code>. This is used only
+when <code>warping_class != "srsf"</code>. When <code>warping_class = "srsf</code>, the mean is
+systematically used.</p></dd>
+
+
+<dt>distance</dt>
+<dd><p>A string specifying the distance used to compare curves.
+Choices are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. This is used only
+when <code>warping_class != "srsf"</code>.</p></dd>
+
+
+<dt>warping_options</dt>
+<dd><p>A numeric vector supplied as a helper to the chosen
+<code>warping_class</code> to decide on warping parameter bounds. This is used only
+when <code>warping_class != "srsf"</code>.</p></dd>
 
 
 <dt>number_of_threads</dt>
-<dd><p>An integer specifying the number of threads used for
-parallelization (default: 1).</p></dd>
+<dd><p>An integer value specifying the number of threads
+used for parallelization. Defaults to <code>1L</code>. This is used only when
+<code>warping_class != "srsf"</code>.</p></dd>
 
 
 <dt>parallel_method</dt>
 <dd><p>An integer value specifying the type of desired
-parallelization for template computation, If 0 (default), templates are
-computed in parallel. If 1, parallelization occurs within a single template
-computation (only for the medoid method as of now).</p></dd>
+parallelization for template computation, If <code>0L</code>, templates are computed
+in parallel. If <code>1L</code>, parallelization occurs within a single template
+computation (only for the medoid method as of now). Defaults to <code>0L</code>. This
+is used only when <code>warping_class != "srsf"</code>.</p></dd>
 
 
 <dt>distance_relative_tolerance</dt>
-<dd><p>A number specifying a relative tolerance
-on the distance update between two iterations. If all observations have not
-sufficiently improved in that sense, the algorithm stops. Defaults to 1e-3.</p></dd>
+<dd><p>A numeric value specifying a relative
+tolerance on the distance update between two iterations. If all
+observations have not sufficiently improved in that sense, the algorithm
+stops. Defaults to <code>1e-3</code>. This is used only when <code>warping_class != "srsf"</code>.</p></dd>
 
 
 <dt>use_fence</dt>
 <dd><p>A boolean specifying whether the fence algorithm should be
-used to robustify the algorithm against outliers (default: <code>FALSE</code>).</p></dd>
+used to robustify the algorithm against outliers. Defaults to <code>FALSE</code>. This
+is used only when <code>warping_class != "srsf"</code>.</p></dd>
 
 
 <dt>check_total_dissimilarity</dt>
 <dd><p>A boolean specifying whether an additional
 stopping criterion based on improvement of the total dissimilarity should
-be used (default: <code>TRUE</code>).</p></dd>
+be used. Defaults to <code>TRUE</code>. This is used only when <code>warping_class != "srsf"</code>.</p></dd>
 
 
 <dt>use_verbose</dt>
 <dd><p>A boolean specifying whether the algorithm should output
-details of the steps to the console (default: <code>TRUE</code>).</p></dd>
+details of the steps to the console. Defaults to <code>TRUE</code>. This is used only
+when <code>warping_class != "srsf"</code>.</p></dd>
 
 
 <dt>compute_overall_center</dt>
 <dd><p>A boolean specifying whether the overall center
-should be also computed (default: <code>FALSE</code>).</p></dd>
-
-
-<dt>warping_method</dt>
-<dd><p>A string specifying the warping method. Choices are
-<code>"none"</code>, <code>"shift"</code>, <code>"dilation"</code> and <code>"affine"</code>
-(default).</p></dd>
-
-
-<dt>center_method</dt>
-<dd><p>A string specifying the center method. Choices are
-<code>"medoid"</code> and <code>"mean"</code> (default).</p></dd>
-
-
-<dt>dissimilarity_method</dt>
-<dd><p>A string specifying the dissimilarity method.
-Choices are <code>"pearson"</code> and <code>"l2"</code> (default).</p></dd>
-
-
-<dt>optimizer_method</dt>
-<dd><p>A string specifying the optimizer method. The only
-choice for now is <code>"bobyqa"</code>.</p></dd>
+should be also computed. Defaults to <code>FALSE</code>. This is used only when
+<code>warping_class != "srsf"</code>.</p></dd>
 
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     
 
-<p>The function output is a <code>kmap</code> object, which is a list with the
-following elements:</p>
-<dl><dt>x</dt>
-<dd><p>As input.</p></dd>
+<p>An object of class <code>kma</code>, which is a list with the following
+components:</p>
 
-<dt>y</dt>
-<dd><p>As input.</p></dd>
 
-<dt>seeds</dt>
-<dd><p>Indices used in the algorithm.</p></dd>
+<p><code>original_curves</code>: A numeric matrix of shape \(N \times L \times M\)</p>
 
-<dt>iterations</dt>
-<dd><p>Number of iterations before the KMA algorithm stops.</p></dd>
 
-<dt>n_clust</dt>
-<dd><p>As input.</p></dd>
+<p>storing the original sample of \(N\)</p>
+<p></p>
+<p>\(L\)-dimensional curves observed
+on grids of size \(M\).
+<code>original_grids</code>: A numeric matrix of shape \(N \times M\) storing the
+original grids of size \(M\) on which wer evaluated the \(N\) curves;</p>
 
-<dt>overall_center_grid</dt>
-<dd><p>Overall center grid if
-<code>compute_overall_center</code> is set.</p></dd>
 
-<dt>overall_center_values</dt>
-<dd><p>Overall center values if
-<code>compute_overall_center</code> is set.</p></dd>
-
-<dt>distances_to_overall_center</dt>
-<dd><p>Distances of each observation to the
-overall center if <code>compute_overall_center</code> is set.</p></dd>
-
-<dt>x_final</dt>
-<dd><p>Aligned observation grids.</p></dd>
-
-<dt>n_clust_final</dt>
-<dd><p>Final number of clusters. Note that
-<code>n_clust_final</code> may differ from initial number of clusters
-<code>n_clust</code> if some clusters are empty.</p></dd>
-
-<dt>x_centers_final</dt>
-<dd><p>Final center grids.</p></dd>
-
-<dt>y_centers_final</dt>
-<dd><p>Final center values.</p></dd>
-
-<dt>template_grids</dt>
-<dd><p>List of template grids at each iteration.</p></dd>
-
-<dt>template_values</dt>
-<dd><p>List of template values at each iteration.</p></dd>
-
-<dt>labels</dt>
-<dd><p>Cluster memberships.</p></dd>
-
-<dt>final_dissimilarity</dt>
-<dd><p>Distances of each observation to the center of
-its assigned cluster.</p></dd>
-
-<dt>parameters_list</dt>
-<dd><p>List of estimated warping parameters at each
-iteration.</p></dd>
-
-<dt>parameters</dt>
-<dd><p>Final estimated warping parameters.</p></dd>
-
-<dt>timer</dt>
-<dd><p>Execution time step by step.</p></dd>
-
-<dt>warping_method</dt>
-<dd><p>As input.</p></dd>
-
-<dt>dissimilarity_method</dt>
-<dd><p>As input.</p></dd>
-
-<dt>center_method</dt>
-<dd><p>As input.</p></dd>
-
-<dt>optimizer_method</dt>
-<dd><p>As input.</p></dd>
-
-</dl></div>
+<p><code>x</code>: As input;
+<code>y</code>: As input;
+<code>seeds</code>: Indices used in the algorithm;
+<code>iterations</code>: Number of iterations before the KMA algorithm stops;
+<code>n_clust</code>: As input;
+<code>overall_center_grid</code>: Overall center grid if <code>compute_overall_center</code> is set;
+<code>overall_center_values</code>: Overall center values if <code>compute_overall_center</code> is set;
+<code>distances_to_overall_center</code>: Distances of each observation to the overall center if <code>compute_overall_center</code> is set;
+<code>x_final</code>: Aligned observation grids;
+<code>n_clust_final</code>: Final number of clusters. Note that <code>n_clust_final</code> may differ from initial number of clusters <code>n_clust</code> if some clusters are empty;
+<code>x_centers_final</code>: Final center grids;
+<code>y_centers_final</code>: Final center values;
+<code>template_grids</code>: List of template grids at each iteration;
+<code>template_values</code>: List of template values at each iteration;
+<code>labels</code>: Cluster memberships;
+<code>final_dissimilarity</code>: Distances of each observation to the center of its assigned cluster;
+<code>parameters_list</code>: List of estimated warping parameters at each iteration;
+<code>parameters</code>: Final estimated warping parameters;
+<code>warping_method</code>: As input;
+<code>dissimilarity_method</code>: As input;
+<code>center_method</code>: As input;
+<code>optimizer_method</code>: As input.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -261,47 +225,7 @@ iteration.</p></dd>
 <span class="r-in"><span>  warping_method <span class="op">=</span> <span class="st">"affine"</span>,</span></span>
 <span class="r-in"><span>  dissimilarity_method <span class="op">=</span> <span class="st">"pearson"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about the data set:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of observations: 30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of dimensions: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of points: 200</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about cluster initialization:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of clusters: 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Initial seeds for cluster centers:          1        21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about the methods used within the algorithm:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping method: affine</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Center method: medoid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Dissimilarity method: pearson</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Optimization method: bobyqa</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about warping parameter bounds:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping options:    0.1500   0.1500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about convergence criteria:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Maximum number of iterations: 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Distance relative tolerance: 0.001</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Information about parallelization setup:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of threads: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Parallel method: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Other information:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Use fence to robustify: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Check total dissimilarity: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Compute overall center: 0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Running k-centroid algorithm:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Active stopping criteria:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Memberships did not change.</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in kma(simulated30$x, simulated30$y, seeds = c(1, 21), n_clust = 2,     center_method = "medoid", warping_method = "affine", dissimilarity_method = "pearson"):</span> unused arguments (center_method = "medoid", warping_method = "affine", dissimilarity_method = "pearson")</span>
 </code></pre></div>
     </div>
   </div>
