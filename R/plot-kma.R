@@ -1,4 +1,4 @@
-#' Plot for \code{kmap} objects
+#' Plot for \code{kma} objects
 #'
 #' @param x The [kma] object to be plotted.
 #' @param type A string specifying the type of information to display. Choices
@@ -35,71 +35,71 @@ plot.kma <- function(x, type = "data", number_of_displayed_points = 50, ...) {
     stop("Unsupported type of display for kma objects.")
 }
 
-plot_data <- function(obj, type = "data", number_of_displayed_points = 50) {
+plot_data <- function(obj, number_of_displayed_points = 50) {
   n <- dim(obj$y)[1]
   d <- dim(obj$y)[2]
   p <- dim(obj$y)[3]
 
-  original_grids <- 1:p %>%
-    purrr::map(~ obj$x[, .x, drop = FALSE]) %>%
-    purrr::set_names(paste0("P", 1:p)) %>%
-    as_tibble() %>%
-    dplyr::mutate(curve_id = 1:dplyr::n()) %>%
+  original_grids <- 1:p |>
+    purrr::map(~ obj$x[, .x, drop = FALSE]) |>
+    purrr::set_names(paste0("P", 1:p)) |>
+    as_tibble() |>
+    dplyr::mutate(curve_id = 1:dplyr::n()) |>
     tidyr::pivot_longer(
       cols = -.data$curve_id,
       names_to = "point_id",
       values_to = "grid"
-    ) %>%
+    ) |>
     dplyr::mutate(type = "Original Curves")
 
-  warped_grids <- 1:p %>%
-    purrr::map(~ obj$x_final[, .x, drop = FALSE]) %>%
-    purrr::set_names(paste0("P", 1:p)) %>%
-    as_tibble() %>%
-    dplyr::mutate(curve_id = 1:dplyr::n()) %>%
+  warped_grids <- 1:p |>
+    purrr::map(~ obj$x_final[, .x, drop = FALSE]) |>
+    purrr::set_names(paste0("P", 1:p)) |>
+    as_tibble() |>
+    dplyr::mutate(curve_id = 1:dplyr::n()) |>
     tidyr::pivot_longer(
       cols = -.data$curve_id,
       names_to = "point_id",
       values_to = "grid"
-    ) %>%
+    ) |>
     dplyr::mutate(type = "Aligned Curves")
 
-  original_values <- 1:p %>%
+  original_values <- 1:p |>
     purrr::map(~ {
       df <- matrix(obj$y[, , .x], ncol = d)
       colnames(df) <- paste("Dimension", 1:d)
-      as_tibble(df) %>%
+      as_tibble(df) |>
         dplyr::mutate(curve_id = 1:dplyr::n())
-    }) %>%
-    purrr::set_names(paste0("P", 1:p)) %>%
-    dplyr::bind_rows(.id = "point_id") %>%
+    }) |>
+    purrr::set_names(paste0("P", 1:p)) |>
+    dplyr::bind_rows(.id = "point_id") |>
     tidyr::pivot_longer(
       cols = dplyr::starts_with("Dim"),
       names_to = "dimension_id",
       values_to = "value"
     )
 
-  center_grids <- 1:p %>%
-    purrr::map(~ obj$x_centers_final[, .x, drop = FALSE]) %>%
-    purrr::set_names(paste0("P", 1:p)) %>%
-    as_tibble() %>%
-    dplyr::mutate(curve_id = 1:dplyr::n()) %>%
+  center_grids <- 1:p |>
+    purrr::map(~ obj$x_centers_final[, .x, drop = FALSE]) |>
+    purrr::set_names(paste0("P", 1:p)) |>
+    as_tibble() |>
+    dplyr::mutate(curve_id = 1:dplyr::n()) |>
     tidyr::pivot_longer(
       cols = -.data$curve_id,
       names_to = "point_id",
       values_to = "grid"
-    ) %>%
+    ) |>
     dplyr::mutate(type = "Aligned Curves")
 
-  center_values <- 1:p %>%
+  center_values <- 1:p |>
     purrr::map(~ {
       df <- matrix(obj$y_centers_final[, , .x], ncol = d)
       colnames(df) <- paste("Dimension", 1:d)
-      as_tibble(df) %>%
+      as_tibble(df) |>
         dplyr::mutate(curve_id = 1:dplyr::n())
-    }) %>%
-    purrr::set_names(paste0("P", 1:p)) %>%
-    dplyr::bind_rows(.id = "point_id") %>%
+    }) |>
+    purrr::set_names(paste0("P", 1:p)) |>
+    dplyr::bind_rows(.id = "point_id") |>
     tidyr::pivot_longer(
       cols = dplyr::starts_with("Dim"),
       names_to = "dimension_id",
@@ -109,39 +109,39 @@ plot_data <- function(obj, type = "data", number_of_displayed_points = 50) {
   number_of_displayed_points <- min(number_of_displayed_points, p)
 
   df <- dplyr::bind_rows(
-    original_values %>%
+    original_values |>
       dplyr::left_join(original_grids, by = c("point_id", "curve_id")),
-    original_values %>%
+    original_values |>
       dplyr::left_join(warped_grids, by = c("point_id", "curve_id"))
-  ) %>%
-    dplyr::mutate(type = factor(.data$type, c("Original Curves", "Aligned Curves"))) %>%
+  ) |>
+    dplyr::mutate(type = factor(.data$type, c("Original Curves", "Aligned Curves"))) |>
     dplyr::left_join(tibble(
       curve_id = 1:n,
       membership = as.factor(obj$labels)
-    ), by = "curve_id") %>%
-    dplyr::group_by(.data$curve_id, .data$dimension_id, .data$type) %>%
+    ), by = "curve_id") |>
+    dplyr::group_by(.data$curve_id, .data$dimension_id, .data$type) |>
     dplyr::slice(seq(
       from = 1,
       to = dplyr::n(),
       by = round((dplyr::n() - 1) / number_of_displayed_points)
-    )) %>%
+    )) |>
     dplyr::ungroup()
 
-  df_mean <- center_values %>%
-    dplyr::left_join(center_grids, by = c("point_id", "curve_id")) %>%
+  df_mean <- center_values |>
+    dplyr::left_join(center_grids, by = c("point_id", "curve_id")) |>
     dplyr::mutate(
       membership = as.factor(.data$curve_id),
       type = factor(.data$type, c("Original Curves", "Aligned Curves"))
-    ) %>%
-    dplyr::group_by(.data$curve_id, .data$dimension_id, .data$type) %>%
+    ) |>
+    dplyr::group_by(.data$curve_id, .data$dimension_id, .data$type) |>
     dplyr::slice(seq(
       from = 1,
       to = dplyr::n(),
       by = round((dplyr::n() - 1) / number_of_displayed_points)
-    )) %>%
+    )) |>
     dplyr::ungroup()
 
-  df %>%
+  df |>
     ggplot(aes(.data$grid, .data$value, group = .data$curve_id, color = .data$membership)) +
     geom_line(alpha = 0.3) +
     geom_line(data = df_mean, size = 1.5) +
@@ -166,8 +166,8 @@ plot_warping <- function(obj, number_of_displayed_points = 50) {
     df <- data_shift(obj, number_of_displayed_points)
   else
     stop("Unsupported warping family for display.")
-  df %>%
-    tidyr::unnest(cols = .data$x:.data$y) %>%
+  df |>
+    tidyr::unnest(cols = .data$x:.data$y) |>
     ggplot(aes(.data$x, .data$y, color = .data$membership, group = .data$id)) +
     geom_line() +
     theme_bw() +
@@ -182,9 +182,9 @@ plot_warping <- function(obj, number_of_displayed_points = 50) {
 }
 
 data_affine <- function(obj, number_of_displayed_points = 50) {
-  obj$parameters %>%
-    `colnames<-`(c("slope", "intercept")) %>%
-    as_tibble() %>%
+  obj$parameters |>
+    `colnames<-`(c("slope", "intercept")) |>
+    as_tibble() |>
     dplyr::mutate(
       x = purrr::map2(
         .x = .data$slope,
@@ -202,9 +202,9 @@ data_affine <- function(obj, number_of_displayed_points = 50) {
 }
 
 data_dilation <- function(obj, number_of_displayed_points = 50) {
-  obj$parameters %>%
-    `colnames<-`("slope") %>%
-    as_tibble() %>%
+  obj$parameters |>
+    `colnames<-`("slope") |>
+    as_tibble() |>
     dplyr::mutate(
       x = purrr::map(
         .x = .data$slope,
@@ -220,9 +220,9 @@ data_dilation <- function(obj, number_of_displayed_points = 50) {
 }
 
 data_shift <- function(obj, number_of_displayed_points = 50) {
-  obj$parameters %>%
-    `colnames<-`("intercept") %>%
-    as_tibble() %>%
+  obj$parameters |>
+    `colnames<-`("intercept") |>
+    as_tibble() |>
     dplyr::mutate(
       x = purrr::map(
         .x = .data$intercept,

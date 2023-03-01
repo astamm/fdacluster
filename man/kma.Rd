@@ -18,7 +18,7 @@ kma(
   check_total_dissimilarity = TRUE,
   use_verbose = TRUE,
   compute_overall_center = FALSE,
-  warping_method = "affine",
+  warping_method = c("affine", "dilation", "none", "shift", "srsf"),
   center_method = "mean",
   dissimilarity_method = "l2",
   optimizer_method = "bobyqa"
@@ -28,7 +28,7 @@ kma(
 \item{x}{A matrix of size nObs x nPts storing the evaluation grid of each
 observation.}
 
-\item{y}{An 3D array of size nObs x nDim x nPts storing the observation
+\item{y}{A 3D array of size nObs x nDim x nPts storing the observation
 values.}
 
 \item{seeds}{A vector of integers of size \code{n_clust} specifying the

@@ -23,21 +23,21 @@ for (i in 1:65) {
   )
   all_data <- dplyr::bind_rows(
     all_data,
-    df %>% dplyr::mutate(Patient = i)
+    df |> dplyr::mutate(Patient = i)
   )
 }
 
 unlink(tmp_dir, recursive = TRUE)
 
 # Select only grids and first derivatives
-selected_data <- all_data %>%
+selected_data <- all_data |>
   dplyr::select(
     Patient,
     s = Curv_Abscissa,
     x = X1_FKS_ref,
     y = Y1_FKS,
     z = Z1_FKS
-  ) %>%
+  ) |>
   tidyr::nest(
     grids = s,
     values = c(x, y, z)

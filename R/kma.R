@@ -2,7 +2,7 @@
 #'
 #' @param x A matrix of size nObs x nPts storing the evaluation grid of each
 #'   observation.
-#' @param y An 3D array of size nObs x nDim x nPts storing the observation
+#' @param y A 3D array of size nObs x nDim x nPts storing the observation
 #'   values.
 #' @param seeds A vector of integers of size \code{n_clust} specifying the
 #'   indices of the initial templates. Defaults to \code{NULL}, which boils down
@@ -97,15 +97,17 @@ kma <- function(x, y,
                 check_total_dissimilarity = TRUE,
                 use_verbose = TRUE,
                 compute_overall_center = FALSE,
-                warping_method = "affine",
+                warping_method = c("affine", "dilation", "none", "shift", "srsf"),
                 center_method = "mean",
                 dissimilarity_method = "l2",
                 optimizer_method = "bobyqa") {
   if (anyNA(x))
-    stop("The input parameter x should not contain non-finite values.")
+    cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
 
   if (anyNA(y))
-    stop("The input parameter y should not contain non-finite values.")
+    cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
+
+  warping_method <- rlang::arg_match(warping_method)
 
   # Handle one-dimensional data
   if (length(dim(y)) == 2) {

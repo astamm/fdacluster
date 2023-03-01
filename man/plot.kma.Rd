@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot-kma.R
 \name{plot.kma}
 \alias{plot.kma}
-\title{Plot for \code{kmap} objects}
+\title{Plot for \code{kma} objects}
 \usage{
 \method{plot}{kma}(x, type = "data", number_of_displayed_points = 50, ...)
 }
@@ -24,7 +24,7 @@ now.}
 A \link[ggplot2:ggplot]{ggplot} object invisibly.
 }
 \description{
-Plot for \code{kmap} objects
+Plot for \code{kma} objects
 }
 \examples{
 res <- kma(

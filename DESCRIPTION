@@ -43,18 +43,20 @@ LinkingTo:
     Rcpp,
     RcppArmadillo,
     nloptr
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Suggests: testthat
 Imports: 
-    Rcpp,
-    magrittr,
-    tibble,
+    cli,
     dplyr,
-    tidyr,
-    purrr,
+    fdasrvf,
     ggplot2,
-    nloptr
+    nloptr,
+    purrr,
+    Rcpp,
+    rlang,
+    tibble,
+    tidyr
 Depends: 
     R (>= 2.10)
 URL: https://astamm.github.io/fdacluster/index.html, https://github.com/astamm/fdacluster
