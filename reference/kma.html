@@ -53,25 +53,25 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">kma</span><span class="op">(</span>
-  <span class="va">x</span>,
-  <span class="va">y</span>,
-  seeds <span class="op">=</span> <span class="cn">NULL</span>,
-  warping_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.15</span>, <span class="fl">0.15</span><span class="op">)</span>,
-  n_clust <span class="op">=</span> <span class="fl">1</span>,
-  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100</span>,
-  number_of_threads <span class="op">=</span> <span class="fl">1</span>,
-  parallel_method <span class="op">=</span> <span class="fl">0</span>,
-  distance_relative_tolerance <span class="op">=</span> <span class="fl">0.001</span>,
-  use_fence <span class="op">=</span> <span class="cn">FALSE</span>,
-  check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,
-  use_verbose <span class="op">=</span> <span class="cn">TRUE</span>,
-  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span>,
-  warping_method <span class="op">=</span> <span class="st">"affine"</span>,
-  center_method <span class="op">=</span> <span class="st">"mean"</span>,
-  dissimilarity_method <span class="op">=</span> <span class="st">"l2"</span>,
-  optimizer_method <span class="op">=</span> <span class="st">"bobyqa"</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">kma</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">y</span>,</span>
+<span>  seeds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  warping_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.15</span>, <span class="fl">0.15</span><span class="op">)</span>,</span>
+<span>  n_clust <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  number_of_threads <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  parallel_method <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  distance_relative_tolerance <span class="op">=</span> <span class="fl">0.001</span>,</span>
+<span>  use_fence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  use_verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  warping_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
+<span>  center_method <span class="op">=</span> <span class="st">"mean"</span>,</span>
+<span>  dissimilarity_method <span class="op">=</span> <span class="st">"l2"</span>,</span>
+<span>  optimizer_method <span class="op">=</span> <span class="st">"bobyqa"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,130 +79,188 @@
     <dl><dt>x</dt>
 <dd><p>A matrix of size nObs x nPts storing the evaluation grid of each
 observation.</p></dd>
+
+
 <dt>y</dt>
-<dd><p>An 3D array of size nObs x nDim x nPts storing the observation
+<dd><p>A 3D array of size nObs x nDim x nPts storing the observation
 values.</p></dd>
+
+
 <dt>seeds</dt>
 <dd><p>A vector of integers of size <code>n_clust</code> specifying the
 indices of the initial templates. Defaults to <code>NULL</code>, which boils down
 to randomly sampled indices.</p></dd>
+
+
 <dt>warping_options</dt>
 <dd><p>A numeric vector supplied as a helper to the chosen
 <code>warping_method</code> to decide on warping parameter bounds.</p></dd>
+
+
 <dt>n_clust</dt>
 <dd><p>An integer specifying the number of clusters (default: 1).</p></dd>
+
+
 <dt>maximum_number_of_iterations</dt>
 <dd><p>An integer specifying the maximum number
 of iterations before the algorithm stops (default: 100).</p></dd>
+
+
 <dt>number_of_threads</dt>
 <dd><p>An integer specifying the number of threads used for
 parallelization (default: 1).</p></dd>
+
+
 <dt>parallel_method</dt>
 <dd><p>An integer value specifying the type of desired
 parallelization for template computation, If 0 (default), templates are
 computed in parallel. If 1, parallelization occurs within a single template
 computation (only for the medoid method as of now).</p></dd>
+
+
 <dt>distance_relative_tolerance</dt>
 <dd><p>A number specifying a relative tolerance
 on the distance update between two iterations. If all observations have not
 sufficiently improved in that sense, the algorithm stops. Defaults to 1e-3.</p></dd>
+
+
 <dt>use_fence</dt>
 <dd><p>A boolean specifying whether the fence algorithm should be
 used to robustify the algorithm against outliers (default: <code>FALSE</code>).</p></dd>
+
+
 <dt>check_total_dissimilarity</dt>
 <dd><p>A boolean specifying whether an additional
 stopping criterion based on improvement of the total dissimilarity should
 be used (default: <code>TRUE</code>).</p></dd>
+
+
 <dt>use_verbose</dt>
 <dd><p>A boolean specifying whether the algorithm should output
 details of the steps to the console (default: <code>TRUE</code>).</p></dd>
+
+
 <dt>compute_overall_center</dt>
 <dd><p>A boolean specifying whether the overall center
 should be also computed (default: <code>FALSE</code>).</p></dd>
+
+
 <dt>warping_method</dt>
 <dd><p>A string specifying the warping method. Choices are
 <code>"none"</code>, <code>"shift"</code>, <code>"dilation"</code> and <code>"affine"</code>
 (default).</p></dd>
+
+
 <dt>center_method</dt>
 <dd><p>A string specifying the center method. Choices are
 <code>"medoid"</code> and <code>"mean"</code> (default).</p></dd>
+
+
 <dt>dissimilarity_method</dt>
 <dd><p>A string specifying the dissimilarity method.
 Choices are <code>"pearson"</code> and <code>"l2"</code> (default).</p></dd>
+
+
 <dt>optimizer_method</dt>
 <dd><p>A string specifying the optimizer method. The only
 choice for now is <code>"bobyqa"</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The function output is a <code>kmap</code> object, which is a list with the
+    
+
+<p>The function output is a <code>kmap</code> object, which is a list with the
 following elements:</p>
 <dl><dt>x</dt>
 <dd><p>As input.</p></dd>
+
 <dt>y</dt>
 <dd><p>As input.</p></dd>
+
 <dt>seeds</dt>
 <dd><p>Indices used in the algorithm.</p></dd>
+
 <dt>iterations</dt>
 <dd><p>Number of iterations before the KMA algorithm stops.</p></dd>
+
 <dt>n_clust</dt>
 <dd><p>As input.</p></dd>
+
 <dt>overall_center_grid</dt>
 <dd><p>Overall center grid if
 <code>compute_overall_center</code> is set.</p></dd>
+
 <dt>overall_center_values</dt>
 <dd><p>Overall center values if
 <code>compute_overall_center</code> is set.</p></dd>
+
 <dt>distances_to_overall_center</dt>
 <dd><p>Distances of each observation to the
 overall center if <code>compute_overall_center</code> is set.</p></dd>
+
 <dt>x_final</dt>
 <dd><p>Aligned observation grids.</p></dd>
+
 <dt>n_clust_final</dt>
 <dd><p>Final number of clusters. Note that
 <code>n_clust_final</code> may differ from initial number of clusters
 <code>n_clust</code> if some clusters are empty.</p></dd>
+
 <dt>x_centers_final</dt>
 <dd><p>Final center grids.</p></dd>
+
 <dt>y_centers_final</dt>
 <dd><p>Final center values.</p></dd>
+
 <dt>template_grids</dt>
 <dd><p>List of template grids at each iteration.</p></dd>
+
 <dt>template_values</dt>
 <dd><p>List of template values at each iteration.</p></dd>
+
 <dt>labels</dt>
 <dd><p>Cluster memberships.</p></dd>
+
 <dt>final_dissimilarity</dt>
 <dd><p>Distances of each observation to the center of
 its assigned cluster.</p></dd>
+
 <dt>parameters_list</dt>
 <dd><p>List of estimated warping parameters at each
 iteration.</p></dd>
+
 <dt>parameters</dt>
 <dd><p>Final estimated warping parameters.</p></dd>
+
 <dt>timer</dt>
 <dd><p>Execution time step by step.</p></dd>
+
 <dt>warping_method</dt>
 <dd><p>As input.</p></dd>
+
 <dt>dissimilarity_method</dt>
 <dd><p>As input.</p></dd>
+
 <dt>center_method</dt>
 <dd><p>As input.</p></dd>
+
 <dt>optimizer_method</dt>
 <dd><p>As input.</p></dd>
+
 </dl></div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">kma</span><span class="op">(</span></span>
-<span class="r-in">  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span>
-<span class="r-in">  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span>
-<span class="r-in">  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,</span>
-<span class="r-in">  n_clust <span class="op">=</span> <span class="fl">2</span>,</span>
-<span class="r-in">  center_method <span class="op">=</span> <span class="st">"medoid"</span>,</span>
-<span class="r-in">  warping_method <span class="op">=</span> <span class="st">"affine"</span>,</span>
-<span class="r-in">  dissimilarity_method <span class="op">=</span> <span class="st">"pearson"</span></span>
-<span class="r-in"><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">kma</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span></span>
+<span class="r-in"><span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span></span>
+<span class="r-in"><span>  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  n_clust <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  center_method <span class="op">=</span> <span class="st">"medoid"</span>,</span></span>
+<span class="r-in"><span>  warping_method <span class="op">=</span> <span class="st">"affine"</span>,</span></span>
+<span class="r-in"><span>  dissimilarity_method <span class="op">=</span> <span class="st">"pearson"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Information about the data set:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of observations: 30</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of dimensions: 1</span>
@@ -258,7 +316,7 @@ iteration.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

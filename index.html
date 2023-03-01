@@ -83,6 +83,7 @@
 <div class="page-header"><h1 id="fdacluster-">fdacluster <img src="reference/figures/logo.png" align="right" height="139"><a class="anchor" aria-label="anchor" href="#fdacluster-"></a>
 </h1></div>
 <!-- badges: start -->
+
 <p>The <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> package provides the <a href="https://astamm.github.io/fdacluster/reference/kma.html" class="external-link"><code>kma()</code></a> function that jointly performs clustering and alignment of a functional data set.</p>
 <div class="section level2">
 <h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
@@ -102,74 +103,74 @@
 </h3>
 <p>You can install the latest stable version of <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> from CRAN with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fdacluster"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fdacluster"</span><span class="op">)</span></span></code></pre></div>
 <p>Or you can install the development version from <a href="https://github.com/astamm/fdacluster" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"astamm/fdacluster"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"astamm/fdacluster"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span>
-
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/kma.html">kma</a></span><span class="op">(</span>
-  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,
-  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,
-  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,
-  n_clust <span class="op">=</span> <span class="fl">2</span>,
-  center_method <span class="op">=</span> <span class="st">"medoid"</span>,
-  warping_method <span class="op">=</span> <span class="st">"affine"</span>,
-  dissimilarity_method <span class="op">=</span> <span class="st">"pearson"</span>
-<span class="op">)</span>
-<span class="co">#&gt; Information about the data set:</span>
-<span class="co">#&gt;  - Number of observations: 30</span>
-<span class="co">#&gt;  - Number of dimensions: 1</span>
-<span class="co">#&gt;  - Number of points: 200</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Information about cluster initialization:</span>
-<span class="co">#&gt;  - Number of clusters: 2</span>
-<span class="co">#&gt;  - Initial seeds for cluster centers:          1        21</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Information about the methods used within the algorithm:</span>
-<span class="co">#&gt;  - Warping method: affine</span>
-<span class="co">#&gt;  - Center method: medoid</span>
-<span class="co">#&gt;  - Dissimilarity method: pearson</span>
-<span class="co">#&gt;  - Optimization method: bobyqa</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Information about warping parameter bounds:</span>
-<span class="co">#&gt;  - Warping options:    0.1500   0.1500</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Information about convergence criteria:</span>
-<span class="co">#&gt;  - Maximum number of iterations: 100</span>
-<span class="co">#&gt;  - Distance relative tolerance: 0.001</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Information about parallelization setup:</span>
-<span class="co">#&gt;  - Number of threads: 1</span>
-<span class="co">#&gt;  - Parallel method: 0</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Other information:</span>
-<span class="co">#&gt;  - Use fence to robustify: 0</span>
-<span class="co">#&gt;  - Check total dissimilarity: 1</span>
-<span class="co">#&gt;  - Compute overall center: 0</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Running k-centroid algorithm:</span>
-<span class="co">#&gt;  - Iteration #1</span>
-<span class="co">#&gt;    * Size of cluster #0: 20</span>
-<span class="co">#&gt;    * Size of cluster #1: 10</span>
-<span class="co">#&gt;  - Iteration #2</span>
-<span class="co">#&gt;    * Size of cluster #0: 20</span>
-<span class="co">#&gt;    * Size of cluster #1: 10</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; Active stopping criteria:</span>
-<span class="co">#&gt;  - Memberships did not change.</span>
-
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/kma.html">kma</a></span><span class="op">(</span></span>
+<span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span>
+<span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span>
+<span>  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,</span>
+<span>  n_clust <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  center_method <span class="op">=</span> <span class="st">"medoid"</span>,</span>
+<span>  warping_method <span class="op">=</span> <span class="st">"affine"</span>,</span>
+<span>  dissimilarity_method <span class="op">=</span> <span class="st">"pearson"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Information about the data set:</span></span>
+<span><span class="co">#&gt;  - Number of observations: 30</span></span>
+<span><span class="co">#&gt;  - Number of dimensions: 1</span></span>
+<span><span class="co">#&gt;  - Number of points: 200</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about cluster initialization:</span></span>
+<span><span class="co">#&gt;  - Number of clusters: 2</span></span>
+<span><span class="co">#&gt;  - Initial seeds for cluster centers:          1        21</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about the methods used within the algorithm:</span></span>
+<span><span class="co">#&gt;  - Warping method: affine</span></span>
+<span><span class="co">#&gt;  - Center method: medoid</span></span>
+<span><span class="co">#&gt;  - Dissimilarity method: pearson</span></span>
+<span><span class="co">#&gt;  - Optimization method: bobyqa</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about warping parameter bounds:</span></span>
+<span><span class="co">#&gt;  - Warping options:    0.1500   0.1500</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about convergence criteria:</span></span>
+<span><span class="co">#&gt;  - Maximum number of iterations: 100</span></span>
+<span><span class="co">#&gt;  - Distance relative tolerance: 0.001</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about parallelization setup:</span></span>
+<span><span class="co">#&gt;  - Number of threads: 1</span></span>
+<span><span class="co">#&gt;  - Parallel method: 0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Other information:</span></span>
+<span><span class="co">#&gt;  - Use fence to robustify: 0</span></span>
+<span><span class="co">#&gt;  - Check total dissimilarity: 1</span></span>
+<span><span class="co">#&gt;  - Compute overall center: 0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Running k-centroid algorithm:</span></span>
+<span><span class="co">#&gt;  - Iteration #1</span></span>
+<span><span class="co">#&gt;    * Size of cluster #0: 20</span></span>
+<span><span class="co">#&gt;    * Size of cluster #1: 10</span></span>
+<span><span class="co">#&gt;  - Iteration #2</span></span>
+<span><span class="co">#&gt;    * Size of cluster #0: 20</span></span>
+<span><span class="co">#&gt;    * Size of cluster #1: 10</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Active stopping criteria:</span></span>
+<span><span class="co">#&gt;  - Memberships did not change.</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-simulated30-1.png" width="100%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"warping"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"warping"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-simulated30-2.png" width="100%"></p>
 </div>
 </div>
@@ -234,7 +235,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
