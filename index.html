@@ -84,7 +84,7 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>The <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> package provides the <a href="https://astamm.github.io/fdacluster/reference/kma.html" class="external-link"><code>kma()</code></a> function that jointly performs clustering and alignment of a functional data set.</p>
+<p>The <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> package provides the <a href="https://astamm.github.io/fdacluster/reference/kma.html" class="external-link"><code>fdakmeans()</code></a> function that jointly performs clustering and alignment of a functional data set.</p>
 <div class="section level2">
 <h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
@@ -116,14 +116,14 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/kma.html">kma</a></span><span class="op">(</span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fdakmeans.html">fdakmeans</a></span><span class="op">(</span></span>
 <span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span>
 <span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span>
 <span>  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,</span>
-<span>  n_clust <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  center_method <span class="op">=</span> <span class="st">"medoid"</span>,</span>
-<span>  warping_method <span class="op">=</span> <span class="st">"affine"</span>,</span>
-<span>  dissimilarity_method <span class="op">=</span> <span class="st">"pearson"</span></span>
+<span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  centroid_type <span class="op">=</span> <span class="st">"medoid"</span>,</span>
+<span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span>
+<span>  distance <span class="op">=</span> <span class="st">"pearson"</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Information about the data set:</span></span>
 <span><span class="co">#&gt;  - Number of observations: 30</span></span>
@@ -167,10 +167,11 @@
 <span><span class="co">#&gt; Active stopping criteria:</span></span>
 <span><span class="co">#&gt;  - Memberships did not change.</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"data"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 285 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-simulated30-1.png" width="100%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"warping"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">res</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-simulated30-2.png" width="100%"></p>
 </div>
 </div>
