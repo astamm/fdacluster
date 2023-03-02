@@ -60,9 +60,9 @@ for (i in 1:n) {
   x <- selected_data$values[[i]]$x
   y <- selected_data$values[[i]]$y
   z <- selected_data$values[[i]]$z
-  x <- approx(s, x, sout)$y
-  y <- approx(s, y, sout)$y
-  z <- approx(s, z, sout)$y
+  x <- stats::approx(s, x, sout)$y
+  y <- stats::approx(s, y, sout)$y
+  z <- stats::approx(s, z, sout)$y
   aneu_grids[i, ] <- sout
   aneu_values[i, , ] <- rbind(x, y, z)
 }

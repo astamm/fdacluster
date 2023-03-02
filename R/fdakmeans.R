@@ -1,19 +1,25 @@
-#' K-mean alignment and variants for functional data
+#' K-Means Clustering for Functional Data with Amplitude and Phase Separation
 #'
-#' @param x A numeric matrix of shape `nObs x nPts` specifying the evaluation
-#'   grid of each observation.
-#' @param y A numeric array of shape `nObs x nDim x nPts` specifying the
-#'   observation values.
+#' This function provides implementations of the k-means clustering algorithm
+#' for functional data, with possible joint amplitude and phase separation. A
+#' number of warping class are implemented to achieve this separation.
+#'
+#' @param x A numeric matrix of shape \eqn{N \times M} specifying the grids of
+#'   size \eqn{M} on which each of the \eqn{N} curves have been observed.
+#' @param y A numeric array of shape \eqn{N \times L \times M} specifying the
+#'   \eqn{N}-sample of \eqn{L}-dimensional curves observed on grids of size
+#'   \eqn{M}.
 #' @param n_clusters An integer value specifying the number of clusters.
 #'   Defaults to `1L`.
 #' @param warping_class A string specifying the warping class Choices are
 #'   `"affine"`, `"dilation"`, `"none"`, `"shift"` or `"srsf"`. Defaults to
 #'   `"affine"`. The SRSF class is the only class which is boundary-preserving.
-#' @param seeds An integer vector of length `n_clust` specifying the indices of
-#'   the initial templates. Defaults to `NULL`, which boils down to randomly
+#' @param seeds An integer vector of length `n_clusters` specifying the indices
+#'   of the initial templates. Defaults to `NULL`, which boils down to randomly
 #'   sampled indices.
 #' @param maximum_number_of_iterations An integer specifying the maximum number
-#'   of iterations before the algorithm stops (default: 100L).
+#'   of iterations before the algorithm stops if no other convergence criterion
+#'   was met. Defaults to `100L`.
 #' @param centroid_type A string specifying the type of centroid to compute.
 #'   Choices are `"mean"` or `"medoid"`. Defaults to `"mean"`. This is used only
 #'   when `warping_class != "srsf"`. When `warping_class = "srsf`, the mean is
@@ -51,65 +57,34 @@
 #'   should be also computed. Defaults to `FALSE`. This is used only when
 #'   `warping_class != "srsf"`.
 #'
-#' @return An object of class `kma`, which is a list with the following
-#'   components:
-#'
-#'   `original_curves`: A numeric matrix of shape \eqn{N \times L \times M}
-#'   storing the original sample of \eqn{N} \eqn{L}-dimensional curves observed
-#'   on grids of size \eqn{M}.
-#'   `original_grids`: A numeric matrix of shape \eqn{N \times M} storing the
-#'   original grids of size \eqn{M} on which wer evaluated the \eqn{N} curves;
-#'
-#'   `x`: As input;
-#'   `y`: As input;
-#'   `seeds`: Indices used in the algorithm;
-#'   `iterations`: Number of iterations before the KMA algorithm stops;
-#'   `n_clust`: As input;
-#'   `overall_center_grid`: Overall center grid if `compute_overall_center` is set;
-#'   `overall_center_values`: Overall center values if `compute_overall_center` is set;
-#'   `distances_to_overall_center`: Distances of each observation to the overall center if `compute_overall_center` is set;
-#'   `x_final`: Aligned observation grids;
-#'   `n_clust_final`: Final number of clusters. Note that `n_clust_final` may differ from initial number of clusters `n_clust` if some clusters are empty;
-#'   `x_centers_final`: Final center grids;
-#'   `y_centers_final`: Final center values;
-#'   `template_grids`: List of template grids at each iteration;
-#'   `template_values`: List of template values at each iteration;
-#'   `labels`: Cluster memberships;
-#'   `final_dissimilarity`: Distances of each observation to the center of its assigned cluster;
-#'   `parameters_list`: List of estimated warping parameters at each iteration;
-#'   `parameters`: Final estimated warping parameters;
-#'   `warping_method`: As input;
-#'   `dissimilarity_method`: As input;
-#'   `center_method`: As input;
-#'   `optimizer_method`: As input.
+#' @return An object of class [`kmaps`].
 #'
 #' @export
-#'
 #' @examples
-#' res <- kma(
+#' res <- fdakmeans(
 #'   simulated30$x,
 #'   simulated30$y,
 #'   seeds = c(1, 21),
-#'   n_clust = 2,
-#'   center_method = "medoid",
-#'   warping_method = "affine",
-#'   dissimilarity_method = "pearson"
+#'   n_clusters = 2,
+#'   centroid_type = "medoid",
+#'   warping_class = "affine",
+#'   distance = "pearson"
 #' )
-kma <- function(x, y,
-                n_clusters = 1L,
-                warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-                seeds = NULL,
-                maximum_number_of_iterations = 100L,
-                centroid_type = c("mean", "medoid"),
-                distance = c("l2", "pearson"),
-                warping_options = c(0.15, 0.15),
-                number_of_threads = 1L,
-                parallel_method = 0L,
-                distance_relative_tolerance = 0.001,
-                use_fence = FALSE,
-                check_total_dissimilarity = TRUE,
-                use_verbose = TRUE,
-                compute_overall_center = FALSE) {
+fdakmeans <- function(x, y,
+                      n_clusters = 1L,
+                      warping_class = c("affine", "dilation", "none", "shift", "srsf"),
+                      seeds = NULL,
+                      maximum_number_of_iterations = 100L,
+                      centroid_type = c("mean", "medoid"),
+                      distance = c("l2", "pearson"),
+                      warping_options = c(0.15, 0.15),
+                      number_of_threads = 1L,
+                      parallel_method = 0L,
+                      distance_relative_tolerance = 0.001,
+                      use_fence = FALSE,
+                      check_total_dissimilarity = TRUE,
+                      use_verbose = TRUE,
+                      compute_overall_center = FALSE) {
   if (anyNA(x))
     cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
 
@@ -119,6 +94,7 @@ kma <- function(x, y,
   warping_class <- rlang::arg_match(warping_class)
   centroid_type <- rlang::arg_match(centroid_type)
   distance <- rlang::arg_match(distance)
+  call <- rlang::call_match(defaults = TRUE)
 
   # Handle one-dimensional data
   if (length(dim(y)) == 2) {
@@ -137,7 +113,7 @@ kma <- function(x, y,
 
   # Handle seeds
   if (is.null(seeds)) {
-    seeds <- sample(0:(N - 1), n_clust)
+    seeds <- sample(0:(N - 1), n_clusters)
   } else {
     seeds <- seeds - 1
   }
@@ -157,7 +133,7 @@ kma <- function(x, y,
     if (multiple_grids) {
       for (l in 1:L) {
         for (n in 1:N)
-          yperm[l, , n] <- approx(
+          yperm[l, , n] <- stats::approx(
             x = x[n, ],
             y = yperm[l, , n],
             xout = common_grid
@@ -175,30 +151,27 @@ kma <- function(x, y,
 
     cluster_members <- lapply(1:n_clusters, function(k) which(res$labels == k))
     aligned_curves <- array(dim = c(N, L, M))
-    for (k in 1:n_clusters)
-      aligned_curves[cluster_members[k], , ] <- t(res$fn[[k]])
+    warpings <- matrix(nrow = N, ncol = M)
+    for (k in 1:n_clusters) {
+      aligned_curves[cluster_members[[k]], , ] <- t(res$fn[[k]])
+      warpings[cluster_members[[k]], ] <- t(res$gam[[k]])
+    }
 
     out <- list(
-      original_curves = t(res$f0),
+      original_curves = aperm(array(res$f0, dim = c(L, M, N)), c(3, 1, 2)),
       aligned_curves = aligned_curves,
       center_curves = aperm(res$templates, c(3, 1, 2)),
       grid = res$time,
       n_clusters = n_clusters,
       memberships = res$labels,
-      distances_to_center = res$final_dissimilarity,
+      distances_to_center = rep(NA, N),
       warpings = warpings,
-      n_iterations = res$iterations,
-      call = list(
-        n_clusters = n_clusters,
-        warping_class = warping_class,
-        seeds = seeds,
-        maximum_number_of_iterations = maximum_number_of_iterations
-      )
+      n_iterations = length(res$qun),
+      call_name = rlang::call_name(call),
+      call_args = rlang::call_args(call)
     )
 
-    class(out) <- "kma"
-
-    return(out)
+    return(as_kmaps(out))
   }
 
   res <- kmap(
@@ -225,16 +198,28 @@ kma <- function(x, y,
   aligned_curves <- original_curves
   for (l in 1:L) {
     for (n in 1:N) {
-      aligned_curves[n, l, ] <- approx(res$x_final[n, ], original_curves[n, l, ], xout = common_grid)$y
+      aligned_curves[n, l, ] <- stats::approx(
+        x = res$x_final[n, ],
+        y = original_curves[n, l, ],
+        xout = common_grid
+      )$y
       if (multiple_grids)
-        original_curves[n, l, ] <- approx(res$x[n, ], original_curves[n, l, ], xout = common_grid)$y
+        original_curves[n, l, ] <- stats::approx(
+          x = res$x[n, ],
+          y = original_curves[n, l, ],
+          xout = common_grid
+        )$y
     }
   }
 
   centers <- res$y_centers_final
   for (l in 1:L) {
     for (k in 1:res$n_clust_final) {
-      centers[k, l, ] <- approx(res$x_centers_final[k, ], res$y_centers_final[k, l, ], xout = common_grid)$y
+      centers[k, l, ] <- stats::approx(
+        x = res$x_centers_final[k, ],
+        y = res$y_centers_final[k, l, ],
+        xout = common_grid
+      )$y
     }
   }
 
@@ -264,25 +249,9 @@ kma <- function(x, y,
     distances_to_center = res$final_dissimilarity,
     warpings = warpings,
     n_iterations = res$iterations,
-    call = list(
-      n_clusters = n_clusters,
-      warping_class = warping_class,
-      seeds = seeds,
-      maximum_number_of_iterations = maximum_number_of_iterations,
-      centroid_type = centroid_type,
-      distance = distance,
-      warping_options = warping_options,
-      number_of_threads = number_of_threads,
-      parallel_method = parallel_method,
-      distance_relative_tolerance = distance_relative_tolerance,
-      use_fence = use_fence,
-      check_total_dissimilarity = check_total_dissimilarity,
-      use_verbose = use_verbose,
-      compute_overall_center = compute_overall_center
-    )
+    call_name = rlang::call_name(call),
+    call_args = rlang::call_args(call)
   )
 
-  class(out) <- "kma"
-
-  out
+  as_kmaps(out)
 }

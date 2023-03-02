@@ -1,0 +1,166 @@
+#' Plot for [`kmaps`] objects
+#'
+#' This function creates a visualization of the result of the k-mean alignment
+#' algorithm and invisibly returns the corresponding [ggplot2::ggplot] object
+#' which enable further customization of the plot. The user can choose to
+#' visualize either the amplitude information data in which case original and
+#' aligned curves are shown or the phase information data in which case the
+#' estimated warping functions are shown.
+#'
+#' @param x An object of class [`kmaps`].
+#' @param type A string specifying the type of information to display. Choices
+#'   are `"amplitude"` for plotting the original and aligned curves which
+#'   represent amplitude information data or `"phase"` for plotting the
+#'   corresponding warping functions which represent phase information data.
+#'   Defaults to `"amplitude"`.
+#' @param ... Not used.
+#'
+#' @return A [ggplot2::ggplot] object invisibly.
+#'
+#' @export
+#' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
+#' res <- fdakmeans(
+#'   simulated30$x,
+#'   simulated30$y,
+#'   seeds = c(1, 21),
+#'   n_clusters = 2,
+#'   centroid_type = "medoid",
+#'   warping_class = "affine",
+#'   distance = "pearson"
+#' )
+#' ggplot2::autoplot(res, type = "amplitude")
+#' ggplot2::autoplot(res, type = "phase")
+autoplot.kmaps <- function(x, type = c("amplitude", "phase"), ...) {
+  type <- rlang::arg_match(type)
+  if (type == "amplitude") {
+    wrangled_data <- plot_data_amplitude(x)
+    wrangled_data |>
+      ggplot2::ggplot(ggplot2::aes(
+        x = .data$grid,
+        y = .data$value,
+        color = .data$membership,
+        group = .data$curve_id
+      )) +
+      ggplot2::geom_line() +
+      ggplot2::facet_grid(
+        rows = ggplot2::vars(.data$curve_type),
+        cols = ggplot2::vars(.data$component_id)
+      ) +
+      ggplot2::labs(
+        title = "Functional Data",
+        subtitle = paste("Class of warping functions:", toupper(x$call$warping_class)),
+        x = "Observation Grid",
+        y = "Component Values"
+      ) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(legend.position = "none")
+  } else if (type == "phase") {
+    wrangled_data <- plot_data_phase(x)
+    wrangled_data |>
+      ggplot2::ggplot(ggplot2::aes(
+        x = .data$grid,
+        y = .data$value,
+        color = .data$membership,
+        group = .data$curve_id
+      )) +
+      ggplot2::geom_line() +
+      ggplot2::labs(
+        title = "Estimated Warping Functions",
+        subtitle = paste("Class of warping functions:", toupper(x$call$warping_class)),
+        x = "Observation Grid",
+        y = "Warped Grid Values"
+      ) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(legend.position = "none")
+  }
+}
+
+#' Plot for [`kmaps`] objects
+#'
+#' This function creates a visualization of the result of the k-mean alignment
+#' algorithm **without** returning the plot data as an object. The user can
+#' choose to visualize either the amplitude information data in which case
+#' original and aligned curves are shown or the phase information data in which
+#' case the estimated warping functions are shown.
+#'
+#' @inheritParams autoplot.kmaps
+#'
+#' @return NULL
+#'
+#' @export
+#' @examples
+#' res <- fdakmeans(
+#'   simulated30$x,
+#'   simulated30$y,
+#'   seeds = c(1, 21),
+#'   n_clusters = 2,
+#'   centroid_type = "medoid",
+#'   warping_class = "affine",
+#'   distance = "pearson"
+#' )
+#' plot(res, type = "amplitude")
+#' plot(res, type = "phase")
+plot.kmaps <- function(x, type = c("amplitude", "phase"), ...) {
+  print(autoplot(x, type = type, ...))
+}
+
+plot_data_amplitude <- function(x) {
+  dplyr::bind_rows(
+    wrangle_single_group(x$original_curves, x$grid, x$memberships) |>
+      dplyr::mutate(curve_type = "Original Curves"),
+    wrangle_single_group(x$aligned_curves, x$grid, x$memberships) |>
+      dplyr::mutate(curve_type = "Aligned Curves")
+  ) |>
+    dplyr::mutate(curve_type = factor(
+      .data$curve_type,
+      levels = c("Original Curves", "Aligned Curves")
+    ))
+}
+
+plot_data_phase <- function(x) {
+  x$warpings |>
+    `colnames<-`(paste0("P", 1:ncol(x$warpings))) |>
+    tibble::as_tibble() |>
+    tidyr::pivot_longer(cols = dplyr::everything()) |>
+    tidyr::nest(data = -.data$name) |>
+    dplyr::mutate(grid = x$grid) |>
+    tidyr::unnest(cols = .data$data) |>
+    dplyr::group_by(.data$name) |>
+    dplyr::mutate(
+      curve_id = as.factor(1:dplyr::n()),
+      membership = as.factor(x$memberships)
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::select(-.data$name)
+}
+
+wrangle_single_group <- function(curves, grid, memberships) {
+  L <- dim(curves)[2]
+  1:L |>
+    purrr::map(
+      .f = wrangle_single_component,
+      curves = curves,
+      grid = grid,
+      memberships = memberships
+    ) |>
+    purrr::imap(~ dplyr::mutate(.x, component_id = paste("Dimension", .y))) |>
+    dplyr::bind_rows()
+}
+
+wrangle_single_component <- function(id, curves, grid, memberships) {
+  curves <- curves[, id, ]
+  curves |>
+    `colnames<-`(paste0("P", 1:ncol(curves))) |>
+    tibble::as_tibble() |>
+    tidyr::pivot_longer(cols = dplyr::everything()) |>
+    tidyr::nest(data = -.data$name) |>
+    dplyr::mutate(grid = grid) |>
+    tidyr::unnest(cols = .data$data) |>
+    dplyr::group_by(.data$name) |>
+    dplyr::mutate(
+      curve_id = as.factor(1:dplyr::n()),
+      membership = as.factor(memberships)
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::select(-.data$name)
+}

@@ -15,7 +15,7 @@ status](https://www.r-pkg.org/badges/version/fdacluster)](https://CRAN.R-project
 
 The [**fdacluster**](https://astamm.github.io/fdacluster/) package
 provides the
-[`kma()`](https://astamm.github.io/fdacluster/reference/kma.html)
+[`fdakmeans()`](https://astamm.github.io/fdacluster/reference/kma.html)
 function that jointly performs clustering and alignment of a functional
 data set.
 
@@ -27,11 +27,11 @@ The package is linked against OpenMP and the BLAS and LAPACK libraries.
 Hence, you will need to set up an appropriate development environment
 for the package to install properly. Specifically:
 
--   on Linux: it should be ready;
--   on Windows: you should install
-    [Rtools](https://cran.r-project.org/bin/windows/Rtools/rtools40.html);
--   on macOS: you should refer to <https://mac.r-project.org/tools/> and
-    install the relevant tools.
+- on Linux: it should be ready;
+- on Windows: you should install
+  [Rtools](https://cran.r-project.org/bin/windows/Rtools/rtools40.html);
+- on macOS: you should refer to <https://mac.r-project.org/tools/> and
+  install the relevant tools.
 
 ### Installation
 
@@ -55,14 +55,14 @@ remotes::install_github("astamm/fdacluster")
 ``` r
 library(fdacluster)
 
-res <- kma(
+res <- fdakmeans(
   simulated30$x,
   simulated30$y,
   seeds = c(1, 21),
-  n_clust = 2,
-  center_method = "medoid",
-  warping_method = "affine",
-  dissimilarity_method = "pearson"
+  n_clusters = 2,
+  centroid_type = "medoid",
+  warping_class = "affine",
+  distance = "pearson"
 )
 #> Information about the data set:
 #>  - Number of observations: 30
@@ -106,13 +106,14 @@ res <- kma(
 #> Active stopping criteria:
 #>  - Memberships did not change.
 
-plot(res, type = "data")
+plot(res, type = "amplitude")
+#> Warning: Removed 285 rows containing missing values (`geom_line()`).
 ```
 
 <img src="man/figures/README-example-simulated30-1.png" width="100%" />
 
 ``` r
-plot(res, type = "warping")
+plot(res, type = "phase")
 ```
 
 <img src="man/figures/README-example-simulated30-2.png" width="100%" />
