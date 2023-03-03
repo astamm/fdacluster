@@ -2,14 +2,13 @@
 % Please edit documentation in R/fdahclust.R
 \name{fdahclust}
 \alias{fdahclust}
-\title{HAC}
+\title{Hierarchical Clustering for Functional Data with Amplitude and Phase Separation}
 \usage{
 fdahclust(
   x,
   y,
   n_clusters = 1L,
   warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-  seeds = NULL,
   maximum_number_of_iterations = 100L,
   centroid_type = c("mean", "medoid"),
   metric = c("l2", "pearson"),
@@ -20,7 +19,8 @@ fdahclust(
   use_fence = FALSE,
   check_total_dissimilarity = TRUE,
   use_verbose = TRUE,
-  compute_overall_center = FALSE
+  compute_overall_center = FALSE,
+  linkage_criterion = c("complete", "average", "single")
 )
 }
 \arguments{
@@ -37,10 +37,6 @@ Defaults to \code{1L}.}
 \item{warping_class}{A string specifying the warping class Choices are
 \code{"affine"}, \code{"dilation"}, \code{"none"}, \code{"shift"} or \code{"srsf"}. Defaults to
 \code{"affine"}. The SRSF class is the only class which is boundary-preserving.}
-
-\item{seeds}{An integer vector of length \code{n_clusters} specifying the indices
-of the initial templates. Defaults to \code{NULL}, which boils down to randomly
-sampled indices.}
 
 \item{maximum_number_of_iterations}{An integer specifying the maximum number
 of iterations before the algorithm stops if no other convergence criterion
@@ -86,12 +82,25 @@ details of the steps to the console. Defaults to \code{TRUE}.}
 \item{compute_overall_center}{A boolean specifying whether the overall center
 should be also computed. Defaults to \code{FALSE}. This is used only when
 \code{warping_class != "srsf"}.}
+
+\item{linkage_criterion}{A string specifying which linkage criterion should
+be used to compute distances between sets of curves. Choices are
+\code{"complete"} for complete linkage, \code{"average"} for average linkage and
+\code{"single"} for single linkage. See \code{\link[stats:hclust]{stats::hclust()}} for more details.
+Defqults to \code{"complete"}.}
 }
 \value{
 An object of class \code{\link{caps}}.
 }
 \description{
-blabla
+This function extends hierarchical agglomerative clustering to functional
+data. It includes the possibility to separate amplitude and phase
+information.
+}
+\details{
+The number of clusters is required as input because, with functional data,
+once hierarchical clustering is performed, curves within clusters need to be
+aligned to their corresponding centroid.
 }
 \examples{
 out <- fdahclust(simulated30$x, simulated30$y)

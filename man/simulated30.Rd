@@ -3,7 +3,7 @@
 \docType{data}
 \name{simulated30}
 \alias{simulated30}
-\title{Simulated data for examples.}
+\title{Simulated data for examples}
 \format{
 A list with abscissas x and values y:
 \describe{

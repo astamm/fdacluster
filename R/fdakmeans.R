@@ -99,9 +99,9 @@ fdakmeans <- function(x, y,
   }
 
   dims <- dim(y)
+  N <- dims[1]
   L <- dims[2]
   M <- dims[3]
-  N <- dims[1]
 
   # Handle vector grid
   if (is.vector(x)) {
