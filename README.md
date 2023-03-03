@@ -62,7 +62,7 @@ res <- fdakmeans(
   n_clusters = 2,
   centroid_type = "medoid",
   warping_class = "affine",
-  distance = "pearson"
+  metric = "pearson"
 )
 #> Information about the data set:
 #>  - Number of observations: 30

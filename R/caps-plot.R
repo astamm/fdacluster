@@ -1,4 +1,4 @@
-#' Plot for [`kmaps`] objects
+#' Plot for [`caps`] objects
 #'
 #' This function creates a visualization of the result of the k-mean alignment
 #' algorithm and invisibly returns the corresponding [ggplot2::ggplot] object
@@ -7,7 +7,7 @@
 #' aligned curves are shown or the phase information data in which case the
 #' estimated warping functions are shown.
 #'
-#' @param x An object of class [`kmaps`].
+#' @param x An object of class [`caps`].
 #' @param type A string specifying the type of information to display. Choices
 #'   are `"amplitude"` for plotting the original and aligned curves which
 #'   represent amplitude information data or `"phase"` for plotting the
@@ -26,11 +26,11 @@
 #'   n_clusters = 2,
 #'   centroid_type = "medoid",
 #'   warping_class = "affine",
-#'   distance = "pearson"
+#'   metric = "pearson"
 #' )
 #' ggplot2::autoplot(res, type = "amplitude")
 #' ggplot2::autoplot(res, type = "phase")
-autoplot.kmaps <- function(x, type = c("amplitude", "phase"), ...) {
+autoplot.caps <- function(x, type = c("amplitude", "phase"), ...) {
   type <- rlang::arg_match(type)
   if (type == "amplitude") {
     wrangled_data <- plot_data_amplitude(x)
@@ -75,7 +75,7 @@ autoplot.kmaps <- function(x, type = c("amplitude", "phase"), ...) {
   }
 }
 
-#' Plot for [`kmaps`] objects
+#' Plot for [`caps`] objects
 #'
 #' This function creates a visualization of the result of the k-mean alignment
 #' algorithm **without** returning the plot data as an object. The user can
@@ -83,7 +83,7 @@ autoplot.kmaps <- function(x, type = c("amplitude", "phase"), ...) {
 #' original and aligned curves are shown or the phase information data in which
 #' case the estimated warping functions are shown.
 #'
-#' @inheritParams autoplot.kmaps
+#' @inheritParams autoplot.caps
 #'
 #' @return NULL
 #'
@@ -96,11 +96,11 @@ autoplot.kmaps <- function(x, type = c("amplitude", "phase"), ...) {
 #'   n_clusters = 2,
 #'   centroid_type = "medoid",
 #'   warping_class = "affine",
-#'   distance = "pearson"
+#'   metric = "pearson"
 #' )
 #' plot(res, type = "amplitude")
 #' plot(res, type = "phase")
-plot.kmaps <- function(x, type = c("amplitude", "phase"), ...) {
+plot.caps <- function(x, type = c("amplitude", "phase"), ...) {
   print(autoplot(x, type = type, ...))
 }
 

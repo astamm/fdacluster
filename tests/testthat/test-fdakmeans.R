@@ -1,5 +1,5 @@
 test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
-          `warping_class = "affine"` and `distance = "pearson"`.', {
+          `warping_class = "affine"` and `metric = "pearson"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -7,10 +7,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "affine",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -30,7 +31,7 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
-          `warping_class = "affine"` and `distance = "l2"`.', {
+          `warping_class = "affine"` and `metric = "l2"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -38,10 +39,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "affine",
-    distance = "l2"
+    metric = "l2",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -61,7 +63,7 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
-          `warping_class = "dilation"` and `distance = "pearson"`.', {
+          `warping_class = "dilation"` and `metric = "pearson"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -69,10 +71,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "dilation",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -92,7 +95,7 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
-          `warping_class = "dilation"` and `distance = "l2"`.', {
+          `warping_class = "dilation"` and `metric = "l2"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -100,10 +103,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "dilation",
-    distance = "l2"
+    metric = "l2",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -123,7 +127,7 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
-          `warping_class = "shift"` and `distance = "pearson"`.', {
+          `warping_class = "shift"` and `metric = "pearson"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -131,10 +135,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "shift",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -154,7 +159,7 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
-          `warping_class = "shift"` and `distance = "l2"`.', {
+          `warping_class = "shift"` and `metric = "l2"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -162,10 +167,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "shift",
-    distance = "l2"
+    metric = "l2",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -185,7 +191,7 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
-          `warping_class = "none"` and `distance = "pearson"`.', {
+          `warping_class = "none"` and `metric = "pearson"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -193,10 +199,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "affine",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -216,7 +223,7 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
-          `warping_class = "none"` and `distance = "l2"`.', {
+          `warping_class = "none"` and `metric = "l2"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -224,10 +231,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "affine",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -247,7 +255,7 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "mean"`,
-          `warping_class = "affine"` and `distance = "pearson"`.', {
+          `warping_class = "affine"` and `metric = "pearson"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -255,10 +263,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
     n_clusters = 2,
     centroid_type = "mean",
     warping_class = "affine",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -278,7 +287,7 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "mean"`,
-          `warping_class = "affine"` and `distance = "l2"`.', {
+          `warping_class = "affine"` and `metric = "l2"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -286,10 +295,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "affine",
-    distance = "l2"
+    metric = "l2",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -309,7 +319,7 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "mean"`,
-          `warping_class = "dilation"` and `distance = "pearson"`.', {
+          `warping_class = "dilation"` and `metric = "pearson"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -317,10 +327,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "dilation",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -340,7 +351,7 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "mean"`,
-          `warping_class = "dilation"` and `distance = "l2"`.', {
+          `warping_class = "dilation"` and `metric = "l2"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -348,10 +359,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "dilation",
-    distance = "l2"
+    metric = "l2",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -371,7 +383,7 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "mean"`,
-          `warping_class = "shift"` and `distance = "pearson"`.', {
+          `warping_class = "shift"` and `metric = "pearson"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -379,10 +391,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "shift",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -402,7 +415,7 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "mean"`,
-          `warping_class = "shift"` and `distance = "l2"`.', {
+          `warping_class = "shift"` and `metric = "l2"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -410,10 +423,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "shift",
-    distance = "l2"
+    metric = "l2",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -433,7 +447,7 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "mean"`,
-          `warping_class = "none"` and `distance = "pearson"`.', {
+          `warping_class = "none"` and `metric = "pearson"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -441,10 +455,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "affine",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -464,7 +479,7 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
 })
 
 test_that('`fdakmeans()` works with `centroid_type = "mean"`,
-          `warping_class = "none"` and `distance = "l2"`.', {
+          `warping_class = "none"` and `metric = "l2"`.', {
   out <- fdakmeans(
     simulated30$x,
     simulated30$y,
@@ -472,10 +487,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
     n_clusters = 2,
     centroid_type = "medoid",
     warping_class = "affine",
-    distance = "pearson"
+    metric = "pearson",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -500,10 +516,11 @@ test_that('`fdakmeans()` works with `warping_class = "srsf"`.', {
     simulated30$y,
     seeds = c(1, 21),
     n_clusters = 2,
-    warping_class = "srsf"
+    warping_class = "srsf",
+    use_verbose = FALSE
   )
 
-  expect_true(is_kmaps(out))
+  expect_true(is_caps(out))
   expect_equal(length(out), 11)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "grid", "n_clusters", "memberships", "distances_to_center",
@@ -517,7 +534,7 @@ test_that('`fdakmeans()` works with `warping_class = "srsf"`.', {
   expect_equal(length(out$memberships), 30)
   expect_equal(length(out$distances_to_center), 30)
   expect_equal(dim(out$warpings), c(30, 200))
-  expect_equal(out$n_iterations, 3)
+  expect_equal(out$n_iterations, 1)
   expect_equal(out$call_name, "fdakmeans")
   expect_true(inherits(out$call_args, "list"))
 })

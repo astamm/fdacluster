@@ -17,14 +17,14 @@
 #' @param seeds An integer vector of length `n_clusters` specifying the indices
 #'   of the initial templates. Defaults to `NULL`, which boils down to randomly
 #'   sampled indices.
+#' @param centroid_type A string specifying the type of centroid to compute.
+#'   Choices are `"mean"` or `"medoid"`. Defaults to `"mean"`.
 #' @param maximum_number_of_iterations An integer specifying the maximum number
 #'   of iterations before the algorithm stops if no other convergence criterion
 #'   was met. Defaults to `100L`.
-#' @param centroid_type A string specifying the type of centroid to compute.
-#'   Choices are `"mean"` or `"medoid"`. Defaults to `"mean"`. This is used only
-#'   when `warping_class != "srsf"`. When `warping_class = "srsf`, the mean is
-#'   systematically used.
-#' @param distance A string specifying the distance used to compare curves.
+#' @param use_verbose A boolean specifying whether the algorithm should output
+#'   details of the steps to the console. Defaults to `TRUE`.
+#' @param metric A string specifying the metric used to compare curves.
 #'   Choices are `"l2"` or `"pearson"`. Defaults to `"l2"`. This is used only
 #'   when `warping_class != "srsf"`.
 #' @param warping_options A numeric vector supplied as a helper to the chosen
@@ -50,14 +50,11 @@
 #'   stopping criterion based on improvement of the total dissimilarity should
 #'   be used. Defaults to `TRUE`. This is used only when `warping_class !=
 #'   "srsf"`.
-#' @param use_verbose A boolean specifying whether the algorithm should output
-#'   details of the steps to the console. Defaults to `TRUE`. This is used only
-#'   when `warping_class != "srsf"`.
 #' @param compute_overall_center A boolean specifying whether the overall center
 #'   should be also computed. Defaults to `FALSE`. This is used only when
 #'   `warping_class != "srsf"`.
 #'
-#' @return An object of class [`kmaps`].
+#' @return An object of class [`caps`].
 #'
 #' @export
 #' @examples
@@ -68,7 +65,7 @@
 #'   n_clusters = 2,
 #'   centroid_type = "medoid",
 #'   warping_class = "affine",
-#'   distance = "pearson"
+#'   metric = "pearson"
 #' )
 fdakmeans <- function(x, y,
                       n_clusters = 1L,
@@ -76,7 +73,7 @@ fdakmeans <- function(x, y,
                       seeds = NULL,
                       maximum_number_of_iterations = 100L,
                       centroid_type = c("mean", "medoid"),
-                      distance = c("l2", "pearson"),
+                      metric = c("l2", "pearson"),
                       warping_options = c(0.15, 0.15),
                       number_of_threads = 1L,
                       parallel_method = 0L,
@@ -93,7 +90,7 @@ fdakmeans <- function(x, y,
 
   warping_class <- rlang::arg_match(warping_class)
   centroid_type <- rlang::arg_match(centroid_type)
-  distance <- rlang::arg_match(distance)
+  metric <- rlang::arg_match(metric)
   call <- rlang::call_match(defaults = TRUE)
 
   # Handle one-dimensional data
@@ -146,7 +143,9 @@ fdakmeans <- function(x, y,
       time = common_grid,
       K = n_clusters,
       seeds = seeds + 1,
-      max_iter = maximum_number_of_iterations
+      centroid_type = centroid_type,
+      max_iter = maximum_number_of_iterations,
+      use_verbose = use_verbose
     )
 
     cluster_members <- lapply(1:n_clusters, function(k) which(res$labels == k))
@@ -164,14 +163,14 @@ fdakmeans <- function(x, y,
       grid = res$time,
       n_clusters = n_clusters,
       memberships = res$labels,
-      distances_to_center = rep(NA, N),
+      distances_to_center = res$distances_to_center,
       warpings = warpings,
       n_iterations = length(res$qun),
       call_name = rlang::call_name(call),
       call_args = rlang::call_args(call)
     )
 
-    return(as_kmaps(out))
+    return(as_caps(out))
   }
 
   res <- kmap(
@@ -190,7 +189,7 @@ fdakmeans <- function(x, y,
     compute_overall_center = compute_overall_center,
     warping_method = warping_class,
     center_method = centroid_type,
-    dissimilarity_method = distance,
+    dissimilarity_method = metric,
     optimizer_method = "bobyqa"
   )
 
@@ -253,5 +252,5 @@ fdakmeans <- function(x, y,
     call_args = rlang::call_args(call)
   )
 
-  as_kmaps(out)
+  as_caps(out)
 }

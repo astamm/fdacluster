@@ -67,7 +67,7 @@ res <- fdakmeans(
   n_clusters = 2,
   centroid_type = "medoid",
   warping_class = "affine",
-  distance = "pearson"
+  metric = "pearson"
 )
 
 plot(res, type = "amplitude")

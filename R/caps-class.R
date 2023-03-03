@@ -1,12 +1,12 @@
-#' Class for K-Means with Amplitude and Phase Separation
+#' Class for Clustering with Amplitude and Phase Separation
 #'
 #' The k-means algorithm with joint amplitude and phase separation produces a
 #' number of outputs. This class is meant to encapsulate them into a single
 #' object for providing dedicated `S3` methods for e.g. plotting, summarizing,
-#' etc. The name of the class stems from **K**-**M**eans with **A**mplitude and
+#' etc. The name of the class stems from **C**lustering with **A**mplitude and
 #' **P**hase **S**eparation.
 #'
-#' An object of class [`kmaps`] is a list with the following components:
+#' An object of class [`caps`] is a list with the following components:
 #'
 #' - `original_curves`: A numeric matrix of shape \eqn{N \times L \times M}
 #' storing a sample with the \eqn{N} \eqn{L}-dimensional original curves
@@ -34,9 +34,9 @@
 #' - `call_args`: A list containing the exact arguments that were passed to
 #' the function `call_name` that produced this output.
 #'
-#' @param x A list coercible into an object of class [`kmaps`].
+#' @param x A list coercible into an object of class [`caps`].
 #'
-#' @name kmaps
+#' @name caps
 #'
 #' @examples
 #' res <- fdakmeans(
@@ -46,16 +46,16 @@
 #'   n_clusters = 2,
 #'   centroid_type = "medoid",
 #'   warping_class = "affine",
-#'   distance = "pearson"
+#'   metric = "pearson"
 #' )
-#' as_kmaps(res)
-#' is_kmaps(res)
+#' as_caps(res)
+#' is_caps(res)
 NULL
 
-#' @rdname kmaps
+#' @rdname caps
 #' @export
-as_kmaps <- function(x) {
-  if (is_kmaps(x)) return(x)
+as_caps <- function(x) {
+  if (is_caps(x)) return(x)
 
   if (!inherits(x, "list"))
     cli::cli_abort("The input argument {.arg x} should be a list.")
@@ -69,13 +69,13 @@ as_kmaps <- function(x) {
   if (any(names(x) != expected_names))
     cli::cli_abort("The input argument {.arg x} should be a list with components {expected_names}.")
 
-  class(x) <- c("kmaps", class(x))
+  class(x) <- c("caps", class(x))
 
   x
 }
 
-#' @rdname kmaps
+#' @rdname caps
 #' @export
-is_kmaps <- function(x) {
-  "kmaps" %in% class(x)
+is_caps <- function(x) {
+  "caps" %in% class(x)
 }

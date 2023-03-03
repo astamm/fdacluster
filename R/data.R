@@ -1,4 +1,4 @@
-#' Simulated data for examples.
+#' Simulated data for examples
 #'
 #' A data set containing 30 simulated uni-dimensional curves.
 #'
