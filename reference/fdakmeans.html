@@ -65,7 +65,7 @@ number of warping class are implemented to achieve this separation.</p>
 <span>  seeds <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span><span class="op">)</span>,</span>
-<span>  distance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
+<span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
 <span>  warping_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.15</span>, <span class="fl">0.15</span><span class="op">)</span>,</span>
 <span>  number_of_threads <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  parallel_method <span class="op">=</span> <span class="fl">0L</span>,</span>
@@ -115,13 +115,11 @@ was met. Defaults to <code>100L</code>.</p></dd>
 
 <dt>centroid_type</dt>
 <dd><p>A string specifying the type of centroid to compute.
-Choices are <code>"mean"</code> or <code>"medoid"</code>. Defaults to <code>"mean"</code>. This is used only
-when <code>warping_class != "srsf"</code>. When <code>warping_class = "srsf</code>, the mean is
-systematically used.</p></dd>
+Choices are <code>"mean"</code> or <code>"medoid"</code>. Defaults to <code>"mean"</code>.</p></dd>
 
 
-<dt>distance</dt>
-<dd><p>A string specifying the distance used to compare curves.
+<dt>metric</dt>
+<dd><p>A string specifying the metric used to compare curves.
 Choices are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. This is used only
 when <code>warping_class != "srsf"</code>.</p></dd>
 
@@ -167,8 +165,7 @@ be used. Defaults to <code>TRUE</code>. This is used only when <code>warping_cla
 
 <dt>use_verbose</dt>
 <dd><p>A boolean specifying whether the algorithm should output
-details of the steps to the console. Defaults to <code>TRUE</code>. This is used only
-when <code>warping_class != "srsf"</code>.</p></dd>
+details of the steps to the console. Defaults to <code>TRUE</code>.</p></dd>
 
 
 <dt>compute_overall_center</dt>
@@ -181,7 +178,7 @@ should be also computed. Defaults to <code>FALSE</code>. This is used only when
     <h2>Value</h2>
     
 
-<p>An object of class <code><a href="kmaps.html">kmaps</a></code>.</p>
+<p>An object of class <code><a href="caps.html">caps</a></code>.</p>
     </div>
 
     <div id="ref-examples">
@@ -193,7 +190,7 @@ should be also computed. Defaults to <code>FALSE</code>. This is used only when
 <span class="r-in"><span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>  centroid_type <span class="op">=</span> <span class="st">"medoid"</span>,</span></span>
 <span class="r-in"><span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span></span>
-<span class="r-in"><span>  distance <span class="op">=</span> <span class="st">"pearson"</span></span></span>
+<span class="r-in"><span>  metric <span class="op">=</span> <span class="st">"pearson"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Information about the data set:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of observations: 30</span>

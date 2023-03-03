@@ -19,10 +19,19 @@
     <loc>/reference/aneurisk65.html</loc>
   </url>
   <url>
-    <loc>/reference/autoplot.kmaps.html</loc>
+    <loc>/reference/autoplot.caps.html</loc>
+  </url>
+  <url>
+    <loc>/reference/caps.html</loc>
   </url>
   <url>
     <loc>/reference/fdacluster.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fdadist.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fdahclust.html</loc>
   </url>
   <url>
     <loc>/reference/fdakmeans.html</loc>
@@ -31,10 +40,7 @@
     <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/kmaps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.kmaps.html</loc>
+    <loc>/reference/plot.caps.html</loc>
   </url>
   <url>
     <loc>/reference/simulated30.html</loc>
