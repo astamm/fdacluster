@@ -73,7 +73,8 @@ number of warping class are implemented to achieve this separation.</p>
 <span>  use_fence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  use_verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  add_silhouettes <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -172,6 +173,12 @@ details of the steps to the console. Defaults to <code>TRUE</code>.</p></dd>
 <dd><p>A boolean specifying whether the overall center
 should be also computed. Defaults to <code>FALSE</code>. This is used only when
 <code>warping_class != "srsf"</code>.</p></dd>
+
+
+<dt>add_silhouettes</dt>
+<dd><p>A boolean specifying whether silhouette values should
+be computed for each observation for internal validation of the clustering
+structure. Defaults to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">

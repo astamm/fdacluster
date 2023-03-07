@@ -72,6 +72,14 @@ etc. The name of the class stems from <strong>C</strong>lustering with <strong>A
 <dd><p>A list coercible into an object of class <code>caps</code>.</p></dd>
 
 </dl></div>
+    <div id="value">
+    <h2>Value</h2>
+    
+
+<p>The function <code>as_caps()</code> returns an object of class <code>caps</code>. The
+function <code>is_caps()</code> returns a boolean which evaluates to <code>TRUE</code> is the
+input object is of class <code>caps</code>.</p>
+    </div>
     <div id="details">
     <h2>Details</h2>
     <p>An object of class <code>caps</code> is a list with the following components:</p><ul><li><p><code>original_curves</code>: A numeric matrix of shape \(N \times L \times M\)
@@ -83,6 +91,9 @@ on grids of size \(M\).</p></li>
 <li><p><code>center_curves</code>: A numeric matrix of shape \(K \times L \times M\)
 storing the \(K\) centers which are \(L\)-dimensional curves observed on
 a grid of size \(M\);</p></li>
+<li><p><code>warpings</code>: A numeric matrix of shape \(N \times M\) storing the
+estimated warping functions for each of the \(N\) curves evaluted on the
+common <code>grid</code> of size \(M\);</p></li>
 <li><p><code>grid</code>: A numeric vector of length \(M\) storing the
 common grid of size \(M\) on which curves have been observed;</p></li>
 <li><p><code>n_clusters</code>: An integer value storing the number of clusters;</p></li>
@@ -90,9 +101,8 @@ common grid of size \(M\) on which curves have been observed;</p></li>
 which each curve belongs to;</p></li>
 <li><p><code>distances_to_center</code>: A numeric vector of length \(N\) storing the
 distance of each curve to the center of its cluster;</p></li>
-<li><p><code>warpings</code>: A numeric matrix of shape \(N \times M\) storing the
-estimated warping functions for each of the \(N\) curves evaluted on the
-common <code>grid</code> of size \(M\);</p></li>
+<li><p><code>silhouettes</code>: A numeric vector of length \(N\) storing the silhouette
+values of each observation;</p></li>
 <li><p><code>n_iterations</code>: An integer value storing the number of iterations
 performed until convergence;</p></li>
 <li><p><code>call_name</code>: A string storing the name of the function that was used to
@@ -14960,56 +14970,6 @@ the function <code>call_name</code> that produced this output.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [2,]        NA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $grid</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.00000000 0.03157380 0.06314759 0.09472139 0.12629518 0.15786898</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.18944277 0.22101657 0.25259036 0.28416416 0.31573796 0.34731175</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.37888555 0.41045934 0.44203314 0.47360693 0.50518073 0.53675452</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.56832832 0.59990211 0.63147591 0.66304971 0.69462350 0.72619730</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.75777109 0.78934489 0.82091868 0.85249248 0.88406627 0.91564007</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.94721387 0.97878766 1.01036146 1.04193525 1.07350905 1.10508284</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 1.13665664 1.16823043 1.19980423 1.23137803 1.26295182 1.29452562</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 1.32609941 1.35767321 1.38924700 1.42082080 1.45239459 1.48396839</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 1.51554218 1.54711598 1.57868978 1.61026357 1.64183737 1.67341116</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 1.70498496 1.73655875 1.76813255 1.79970634 1.83128014 1.86285394</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 1.89442773 1.92600153 1.95757532 1.98914912 2.02072291 2.05229671</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 2.08387050 2.11544430 2.14701809 2.17859189 2.21016569 2.24173948</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 2.27331328 2.30488707 2.33646087 2.36803466 2.39960846 2.43118225</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 2.46275605 2.49432985 2.52590364 2.55747744 2.58905123 2.62062503</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 2.65219882 2.68377262 2.71534641 2.74692021 2.77849401 2.81006780</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 2.84164160 2.87321539 2.90478919 2.93636298 2.96793678 2.99951057</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 3.03108437 3.06265816 3.09423196 3.12580576 3.15737955 3.18895335</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [103] 3.22052714 3.25210094 3.28367473 3.31524853 3.34682232 3.37839612</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [109] 3.40996992 3.44154371 3.47311751 3.50469130 3.53626510 3.56783889</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [115] 3.59941269 3.63098648 3.66256028 3.69413408 3.72570787 3.75728167</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [121] 3.78885546 3.82042926 3.85200305 3.88357685 3.91515064 3.94672444</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [127] 3.97829823 4.00987203 4.04144583 4.07301962 4.10459342 4.13616721</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [133] 4.16774101 4.19931480 4.23088860 4.26246239 4.29403619 4.32560999</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [139] 4.35718378 4.38875758 4.42033137 4.45190517 4.48347896 4.51505276</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [145] 4.54662655 4.57820035 4.60977414 4.64134794 4.67292174 4.70449553</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 4.73606933 4.76764312 4.79921692 4.83079071 4.86236451 4.89393830</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [157] 4.92551210 4.95708590 4.98865969 5.02023349 5.05180728 5.08338108</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [163] 5.11495487 5.14652867 5.17810246 5.20967626 5.24125006 5.27282385</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [169] 5.30439765 5.33597144 5.36754524 5.39911903 5.43069283 5.46226662</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [175] 5.49384042 5.52541421 5.55698801 5.58856181 5.62013560 5.65170940</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [181] 5.68328319 5.71485699 5.74643078 5.77800458 5.80957837 5.84115217</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [187] 5.87272597 5.90429976 5.93587356 5.96744735 5.99902115 6.03059494</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [193] 6.06216874 6.09374253 6.12531633 6.15689013 6.18846392 6.22003772</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [199] 6.25161151 6.28318531</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $n_clusters</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $memberships</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $distances_to_center</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 4.048251e-06 3.588005e-05 1.713356e-05 8.361758e-06 5.193078e-08</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] 2.194060e-05 9.621231e-06 5.292274e-05 0.000000e+00 2.168976e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] 6.596793e-07 2.916422e-05 4.619974e-06 3.458890e-04 2.150440e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16] 4.402371e-07 6.206572e-06 3.477159e-06 3.058133e-05 3.931596e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] 1.173201e-05 7.414815e-05 7.053561e-06 0.000000e+00 7.111964e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [26] 5.708263e-05 3.514738e-05 3.810101e-05 1.060694e-08 1.187223e-05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $warpings</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               [,1]        [,2]         [,3]         [,4]        [,5]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] -0.107596271 -0.06812783 -0.028659390  0.010809051  0.05027749</span>
@@ -15880,6 +15840,63 @@ the function <code>call_name</code> that produced this output.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [29,] 6.111298</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [30,] 6.622106</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $grid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] 0.00000000 0.03157380 0.06314759 0.09472139 0.12629518 0.15786898</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] 0.18944277 0.22101657 0.25259036 0.28416416 0.31573796 0.34731175</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] 0.37888555 0.41045934 0.44203314 0.47360693 0.50518073 0.53675452</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] 0.56832832 0.59990211 0.63147591 0.66304971 0.69462350 0.72619730</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] 0.75777109 0.78934489 0.82091868 0.85249248 0.88406627 0.91564007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] 0.94721387 0.97878766 1.01036146 1.04193525 1.07350905 1.10508284</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] 1.13665664 1.16823043 1.19980423 1.23137803 1.26295182 1.29452562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] 1.32609941 1.35767321 1.38924700 1.42082080 1.45239459 1.48396839</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] 1.51554218 1.54711598 1.57868978 1.61026357 1.64183737 1.67341116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] 1.70498496 1.73655875 1.76813255 1.79970634 1.83128014 1.86285394</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] 1.89442773 1.92600153 1.95757532 1.98914912 2.02072291 2.05229671</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] 2.08387050 2.11544430 2.14701809 2.17859189 2.21016569 2.24173948</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] 2.27331328 2.30488707 2.33646087 2.36803466 2.39960846 2.43118225</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] 2.46275605 2.49432985 2.52590364 2.55747744 2.58905123 2.62062503</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] 2.65219882 2.68377262 2.71534641 2.74692021 2.77849401 2.81006780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] 2.84164160 2.87321539 2.90478919 2.93636298 2.96793678 2.99951057</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] 3.03108437 3.06265816 3.09423196 3.12580576 3.15737955 3.18895335</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [103] 3.22052714 3.25210094 3.28367473 3.31524853 3.34682232 3.37839612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [109] 3.40996992 3.44154371 3.47311751 3.50469130 3.53626510 3.56783889</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [115] 3.59941269 3.63098648 3.66256028 3.69413408 3.72570787 3.75728167</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [121] 3.78885546 3.82042926 3.85200305 3.88357685 3.91515064 3.94672444</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [127] 3.97829823 4.00987203 4.04144583 4.07301962 4.10459342 4.13616721</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [133] 4.16774101 4.19931480 4.23088860 4.26246239 4.29403619 4.32560999</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [139] 4.35718378 4.38875758 4.42033137 4.45190517 4.48347896 4.51505276</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [145] 4.54662655 4.57820035 4.60977414 4.64134794 4.67292174 4.70449553</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] 4.73606933 4.76764312 4.79921692 4.83079071 4.86236451 4.89393830</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [157] 4.92551210 4.95708590 4.98865969 5.02023349 5.05180728 5.08338108</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [163] 5.11495487 5.14652867 5.17810246 5.20967626 5.24125006 5.27282385</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [169] 5.30439765 5.33597144 5.36754524 5.39911903 5.43069283 5.46226662</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [175] 5.49384042 5.52541421 5.55698801 5.58856181 5.62013560 5.65170940</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [181] 5.68328319 5.71485699 5.74643078 5.77800458 5.80957837 5.84115217</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [187] 5.87272597 5.90429976 5.93587356 5.96744735 5.99902115 6.03059494</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [193] 6.06216874 6.09374253 6.12531633 6.15689013 6.18846392 6.22003772</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [199] 6.25161151 6.28318531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $n_clusters</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $memberships</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2 2 2 2 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $distances_to_center</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 4.048251e-06 3.588005e-05 1.713356e-05 8.361758e-06 5.193078e-08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] 2.194060e-05 9.621231e-06 5.292274e-05 0.000000e+00 2.168976e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] 6.596793e-07 2.916422e-05 4.619974e-06 3.458890e-04 2.150440e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] 4.402371e-07 6.206572e-06 3.477159e-06 3.058133e-05 3.931596e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] 1.173201e-05 7.414815e-05 7.053561e-06 0.000000e+00 7.111964e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26] 5.708263e-05 3.514738e-05 3.810101e-05 1.060694e-08 1.187223e-05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $silhouettes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 0.9992770 0.9988882 0.9990651 0.9980287 0.9985215 0.9994341 0.9996803</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] 0.9976555 0.9973923 0.9956626 0.9867260 0.9060806 0.9897317 0.9649535</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] 0.9896362 0.9912751 0.9767264 0.9838972 0.9603228 0.9818676 0.9938187</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22] 0.9865784 0.9963683 0.9968618 0.9950459 0.9911940 0.9940097 0.9937410</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] 0.9969094 0.9964043</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $n_iterations</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -15934,6 +15951,9 @@ the function <code>call_name</code> that produced this output.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $call_args$compute_overall_center</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $call_args$add_silhouettes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
