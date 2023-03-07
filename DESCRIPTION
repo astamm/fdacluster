@@ -49,6 +49,7 @@ Suggests:
     testthat (>= 3.0.0)
 Imports: 
     cli,
+    cluster,
     dplyr,
     fdasrvf,
     furrr,

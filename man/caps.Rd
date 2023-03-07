@@ -13,6 +13,11 @@ is_caps(x)
 \arguments{
 \item{x}{A list coercible into an object of class \code{\link{caps}}.}
 }
+\value{
+The function \code{\link[=as_caps]{as_caps()}} returns an object of class \code{\link{caps}}. The
+function \code{\link[=is_caps]{is_caps()}} returns a boolean which evaluates to \code{TRUE} is the
+input object is of class \code{\link{caps}}.
+}
 \description{
 The k-means algorithm with joint amplitude and phase separation produces a
 number of outputs. This class is meant to encapsulate them into a single
@@ -32,6 +37,9 @@ on grids of size \eqn{M}.
 \item \code{center_curves}: A numeric matrix of shape \eqn{K \times L \times M}
 storing the \eqn{K} centers which are \eqn{L}-dimensional curves observed on
 a grid of size \eqn{M};
+\item \code{warpings}: A numeric matrix of shape \eqn{N \times M} storing the
+estimated warping functions for each of the \eqn{N} curves evaluted on the
+common \code{grid} of size \eqn{M};
 \item \code{grid}: A numeric vector of length \eqn{M} storing the
 common grid of size \eqn{M} on which curves have been observed;
 \item \code{n_clusters}: An integer value storing the number of clusters;
@@ -39,9 +47,8 @@ common grid of size \eqn{M} on which curves have been observed;
 which each curve belongs to;
 \item \code{distances_to_center}: A numeric vector of length \eqn{N} storing the
 distance of each curve to the center of its cluster;
-\item \code{warpings}: A numeric matrix of shape \eqn{N \times M} storing the
-estimated warping functions for each of the \eqn{N} curves evaluted on the
-common \code{grid} of size \eqn{M};
+\item \code{silhouettes}: A numeric vector of length \eqn{N} storing the silhouette
+values of each observation;
 \item \code{n_iterations}: An integer value storing the number of iterations
 performed until convergence;
 \item \code{call_name}: A string storing the name of the function that was used to

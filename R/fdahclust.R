@@ -68,6 +68,9 @@ fdahclust <- function(x, y,
 
   hc <- stats::hclust(D, method = linkage_criterion)
   labels <- stats::cutree(tree = hc, k = n_clusters)
+  silhouettes <- NULL
+  if (n_clusters > 1)
+    silhouettes <- cluster::silhouette(labels, D)[, "sil_width"]
 
   if (use_verbose)
     cli::cli_alert_info("Aligning all curves with respect to their centroid...")
@@ -91,7 +94,8 @@ fdahclust <- function(x, y,
       use_fence = use_fence,
       check_total_dissimilarity = check_total_dissimilarity,
       use_verbose = FALSE,
-      compute_overall_center = compute_overall_center
+      compute_overall_center = compute_overall_center,
+      add_silhouettes = FALSE
     )
   })
 
@@ -117,15 +121,16 @@ fdahclust <- function(x, y,
     original_curves = original_curves,
     aligned_curves = aligned_curves,
     center_curves = center_curves,
+    warpings = warpings,
     grid = grid,
     n_clusters = n_clusters,
     memberships = labels,
     distances_to_center = dtc,
-    warpings = warpings,
+    silhouettes = silhouettes,
     n_iterations = 0,
     call_name = rlang::call_name(call),
     call_args = rlang::call_args(call)
   )
 
-  return(as_caps(out))
+  as_caps(out)
 }

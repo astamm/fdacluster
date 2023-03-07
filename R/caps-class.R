@@ -17,6 +17,9 @@
 #' - `center_curves`: A numeric matrix of shape \eqn{K \times L \times M}
 #' storing the \eqn{K} centers which are \eqn{L}-dimensional curves observed on
 #' a grid of size \eqn{M};
+#' - `warpings`: A numeric matrix of shape \eqn{N \times M} storing the
+#' estimated warping functions for each of the \eqn{N} curves evaluted on the
+#' common `grid` of size \eqn{M};
 #' - `grid`: A numeric vector of length \eqn{M} storing the
 #' common grid of size \eqn{M} on which curves have been observed;
 #' - `n_clusters`: An integer value storing the number of clusters;
@@ -24,9 +27,8 @@
 #' which each curve belongs to;
 #' - `distances_to_center`: A numeric vector of length \eqn{N} storing the
 #' distance of each curve to the center of its cluster;
-#' - `warpings`: A numeric matrix of shape \eqn{N \times M} storing the
-#' estimated warping functions for each of the \eqn{N} curves evaluted on the
-#' common `grid` of size \eqn{M};
+#' - `silhouettes`: A numeric vector of length \eqn{N} storing the silhouette
+#' values of each observation;
 #' - `n_iterations`: An integer value storing the number of iterations
 #' performed until convergence;
 #' - `call_name`: A string storing the name of the function that was used to
@@ -35,6 +37,10 @@
 #' the function `call_name` that produced this output.
 #'
 #' @param x A list coercible into an object of class [`caps`].
+#'
+#' @return The function [`as_caps()`] returns an object of class [`caps`]. The
+#'   function [`is_caps()`] returns a boolean which evaluates to `TRUE` is the
+#'   input object is of class [`caps`].
 #'
 #' @name caps
 #'
@@ -60,12 +66,13 @@ as_caps <- function(x) {
   if (!inherits(x, "list"))
     cli::cli_abort("The input argument {.arg x} should be a list.")
 
-  if (length(x) != 11)
-    cli::cli_abort("The input argument {.arg x} should be a list of length 11.")
+  if (length(x) != 12)
+    cli::cli_abort("The input argument {.arg x} should be a list of length 12.")
 
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   if (any(names(x) != expected_names))
     cli::cli_abort("The input argument {.arg x} should be a list with components {expected_names}.")
 

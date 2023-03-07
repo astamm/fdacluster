@@ -20,7 +20,8 @@ fdakmeans(
   use_fence = FALSE,
   check_total_dissimilarity = TRUE,
   use_verbose = TRUE,
-  compute_overall_center = FALSE
+  compute_overall_center = FALSE,
+  add_silhouettes = TRUE
 )
 }
 \arguments{
@@ -86,6 +87,10 @@ details of the steps to the console. Defaults to \code{TRUE}.}
 \item{compute_overall_center}{A boolean specifying whether the overall center
 should be also computed. Defaults to \code{FALSE}. This is used only when
 \code{warping_class != "srsf"}.}
+
+\item{add_silhouettes}{A boolean specifying whether silhouette values should
+be computed for each observation for internal validation of the clustering
+structure. Defaults to \code{TRUE}.}
 }
 \value{
 An object of class \code{\link{caps}}.

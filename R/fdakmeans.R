@@ -53,6 +53,9 @@
 #' @param compute_overall_center A boolean specifying whether the overall center
 #'   should be also computed. Defaults to `FALSE`. This is used only when
 #'   `warping_class != "srsf"`.
+#' @param add_silhouettes A boolean specifying whether silhouette values should
+#'   be computed for each observation for internal validation of the clustering
+#'   structure. Defaults to `TRUE`.
 #'
 #' @return An object of class [`caps`].
 #'
@@ -81,7 +84,8 @@ fdakmeans <- function(x, y,
                       use_fence = FALSE,
                       check_total_dissimilarity = TRUE,
                       use_verbose = TRUE,
-                      compute_overall_center = FALSE) {
+                      compute_overall_center = FALSE,
+                      add_silhouettes = TRUE) {
   if (anyNA(x))
     cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
 
@@ -92,6 +96,8 @@ fdakmeans <- function(x, y,
   centroid_type <- rlang::arg_match(centroid_type)
   metric <- rlang::arg_match(metric)
   call <- rlang::call_match(defaults = TRUE)
+  call_name <- rlang::call_name(call)
+  call_args <- rlang::call_args(call)
 
   # Handle one-dimensional data
   if (length(dim(y)) == 2) {
@@ -111,6 +117,7 @@ fdakmeans <- function(x, y,
   # Handle seeds
   if (is.null(seeds)) {
     seeds <- sample(0:(N - 1), n_clusters)
+    call_args$seeds <- seeds + 1
   } else {
     seeds <- seeds - 1
   }
@@ -156,18 +163,30 @@ fdakmeans <- function(x, y,
       warpings[cluster_members[[k]], ] <- t(res$gam[[k]])
     }
 
+    silhouettes <- NULL
+    if (add_silhouettes) {
+      D <- fdadist(
+        x = common_grid,
+        y = aligned_curves,
+        warping_class = "none",
+        metric = metric
+      )
+      silhouettes <- cluster::silhouette(res$labels, D)[, "sil_width"]
+    }
+
     out <- list(
       original_curves = aperm(array(res$f0, dim = c(L, M, N)), c(3, 1, 2)),
       aligned_curves = aligned_curves,
       center_curves = aperm(res$templates, c(3, 1, 2)),
+      warpings = warpings,
       grid = res$time,
       n_clusters = n_clusters,
       memberships = res$labels,
       distances_to_center = res$distances_to_center,
-      warpings = warpings,
+      silhouettes = silhouettes,
       n_iterations = length(res$qun),
-      call_name = rlang::call_name(call),
-      call_args = rlang::call_args(call)
+      call_name = call_name,
+      call_args = call_args
     )
 
     return(as_caps(out))
@@ -238,18 +257,30 @@ fdakmeans <- function(x, y,
     }
   }
 
+  silhouettes <- NULL
+  if (n_clusters > 1 && add_silhouettes) {
+    D <- fdadist(
+      x = res$x_final, # common_grid_tmp,
+      y = res$y, # aligned_curves_tmp,
+      warping_class = "affine",
+      metric = metric
+    )
+    silhouettes <- cluster::silhouette(res$labels, D)[, "sil_width"]
+  }
+
   out <- list(
     original_curves = original_curves,
     aligned_curves = aligned_curves,
     center_curves = centers,
+    warpings = warpings,
     grid = common_grid,
     n_clusters = res$n_clust_final,
     memberships = res$labels,
     distances_to_center = res$final_dissimilarity,
-    warpings = warpings,
+    silhouettes = silhouettes,
     n_iterations = res$iterations,
-    call_name = rlang::call_name(call),
-    call_args = rlang::call_args(call)
+    call_name = call_name,
+    call_args = call_args
   )
 
   as_caps(out)

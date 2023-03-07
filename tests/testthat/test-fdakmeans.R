@@ -12,10 +12,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -44,10 +45,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -76,10 +78,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -108,10 +111,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -140,10 +144,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -172,10 +177,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -204,10 +210,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -236,10 +243,11 @@ test_that('`fdakmeans()` works with `centroid_type = "medoid"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -268,10 +276,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -300,10 +309,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -332,10 +342,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -364,10 +375,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -396,10 +408,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -428,10 +441,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -460,10 +474,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -492,10 +507,11 @@ test_that('`fdakmeans()` works with `centroid_type = "mean"`,
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))
@@ -521,10 +537,11 @@ test_that('`fdakmeans()` works with `warping_class = "srsf"`.', {
   )
 
   expect_true(is_caps(out))
-  expect_equal(length(out), 11)
+  expect_equal(length(out), 12)
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "grid", "n_clusters", "memberships", "distances_to_center",
-                      "warpings", "n_iterations", "call_name", "call_args")
+                      "warpings", "grid", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes", "n_iterations",
+                      "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), c(30, 1, 200))
   expect_equal(dim(out$aligned_curves), c(30, 1, 200))

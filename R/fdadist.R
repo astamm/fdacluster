@@ -71,7 +71,8 @@ fdadist <- function(x, y,
         centroid_type = "medoid",
         warping_class = warping_class,
         metric = metric,
-        use_verbose = FALSE
+        use_verbose = FALSE,
+        add_silhouettes = FALSE
       )
 
       out <- max(km$distances_to_center)
@@ -84,7 +85,8 @@ fdadist <- function(x, y,
         centroid_type = "medoid",
         warping_class = warping_class,
         metric = metric,
-        use_verbose = FALSE
+        use_verbose = FALSE,
+        add_silhouettes = FALSE
       )
 
       if (max(km$distances_to_center) < out)
