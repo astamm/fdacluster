@@ -3,6 +3,7 @@
 S3method(autoplot,caps)
 S3method(plot,caps)
 export(as_caps)
+export(diagnostic_plot)
 export(fdadist)
 export(fdahclust)
 export(fdakmeans)

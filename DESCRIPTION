@@ -52,6 +52,7 @@ Imports:
     cluster,
     dplyr,
     fdasrvf,
+    forcats,
     furrr,
     ggplot2,
     nloptr,
