@@ -4,10 +4,10 @@
 \alias{autoplot.caps}
 \title{Plot for \code{\link{caps}} objects}
 \usage{
-\method{autoplot}{caps}(x, type = c("amplitude", "phase"), ...)
+\method{autoplot}{caps}(object, type = c("amplitude", "phase"), ...)
 }
 \arguments{
-\item{x}{An object of class \code{\link{caps}}.}
+\item{object}{An object of class \code{\link{caps}}.}
 
 \item{type}{A string specifying the type of information to display. Choices
 are \code{"amplitude"} for plotting the original and aligned curves which

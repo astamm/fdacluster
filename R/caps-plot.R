@@ -7,7 +7,7 @@
 #' aligned curves are shown or the phase information data in which case the
 #' estimated warping functions are shown.
 #'
-#' @param x An object of class [`caps`].
+#' @param object An object of class [`caps`].
 #' @param type A string specifying the type of information to display. Choices
 #'   are `"amplitude"` for plotting the original and aligned curves which
 #'   represent amplitude information data or `"phase"` for plotting the
@@ -30,10 +30,10 @@
 #' )
 #' ggplot2::autoplot(res, type = "amplitude")
 #' ggplot2::autoplot(res, type = "phase")
-autoplot.caps <- function(x, type = c("amplitude", "phase"), ...) {
+autoplot.caps <- function(object, type = c("amplitude", "phase"), ...) {
   type <- rlang::arg_match(type)
   if (type == "amplitude") {
-    wrangled_data <- plot_data_amplitude(x)
+    wrangled_data <- plot_data_amplitude(object)
     wrangled_data |>
       ggplot2::ggplot(ggplot2::aes(
         x = .data$grid,
@@ -48,14 +48,14 @@ autoplot.caps <- function(x, type = c("amplitude", "phase"), ...) {
       ) +
       ggplot2::labs(
         title = "Functional Data",
-        subtitle = paste("Class of warping functions:", toupper(x$call$warping_class)),
+        subtitle = paste("Class of warping functions:", toupper(object$call$warping_class)),
         x = "Observation Grid",
         y = "Component Values"
       ) +
       ggplot2::theme_bw() +
       ggplot2::theme(legend.position = "none")
   } else if (type == "phase") {
-    wrangled_data <- plot_data_phase(x)
+    wrangled_data <- plot_data_phase(object)
     wrangled_data |>
       ggplot2::ggplot(ggplot2::aes(
         x = .data$grid,
@@ -66,7 +66,7 @@ autoplot.caps <- function(x, type = c("amplitude", "phase"), ...) {
       ggplot2::geom_line() +
       ggplot2::labs(
         title = "Estimated Warping Functions",
-        subtitle = paste("Class of warping functions:", toupper(x$call$warping_class)),
+        subtitle = paste("Class of warping functions:", toupper(object$call$warping_class)),
         x = "Observation Grid",
         y = "Warped Grid Values"
       ) +
@@ -83,6 +83,7 @@ autoplot.caps <- function(x, type = c("amplitude", "phase"), ...) {
 #' original and aligned curves are shown or the phase information data in which
 #' case the estimated warping functions are shown.
 #'
+#' @param x An object of class [`caps`].
 #' @inheritParams autoplot.caps
 #'
 #' @return NULL
