@@ -55,6 +55,7 @@ Imports:
     forcats,
     furrr,
     ggplot2,
+    lpSolve,
     nloptr,
     progressr,
     purrr,
@@ -62,7 +63,7 @@ Imports:
     rlang,
     tibble,
     tidyr
-Depends: 
+Depends:
     R (>= 2.10)
 URL: https://astamm.github.io/fdacluster/index.html, https://github.com/astamm/fdacluster
 Config/testthat/edition: 3

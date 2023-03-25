@@ -10,6 +10,7 @@ fdakmeans(
   n_clusters = 1L,
   warping_class = c("affine", "dilation", "none", "shift", "srsf"),
   seeds = NULL,
+  seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
   maximum_number_of_iterations = 100L,
   centroid_type = c("mean", "medoid"),
   metric = c("l2", "pearson"),
@@ -21,7 +22,8 @@ fdakmeans(
   check_total_dissimilarity = TRUE,
   use_verbose = TRUE,
   compute_overall_center = FALSE,
-  add_silhouettes = TRUE
+  add_silhouettes = TRUE,
+  expand_domain = TRUE
 )
 }
 \arguments{
@@ -39,9 +41,23 @@ Defaults to \code{1L}.}
 \code{"affine"}, \code{"dilation"}, \code{"none"}, \code{"shift"} or \code{"srsf"}. Defaults to
 \code{"affine"}. The SRSF class is the only class which is boundary-preserving.}
 
-\item{seeds}{An integer vector of length \code{n_clusters} specifying the indices
-of the initial templates. Defaults to \code{NULL}, which boils down to randomly
-sampled indices.}
+\item{seeds}{An integer value or vector specifying the indices of the initial
+centroids. If an integer vector, it is interpreted as the indices of the
+intial centroids and should therefore be of length \code{n_clusters}. If an
+integer value, it is interpreted as the index of the first initial centroid
+and subsequent centroids are chosen according to the k-means++ strategy. It
+can be \code{NULL} in which case the argument \code{seeding_strategy} is used to
+automatically provide suitable indices. Defaults to \code{NULL}.}
+
+\item{seeding_strategy}{A character string specifying the strategy for
+choosing the initial centroids in case the argument \code{seeds} is set to
+\code{NULL}. Choices are
+\href{https://en.wikipedia.org/wiki/K-means\%2B\%2B}{\code{"kmeans++"}},
+\code{"exhaustive-kmeans++"} which performs an exhaustive search over the choice
+of the first centroid, \code{"exhaustive"} which tries on all combinations of
+initial centroids or \code{"hclust"} which first performs hierarchical
+clustering using Ward's linkage criterion to identify initial centroids.
+Defaults to \code{"kmeans++"}, which is the fastest strategy.}
 
 \item{maximum_number_of_iterations}{An integer specifying the maximum number
 of iterations before the algorithm stops if no other convergence criterion
@@ -91,6 +107,11 @@ should be also computed. Defaults to \code{FALSE}. This is used only when
 \item{add_silhouettes}{A boolean specifying whether silhouette values should
 be computed for each observation for internal validation of the clustering
 structure. Defaults to \code{TRUE}.}
+
+\item{expand_domain}{A boolean specifying how to define the within-cluster
+common grids. When set to \code{FALSE}, the intersection of the individual
+domains is used. When set to \code{TRUE}, the union is used and mean imputation
+is performed to fill in the missing values. Defaults to \code{TRUE}.}
 }
 \value{
 An object of class \code{\link{caps}}.

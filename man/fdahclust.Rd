@@ -20,7 +20,7 @@ fdahclust(
   check_total_dissimilarity = TRUE,
   use_verbose = TRUE,
   compute_overall_center = FALSE,
-  linkage_criterion = c("complete", "average", "single")
+  linkage_criterion = c("complete", "average", "single", "ward.D2")
 )
 }
 \arguments{

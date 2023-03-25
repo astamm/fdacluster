@@ -46,9 +46,16 @@ public:
         std::string m_CenterMethod = "mean";
         std::string m_DissimilarityMethod = "pearson";
         std::string m_OptimizerMethod = "bobyqa";
+
+        m_LPSolve = Rcpp::Environment("package:fdacluster");
     }
 
-    void SetInputData(const arma::mat &grids, const arma::cube &values);
+    void SetInputData(
+        const arma::mat &grids,
+        const arma::cube &values,
+        const unsigned int &numberOfClusters,
+        const unsigned int &minimalClusterSize = 1
+    );
     void SetWarpingMethod(const std::string &val);
     void SetCenterMethod(const std::string &val);
     void SetDissimilarityMethod(const std::string &val);
@@ -57,7 +64,6 @@ public:
     void SetSeedVector(const arma::urowvec &val) {m_SeedVector = val;}
     void SetWarpingOptions(const arma::rowvec &val) {m_WarpingOptions = val;}
 
-    void SetNumberOfClusters(const unsigned int &val) {m_NumberOfClusters = val;}
     void SetMaximumNumberOfIterations(const unsigned int &val) {m_MaximumNumberOfIterations = val;}
     void SetNumberOfThreads(const unsigned int &val) {m_NumberOfThreads = val;}
     void SetParallelMethod(const unsigned int &val) {m_ParallelMethod = ParallelType(val);}
@@ -77,15 +83,21 @@ public:
             const std::string &optimizerMethod
     );
 
-    void AlignAndAssignObservations(
-            arma::mat &warpingParameters,
-            arma::rowvec &observationDistances,
-            arma::urowvec &observationMemberships,
-            const unsigned int numberOfClusters,
-            const arma::urowvec &clusterIndices,
-            const arma::mat &warpedGrids,
-            const arma::mat &templateGrids,
-            const arma::cube &templateValues
+    void AlignObservations(
+        arma::cube &allWarpingParameters,
+        arma::mat &distancesToCenters,
+        const arma::mat &warpedGrids,
+        const arma::mat &templateGrids,
+        const arma::cube &templateValues
+    );
+
+    void AssignObservations(
+        arma::mat &warpingParameters,
+        arma::rowvec &observationDistances,
+        arma::urowvec &observationMemberships,
+        const arma::mat &distancesToCenters,
+        const arma::cube &allWarpingParameters,
+        const Rcpp::Function &lpAlgorithm
     );
 
     /// Remove warping outliers
@@ -98,6 +110,9 @@ public:
             arma::mat &warpingParameters,
             arma::rowvec &observationDistances,
             arma::urowvec &observationMemberships,
+            arma::cube &allWarpingParameters,
+            arma::mat &distancesToCenters,
+            Rcpp::Function &lpAlgorithm,
             const arma::urowvec &clusterIndices,
             const arma::mat &warpedGrids,
             const arma::mat &templateGrids,
@@ -146,6 +161,13 @@ private:
     std::shared_ptr<BaseDissimilarityFunction> m_DissimilarityPointer;
     std::shared_ptr<BaseCenterMethod> m_CenterPointer;
     std::shared_ptr<BaseOptimizerFunction> m_OptimizerPointer;
+
+    // Useful variables for solving the assignment problem
+    Rcpp::Environment m_LPSolve;
+    Rcpp::IntegerVector m_ConstraintsRHS;
+    Rcpp::CharacterVector m_ConstraintsDirections;
+    Rcpp::IntegerMatrix m_LPInd;
+    Rcpp::IntegerMatrix m_ConstraintsDense;
 };
 
 #endif /* KMAMODELCLASS_H */

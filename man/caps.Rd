@@ -38,10 +38,10 @@ on grids of size \eqn{M}.
 storing the \eqn{K} centers which are \eqn{L}-dimensional curves observed on
 a grid of size \eqn{M};
 \item \code{warpings}: A numeric matrix of shape \eqn{N \times M} storing the
-estimated warping functions for each of the \eqn{N} curves evaluted on the
-common \code{grid} of size \eqn{M};
-\item \code{grid}: A numeric vector of length \eqn{M} storing the
-common grid of size \eqn{M} on which curves have been observed;
+estimated warping functions for each of the \eqn{N} curves evaluated on the
+within-cluster common \code{grids} of size \eqn{M};
+\item \code{grids}: A numeric matrix of size \eqn{K \times M} storing the
+within-cluster common grids of size \eqn{M} on which curves are evaluated;
 \item \code{n_clusters}: An integer value storing the number of clusters;
 \item \code{memberships}: An integer vector of length \eqn{N} storing the cluster ID
 which each curve belongs to;

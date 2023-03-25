@@ -18,10 +18,10 @@
 #' storing the \eqn{K} centers which are \eqn{L}-dimensional curves observed on
 #' a grid of size \eqn{M};
 #' - `warpings`: A numeric matrix of shape \eqn{N \times M} storing the
-#' estimated warping functions for each of the \eqn{N} curves evaluted on the
-#' common `grid` of size \eqn{M};
-#' - `grid`: A numeric vector of length \eqn{M} storing the
-#' common grid of size \eqn{M} on which curves have been observed;
+#' estimated warping functions for each of the \eqn{N} curves evaluated on the
+#' within-cluster common `grids` of size \eqn{M};
+#' - `grids`: A numeric matrix of size \eqn{K \times M} storing the
+#' within-cluster common grids of size \eqn{M} on which curves are evaluated;
 #' - `n_clusters`: An integer value storing the number of clusters;
 #' - `memberships`: An integer vector of length \eqn{N} storing the cluster ID
 #' which each curve belongs to;
@@ -70,7 +70,7 @@ as_caps <- function(x) {
     cli::cli_abort("The input argument {.arg x} should be a list of length 12.")
 
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
-                      "warpings", "grid", "n_clusters", "memberships",
+                      "warpings", "grids", "n_clusters", "memberships",
                       "distances_to_center", "silhouettes", "n_iterations",
                       "call_name", "call_args")
   if (any(names(x) != expected_names))

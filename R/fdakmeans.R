@@ -14,9 +14,22 @@
 #' @param warping_class A string specifying the warping class Choices are
 #'   `"affine"`, `"dilation"`, `"none"`, `"shift"` or `"srsf"`. Defaults to
 #'   `"affine"`. The SRSF class is the only class which is boundary-preserving.
-#' @param seeds An integer vector of length `n_clusters` specifying the indices
-#'   of the initial templates. Defaults to `NULL`, which boils down to randomly
-#'   sampled indices.
+#' @param seeds An integer value or vector specifying the indices of the initial
+#'   centroids. If an integer vector, it is interpreted as the indices of the
+#'   intial centroids and should therefore be of length `n_clusters`. If an
+#'   integer value, it is interpreted as the index of the first initial centroid
+#'   and subsequent centroids are chosen according to the k-means++ strategy. It
+#'   can be `NULL` in which case the argument `seeding_strategy` is used to
+#'   automatically provide suitable indices. Defaults to `NULL`.
+#' @param seeding_strategy A character string specifying the strategy for
+#'   choosing the initial centroids in case the argument `seeds` is set to
+#'   `NULL`. Choices are
+#'   [`"kmeans++"`](https://en.wikipedia.org/wiki/K-means%2B%2B),
+#'   `"exhaustive-kmeans++"` which performs an exhaustive search over the choice
+#'   of the first centroid, `"exhaustive"` which tries on all combinations of
+#'   initial centroids or `"hclust"` which first performs hierarchical
+#'   clustering using Ward's linkage criterion to identify initial centroids.
+#'   Defaults to `"kmeans++"`, which is the fastest strategy.
 #' @param centroid_type A string specifying the type of centroid to compute.
 #'   Choices are `"mean"` or `"medoid"`. Defaults to `"mean"`.
 #' @param maximum_number_of_iterations An integer specifying the maximum number
@@ -56,6 +69,10 @@
 #' @param add_silhouettes A boolean specifying whether silhouette values should
 #'   be computed for each observation for internal validation of the clustering
 #'   structure. Defaults to `TRUE`.
+#' @param expand_domain A boolean specifying how to define the within-cluster
+#'   common grids. When set to `FALSE`, the intersection of the individual
+#'   domains is used. When set to `TRUE`, the union is used and mean imputation
+#'   is performed to fill in the missing values. Defaults to `TRUE`.
 #'
 #' @return An object of class [`caps`].
 #'
@@ -74,6 +91,7 @@ fdakmeans <- function(x, y,
                       n_clusters = 1L,
                       warping_class = c("affine", "dilation", "none", "shift", "srsf"),
                       seeds = NULL,
+                      seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
                       maximum_number_of_iterations = 100L,
                       centroid_type = c("mean", "medoid"),
                       metric = c("l2", "pearson"),
@@ -85,16 +103,19 @@ fdakmeans <- function(x, y,
                       check_total_dissimilarity = TRUE,
                       use_verbose = TRUE,
                       compute_overall_center = FALSE,
-                      add_silhouettes = TRUE) {
+                      add_silhouettes = TRUE,
+                      expand_domain = TRUE) {
   if (anyNA(x))
     cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
 
   if (anyNA(y))
     cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
 
+  seeding_strategy <- rlang::arg_match(seeding_strategy)
   warping_class <- rlang::arg_match(warping_class)
   centroid_type <- rlang::arg_match(centroid_type)
   metric <- rlang::arg_match(metric)
+
   call <- rlang::call_match(defaults = TRUE)
   call_name <- rlang::call_name(call)
   call_args <- rlang::call_args(call)
@@ -116,22 +137,127 @@ fdakmeans <- function(x, y,
 
   # Handle seeds
   if (is.null(seeds)) {
-    seeds <- sample(0:(N - 1), n_clusters)
-    call_args$seeds <- seeds + 1
+    if (use_verbose)
+      cli::cli_alert_info("Computing initial centroids using {seeding_strategy} strategy...")
+    if (seeding_strategy == "hclust") {
+      out <- fdahclust(
+        x = x,
+        y = y,
+        n_clusters = n_clusters,
+        warping_class = warping_class,
+        maximum_number_of_iterations = maximum_number_of_iterations,
+        centroid_type = centroid_type,
+        metric = metric,
+        linkage_criterion = "ward.D2",
+        use_verbose = FALSE
+      )
+      seeds <- 1:n_clusters |>
+        purrr::map(~ which(out$memberships == .x)) |>
+        purrr::map_int(~ .x[which.min(out$distances_to_center[.x])])
+    } else if (seeding_strategy == "kmeans++") {
+      D <- fdadist(x = x, y = y, warping_class = warping_class, metric = metric)
+      Dm <- as.matrix(D)
+      seeds <- sample(1:N, 1L)
+      if (n_clusters > 1L) {
+        for (k in 2:n_clusters) {
+          Dsub <- Dm[seeds, -seeds, drop = FALSE]
+          Dvec <- apply(Dsub, 2L, min)
+          non_seeds <- setdiff(1:N, seeds)
+          seeds <- c(seeds, sample(non_seeds, 1L, prob = Dvec^2))
+        }
+      }
+    } else if (seeding_strategy == "exhaustive-kmeans++") {
+      D <- fdadist(x = x, y = y, warping_class = warping_class, metric = metric)
+      Dm <- as.matrix(D)
+      pb <- progressr::progressor(steps = N)
+      out <- furrr::future_map(1:N, \(n) {
+        pb()
+        seeds <- n
+        if (n_clusters > 1L) {
+          for (k in 2:n_clusters) {
+            Dsub <- Dm[seeds, -seeds, drop = FALSE]
+            Dvec <- apply(Dsub, 2L, min)
+            non_seeds <- setdiff(1:N, seeds)
+            seeds <- c(seeds, sample(non_seeds, 1L, prob = Dvec^2))
+          }
+        }
+        km <- fdakmeans(
+          x = x,
+          y = y,
+          n_clusters = n_clusters,
+          warping_class = warping_class,
+          seeds = seeds,
+          maximum_number_of_iterations = maximum_number_of_iterations,
+          centroid_type = centroid_type,
+          metric = metric,
+          warping_options = warping_options,
+          distance_relative_tolerance = distance_relative_tolerance,
+          use_fence = use_fence,
+          use_verbose = FALSE,
+          add_silhouettes = add_silhouettes
+        )
+        list(caps = km, totss = sum(km$distances_to_center))
+      }, .options = furrr::furrr_options(seed = TRUE))
+      best_idx <- which.min(purrr::map_dbl(out, "totss"))
+      return(purrr::map(out, "caps")[[best_idx]])
+    } else if (seeding_strategy == "exhaustive") {
+      sols <- utils::combn(N, n_clusters, simplify = FALSE)
+      pb <- progressr::progressor(steps = length(sols))
+      sols <- furrr::future_map(\(.seeds) {
+        pb()
+        fdakmeans(
+          x = x, y = y,
+          n_clusters = n_clusters,
+          warping_class = warping_class,
+          seeds = .seeds,
+          maximum_number_of_iterations = maximum_number_of_iterations,
+          centroid_type = centroid_type,
+          metric = metric,
+          warping_options = warping_options,
+          distance_relative_tolerance = distance_relative_tolerance,
+          use_fence = use_fence,
+          check_total_dissimilarity = check_total_dissimilarity,
+          use_verbose = FALSE,
+          add_silhouettes = FALSE
+        )
+      })
+      dtcs <- sols |>
+        purrr::map("distances_to_center") |>
+        purrr::map_dbl(sum)
+      return(as_caps(sols[[which.min(dtcs)]]))
+    }
   } else {
-    seeds <- seeds - 1
+    n_centroids <- length(seeds)
+    if (n_centroids != n_clusters && n_centroids != 1L)
+      cli::cli_abort("The number of initial centroid indices provided by the {.arg seeding_strategy} argument should be either 1 or {n_clusters}.")
+    if (n_centroids == 1L && n_clusters > 1L) {
+      D <- fdadist(x = x, y = y, warping_class = warping_class, metric = metric)
+      Dm <- as.matrix(D)
+      for (k in 2:n_clusters) {
+        Dsub <- Dm[seeds, -seeds, drop = FALSE]
+        Dvec <- apply(Dsub, 2L, min)
+        non_seeds <- setdiff(1:N, seeds)
+        seeds <- c(seeds, sample(non_seeds, 1L, prob = Dvec^2))
+      }
+    }
   }
 
-  # Compute common grid
-  common_grid <- x[1, ]
-  multiple_grids <- any(apply(x, 2, stats::sd) != 0)
-  if (multiple_grids) {
-    grid_min <- max(x[, 1])
-    grid_max <- min(x[, M])
-    common_grid <- seq(grid_min, grid_max, length.out = M)
-  }
+  call_args$seeds <- seeds
+  seeds <- seeds - 1
 
   if (warping_class == "srsf") {
+    # Compute common grid
+    common_grid <- x[1, ]
+    multiple_grids <- FALSE
+    if (N > 1) {
+      multiple_grids <- any(apply(x, 2, stats::sd) != 0)
+      if (multiple_grids) {
+        grid_min <- max(x[, 1])
+        grid_max <- min(x[, M])
+        common_grid <- seq(grid_min, grid_max, length.out = M)
+      }
+    }
+
     yperm <- aperm(y, c(2, 3, 1))
 
     if (multiple_grids) {
@@ -164,7 +290,7 @@ fdakmeans <- function(x, y,
     }
 
     silhouettes <- NULL
-    if (add_silhouettes) {
+    if (n_clusters > 1 && add_silhouettes) {
       D <- fdadist(
         x = common_grid,
         y = aligned_curves,
@@ -179,7 +305,7 @@ fdakmeans <- function(x, y,
       aligned_curves = aligned_curves,
       center_curves = aperm(res$templates, c(3, 1, 2)),
       warpings = warpings,
-      grid = res$time,
+      grids = matrix(res$time, nrow = n_clusters, ncol = M, byrow = TRUE),
       n_clusters = n_clusters,
       memberships = res$labels,
       distances_to_center = res$distances_to_center,
@@ -212,6 +338,27 @@ fdakmeans <- function(x, y,
     optimizer_method = "bobyqa"
   )
 
+  # Compute common grid per cluster
+  common_grids <- purrr::map(1:n_clusters, \(cluster_id) {
+    grids <- res$x_final[res$labels == cluster_id, , drop = FALSE]
+    common_grid <- grids[1, ]
+    if (nrow(grids) > 1) {
+      multiple_grids <- any(apply(grids, 2, stats::sd) != 0)
+      if (multiple_grids) {
+        if (expand_domain) {
+          grid_min <- min(grids[, 1])
+          grid_max <- max(grids[, M])
+        } else {
+          grid_min <- max(grids[, 1])
+          grid_max <- min(grids[, M])
+        }
+        common_grid <- seq(grid_min, grid_max, length.out = M)
+      }
+    }
+    common_grid
+  })
+  common_grids <- do.call(rbind, common_grids)
+
   original_curves <- res$y
   aligned_curves <- original_curves
   for (l in 1:L) {
@@ -219,14 +366,13 @@ fdakmeans <- function(x, y,
       aligned_curves[n, l, ] <- stats::approx(
         x = res$x_final[n, ],
         y = original_curves[n, l, ],
-        xout = common_grid
+        xout = common_grids[res$labels[n], ]
       )$y
-      if (multiple_grids)
-        original_curves[n, l, ] <- stats::approx(
-          x = res$x[n, ],
-          y = original_curves[n, l, ],
-          xout = common_grid
-        )$y
+      original_curves[n, l, ] <- stats::approx(
+        x = res$x[n, ],
+        y = original_curves[n, l, ],
+        xout = common_grids[res$labels[n], ]
+      )$y
     }
   }
 
@@ -236,23 +382,36 @@ fdakmeans <- function(x, y,
       centers[k, l, ] <- stats::approx(
         x = res$x_centers_final[k, ],
         y = res$y_centers_final[k, l, ],
-        xout = common_grid
+        xout = common_grids[k, ]
       )$y
     }
   }
 
-  warpings <- NULL
-  if (warping_class == "none")
-    warpings <- matrix(common_grid, nrow = N, ncol = M, byrow = TRUE)
-  else {
-    warpings <- matrix(nrow = N, ncol = M)
+  if (expand_domain) {
+    # Mean imputation
+    for (l in 1:L) {
+      X <- aligned_curves[, l, ]
+      Xc <- centers[, l, ]
+      if (n_clusters == 1) Xc <- matrix(Xc, nrow = 1)
+      X <- rbind(X, Xc)
+      Xi <- impute_via_mean(X, c(res$labels, 1:n_clusters))
+      aligned_curves[, l, ] <- Xi[1:N, ]
+      centers[, l, ] <- Xi[(N + 1):nrow(Xi), ]
+    }
+  }
+
+  warpings <- matrix(nrow = N, ncol = M)
+  if (warping_class == "none") {
+    for (n in 1:N)
+      warpings[n, ] <- common_grids[res$labels[n], ]
+  } else {
     for (n in 1:N) {
       if (warping_class == "shift")
-        warpings[n, ] <- common_grid + res$parameters[n, 1]
+        warpings[n, ] <- common_grids[res$labels[n], ] + res$parameters[n, 1]
       else if (warping_class == "dilation")
-        warpings[n, ] <- common_grid * res$parameters[n, 1]
+        warpings[n, ] <- common_grids[res$labels[n], ] * res$parameters[n, 1]
       else
-        warpings[n, ] <- common_grid * res$parameters[n, 1] +
+        warpings[n, ] <- common_grids[res$labels[n], ] * res$parameters[n, 1] +
           res$parameters[n, 2]
     }
   }
@@ -260,9 +419,9 @@ fdakmeans <- function(x, y,
   silhouettes <- NULL
   if (n_clusters > 1 && add_silhouettes) {
     D <- fdadist(
-      x = res$x_final, # common_grid_tmp,
-      y = res$y, # aligned_curves_tmp,
-      warping_class = "affine",
+      x = res$x_final,
+      y = res$y,
+      warping_class = "none",
       metric = metric
     )
     silhouettes <- cluster::silhouette(res$labels, D)[, "sil_width"]
@@ -273,7 +432,7 @@ fdakmeans <- function(x, y,
     aligned_curves = aligned_curves,
     center_curves = centers,
     warpings = warpings,
-    grid = common_grid,
+    grids = common_grids,
     n_clusters = res$n_clust_final,
     memberships = res$labels,
     distances_to_center = res$final_dissimilarity,

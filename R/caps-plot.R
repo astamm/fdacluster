@@ -48,7 +48,7 @@ autoplot.caps <- function(object, type = c("amplitude", "phase"), ...) {
       ) +
       ggplot2::labs(
         title = "Functional Data",
-        subtitle = paste("Class of warping functions:", toupper(object$call$warping_class)),
+        subtitle = paste("Class of warping functions:", toupper(object$call_args$warping_class)),
         x = "Observation Grid",
         y = "Component Values"
       ) +
@@ -66,7 +66,7 @@ autoplot.caps <- function(object, type = c("amplitude", "phase"), ...) {
       ggplot2::geom_line() +
       ggplot2::labs(
         title = "Estimated Warping Functions",
-        subtitle = paste("Class of warping functions:", toupper(object$call$warping_class)),
+        subtitle = paste("Class of warping functions:", toupper(object$call_args$warping_class)),
         x = "Observation Grid",
         y = "Warped Grid Values"
       ) +
@@ -122,17 +122,15 @@ plot_data_phase <- function(x) {
   x$warpings |>
     `colnames<-`(paste0("P", 1:ncol(x$warpings))) |>
     tibble::as_tibble() |>
-    tidyr::pivot_longer(cols = dplyr::everything()) |>
-    tidyr::nest(data = -.data$name) |>
-    dplyr::mutate(grid = x$grid) |>
-    tidyr::unnest(cols = .data$data) |>
-    dplyr::group_by(.data$name) |>
     dplyr::mutate(
       curve_id = as.factor(1:dplyr::n()),
       membership = as.factor(x$memberships)
     ) |>
-    dplyr::ungroup() |>
-    dplyr::select(-.data$name)
+    tidyr::pivot_longer(cols = -c("curve_id", "membership")) |>
+    tidyr::nest(data = -c("curve_id", "membership")) |>
+    dplyr::mutate(grid = purrr::map(.data$membership, \(m) x$grids[m, ])) |>
+    tidyr::unnest(cols = c("data", "grid")) |>
+    dplyr::select(-"name")
 }
 
 wrangle_single_group <- function(curves, grid, memberships) {
@@ -150,18 +148,26 @@ wrangle_single_group <- function(curves, grid, memberships) {
 
 wrangle_single_component <- function(id, curves, grid, memberships) {
   curves <- curves[, id, ]
-  curves |>
-    `colnames<-`(paste0("P", 1:ncol(curves))) |>
-    tibble::as_tibble() |>
-    tidyr::pivot_longer(cols = dplyr::everything()) |>
-    tidyr::nest(data = -.data$name) |>
-    dplyr::mutate(grid = grid) |>
-    tidyr::unnest(cols = .data$data) |>
-    dplyr::group_by(.data$name) |>
+  N <- nrow(curves)
+  M <- ncol(curves)
+  K <- nrow(grid)
+  purrr::map(1:K, \(cluster_id) {
+    curves[memberships == cluster_id, , drop = FALSE] |>
+      `colnames<-`(paste0("P", 1:M)) |>
+      tibble::as_tibble() |>
+      tidyr::pivot_longer(cols = dplyr::everything()) |>
+      tidyr::nest(data = -"name") |>
+      dplyr::mutate(grid = grid[cluster_id, ]) |>
+      tidyr::unnest(cols = "data") |>
+      dplyr::mutate(
+        curve_id = which(memberships == cluster_id),
+        membership = cluster_id,
+        .by = "name") |>
+      dplyr::select(-"name")
+  }) |>
+    dplyr::bind_rows() |>
     dplyr::mutate(
-      curve_id = as.factor(1:dplyr::n()),
-      membership = as.factor(memberships)
-    ) |>
-    dplyr::ungroup() |>
-    dplyr::select(-.data$name)
+      curve_id = as.factor(.data$curve_id),
+      membership = as.factor(.data$membership)
+    )
 }

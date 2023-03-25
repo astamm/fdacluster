@@ -34,7 +34,7 @@ fdahclust <- function(x, y,
                       check_total_dissimilarity = TRUE,
                       use_verbose = TRUE,
                       compute_overall_center = FALSE,
-                      linkage_criterion = c("complete", "average", "single")) {
+                      linkage_criterion = c("complete", "average", "single", "ward.D2")) {
   if (anyNA(x))
     cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
 
@@ -57,6 +57,11 @@ fdahclust <- function(x, y,
   L <- dims[2]
   M <- dims[3]
 
+  # Handle vector grid
+  if (is.vector(x)) {
+    x <- matrix(x, N, M, byrow = TRUE)
+  }
+
   if (use_verbose)
     cli::cli_alert_info("Computing the distance matrix...")
 
@@ -68,19 +73,16 @@ fdahclust <- function(x, y,
 
   hc <- stats::hclust(D, method = linkage_criterion)
   labels <- stats::cutree(tree = hc, k = n_clusters)
-  silhouettes <- NULL
-  if (n_clusters > 1)
-    silhouettes <- cluster::silhouette(labels, D)[, "sil_width"]
 
   if (use_verbose)
     cli::cli_alert_info("Aligning all curves with respect to their centroid...")
 
   kmresults <- lapply(1:n_clusters, function(k) {
     cluster_ids <- which(labels == k)
-    medoid_idx <- which.min(rowSums(Dm[cluster_ids, cluster_ids]))
+    medoid_idx <- which.min(rowSums(Dm[cluster_ids, cluster_ids, drop = FALSE]))
     fdakmeans(
-      x = x[cluster_ids, ],
-      y = y[cluster_ids, , ],
+      x = x[cluster_ids, , drop = FALSE],
+      y = y[cluster_ids, , , drop = FALSE],
       n_clusters = 1,
       warping_class = warping_class,
       seeds = medoid_idx,
@@ -102,7 +104,8 @@ fdahclust <- function(x, y,
   if (use_verbose)
     cli::cli_alert_info("Consolidating output...")
 
-  grid <- kmresults[[1]]$grid
+  grids <- purrr::map(kmresults, \(km) km$grids[1, ])
+  grids <- do.call(rbind, grids)
   original_curves <- array(dim = c(N, L, M))
   aligned_curves <- array(dim = c(N, L, M))
   center_curves <- array(dim = c(n_clusters, L, M))
@@ -117,12 +120,23 @@ fdahclust <- function(x, y,
     dtc[cluster_ids] <- kmresults[[k]]$distances_to_center
   }
 
+  silhouettes <- NULL
+  if (n_clusters > 1) {
+    D <- fdadist(
+      x = grids[labels, ],
+      y = aligned_curves,
+      warping_class = "none",
+      metric = metric
+    )
+    silhouettes <- cluster::silhouette(labels, D)[, "sil_width"]
+  }
+
   out <- list(
     original_curves = original_curves,
     aligned_curves = aligned_curves,
     center_curves = center_curves,
     warpings = warpings,
-    grid = grid,
+    grids = grids,
     n_clusters = n_clusters,
     memberships = labels,
     distances_to_center = dtc,

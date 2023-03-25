@@ -31,10 +31,18 @@ diagnostic_plot <- function(x) {
   ) |>
     dplyr::mutate(ObservationID = as.character(1:dplyr::n())) |>
     dplyr::group_by(.data$Membership) |>
-    dplyr::mutate(ObservationID = forcats::fct_reorder(.data$ObservationID, .data$Silhouette, .desc = TRUE)) |>
+    dplyr::mutate(ObservationID = forcats::fct_reorder(
+      .f = .data$ObservationID,
+      .x = .data$Silhouette,
+      .desc = TRUE
+    )) |>
     dplyr::ungroup() |>
     tidyr::pivot_longer(cols = c("Distance to center", "Silhouette")) |>
-    ggplot2::ggplot(ggplot2::aes(.data$ObservationID, .data$value, fill = .data$Membership)) +
+    ggplot2::ggplot(ggplot2::aes(
+      x = .data$ObservationID,
+      y = .data$value,
+      fill = .data$Membership
+    )) +
     ggplot2::geom_col(color = "black") +
     ggplot2::facet_wrap(ggplot2::vars(.data$name), ncol = 1, scales = "free") +
     ggplot2::labs(

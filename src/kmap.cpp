@@ -21,12 +21,11 @@ Rcpp::List kmap(const arma::mat &x,
 {
     KmaModel model;
 
-    model.SetInputData(x, y);
+    model.SetInputData(x, y, n_clust);
 
     model.SetSeedVector(seeds);
     model.SetWarpingOptions(warping_options);
 
-    model.SetNumberOfClusters(n_clust);
     model.SetMaximumNumberOfIterations(maximum_number_of_iterations);
     model.SetNumberOfThreads(number_of_threads);
     model.SetParallelMethod(parallel_method);
