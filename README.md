@@ -55,7 +55,7 @@ remotes::install_github("astamm/fdacluster")
 ``` r
 library(fdacluster)
 
-res <- fdakmeans(
+out <- fdakmeans(
   simulated30$x,
   simulated30$y,
   seeds = c(1, 21),
@@ -106,14 +106,14 @@ res <- fdakmeans(
 #> Active stopping criteria:
 #>  - Memberships did not change.
 
-plot(res, type = "amplitude")
+plot(out, type = "amplitude")
 #> Warning: Removed 370 rows containing missing values (`geom_line()`).
 ```
 
 <img src="man/figures/README-example-simulated30-1.png" width="100%" />
 
 ``` r
-plot(res, type = "phase")
+plot(out, type = "phase")
 ```
 
 <img src="man/figures/README-example-simulated30-2.png" width="100%" />
