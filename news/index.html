@@ -49,7 +49,13 @@
 
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.1.9000" id="fdacluster-0119000">fdacluster 0.1.1.9000<a class="anchor" aria-label="anchor" href="#fdacluster-0119000"></a></h2>
-</div>
+<ul><li>Add hierarchical clustering;</li>
+<li>Enforce <code>n_clusters</code> in output via linear programming (LP) using the <strong>lpSolve</strong> package;</li>
+<li>New <code>caps</code> class for storing results from functional <strong>C</strong>lustering with <strong>A</strong>mplitude and <strong>P</strong>hase <strong>S</strong>eparation in a consistent way;</li>
+<li>Add tools for comparing clustering results (<code>mcaps</code> objects and <code>autoplot</code> and <code>plot</code> specialized method implementations);</li>
+<li>Add seeding strategies for kmeans (via hierarchical clustering or k-means++ or k-means++ with exhaustive search of the first center or exhaustive search of all the centers);</li>
+<li>Add within-cluster domain auto-extension via mean imputation.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.1" id="fdacluster-011">fdacluster 0.1.1<small>2022-05-09</small><a class="anchor" aria-label="anchor" href="#fdacluster-011"></a></h2>
 <ul><li>Fixed undefined behavior sanitizer issues spotted by UBSAN.</li>

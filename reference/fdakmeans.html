@@ -63,6 +63,7 @@ number of warping class are implemented to achieve this separation.</p>
 <span>  n_clusters <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
 <span>  seeds <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  seeding_strategy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmeans++"</span>, <span class="st">"exhaustive-kmeans++"</span>, <span class="st">"exhaustive"</span>, <span class="st">"hclust"</span><span class="op">)</span>,</span>
 <span>  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span><span class="op">)</span>,</span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
@@ -74,7 +75,8 @@ number of warping class are implemented to achieve this separation.</p>
 <span>  check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  use_verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  add_silhouettes <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  add_silhouettes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  expand_domain <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -103,9 +105,25 @@ Defaults to <code>1L</code>.</p></dd>
 
 
 <dt>seeds</dt>
-<dd><p>An integer vector of length <code>n_clusters</code> specifying the indices
-of the initial templates. Defaults to <code>NULL</code>, which boils down to randomly
-sampled indices.</p></dd>
+<dd><p>An integer value or vector specifying the indices of the initial
+centroids. If an integer vector, it is interpreted as the indices of the
+intial centroids and should therefore be of length <code>n_clusters</code>. If an
+integer value, it is interpreted as the index of the first initial centroid
+and subsequent centroids are chosen according to the k-means++ strategy. It
+can be <code>NULL</code> in which case the argument <code>seeding_strategy</code> is used to
+automatically provide suitable indices. Defaults to <code>NULL</code>.</p></dd>
+
+
+<dt>seeding_strategy</dt>
+<dd><p>A character string specifying the strategy for
+choosing the initial centroids in case the argument <code>seeds</code> is set to
+<code>NULL</code>. Choices are
+<a href="https://en.wikipedia.org/wiki/K-means%2B%2B" class="external-link"><code>"kmeans++"</code></a>,
+<code>"exhaustive-kmeans++"</code> which performs an exhaustive search over the choice
+of the first centroid, <code>"exhaustive"</code> which tries on all combinations of
+initial centroids or <code>"hclust"</code> which first performs hierarchical
+clustering using Ward's linkage criterion to identify initial centroids.
+Defaults to <code>"kmeans++"</code>, which is the fastest strategy.</p></dd>
 
 
 <dt>maximum_number_of_iterations</dt>
@@ -179,6 +197,13 @@ should be also computed. Defaults to <code>FALSE</code>. This is used only when
 <dd><p>A boolean specifying whether silhouette values should
 be computed for each observation for internal validation of the clustering
 structure. Defaults to <code>TRUE</code>.</p></dd>
+
+
+<dt>expand_domain</dt>
+<dd><p>A boolean specifying how to define the within-cluster
+common grids. When set to <code>FALSE</code>, the intersection of the individual
+domains is used. When set to <code>TRUE</code>, the union is used and mean imputation
+is performed to fill in the missing values. Defaults to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
