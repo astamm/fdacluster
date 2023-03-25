@@ -107,7 +107,7 @@ res <- fdakmeans(
 #>  - Memberships did not change.
 
 plot(res, type = "amplitude")
-#> Warning: Removed 285 rows containing missing values (`geom_line()`).
+#> Warning: Removed 370 rows containing missing values (`geom_line()`).
 ```
 
 <img src="man/figures/README-example-simulated30-1.png" width="100%" />
