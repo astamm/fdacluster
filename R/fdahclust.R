@@ -24,7 +24,7 @@ fdahclust <- function(x, y,
                       n_clusters = 1L,
                       warping_class = c("affine", "dilation", "none", "shift", "srsf"),
                       maximum_number_of_iterations = 100L,
-                      centroid_type = c("mean", "medoid"),
+                      centroid_type = c("mean", "medoid", "lowess", "poly"),
                       metric = c("l2", "pearson"),
                       warping_options = c(0.15, 0.15),
                       number_of_threads = 1L,
@@ -41,11 +41,11 @@ fdahclust <- function(x, y,
   if (anyNA(y))
     cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
 
+  call <- rlang::call_match(defaults = TRUE)
   warping_class <- rlang::arg_match(warping_class)
   centroid_type <- rlang::arg_match(centroid_type)
   metric <- rlang::arg_match(metric)
   linkage_criterion <- rlang::arg_match(linkage_criterion)
-  call <- rlang::call_match(defaults = TRUE)
 
   # Handle one-dimensional data
   if (length(dim(y)) == 2) {

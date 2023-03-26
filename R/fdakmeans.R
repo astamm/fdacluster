@@ -93,7 +93,7 @@ fdakmeans <- function(x, y,
                       seeds = NULL,
                       seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
                       maximum_number_of_iterations = 100L,
-                      centroid_type = c("mean", "medoid"),
+                      centroid_type = c("mean", "medoid", "lowess", "poly"),
                       metric = c("l2", "pearson"),
                       warping_options = c(0.15, 0.15),
                       number_of_threads = 1L,
@@ -111,14 +111,14 @@ fdakmeans <- function(x, y,
   if (anyNA(y))
     cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
 
+  call <- rlang::call_match(defaults = TRUE)
+  call_name <- rlang::call_name(call)
+  call_args <- rlang::call_args(call)
+
   seeding_strategy <- rlang::arg_match(seeding_strategy)
   warping_class <- rlang::arg_match(warping_class)
   centroid_type <- rlang::arg_match(centroid_type)
   metric <- rlang::arg_match(metric)
-
-  call <- rlang::call_match(defaults = TRUE)
-  call_name <- rlang::call_name(call)
-  call_args <- rlang::call_args(call)
 
   # Handle one-dimensional data
   if (length(dim(y)) == 2) {

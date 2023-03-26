@@ -6,6 +6,8 @@
 #include "affineWarpingClass.h"
 #include "medoidCenterClass.h"
 #include "meanCenterClass.h"
+#include "lowessCenterClass.h"
+#include "polyCenterClass.h"
 #include "pearsonDissimilarityClass.h"
 #include "l2DissimilarityClass.h"
 
@@ -76,6 +78,8 @@ void KmaModel::SetCenterMethod(const std::string &val)
   SharedFactory<BaseCenterMethod> centerFactory;
   centerFactory.Register<MedoidCenterMethod>("medoid");
   centerFactory.Register<MeanCenterMethod>("mean");
+  centerFactory.Register<LowessCenterMethod>("lowess");
+  centerFactory.Register<PolyCenterMethod>("poly");
 
   m_CenterPointer = centerFactory.Instantiate(val);
 

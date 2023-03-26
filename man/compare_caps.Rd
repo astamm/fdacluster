@@ -11,7 +11,7 @@ compare_caps(
   metric = c("l2", "pearson"),
   clustering_method = c("kmeans", "hclust-complete", "hclust-average", "hclust-single"),
   warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-  centroid_type = c("mean", "medoid")
+  centroid_type = c("mean", "medoid", "lowess", "poly")
 )
 }
 \arguments{

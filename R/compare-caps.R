@@ -48,7 +48,7 @@ compare_caps <- function(x, y,
                                                "hclust-single"),
                          warping_class = c("affine", "dilation", "none",
                                            "shift", "srsf"),
-                         centroid_type = c("mean", "medoid")) {
+                         centroid_type = c("mean", "medoid", "lowess", "poly")) {
   metric <- rlang::arg_match(metric)
   clustering_method <- rlang::arg_match(clustering_method, multiple = TRUE)
   warping_class <- rlang::arg_match(warping_class, multiple = TRUE)

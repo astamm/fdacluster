@@ -43,6 +43,7 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
       }
     }
 
+    // Next, compute point-wise mean
     for (unsigned int i = 0;i < numberOfPoints;++i)
     {
       finiteIndices = arma::find_finite(yIn.slice(i).col(0));
@@ -50,7 +51,7 @@ CenterType MeanCenterMethod::GetCenter(const arma::mat& inputGrid,
       meanValue.col(i) = arma::mean(workMatrix, 0).as_col();
     }
 
-    // compute dissimilarity between observations and center
+    // Finally, compute dissimilarity between observations and center
     arma::rowvec distancesToCenter(numberOfObservations);
     for (unsigned int i = 0;i < numberOfObservations;++i)
     {

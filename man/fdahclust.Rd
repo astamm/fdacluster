@@ -10,7 +10,7 @@ fdahclust(
   n_clusters = 1L,
   warping_class = c("affine", "dilation", "none", "shift", "srsf"),
   maximum_number_of_iterations = 100L,
-  centroid_type = c("mean", "medoid"),
+  centroid_type = c("mean", "medoid", "lowess", "poly"),
   metric = c("l2", "pearson"),
   warping_options = c(0.15, 0.15),
   number_of_threads = 1L,
