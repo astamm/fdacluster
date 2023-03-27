@@ -597,6 +597,21 @@ Rcpp::List KmaModel::FitModel()
     timer.step( "newtemplates "+ std::to_string(numberOfIterations) );
   }
 
+  double amplitudeVariation = 0.0;
+  double totalVariation = 0.0;
+  for (unsigned int i = 0;i < m_NumberOfObservations;++i)
+  {
+    unsigned int clusterId = observationMemberships(i);
+    double distanceValue = m_DissimilarityPointer->GetDistance(
+      m_InputGrids.row(i),
+      templateGrids.row(clusterId),
+      m_InputValues.row(i),
+      templateValues.row(clusterId)
+    );
+    amplitudeVariation += observationDistances(i) * observationDistances(i);
+    totalVariation += distanceValue * distanceValue;
+  }
+
   if (m_UseVerbose)
   {
     Rcpp::Rcout << std::endl;
@@ -667,6 +682,7 @@ Rcpp::List KmaModel::FitModel()
     Rcpp::Named("final_dissimilarity")         = outputObservationDistances,
     Rcpp::Named("parameters_list")             = listOfEstimatedParameters,
     Rcpp::Named("parameters")                  = finalWarpingParameters,
-    Rcpp::Named("timer")                       = timer
+    Rcpp::Named("amplitude_variation")         = amplitudeVariation,
+    Rcpp::Named("total_variation")             = totalVariation
   );
 }

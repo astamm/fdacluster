@@ -66,12 +66,13 @@ as_caps <- function(x) {
   if (!inherits(x, "list"))
     cli::cli_abort("The input argument {.arg x} should be a list.")
 
-  if (length(x) != 12)
-    cli::cli_abort("The input argument {.arg x} should be a list of length 12.")
+  if (length(x) != 14)
+    cli::cli_abort("The input argument {.arg x} should be a list of length 14.")
 
   expected_names <- c("original_curves", "aligned_curves", "center_curves",
                       "warpings", "grids", "n_clusters", "memberships",
-                      "distances_to_center", "silhouettes", "n_iterations",
+                      "distances_to_center", "silhouettes",
+                      "amplitude_variation", "total_variation", "n_iterations",
                       "call_name", "call_args")
   if (any(names(x) != expected_names))
     cli::cli_abort("The input argument {.arg x} should be a list with components {expected_names}.")

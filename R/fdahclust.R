@@ -141,6 +141,8 @@ fdahclust <- function(x, y,
     memberships = labels,
     distances_to_center = dtc,
     silhouettes = silhouettes,
+    amplitude_variation = sum(purrr::map_dbl(kmresults, "amplitude_variation")),
+    total_variation = sum(purrr::map_dbl(kmresults, "total_variation")),
     n_iterations = 0,
     call_name = rlang::call_name(call),
     call_args = rlang::call_args(call)

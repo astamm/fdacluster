@@ -281,13 +281,28 @@ fdakmeans <- function(x, y,
       use_verbose = use_verbose
     )
 
+    original_curves <- aperm(array(res$f0, dim = c(L, M, N)), c(3, 1, 2))
     cluster_members <- lapply(1:n_clusters, function(k) which(res$labels == k))
     aligned_curves <- array(dim = c(N, L, M))
+    center_curves <- aperm(res$templates, c(3, 1, 2))
     warpings <- matrix(nrow = N, ncol = M)
     for (k in 1:n_clusters) {
       aligned_curves[cluster_members[[k]], , ] <- t(res$fn[[k]])
       warpings[cluster_members[[k]], ] <- t(res$gam[[k]])
     }
+
+    q0 <- res$q0
+    if (length(dim(q0)) == 2L) # This should be done in fdasrvf package
+      dim(q0) <- c(1, dim(q0))
+    amplitude_variation <- sum(res$distances_to_center^2)
+    total_variation <- sum(purrr::map_dbl(1:N, \(n) {
+      sum(purrr::map_dbl(1:L, \(l) {
+        trapz(
+          x = common_grid,
+          y = (q0[l, , n] - res$templates.q[l, , res$labels[n]])^2
+        )
+      }))
+    }))
 
     silhouettes <- NULL
     if (n_clusters > 1 && add_silhouettes) {
@@ -301,15 +316,17 @@ fdakmeans <- function(x, y,
     }
 
     out <- list(
-      original_curves = aperm(array(res$f0, dim = c(L, M, N)), c(3, 1, 2)),
+      original_curves = original_curves,
       aligned_curves = aligned_curves,
-      center_curves = aperm(res$templates, c(3, 1, 2)),
+      center_curves = center_curves,
       warpings = warpings,
       grids = matrix(res$time, nrow = n_clusters, ncol = M, byrow = TRUE),
       n_clusters = n_clusters,
       memberships = res$labels,
       distances_to_center = res$distances_to_center,
       silhouettes = silhouettes,
+      amplitude_variation = amplitude_variation,
+      total_variation = total_variation,
       n_iterations = length(res$qun),
       call_name = call_name,
       call_args = call_args
@@ -437,6 +454,8 @@ fdakmeans <- function(x, y,
     memberships = res$labels,
     distances_to_center = res$final_dissimilarity,
     silhouettes = silhouettes,
+    amplitude_variation = res$amplitude_variation,
+    total_variation = res$total_variation,
     n_iterations = res$iterations,
     call_name = call_name,
     call_args = call_args

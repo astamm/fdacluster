@@ -46,3 +46,45 @@ impute_via_mean <- function(X, labels) {
 
   Xout
 }
+
+trapz <- function(x,y,dims=1){
+  if ((dims-1)>0){
+    perm = c(dims:max(ndims(y),dims), 1:(dims-1))
+  } else {
+    perm = c(dims:max(ndims(y),dims))
+  }
+
+  if (ndims(y) == 0){
+    m = 1
+  } else {
+    if (length(x) != dim(y)[dims])
+      stop('Dimension Mismatch')
+    y = aperm(y, perm)
+    m = nrow(y)
+  }
+
+  if (m==1){
+    M = length(y)
+    out = sum(diff(x)*(y[-M]+y[-1])/2)
+  } else {
+    slice1 = y[as.vector(outer(1:(m-1), dim(y)[1]*( 1:prod(dim(y)[-1])-1 ), '+')) ]
+    dim(slice1) = c(m-1, length(slice1)/(m-1))
+    slice2 = y[as.vector(outer(2:m, dim(y)[1]*( 1:prod(dim(y)[-1])-1 ), '+'))]
+    dim(slice2) = c(m-1, length(slice2)/(m-1))
+    out = t(diff(x)) %*% (slice1+slice2)/2.
+    siz = dim(y)
+    siz[1] = 1
+    out = array(out, siz)
+    perm2 = rep(0, length(perm))
+    perm2[perm] = 1:length(perm)
+    out = aperm(out, perm2)
+    ind = which(dim(out) != 1)
+    out = array(out, dim(out)[ind])
+  }
+
+  out
+}
+
+ndims <- function(x){
+  return(length(dim(x)))
+}
