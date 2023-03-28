@@ -14,8 +14,6 @@
 #include "utilityFunctions.h"
 #include "sharedFactoryClass.h"
 
-#include <Rcpp/Benchmark/Timer.h>
-
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -421,9 +419,6 @@ void KmaModel::UpdateTemplates(const unsigned int numberOfIterations,
 
 Rcpp::List KmaModel::FitModel()
 {
-  Rcpp::Timer timer;
-  timer.step("start execution");
-
   Rcpp::Function lpAlgorithm = m_LPSolve["lp"];
 
   //
@@ -473,14 +468,13 @@ Rcpp::List KmaModel::FitModel()
   arma::mat warpedGrids = m_InputGrids;
   arma::mat warpingParameters(m_NumberOfObservations, numberOfParameters);
   arma::mat distancesToCenters(m_NumberOfClusters, m_NumberOfObservations);
+  arma::cube allWarpedGrids(m_NumberOfObservations, m_NumberOfClusters, m_NumberOfPoints);
   arma::cube allWarpingParameters(m_NumberOfObservations, m_NumberOfClusters, numberOfParameters);
   arma::cube warpingParametersContainer(m_NumberOfObservations, numberOfParameters, 2 * m_MaximumNumberOfIterations);
   bool distanceCondition = true;
   bool membershipCondition = true;
   bool iterationCondition = true;
   bool totalDissimilarityCondition = true;
-
-  timer.step("seeds and original center");
 
   if (m_UseVerbose)
     Rcpp::Rcout << "Running k-centroid algorithm:" << std::endl;
@@ -506,6 +500,27 @@ Rcpp::List KmaModel::FitModel()
         templateGrids,
         templateValues
     );
+
+    if (m_ClusterOnPhase && m_WarpingPointer->GetNumberOfParameters() > 0)
+    {
+      for (unsigned int k = 0;k < m_NumberOfClusters;++k)
+      {
+        allWarpedGrids.col(k) = m_WarpingPointer->ApplyWarping(
+          warpedGrids,
+          allWarpingParameters.col_as_mat(k)
+        );
+
+        for (unsigned int i = 0;i < m_NumberOfObservations;++i)
+        {
+          distancesToCenters(k, i) = m_DissimilarityPointer->GetDistance(
+           m_InputGrids.row(i),
+           m_InputGrids.row(i),
+           m_InputGrids.row(i),
+           arma::rowvec(allWarpedGrids.tube(i, k))
+          );
+        }
+      }
+    }
 
     this->AssignObservations(
         warpingParameters,
@@ -534,8 +549,6 @@ Rcpp::List KmaModel::FitModel()
     distanceCondition = arma::any(arma::abs(observationDistances - oldObservationDistances) > m_DistanceRelativeTolerance * observationDistances);
     membershipCondition = arma::any(observationMemberships != oldObservationMemberships) || (m_NumberOfClusters == 1);
 
-    timer.step( "warping "+ std::to_string(numberOfIterations) );
-
     // Update current template list
     clusterIndices = arma::unique(observationMemberships);
     numberOfClusters = clusterIndices.size();
@@ -556,8 +569,6 @@ Rcpp::List KmaModel::FitModel()
 
     // Update individual warped grids
     warpedGrids = m_WarpingPointer->ApplyWarping(warpedGrids, warpingParameters);
-
-    timer.step( "fence/norm/update "+ std::to_string(numberOfIterations) );
 
     // Compute new templates
     templateGrids.set_size(numberOfClusters, m_NumberOfPoints);
@@ -593,8 +604,6 @@ Rcpp::List KmaModel::FitModel()
         --numberOfIterations;
       }
     }
-
-    timer.step( "newtemplates "+ std::to_string(numberOfIterations) );
   }
 
   double amplitudeVariation = 0.0;
@@ -602,15 +611,32 @@ Rcpp::List KmaModel::FitModel()
   for (unsigned int i = 0;i < m_NumberOfObservations;++i)
   {
     unsigned int clusterId = observationMemberships(i);
-    double distanceValue = m_DissimilarityPointer->GetDistance(
-      m_InputGrids.row(i),
-      templateGrids.row(clusterId),
-      m_InputValues.row(i),
-      templateValues.row(clusterId)
-    );
+    double distanceValue = 0.0;
+    if (m_ClusterOnPhase && m_WarpingPointer->GetNumberOfParameters() > 0)
+    {
+      distanceValue = m_DissimilarityPointer->GetDistance(
+        m_InputGrids.row(i),
+        m_InputGrids.row(i),
+        m_InputGrids.row(i),
+        templateGrids.row(clusterId)
+      );
+    }
+    else
+    {
+      distanceValue = m_DissimilarityPointer->GetDistance(
+        m_InputGrids.row(i),
+        templateGrids.row(clusterId),
+        m_InputValues.row(i),
+        templateValues.row(clusterId)
+      );
+    }
+
     amplitudeVariation += observationDistances(i) * observationDistances(i);
     totalVariation += distanceValue * distanceValue;
   }
+
+  if (m_ClusterOnPhase && m_WarpingPointer->GetNumberOfParameters() > 0)
+    amplitudeVariation = totalVariation - amplitudeVariation;
 
   if (m_UseVerbose)
   {
@@ -638,8 +664,6 @@ Rcpp::List KmaModel::FitModel()
     observationMemberships,
     clusterIndices
   );
-
-  timer.step( "output ");
 
   // Convert arma vector types to Rcpp::NumericVector
   // since arma types consistently converts to matrix in R

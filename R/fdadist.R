@@ -18,6 +18,7 @@
 fdadist <- function(x, y,
                     warping_class = c("affine", "dilation", "none", "shift", "srsf"),
                     metric = c("l2", "pearson"),
+                    cluster_on_phase = FALSE,
                     labels = NULL) {
   if (anyNA(x))
     cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
@@ -71,6 +72,7 @@ fdadist <- function(x, y,
         centroid_type = "medoid",
         warping_class = warping_class,
         metric = metric,
+        cluster_on_phase = cluster_on_phase,
         use_verbose = FALSE,
         add_silhouettes = FALSE
       )
@@ -85,6 +87,7 @@ fdadist <- function(x, y,
         centroid_type = "medoid",
         warping_class = warping_class,
         metric = metric,
+        cluster_on_phase = cluster_on_phase,
         use_verbose = FALSE,
         add_silhouettes = FALSE
       )

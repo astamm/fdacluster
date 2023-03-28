@@ -18,6 +18,7 @@ fdakmeans(
   number_of_threads = 1L,
   parallel_method = 0L,
   distance_relative_tolerance = 0.001,
+  cluster_on_phase = FALSE,
   use_fence = FALSE,
   check_total_dissimilarity = TRUE,
   use_verbose = TRUE,
@@ -88,6 +89,10 @@ is used only when \code{warping_class != "srsf"}.}
 tolerance on the distance update between two iterations. If all
 observations have not sufficiently improved in that sense, the algorithm
 stops. Defaults to \code{1e-3}. This is used only when \code{warping_class != "srsf"}.}
+
+\item{cluster_on_phase}{A boolean specifying whether clustering should be
+based on phase variation or amplitude variation. Defaults to \code{FALSE} which
+implies amplitude variation.}
 
 \item{use_fence}{A boolean specifying whether the fence algorithm should be
 used to robustify the algorithm against outliers. Defaults to \code{FALSE}. This

@@ -37,6 +37,7 @@ public:
 
         m_DistanceRelativeTolerance = 1.0e-3;
 
+        m_ClusterOnPhase = false;
         m_UseFence = false;
         m_CheckTotalDissimilarity = true;
         m_UseVerbose = true;
@@ -70,6 +71,7 @@ public:
 
     void SetDistanceRelativeTolerance(const double &val) {m_DistanceRelativeTolerance = val;}
 
+    void SetClusterOnPhase(const bool &val) {m_ClusterOnPhase = val;}
     void SetUseFence(const bool &val) {m_UseFence = val;}
     void SetCheckTotalDissimilarity(const bool &val) {m_CheckTotalDissimilarity = val;}
     void SetUseVerbose(const bool &val) {m_UseVerbose = val;}
@@ -152,6 +154,7 @@ private:
 
     double m_DistanceRelativeTolerance;
 
+    bool m_ClusterOnPhase;
     bool m_UseFence;
     bool m_CheckTotalDissimilarity;
     bool m_UseVerbose;

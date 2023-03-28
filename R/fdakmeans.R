@@ -56,6 +56,9 @@
 #'   observations have not sufficiently improved in that sense, the algorithm
 #'   stops. Defaults to `1e-3`. This is used only when `warping_class !=
 #'   "srsf"`.
+#' @param cluster_on_phase A boolean specifying whether clustering should be
+#'   based on phase variation or amplitude variation. Defaults to `FALSE` which
+#'   implies amplitude variation.
 #' @param use_fence A boolean specifying whether the fence algorithm should be
 #'   used to robustify the algorithm against outliers. Defaults to `FALSE`. This
 #'   is used only when `warping_class != "srsf"`.
@@ -99,6 +102,7 @@ fdakmeans <- function(x, y,
                       number_of_threads = 1L,
                       parallel_method = 0L,
                       distance_relative_tolerance = 0.001,
+                      cluster_on_phase = FALSE,
                       use_fence = FALSE,
                       check_total_dissimilarity = TRUE,
                       use_verbose = TRUE,
@@ -149,13 +153,20 @@ fdakmeans <- function(x, y,
         centroid_type = centroid_type,
         metric = metric,
         linkage_criterion = "ward.D2",
+        cluster_on_phase = cluster_on_phase,
         use_verbose = FALSE
       )
       seeds <- 1:n_clusters |>
         purrr::map(~ which(out$memberships == .x)) |>
         purrr::map_int(~ .x[which.min(out$distances_to_center[.x])])
     } else if (seeding_strategy == "kmeans++") {
-      D <- fdadist(x = x, y = y, warping_class = warping_class, metric = metric)
+      D <- fdadist(
+        x = x,
+        y = y,
+        warping_class = warping_class,
+        metric = metric,
+        cluster_on_phase = cluster_on_phase
+      )
       Dm <- as.matrix(D)
       seeds <- sample(1:N, 1L)
       if (n_clusters > 1L) {
@@ -167,7 +178,13 @@ fdakmeans <- function(x, y,
         }
       }
     } else if (seeding_strategy == "exhaustive-kmeans++") {
-      D <- fdadist(x = x, y = y, warping_class = warping_class, metric = metric)
+      D <- fdadist(
+        x = x,
+        y = y,
+        warping_class = warping_class,
+        metric = metric,
+        cluster_on_phase = cluster_on_phase
+      )
       Dm <- as.matrix(D)
       pb <- progressr::progressor(steps = N)
       out <- furrr::future_map(1:N, \(n) {
@@ -193,6 +210,7 @@ fdakmeans <- function(x, y,
           warping_options = warping_options,
           distance_relative_tolerance = distance_relative_tolerance,
           use_fence = use_fence,
+          cluster_on_phase = cluster_on_phase,
           use_verbose = FALSE,
           add_silhouettes = add_silhouettes
         )
@@ -215,6 +233,7 @@ fdakmeans <- function(x, y,
           metric = metric,
           warping_options = warping_options,
           distance_relative_tolerance = distance_relative_tolerance,
+          cluster_on_phase = cluster_on_phase,
           use_fence = use_fence,
           check_total_dissimilarity = check_total_dissimilarity,
           use_verbose = FALSE,
@@ -231,7 +250,13 @@ fdakmeans <- function(x, y,
     if (n_centroids != n_clusters && n_centroids != 1L)
       cli::cli_abort("The number of initial centroid indices provided by the {.arg seeding_strategy} argument should be either 1 or {n_clusters}.")
     if (n_centroids == 1L && n_clusters > 1L) {
-      D <- fdadist(x = x, y = y, warping_class = warping_class, metric = metric)
+      D <- fdadist(
+        x = x,
+        y = y,
+        warping_class = warping_class,
+        metric = metric,
+        cluster_on_phase = cluster_on_phase
+      )
       Dm <- as.matrix(D)
       for (k in 2:n_clusters) {
         Dsub <- Dm[seeds, -seeds, drop = FALSE]
@@ -345,6 +370,7 @@ fdakmeans <- function(x, y,
     number_of_threads = number_of_threads,
     parallel_method = parallel_method,
     distance_relative_tolerance = distance_relative_tolerance,
+    cluster_on_phase = cluster_on_phase,
     use_fence = use_fence,
     check_total_dissimilarity = check_total_dissimilarity,
     use_verbose = use_verbose,

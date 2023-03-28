@@ -30,6 +30,7 @@ fdahclust <- function(x, y,
                       number_of_threads = 1L,
                       parallel_method = 0L,
                       distance_relative_tolerance = 0.001,
+                      cluster_on_phase = FALSE,
                       use_fence = FALSE,
                       check_total_dissimilarity = TRUE,
                       use_verbose = TRUE,
@@ -65,7 +66,13 @@ fdahclust <- function(x, y,
   if (use_verbose)
     cli::cli_alert_info("Computing the distance matrix...")
 
-  D <- fdadist(x = x, y = y, warping_class = warping_class, metric = metric)
+  D <- fdadist(
+    x = x,
+    y = y,
+    warping_class = warping_class,
+    metric = metric,
+    cluster_on_phase = cluster_on_phase
+  )
   Dm <- as.matrix(D)
 
   if (use_verbose)
@@ -93,6 +100,7 @@ fdahclust <- function(x, y,
       number_of_threads = number_of_threads,
       parallel_method = parallel_method,
       distance_relative_tolerance = distance_relative_tolerance,
+      cluster_on_phase = cluster_on_phase,
       use_fence = use_fence,
       check_total_dissimilarity = check_total_dissimilarity,
       use_verbose = FALSE,
@@ -126,7 +134,8 @@ fdahclust <- function(x, y,
       x = grids[labels, ],
       y = aligned_curves,
       warping_class = "none",
-      metric = metric
+      metric = metric,
+      cluster_on_phase = cluster_on_phase
     )
     silhouettes <- cluster::silhouette(labels, D)[, "sil_width"]
   }

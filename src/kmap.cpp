@@ -10,6 +10,7 @@ Rcpp::List kmap(const arma::mat &x,
                 const unsigned int &number_of_threads,
                 const unsigned int &parallel_method,
                 const double &distance_relative_tolerance,
+                const bool &cluster_on_phase,
                 const bool &use_fence,
                 const bool &check_total_dissimilarity,
                 const bool &use_verbose,
@@ -32,6 +33,7 @@ Rcpp::List kmap(const arma::mat &x,
 
     model.SetDistanceRelativeTolerance(distance_relative_tolerance);
 
+    model.SetClusterOnPhase(cluster_on_phase);
     model.SetUseFence(use_fence);
     model.SetCheckTotalDissimilarity(check_total_dissimilarity);
     model.SetUseVerbose(use_verbose);
