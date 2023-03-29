@@ -3,22 +3,23 @@ template:
   bootstrap: 5
 
 reference:
-  - title: `caps` Class
+  - title: The caps class
   - contents:
-    - caps
     - as_caps
     - is_caps
     - autoplot.caps
     - plot.caps
     - diagnostic_plot
+  - title: Clustering methods
+  - contents:
+    - fdadist
+    - fdahclust
+    - fdakmeans
+  - title: Clustering comparison
+  - contents:
     - compare_caps
     - autoplot.mcaps
     - plot.mcaps
-  - title: Clustering Methods
-  - contents:
-    - fdakmeans
-    - fdadist
-    - fdahclust
   - title: Data sets
   - contents:
     - simulated30
