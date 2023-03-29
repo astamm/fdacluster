@@ -1,0 +1,26 @@
+url: ~
+template:
+  bootstrap: 5
+
+reference:
+  - title: `caps` Class
+  - contents:
+    - caps
+    - as_caps
+    - is_caps
+    - autoplot.caps
+    - plot.caps
+    - diagnostic_plot
+    - compare_caps
+    - autoplot.mcaps
+    - plot.mcaps
+  - title: Clustering Methods
+  - contents:
+    - fdakmeans
+    - fdadist
+    - fdahclust
+  - title: Data sets
+  - contents:
+    - simulated30
+    - simulated90
+    - aneurisk65
