@@ -4,7 +4,15 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content='Revisited clustering approaches to accommodate functional 
+    data by allowing to jointly align the data during the clustering 
+    process. Currently, shift, dilation and affine transformations 
+    only are available to perform alignment. The k-mean algorithm has 
+    been extended to integrate alignment and is fully parallelized. 
+    Hierarchical clustering will soon be available as well. References: 
+    Sangalli L.M., Secchi P., Vantini S., Vitelli V. (2010) "k-mean 
+    alignment for curve clustering" &lt;doi:10.1016/j.csda.2009.12.008&gt;.'>
 <title>Joint Clustering and Alignment of Functional Data • fdacluster</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -12,12 +20,11 @@
 <link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Joint Clustering and Alignment of Functional Data">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Joint Clustering and Alignment of Functional Data">
 <meta property="og:description" content='Revisited clustering approaches to accommodate functional 
     data by allowing to jointly align the data during the clustering 
     process. Currently, shift, dilation and affine transformations 
@@ -32,98 +39,91 @@
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <div class="container template-home">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">fdacluster</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.1.9000</span>
-      </span>
-    </div>
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    
+    <a class="navbar-brand me-2" href="index.html">fdacluster</a>
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="reference/index.html">Reference</a>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-3">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
-<li>
-  <a href="news/index.html">Changelog</a>
+<li class="nav-item">
+  <a class="nav-link" href="news/index.html">Changelog</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="https://github.com/astamm/fdacluster/" class="external-link">
-    <span class="fab fa-github fa-lg"></span>
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/astamm/fdacluster/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
 </li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+    
   </div>
-<!--/.container -->
+</nav><div class="container template-home">
+<div class="row">
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="fdacluster-">fdacluster <a class="anchor" aria-label="anchor" href="#fdacluster-"></a>
+</h1>
 </div>
-<!--/.navbar -->
-
-      
-
-      </header><div class="row">
-  <div class="contents col-md-9">
-<div class="section level1">
-<div class="page-header"><h1 id="fdacluster-">fdacluster <img src="reference/figures/logo.png" align="right" height="139"><a class="anchor" aria-label="anchor" href="#fdacluster-"></a>
-</h1></div>
 <!-- badges: start -->
 
-<p>The <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> package provides the <a href="https://astamm.github.io/fdacluster/reference/kma.html" class="external-link"><code>fdakmeans()</code></a> function that jointly performs clustering and alignment of a functional data set.</p>
+<p>The <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> package provides implementations of the popular <span class="math inline"><em>k</em></span>-means and hierarchical agglomerative clustering (HAC) methods for functional data. Variability in functional data is intrinsically divided into three components: <em>amplitude</em>, <em>phase</em> and <em>ancillary</em> variability. The first two sources of variability can be captured with a dedicated statistical analysis that integrates a <em>curve alignment</em> step. The <span class="math inline"><em>k</em></span>-means and HAC algorithms implemented in <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> provide clustering structures that are based either on ampltitude variation (default behavior) or phase variation. This is achieved by jointly performing clustering and alignment of a functional data set. The two main related functions are <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdakmeans()</code></a> and <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html" class="external-link"><code>fdahclust()</code></a> for the <span class="math inline"><em>k</em></span>-means and HAC methods respectively. The methods handle <strong>multivariate codomains</strong>.</p>
 <div class="section level2">
-<h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="section level3">
-<h3 id="prerequisites">Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
-</h3>
-<p>The package is linked against OpenMP and the BLAS and LAPACK libraries. Hence, you will need to set up an appropriate development environment for the package to install properly. Specifically:</p>
-<ul>
-<li>on Linux: it should be ready;</li>
-<li>on Windows: you should install <a href="https://cran.r-project.org/bin/windows/Rtools/rtools40.html" class="external-link">Rtools</a>;</li>
-<li>on macOS: you should refer to <a href="https://mac.r-project.org/tools/" class="external-link uri">https://mac.r-project.org/tools/</a> and install the relevant tools.</li>
-</ul>
-</div>
-<div class="section level3">
-<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h3>
-<p>You can install the latest stable version of <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> from CRAN with:</p>
+<p>You can install the official version from CRAN via:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"fdacluster"</span><span class="op">)</span></span></code></pre></div>
-<p>Or you can install the development version from <a href="https://github.com/astamm/fdacluster" class="external-link">GitHub</a> with:</p>
+<p>or you can opt to install the development version from <a href="https://github.com/" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
 <span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"astamm/fdacluster"</span><span class="op">)</span></span></code></pre></div>
 </div>
-</div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
+<div class="section level3">
+<h3 id="data-set">Data set<a class="anchor" aria-label="anchor" href="#data-set"></a>
+</h3>
+<p>Let us consider the following simulated example of <span class="math inline">30</span> <span class="math inline">1</span>-dimensional curves: <img src="reference/figures/README-data-1.png" width="100%"></p>
+<p>Looking at the data set, it seems that we shall expect <span class="math inline">3</span> groups if we aim at clustering based on phase variability but probably only <span class="math inline">2</span> groups if we search for a clustering structure based on amplitude variability.</p>
+</div>
+<div class="section level3">
+<h3 id="k-means-based-on-amplitude-variability">
+<span class="math inline"><em>k</em></span>-means based on amplitude variability<a class="anchor" aria-label="anchor" href="#k-means-based-on-amplitude-variability"></a>
+</h3>
+<p>We can perform <span class="math inline"><em>k</em></span>-means clustering based on amplitude variability as follows:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fdakmeans.html">fdakmeans</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">out1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fdakmeans.html">fdakmeans</a></span><span class="op">(</span></span>
 <span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span>
 <span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span>
 <span>  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,</span>
 <span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  centroid_type <span class="op">=</span> <span class="st">"medoid"</span>,</span>
+<span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span>
-<span>  metric <span class="op">=</span> <span class="st">"pearson"</span></span>
+<span>  metric <span class="op">=</span> <span class="st">"pearson"</span>, </span>
+<span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span><span class="co">#&gt; Information about the data set:</span></span>
 <span><span class="co">#&gt;  - Number of observations: 30</span></span>
@@ -136,7 +136,7 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Information about the methods used within the algorithm:</span></span>
 <span><span class="co">#&gt;  - Warping method: affine</span></span>
-<span><span class="co">#&gt;  - Center method: medoid</span></span>
+<span><span class="co">#&gt;  - Center method: mean</span></span>
 <span><span class="co">#&gt;  - Dissimilarity method: pearson</span></span>
 <span><span class="co">#&gt;  - Optimization method: bobyqa</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -165,20 +165,88 @@
 <span><span class="co">#&gt;    * Size of cluster #1: 10</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Active stopping criteria:</span></span>
-<span><span class="co">#&gt;  - Memberships did not change.</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 370 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
-<p><img src="reference/figures/README-example-simulated30-1.png" width="100%"></p>
+<span><span class="co">#&gt;  - Memberships did not change.</span></span></code></pre></div>
+<p>Both the <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdakmeans()</code></a> and <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html" class="external-link"><code>fdahclust()</code></a> functions returns an object of class <a href="https://astamm.github.io/fdacluster/reference/caps.html" class="external-link"><code>caps</code></a> (for <strong>C</strong>lustering with <strong>A</strong>mplitude and <strong>P</strong>hase <strong>S</strong>eparation) for which <code>S3</code> specialized methods of <a href="https://astamm.github.io/fdacluster/reference/autoplot.caps.html" class="external-link"><code>ggplot2::autoplot()</code></a> and <a href="https://astamm.github.io/fdacluster/reference/plot.caps.html" class="external-link"><code>graphics::plot()</code></a> have been implemented. Therefore, we can visualize the results simply with:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-example-simulated30-2.png" width="100%"></p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out1</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 390 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="reference/figures/README-kmeans-amplitude-viz-1.png" width="100%"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out1</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-kmeans-amplitude-viz-2.png" width="100%"></p>
+</div>
+<div class="section level3">
+<h3 id="k-means-based-on-phase-variability">
+<span class="math inline"><em>k</em></span>-means based on phase variability<a class="anchor" aria-label="anchor" href="#k-means-based-on-phase-variability"></a>
+</h3>
+<p>We can perform <span class="math inline"><em>k</em></span>-means clustering based on phase variability only by switch the <code>cluster_on_phase</code> argument to <code>TRUE</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/fdakmeans.html">fdakmeans</a></span><span class="op">(</span></span>
+<span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span>
+<span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span>
+<span>  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">11</span>, <span class="fl">21</span><span class="op">)</span>,</span>
+<span>  n_clusters <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
+<span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span>
+<span>  metric <span class="op">=</span> <span class="st">"pearson"</span>, </span>
+<span>  cluster_on_phase <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; Information about the data set:</span></span>
+<span><span class="co">#&gt;  - Number of observations: 30</span></span>
+<span><span class="co">#&gt;  - Number of dimensions: 1</span></span>
+<span><span class="co">#&gt;  - Number of points: 200</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about cluster initialization:</span></span>
+<span><span class="co">#&gt;  - Number of clusters: 3</span></span>
+<span><span class="co">#&gt;  - Initial seeds for cluster centers:          1        11        21</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about the methods used within the algorithm:</span></span>
+<span><span class="co">#&gt;  - Warping method: affine</span></span>
+<span><span class="co">#&gt;  - Center method: mean</span></span>
+<span><span class="co">#&gt;  - Dissimilarity method: pearson</span></span>
+<span><span class="co">#&gt;  - Optimization method: bobyqa</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about warping parameter bounds:</span></span>
+<span><span class="co">#&gt;  - Warping options:    0.1500   0.1500</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about convergence criteria:</span></span>
+<span><span class="co">#&gt;  - Maximum number of iterations: 100</span></span>
+<span><span class="co">#&gt;  - Distance relative tolerance: 0.001</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Information about parallelization setup:</span></span>
+<span><span class="co">#&gt;  - Number of threads: 1</span></span>
+<span><span class="co">#&gt;  - Parallel method: 0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Other information:</span></span>
+<span><span class="co">#&gt;  - Use fence to robustify: 0</span></span>
+<span><span class="co">#&gt;  - Check total dissimilarity: 1</span></span>
+<span><span class="co">#&gt;  - Compute overall center: 0</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Running k-centroid algorithm:</span></span>
+<span><span class="co">#&gt;  - Iteration #1</span></span>
+<span><span class="co">#&gt;    * Size of cluster #0: 10</span></span>
+<span><span class="co">#&gt;    * Size of cluster #1: 10</span></span>
+<span><span class="co">#&gt;    * Size of cluster #2: 10</span></span>
+<span><span class="co">#&gt;  - Iteration #2</span></span>
+<span><span class="co">#&gt;    * Size of cluster #0: 10</span></span>
+<span><span class="co">#&gt;    * Size of cluster #1: 10</span></span>
+<span><span class="co">#&gt;    * Size of cluster #2: 10</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Active stopping criteria:</span></span>
+<span><span class="co">#&gt;  - Memberships did not change.</span></span></code></pre></div>
+<p>We can inspect the result:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out2</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 100 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="reference/figures/README-kmeans-phase-viz-1.png" width="100%"></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out2</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="reference/figures/README-kmeans-phase-viz-2.png" width="100%"></p>
+<p>We can perform similar analyses using HAC instead of <span class="math inline"><em>k</em></span>-means. The <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a> package also provides visualization tools to help choosing the optimal number of cluster based on WSS and silhouette values. This can be achieved by using a combination of the functions <a href="https://astamm.github.io/fdacluster/reference/compare_caps.html" class="external-link"><code>compare_caps()</code></a> and <a href="https://astamm.github.io/fdacluster/reference/plot.mcaps.html" class="external-link"><code>plot.mcaps()</code></a>.</p>
 </div>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-    <div class="links">
+</div>
+  </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li><a href="https://cloud.r-project.org/package=fdacluster" class="external-link">View on CRAN</a></li>
@@ -225,25 +293,24 @@
 </ul>
 </div>
 
-  </div>
+  </aside>
 </div>
 
 
-      <footer><div class="copyright">
+    <footer><div class="pkgdown-footer-left">
   <p></p>
 <p>Developed by Laura Sangalli, Piercesare Secchi, Aymeric Stamm, Simone Vantini, Valeria Vitelli.</p>
 </div>
 
-<div class="pkgdown">
+<div class="pkgdown-footer-right">
   <p></p>
 <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
   
-
 
   
 
