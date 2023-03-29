@@ -7,8 +7,12 @@
 **A**mplitude and **P**hase **S**eparation in a consistent way;
 * Add tools for comparing clustering results (`mcaps` objects and `autoplot` and 
 `plot` specialized method implementations);
-* Add seeding strategies for kmeans (via hierarchical clustering or k-means++ or k-means++ with exhaustive search of the first center or exhaustive search of all the centers);
-* Add within-cluster domain auto-extension via mean imputation.
+* Add seeding strategies for kmeans (via hierarchical clustering or k-means++ or 
+k-means++ with exhaustive search of the first center or exhaustive search of all 
+the centers);
+* Add within-cluster domain auto-extension via mean imputation;
+* Add possibility to cluster according to phase variability instead of amplitude 
+variability.
 
 # fdacluster 0.1.1
 
