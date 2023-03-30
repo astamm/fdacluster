@@ -46,6 +46,8 @@ LinkingTo:
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Imports: 
     cli,
@@ -67,3 +69,4 @@ Depends:
     R (>= 2.10)
 URL: https://astamm.github.io/fdacluster/index.html, https://github.com/astamm/fdacluster
 Config/testthat/edition: 3
+VignetteBuilder: knitr

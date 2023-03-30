@@ -1,0 +1,89 @@
+---
+title: "Hierarchical agglomerative clustering"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hierarchical agglomerative clustering}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(fdacluster)
+```
+
+## Theory
+
+Traditional hierarchical agglomerative clustering (HAC) is usually carried out in two mandatory steps with a third *optional* one:
+
+1. Compute the distance matrix $D$ in which entry $d_{ij}$ stores the distance
+between observation $i$ and observation $j$;
+2. Compute the hierarchy of clustering structures in the form of a dendrogram by
+first assuming each observation belongs to its own cluster and progressively
+merge observations and groups of observations together using a so-called
+*linkage criterion*;
+3. [optional] Cut the tree at a given distance in order to form $k$ clusters.
+
+Each of these steps incurs slight modifications when it comes to clustering
+functional data.
+
+**Step 1.** Functional HAC needs to account for the intrinsic amplitude and 
+phase variability inherent to functional data. It is therefore natural when 
+computing the distance between two curves to minimize such a distance over all 
+possible warping functions in a chosen class, i.e. to integrate alignment when 
+computing the distance matrix. The idea is to assess how far two curves are 
+after optimal phase alignment. This step is achieved through the 
+[`fdacluster::fdadist()`](https://astamm.github.io/fdacluster/reference/fdadist.html).
+
+**Step 2.** The process of building up the hierarchy of possible clustering 
+structures does not change once the distance matrix $D$ is known. In fact, from 
+a practical point of view with `R`, it is still achieved via a call to [`stats::hclust()`](https://rdrr.io/r/stats/hclust.html). Here, the user can 
+choose which linkage criterion to use for assessing distances between sets of 
+curves. For the sake of simplicity, only a subset of choices from the [`stats::hclust()`](https://rdrr.io/r/stats/hclust.html) function is actually 
+available in [**fdacluster**](https://astamm.github.io/fdacluster/), namely 
+`complete`, `average`, `single` and `ward.D2`.
+
+**Step 3.** Once the dendrogram is built, a big difference between multivariate 
+HAC and functional HAC stems from the fact that the latter requires the choice 
+of the number of clusters, hence making Step 3 mandatory as well. This is 
+because, once the grouping structure has been chosen, all the curves need to 
+undergo a last alignment to the centroid of the cluster they have been assigned 
+to. Then, and only then, within-cluster sum of squared distances to centroid and 
+silhouette values can be assessed. This step is achieved through a call to 
+[`fdacluster::fdakmeans()`](https://astamm.github.io/fdacluster/reference/fdakmeans.html) 
+with $k = 1$ and initial centroid corresponding to the cluster medoid.
+
+## Using [**fdacluster**](https://astamm.github.io/fdacluster/)
+
+All these steps have been enpapsulated into a single function in 
+[**fdacluster**](https://astamm.github.io/fdacluster/) for ease of usage:
+
+```{r fdahclust-overview, eval=FALSE}
+fdahclust(
+  x,
+  y,
+  n_clusters = 1L,
+  warping_class = c("affine", "dilation", "none", "shift", "srsf"),
+  centroid_type = c("mean", "medoid", "lowess", "poly"),
+  metric = c("l2", "pearson"),
+  linkage_criterion = c("complete", "average", "single", "ward.D2"),
+  cluster_on_phase = FALSE,
+  use_verbose = TRUE,
+  
+  warping_options = c(0.15, 0.15),
+  maximum_number_of_iterations = 100L,
+  number_of_threads = 1L,
+  parallel_method = 0L,
+  distance_relative_tolerance = 0.001,
+  use_fence = FALSE,
+  check_total_dissimilarity = TRUE,
+  compute_overall_center = FALSE
+)
+```
+
