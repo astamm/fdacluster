@@ -87,3 +87,18 @@ trapz <- function(x, y, dims = 1) {
 ndims <- function(x){
   length(dim(x))
 }
+
+check_centroid_type <- function(x) {
+  if (x == "mean" || x == "medoid") return(list(name = x, extra = 0))
+  if (grepl("lowess", x, fixed = TRUE)) {
+    span_value <- as.numeric(gsub("\\D", "", x)) / 100
+    if (is.na(span_value)) span_value <- 0.1
+    return(list(name = "lowess", extra = span_value))
+  }
+  if (grepl("poly", x, fixed = TRUE)) {
+    degree_value <- as.numeric(gsub("\\D", "", x))
+    if (is.na(degree_value)) degree_value <- 4
+    return(list(name = "lowess", extra = degree_value))
+  }
+  cli::cli_abort("The input argument {.arg centroid_type} should be one of {.code mean}, {.code medoid}, {.code lowessXX} or {.code polyXX}.")
+}

@@ -39,7 +39,7 @@ computing the distance between two curves to minimize such a distance over all
 possible warping functions in a chosen class, i.e. to integrate alignment when 
 computing the distance matrix. The idea is to assess how far two curves are 
 after optimal phase alignment. This step is achieved through the 
-[`fdacluster::fdadist()`](https://astamm.github.io/fdacluster/reference/fdadist.html).
+[`fdadist()`](https://astamm.github.io/fdacluster/reference/fdadist.html).
 
 **Step 2.** The process of building up the hierarchy of possible clustering 
 structures does not change once the distance matrix $D$ is known. In fact, from 
@@ -56,7 +56,7 @@ because, once the grouping structure has been chosen, all the curves need to
 undergo a last alignment to the centroid of the cluster they have been assigned 
 to. Then, and only then, within-cluster sum of squared distances to centroid and 
 silhouette values can be assessed. This step is achieved through a call to 
-[`fdacluster::fdakmeans()`](https://astamm.github.io/fdacluster/reference/fdakmeans.html) 
+[`fdakmeans()`](https://astamm.github.io/fdacluster/reference/fdakmeans.html) 
 with $k = 1$ and initial centroid corresponding to the cluster medoid.
 
 ## Using [**fdacluster**](https://astamm.github.io/fdacluster/)
@@ -87,3 +87,27 @@ fdahclust(
 )
 ```
 
+The first group of arguments in the above call are the arguments that the user
+is the most likely to interact with. The number of clusters can be specified
+through the argument `n_clusters`, the choice of the class of warping functions
+or type of centroid or metric is achieved through the arguments `warping_class`,
+`centroid_type` and `metric` respectively. The linkage criterion can be selected
+via `linkage_criterion`. By default, the function performs affine registration
+using the pointwise sample mean for computing cluster centroid with the L2
+distance between original curves and complete linkage. By default, the function
+uses amplitude data after alignment for assigning cluster membership of the
+observed curves. The user can switch on the use of phase data instead by using
+`cluster_on_phase = TRUE`.
+
+The second group of arguments are set to sensible default values and are used
+for the internal call to
+[`fdakmeans()`](https://astamm.github.io/fdacluster/reference/fdakmeans.html)
+with $k = 1$, which performs within-cluster alignment to centroid once groups
+have been determined by cutting the dendrogram at the appropriate height. These
+arguments are not meant to be changed unless the results of the clustering via
+[`fdahclust()`](https://astamm.github.io/fdacluster/reference/fdahclust.html)
+seem very odd.
+
+## Example
+
+### Simulated data set

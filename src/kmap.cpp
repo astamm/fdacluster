@@ -10,6 +10,7 @@ Rcpp::List kmap(const arma::mat &x,
                 const unsigned int &number_of_threads,
                 const unsigned int &parallel_method,
                 const double &distance_relative_tolerance,
+                const double &center_args,
                 const bool &cluster_on_phase,
                 const bool &use_fence,
                 const bool &check_total_dissimilarity,
@@ -40,7 +41,7 @@ Rcpp::List kmap(const arma::mat &x,
     model.SetComputeOverallCenter(compute_overall_center);
 
     model.SetWarpingMethod(warping_method);
-    model.SetCenterMethod(center_method);
+    model.SetCenterMethod(center_method, center_args);
     model.SetDissimilarityMethod(dissimilarity_method);
     model.SetOptimizerMethod(optimizer_method);
 

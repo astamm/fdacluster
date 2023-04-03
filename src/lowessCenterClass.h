@@ -8,7 +8,6 @@ class LowessCenterMethod : public BaseCenterMethod
 public:
   LowessCenterMethod()
   {
-    m_SpanValue = 0.1;
     m_StatsPackage = Rcpp::Environment("package:stats");
   }
 
@@ -19,7 +18,6 @@ public:
   );
 
 private:
-  double m_SpanValue;
   Rcpp::Environment m_StatsPackage;
 };
 

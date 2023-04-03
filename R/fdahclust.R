@@ -13,7 +13,7 @@
 #'   be used to compute distances between sets of curves. Choices are
 #'   `"complete"` for complete linkage, `"average"` for average linkage and
 #'   `"single"` for single linkage. See [stats::hclust()] for more details.
-#'   Defqults to `"complete"`.
+#'   Defaults to `"complete"`.
 #'
 #' @return An object of class [`caps`].
 #'
@@ -23,19 +23,19 @@
 fdahclust <- function(x, y,
                       n_clusters = 1L,
                       warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-                      maximum_number_of_iterations = 100L,
                       centroid_type = c("mean", "medoid", "lowess", "poly"),
                       metric = c("l2", "pearson"),
+                      linkage_criterion = c("complete", "average", "single", "ward.D2"),
+                      cluster_on_phase = FALSE,
+                      use_verbose = TRUE,
                       warping_options = c(0.15, 0.15),
+                      maximum_number_of_iterations = 100L,
                       number_of_threads = 1L,
                       parallel_method = 0L,
                       distance_relative_tolerance = 0.001,
-                      cluster_on_phase = FALSE,
                       use_fence = FALSE,
                       check_total_dissimilarity = TRUE,
-                      use_verbose = TRUE,
-                      compute_overall_center = FALSE,
-                      linkage_criterion = c("complete", "average", "single", "ward.D2")) {
+                      compute_overall_center = FALSE) {
   if (anyNA(x))
     cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
 

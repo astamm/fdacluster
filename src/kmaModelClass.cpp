@@ -70,7 +70,8 @@ void KmaModel::SetWarpingMethod(const std::string &val)
     Rcpp::stop("The warping method is not available.");
 }
 
-void KmaModel::SetCenterMethod(const std::string &val)
+void KmaModel::SetCenterMethod(const std::string &val,
+                               const double &extraParameter)
 {
   // Center factory
   SharedFactory<BaseCenterMethod> centerFactory;
@@ -80,6 +81,12 @@ void KmaModel::SetCenterMethod(const std::string &val)
   centerFactory.Register<PolyCenterMethod>("poly");
 
   m_CenterPointer = centerFactory.Instantiate(val);
+
+  if (val == "lowess")
+    m_CenterPointer->SetSpanValue(extraParameter);
+
+  if (val == "poly")
+    m_CenterPointer->SetPolynomialDegree((unsigned int)extraParameter);
 
   if (!m_CenterPointer)
     Rcpp::stop("The center method is not available.");

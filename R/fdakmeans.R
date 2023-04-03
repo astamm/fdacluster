@@ -11,9 +11,6 @@
 #'   \eqn{M}.
 #' @param n_clusters An integer value specifying the number of clusters.
 #'   Defaults to `1L`.
-#' @param warping_class A string specifying the warping class Choices are
-#'   `"affine"`, `"dilation"`, `"none"`, `"shift"` or `"srsf"`. Defaults to
-#'   `"affine"`. The SRSF class is the only class which is boundary-preserving.
 #' @param seeds An integer value or vector specifying the indices of the initial
 #'   centroids. If an integer vector, it is interpreted as the indices of the
 #'   intial centroids and should therefore be of length `n_clusters`. If an
@@ -30,19 +27,27 @@
 #'   initial centroids or `"hclust"` which first performs hierarchical
 #'   clustering using Ward's linkage criterion to identify initial centroids.
 #'   Defaults to `"kmeans++"`, which is the fastest strategy.
+#' @param warping_class A string specifying the warping class Choices are
+#'   `"affine"`, `"dilation"`, `"none"`, `"shift"` or `"srsf"`. Defaults to
+#'   `"affine"`. The SRSF class is the only class which is boundary-preserving.
 #' @param centroid_type A string specifying the type of centroid to compute.
-#'   Choices are `"mean"` or `"medoid"`. Defaults to `"mean"`.
-#' @param maximum_number_of_iterations An integer specifying the maximum number
-#'   of iterations before the algorithm stops if no other convergence criterion
-#'   was met. Defaults to `100L`.
+#'   Choices are `"mean"`, `"medoid"`, `"lowess"` or `"poly"`. Defaults to
+#'   `"mean"`.
+#' @param metric A string specifying the metric used to compare curves. Choices
+#'   are `"l2"` or `"pearson"`. Defaults to `"l2"`. Used only when
+#'   `warping_class != "srsf"`. For the boundary-preserving warping class, the
+#'   L2 distance between the SRSFs of the original curves is used.
+#' @param cluster_on_phase A boolean specifying whether clustering should be
+#'   based on phase variation or amplitude variation. Defaults to `FALSE` which
+#'   implies amplitude variation.
 #' @param use_verbose A boolean specifying whether the algorithm should output
 #'   details of the steps to the console. Defaults to `TRUE`.
-#' @param metric A string specifying the metric used to compare curves.
-#'   Choices are `"l2"` or `"pearson"`. Defaults to `"l2"`. This is used only
-#'   when `warping_class != "srsf"`.
 #' @param warping_options A numeric vector supplied as a helper to the chosen
 #'   `warping_class` to decide on warping parameter bounds. This is used only
 #'   when `warping_class != "srsf"`.
+#' @param maximum_number_of_iterations An integer specifying the maximum number
+#'   of iterations before the algorithm stops if no other convergence criterion
+#'   was met. Defaults to `100L`.
 #' @param number_of_threads An integer value specifying the number of threads
 #'   used for parallelization. Defaults to `1L`. This is used only when
 #'   `warping_class != "srsf"`.
@@ -56,9 +61,6 @@
 #'   observations have not sufficiently improved in that sense, the algorithm
 #'   stops. Defaults to `1e-3`. This is used only when `warping_class !=
 #'   "srsf"`.
-#' @param cluster_on_phase A boolean specifying whether clustering should be
-#'   based on phase variation or amplitude variation. Defaults to `FALSE` which
-#'   implies amplitude variation.
 #' @param use_fence A boolean specifying whether the fence algorithm should be
 #'   used to robustify the algorithm against outliers. Defaults to `FALSE`. This
 #'   is used only when `warping_class != "srsf"`.
@@ -92,20 +94,20 @@
 #' )
 fdakmeans <- function(x, y,
                       n_clusters = 1L,
-                      warping_class = c("affine", "dilation", "none", "shift", "srsf"),
                       seeds = NULL,
                       seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
-                      maximum_number_of_iterations = 100L,
-                      centroid_type = c("mean", "medoid", "lowess", "poly"),
+                      warping_class = c("affine", "dilation", "none", "shift", "srsf"),
+                      centroid_type = "mean",
                       metric = c("l2", "pearson"),
+                      cluster_on_phase = FALSE,
+                      use_verbose = TRUE,
                       warping_options = c(0.15, 0.15),
+                      maximum_number_of_iterations = 100L,
                       number_of_threads = 1L,
                       parallel_method = 0L,
                       distance_relative_tolerance = 0.001,
-                      cluster_on_phase = FALSE,
                       use_fence = FALSE,
                       check_total_dissimilarity = TRUE,
-                      use_verbose = TRUE,
                       compute_overall_center = FALSE,
                       add_silhouettes = TRUE,
                       expand_domain = TRUE) {
@@ -121,8 +123,11 @@ fdakmeans <- function(x, y,
 
   seeding_strategy <- rlang::arg_match(seeding_strategy)
   warping_class <- rlang::arg_match(warping_class)
-  centroid_type <- rlang::arg_match(centroid_type)
   metric <- rlang::arg_match(metric)
+
+  centroid_type_args <- check_centroid_type(centroid_type)
+  centroid_name <- centroid_type_args$name
+  centroid_extra <- centroid_type_args$extra
 
   # Handle one-dimensional data
   if (length(dim(y)) == 2) {
@@ -370,13 +375,14 @@ fdakmeans <- function(x, y,
     number_of_threads = number_of_threads,
     parallel_method = parallel_method,
     distance_relative_tolerance = distance_relative_tolerance,
+    center_args = centroid_extra,
     cluster_on_phase = cluster_on_phase,
     use_fence = use_fence,
     check_total_dissimilarity = check_total_dissimilarity,
     use_verbose = use_verbose,
     compute_overall_center = compute_overall_center,
     warping_method = warping_class,
-    center_method = centroid_type,
+    center_method = centroid_name,
     dissimilarity_method = metric,
     optimizer_method = "bobyqa"
   )

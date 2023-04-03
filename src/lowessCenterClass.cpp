@@ -46,7 +46,7 @@ CenterType LowessCenterMethod::GetCenter(const arma::mat& inputGrid,
       }
     }
 
-    lowessOutput = statsLowess(xIn, yIn, Rcpp::_["f"] = m_SpanValue);
+    lowessOutput = statsLowess(xIn, yIn, Rcpp::_["f"] = this->GetSpanValue());
     inGrid = Rcpp::as<arma::rowvec>(lowessOutput["x"]);
     inValue = Rcpp::as<arma::rowvec>(lowessOutput["y"]);
 

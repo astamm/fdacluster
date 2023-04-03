@@ -25,7 +25,7 @@ CenterType PolyCenterMethod::GetCenter(const arma::mat& inputGrid,
   arma::mat workMatrix;
   std::vector<double> xIn, yIn;
   arma::rowvec inGrid, inValue, outValue(outGrid.size());
-  arma::vec polyCoefficients(m_PolynomialOrder + 1);
+  arma::vec polyCoefficients(this->GetPolynomialDegree() + 1);
 
   for (unsigned int l = 0;l < numberOfDimensions;++l)
   {
@@ -46,7 +46,7 @@ CenterType PolyCenterMethod::GetCenter(const arma::mat& inputGrid,
 
     inGrid = arma::conv_to<arma::rowvec>::from(xIn);
     inValue = arma::conv_to<arma::rowvec>::from(yIn);
-    arma::polyfit(polyCoefficients, inGrid, inValue, m_PolynomialOrder);
+    arma::polyfit(polyCoefficients, inGrid, inValue, this->GetPolynomialDegree());
     outValue = arma::polyval(polyCoefficients, outGrid);
     meanValue.row(l) = outValue;
   }

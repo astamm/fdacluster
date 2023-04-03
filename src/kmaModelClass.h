@@ -58,7 +58,7 @@ public:
         const unsigned int &minimalClusterSize = 1
     );
     void SetWarpingMethod(const std::string &val);
-    void SetCenterMethod(const std::string &val);
+    void SetCenterMethod(const std::string &val, const double &extraParameter);
     void SetDissimilarityMethod(const std::string &val);
     void SetOptimizerMethod(const std::string &val);
 

@@ -9,19 +9,19 @@ fdahclust(
   y,
   n_clusters = 1L,
   warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-  maximum_number_of_iterations = 100L,
   centroid_type = c("mean", "medoid", "lowess", "poly"),
   metric = c("l2", "pearson"),
+  linkage_criterion = c("complete", "average", "single", "ward.D2"),
+  cluster_on_phase = FALSE,
+  use_verbose = TRUE,
   warping_options = c(0.15, 0.15),
+  maximum_number_of_iterations = 100L,
   number_of_threads = 1L,
   parallel_method = 0L,
   distance_relative_tolerance = 0.001,
-  cluster_on_phase = FALSE,
   use_fence = FALSE,
   check_total_dissimilarity = TRUE,
-  use_verbose = TRUE,
-  compute_overall_center = FALSE,
-  linkage_criterion = c("complete", "average", "single", "ward.D2")
+  compute_overall_center = FALSE
 )
 }
 \arguments{
@@ -39,20 +39,35 @@ Defaults to \code{1L}.}
 \code{"affine"}, \code{"dilation"}, \code{"none"}, \code{"shift"} or \code{"srsf"}. Defaults to
 \code{"affine"}. The SRSF class is the only class which is boundary-preserving.}
 
-\item{maximum_number_of_iterations}{An integer specifying the maximum number
-of iterations before the algorithm stops if no other convergence criterion
-was met. Defaults to \code{100L}.}
-
 \item{centroid_type}{A string specifying the type of centroid to compute.
-Choices are \code{"mean"} or \code{"medoid"}. Defaults to \code{"mean"}.}
+Choices are \code{"mean"}, \code{"medoid"}, \code{"lowess"} or \code{"poly"}. Defaults to
+\code{"mean"}.}
 
-\item{metric}{A string specifying the metric used to compare curves.
-Choices are \code{"l2"} or \code{"pearson"}. Defaults to \code{"l2"}. This is used only
-when \code{warping_class != "srsf"}.}
+\item{metric}{A string specifying the metric used to compare curves. Choices
+are \code{"l2"} or \code{"pearson"}. Defaults to \code{"l2"}. Used only when
+\code{warping_class != "srsf"}. For the boundary-preserving warping class, the
+L2 distance between the SRSFs of the original curves is used.}
+
+\item{linkage_criterion}{A string specifying which linkage criterion should
+be used to compute distances between sets of curves. Choices are
+\code{"complete"} for complete linkage, \code{"average"} for average linkage and
+\code{"single"} for single linkage. See \code{\link[stats:hclust]{stats::hclust()}} for more details.
+Defaults to \code{"complete"}.}
+
+\item{cluster_on_phase}{A boolean specifying whether clustering should be
+based on phase variation or amplitude variation. Defaults to \code{FALSE} which
+implies amplitude variation.}
+
+\item{use_verbose}{A boolean specifying whether the algorithm should output
+details of the steps to the console. Defaults to \code{TRUE}.}
 
 \item{warping_options}{A numeric vector supplied as a helper to the chosen
 \code{warping_class} to decide on warping parameter bounds. This is used only
 when \code{warping_class != "srsf"}.}
+
+\item{maximum_number_of_iterations}{An integer specifying the maximum number
+of iterations before the algorithm stops if no other convergence criterion
+was met. Defaults to \code{100L}.}
 
 \item{number_of_threads}{An integer value specifying the number of threads
 used for parallelization. Defaults to \code{1L}. This is used only when
@@ -69,10 +84,6 @@ tolerance on the distance update between two iterations. If all
 observations have not sufficiently improved in that sense, the algorithm
 stops. Defaults to \code{1e-3}. This is used only when \code{warping_class != "srsf"}.}
 
-\item{cluster_on_phase}{A boolean specifying whether clustering should be
-based on phase variation or amplitude variation. Defaults to \code{FALSE} which
-implies amplitude variation.}
-
 \item{use_fence}{A boolean specifying whether the fence algorithm should be
 used to robustify the algorithm against outliers. Defaults to \code{FALSE}. This
 is used only when \code{warping_class != "srsf"}.}
@@ -81,18 +92,9 @@ is used only when \code{warping_class != "srsf"}.}
 stopping criterion based on improvement of the total dissimilarity should
 be used. Defaults to \code{TRUE}. This is used only when \code{warping_class != "srsf"}.}
 
-\item{use_verbose}{A boolean specifying whether the algorithm should output
-details of the steps to the console. Defaults to \code{TRUE}.}
-
 \item{compute_overall_center}{A boolean specifying whether the overall center
 should be also computed. Defaults to \code{FALSE}. This is used only when
 \code{warping_class != "srsf"}.}
-
-\item{linkage_criterion}{A string specifying which linkage criterion should
-be used to compute distances between sets of curves. Choices are
-\code{"complete"} for complete linkage, \code{"average"} for average linkage and
-\code{"single"} for single linkage. See \code{\link[stats:hclust]{stats::hclust()}} for more details.
-Defqults to \code{"complete"}.}
 }
 \value{
 An object of class \code{\link{caps}}.

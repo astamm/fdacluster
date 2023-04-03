@@ -34,6 +34,7 @@ Rcpp::List kmap(
     const unsigned int &number_of_threads,
     const unsigned int &parallel_method,
     const double &distance_relative_tolerance,
+    const double &center_args,
     const bool &cluster_on_phase,
     const bool &use_fence,
     const bool &check_total_dissimilarity,

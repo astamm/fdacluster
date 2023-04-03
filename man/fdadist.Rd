@@ -25,9 +25,10 @@ size \eqn{M} on which each of the \eqn{N} curves have been observed.}
 \code{"affine"}, \code{"dilation"}, \code{"none"}, \code{"shift"} or \code{"srsf"}. Defaults to
 \code{"affine"}. The SRSF class is the only class which is boundary-preserving.}
 
-\item{metric}{A string specifying the metric used to compare curves.
-Choices are \code{"l2"} or \code{"pearson"}. Defaults to \code{"l2"}. This is used only
-when \code{warping_class != "srsf"}.}
+\item{metric}{A string specifying the metric used to compare curves. Choices
+are \code{"l2"} or \code{"pearson"}. Defaults to \code{"l2"}. Used only when
+\code{warping_class != "srsf"}. For the boundary-preserving warping class, the
+L2 distance between the SRSFs of the original curves is used.}
 
 \item{cluster_on_phase}{A boolean specifying whether clustering should be
 based on phase variation or amplitude variation. Defaults to \code{FALSE} which
