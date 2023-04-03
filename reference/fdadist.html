@@ -93,9 +93,10 @@ size \(M\) on which each of the \(N\) curves have been observed.</p></dd>
 
 
 <dt>metric</dt>
-<dd><p>A string specifying the metric used to compare curves.
-Choices are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. This is used only
-when <code>warping_class != "srsf"</code>.</p></dd>
+<dd><p>A string specifying the metric used to compare curves. Choices
+are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. Used only when
+<code>warping_class != "srsf"</code>. For the boundary-preserving warping class, the
+L2 distance between the SRSFs of the original curves is used.</p></dd>
 
 
 <dt>cluster_on_phase</dt>

@@ -114,7 +114,7 @@ It is therefore natural when computing the distance between two curves
 to minimize such a distance over all possible warping functions in a
 chosen class, i.e. to integrate alignment when computing the distance
 matrix. The idea is to assess how far two curves are after optimal phase
-alignment. This step is achieved through the <a href="https://astamm.github.io/fdacluster/reference/fdadist.html" class="external-link"><code>fdacluster::fdadist()</code></a>.</p>
+alignment. This step is achieved through the <a href="https://astamm.github.io/fdacluster/reference/fdadist.html" class="external-link"><code>fdadist()</code></a>.</p>
 <p><strong>Step 2.</strong> The process of building up the hierarchy of
 possible clustering structures does not change once the distance matrix
 <span class="math inline">\(D\)</span> is known. In fact, from a
@@ -134,7 +134,7 @@ grouping structure has been chosen, all the curves need to undergo a
 last alignment to the centroid of the cluster they have been assigned
 to. Then, and only then, within-cluster sum of squared distances to
 centroid and silhouette values can be assessed. This step is achieved
-through a call to <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdacluster::fdakmeans()</code></a>
+through a call to <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdakmeans()</code></a>
 with <span class="math inline">\(k = 1\)</span> and initial centroid
 corresponding to the cluster medoid.</p>
 </div>
@@ -164,6 +164,34 @@ for ease of usage:</p>
 <span>  check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
+<p>The first group of arguments in the above call are the arguments that
+the user is the most likely to interact with. The number of clusters can
+be specified through the argument <code>n_clusters</code>, the choice of
+the class of warping functions or type of centroid or metric is achieved
+through the arguments <code>warping_class</code>,
+<code>centroid_type</code> and <code>metric</code> respectively. The
+linkage criterion can be selected via <code>linkage_criterion</code>. By
+default, the function performs affine registration using the pointwise
+sample mean for computing cluster centroid with the L2 distance between
+original curves and complete linkage. By default, the function uses
+amplitude data after alignment for assigning cluster membership of the
+observed curves. The user can switch on the use of phase data instead by
+using <code>cluster_on_phase = TRUE</code>.</p>
+<p>The second group of arguments are set to sensible default values and
+are used for the internal call to <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdakmeans()</code></a>
+with <span class="math inline">\(k = 1\)</span>, which performs
+within-cluster alignment to centroid once groups have been determined by
+cutting the dendrogram at the appropriate height. These arguments are
+not meant to be changed unless the results of the clustering via <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html" class="external-link"><code>fdahclust()</code></a>
+seem very odd.</p>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<div class="section level3">
+<h3 id="simulated-data-set">Simulated data set<a class="anchor" aria-label="anchor" href="#simulated-data-set"></a>
+</h3>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

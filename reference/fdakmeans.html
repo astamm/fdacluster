@@ -67,20 +67,20 @@ number of warping class are implemented to achieve this separation.</p>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
 <span>  n_clusters <span class="op">=</span> <span class="fl">1L</span>,</span>
-<span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
 <span>  seeds <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seeding_strategy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmeans++"</span>, <span class="st">"exhaustive-kmeans++"</span>, <span class="st">"exhaustive"</span>, <span class="st">"hclust"</span><span class="op">)</span>,</span>
-<span>  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100L</span>,</span>
-<span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span>, <span class="st">"lowess"</span>, <span class="st">"poly"</span><span class="op">)</span>,</span>
+<span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
+<span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
+<span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  warping_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.15</span>, <span class="fl">0.15</span><span class="op">)</span>,</span>
+<span>  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  number_of_threads <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  parallel_method <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  distance_relative_tolerance <span class="op">=</span> <span class="fl">0.001</span>,</span>
-<span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  use_fence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  use_verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  add_silhouettes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  expand_domain <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -105,12 +105,6 @@ size \(M\) on which each of the \(N\) curves have been observed.</p></dd>
 Defaults to <code>1L</code>.</p></dd>
 
 
-<dt>warping_class</dt>
-<dd><p>A string specifying the warping class Choices are
-<code>"affine"</code>, <code>"dilation"</code>, <code>"none"</code>, <code>"shift"</code> or <code>"srsf"</code>. Defaults to
-<code>"affine"</code>. The SRSF class is the only class which is boundary-preserving.</p></dd>
-
-
 <dt>seeds</dt>
 <dd><p>An integer value or vector specifying the indices of the initial
 centroids. If an integer vector, it is interpreted as the indices of the
@@ -133,27 +127,46 @@ clustering using Ward's linkage criterion to identify initial centroids.
 Defaults to <code>"kmeans++"</code>, which is the fastest strategy.</p></dd>
 
 
-<dt>maximum_number_of_iterations</dt>
-<dd><p>An integer specifying the maximum number
-of iterations before the algorithm stops if no other convergence criterion
-was met. Defaults to <code>100L</code>.</p></dd>
+<dt>warping_class</dt>
+<dd><p>A string specifying the warping class Choices are
+<code>"affine"</code>, <code>"dilation"</code>, <code>"none"</code>, <code>"shift"</code> or <code>"srsf"</code>. Defaults to
+<code>"affine"</code>. The SRSF class is the only class which is boundary-preserving.</p></dd>
 
 
 <dt>centroid_type</dt>
 <dd><p>A string specifying the type of centroid to compute.
-Choices are <code>"mean"</code> or <code>"medoid"</code>. Defaults to <code>"mean"</code>.</p></dd>
+Choices are <code>"mean"</code>, <code>"medoid"</code>, <code>"lowess"</code> or <code>"poly"</code>. Defaults to
+<code>"mean"</code>.</p></dd>
 
 
 <dt>metric</dt>
-<dd><p>A string specifying the metric used to compare curves.
-Choices are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. This is used only
-when <code>warping_class != "srsf"</code>.</p></dd>
+<dd><p>A string specifying the metric used to compare curves. Choices
+are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. Used only when
+<code>warping_class != "srsf"</code>. For the boundary-preserving warping class, the
+L2 distance between the SRSFs of the original curves is used.</p></dd>
+
+
+<dt>cluster_on_phase</dt>
+<dd><p>A boolean specifying whether clustering should be
+based on phase variation or amplitude variation. Defaults to <code>FALSE</code> which
+implies amplitude variation.</p></dd>
+
+
+<dt>use_verbose</dt>
+<dd><p>A boolean specifying whether the algorithm should output
+details of the steps to the console. Defaults to <code>TRUE</code>.</p></dd>
 
 
 <dt>warping_options</dt>
 <dd><p>A numeric vector supplied as a helper to the chosen
 <code>warping_class</code> to decide on warping parameter bounds. This is used only
 when <code>warping_class != "srsf"</code>.</p></dd>
+
+
+<dt>maximum_number_of_iterations</dt>
+<dd><p>An integer specifying the maximum number
+of iterations before the algorithm stops if no other convergence criterion
+was met. Defaults to <code>100L</code>.</p></dd>
 
 
 <dt>number_of_threads</dt>
@@ -177,12 +190,6 @@ observations have not sufficiently improved in that sense, the algorithm
 stops. Defaults to <code>1e-3</code>. This is used only when <code>warping_class != "srsf"</code>.</p></dd>
 
 
-<dt>cluster_on_phase</dt>
-<dd><p>A boolean specifying whether clustering should be
-based on phase variation or amplitude variation. Defaults to <code>FALSE</code> which
-implies amplitude variation.</p></dd>
-
-
 <dt>use_fence</dt>
 <dd><p>A boolean specifying whether the fence algorithm should be
 used to robustify the algorithm against outliers. Defaults to <code>FALSE</code>. This
@@ -193,11 +200,6 @@ is used only when <code>warping_class != "srsf"</code>.</p></dd>
 <dd><p>A boolean specifying whether an additional
 stopping criterion based on improvement of the total dissimilarity should
 be used. Defaults to <code>TRUE</code>. This is used only when <code>warping_class != "srsf"</code>.</p></dd>
-
-
-<dt>use_verbose</dt>
-<dd><p>A boolean specifying whether the algorithm should output
-details of the steps to the console. Defaults to <code>TRUE</code>.</p></dd>
 
 
 <dt>compute_overall_center</dt>

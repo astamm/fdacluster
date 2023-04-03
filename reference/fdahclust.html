@@ -68,19 +68,19 @@ information.</p>
 <span>  <span class="va">y</span>,</span>
 <span>  n_clusters <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
-<span>  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span>, <span class="st">"lowess"</span>, <span class="st">"poly"</span><span class="op">)</span>,</span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
+<span>  linkage_criterion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"complete"</span>, <span class="st">"average"</span>, <span class="st">"single"</span>, <span class="st">"ward.D2"</span><span class="op">)</span>,</span>
+<span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  use_verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  warping_options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.15</span>, <span class="fl">0.15</span><span class="op">)</span>,</span>
+<span>  maximum_number_of_iterations <span class="op">=</span> <span class="fl">100L</span>,</span>
 <span>  number_of_threads <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  parallel_method <span class="op">=</span> <span class="fl">0L</span>,</span>
 <span>  distance_relative_tolerance <span class="op">=</span> <span class="fl">0.001</span>,</span>
-<span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  use_fence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  use_verbose <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  linkage_criterion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"complete"</span>, <span class="st">"average"</span>, <span class="st">"single"</span>, <span class="st">"ward.D2"</span><span class="op">)</span></span>
+<span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -108,27 +108,48 @@ Defaults to <code>1L</code>.</p></dd>
 <code>"affine"</code>. The SRSF class is the only class which is boundary-preserving.</p></dd>
 
 
-<dt>maximum_number_of_iterations</dt>
-<dd><p>An integer specifying the maximum number
-of iterations before the algorithm stops if no other convergence criterion
-was met. Defaults to <code>100L</code>.</p></dd>
-
-
 <dt>centroid_type</dt>
 <dd><p>A string specifying the type of centroid to compute.
-Choices are <code>"mean"</code> or <code>"medoid"</code>. Defaults to <code>"mean"</code>.</p></dd>
+Choices are <code>"mean"</code>, <code>"medoid"</code>, <code>"lowess"</code> or <code>"poly"</code>. Defaults to
+<code>"mean"</code>.</p></dd>
 
 
 <dt>metric</dt>
-<dd><p>A string specifying the metric used to compare curves.
-Choices are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. This is used only
-when <code>warping_class != "srsf"</code>.</p></dd>
+<dd><p>A string specifying the metric used to compare curves. Choices
+are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. Used only when
+<code>warping_class != "srsf"</code>. For the boundary-preserving warping class, the
+L2 distance between the SRSFs of the original curves is used.</p></dd>
+
+
+<dt>linkage_criterion</dt>
+<dd><p>A string specifying which linkage criterion should
+be used to compute distances between sets of curves. Choices are
+<code>"complete"</code> for complete linkage, <code>"average"</code> for average linkage and
+<code>"single"</code> for single linkage. See <code><a href="https://rdrr.io/r/stats/hclust.html" class="external-link">stats::hclust()</a></code> for more details.
+Defaults to <code>"complete"</code>.</p></dd>
+
+
+<dt>cluster_on_phase</dt>
+<dd><p>A boolean specifying whether clustering should be
+based on phase variation or amplitude variation. Defaults to <code>FALSE</code> which
+implies amplitude variation.</p></dd>
+
+
+<dt>use_verbose</dt>
+<dd><p>A boolean specifying whether the algorithm should output
+details of the steps to the console. Defaults to <code>TRUE</code>.</p></dd>
 
 
 <dt>warping_options</dt>
 <dd><p>A numeric vector supplied as a helper to the chosen
 <code>warping_class</code> to decide on warping parameter bounds. This is used only
 when <code>warping_class != "srsf"</code>.</p></dd>
+
+
+<dt>maximum_number_of_iterations</dt>
+<dd><p>An integer specifying the maximum number
+of iterations before the algorithm stops if no other convergence criterion
+was met. Defaults to <code>100L</code>.</p></dd>
 
 
 <dt>number_of_threads</dt>
@@ -152,12 +173,6 @@ observations have not sufficiently improved in that sense, the algorithm
 stops. Defaults to <code>1e-3</code>. This is used only when <code>warping_class != "srsf"</code>.</p></dd>
 
 
-<dt>cluster_on_phase</dt>
-<dd><p>A boolean specifying whether clustering should be
-based on phase variation or amplitude variation. Defaults to <code>FALSE</code> which
-implies amplitude variation.</p></dd>
-
-
 <dt>use_fence</dt>
 <dd><p>A boolean specifying whether the fence algorithm should be
 used to robustify the algorithm against outliers. Defaults to <code>FALSE</code>. This
@@ -170,23 +185,10 @@ stopping criterion based on improvement of the total dissimilarity should
 be used. Defaults to <code>TRUE</code>. This is used only when <code>warping_class != "srsf"</code>.</p></dd>
 
 
-<dt>use_verbose</dt>
-<dd><p>A boolean specifying whether the algorithm should output
-details of the steps to the console. Defaults to <code>TRUE</code>.</p></dd>
-
-
 <dt>compute_overall_center</dt>
 <dd><p>A boolean specifying whether the overall center
 should be also computed. Defaults to <code>FALSE</code>. This is used only when
 <code>warping_class != "srsf"</code>.</p></dd>
-
-
-<dt>linkage_criterion</dt>
-<dd><p>A string specifying which linkage criterion should
-be used to compute distances between sets of curves. Choices are
-<code>"complete"</code> for complete linkage, <code>"average"</code> for average linkage and
-<code>"single"</code> for single linkage. See <code><a href="https://rdrr.io/r/stats/hclust.html" class="external-link">stats::hclust()</a></code> for more details.
-Defqults to <code>"complete"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
