@@ -247,7 +247,7 @@ fdakmeans <- function(x, y = NULL,
     } else if (seeding_strategy == "exhaustive") {
       sols <- utils::combn(N, n_clusters, simplify = FALSE)
       pb <- progressr::progressor(steps = length(sols))
-      sols <- furrr::future_map(\(.seeds) {
+      sols <- furrr::future_map(sols, \(.seeds) {
         pb()
         fdakmeans(
           x = x, y = y,
@@ -265,7 +265,7 @@ fdakmeans <- function(x, y = NULL,
           use_verbose = FALSE,
           add_silhouettes = FALSE
         )
-      })
+      }, .options = furrr::furrr_options(seed = NULL))
       dtcs <- sols |>
         purrr::map("distances_to_center") |>
         purrr::map_dbl(sum)
