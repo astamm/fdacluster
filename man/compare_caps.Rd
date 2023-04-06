@@ -11,23 +11,32 @@ compare_caps(
   metric = c("l2", "pearson"),
   clustering_method = c("kmeans", "hclust-complete", "hclust-average", "hclust-single"),
   warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-  centroid_type = c("mean", "medoid", "lowess", "poly")
+  centroid_type = c("mean", "medoid", "lowess", "poly"),
+  cluster_on_phase = FALSE
 )
 }
 \arguments{
-\item{x}{A numeric matrix of shape \eqn{N \times M} specifying the grids of
-size \eqn{M} on which each of the \eqn{N} curves have been observed.}
+\item{x}{A numeric vector of length \eqn{M} or a numeric matrix of shape
+\eqn{N \times M} or an object of class \code{\link[funData:funData-class]{funData::funData}}. If a numeric
+vector or matrix, it specifies the grid(s) of size \eqn{M} on which each of
+the \eqn{N} curves have been observed. If an object of class
+\code{\link[funData:funData-class]{funData::funData}}, it contains the whole functional data set and the \code{y}
+argument is not used.}
 
-\item{y}{A numeric array of shape \eqn{N \times L \times M} specifying the
-\eqn{N}-sample of \eqn{L}-dimensional curves observed on grids of size
-\eqn{M}.}
+\item{y}{Either a numeric matrix of shape \eqn{N \times M} or a numeric array
+of shape \eqn{N \times L \times M} or an object of class \code{\link[fda:fd]{fda::fd}}. If a
+numeric matrix or array, it specifies the \eqn{N}-sample of
+\eqn{L}-dimensional curves observed on grids of size \eqn{M}. If an object
+of class \code{\link[fda:fd]{fda::fd}}, it contains all the necessary information about the
+functional data set to be able to evaluate it on user-defined grids.}
 
 \item{n_clusters_max}{An integer value specifying the maximum number of
 clusers to use. Defaults to \code{5L}.}
 
-\item{metric}{A string specifying the metric used to compare curves.
-Choices are \code{"l2"} or \code{"pearson"}. Defaults to \code{"l2"}. This is used only
-when \code{warping_class != "srsf"}.}
+\item{metric}{A string specifying the metric used to compare curves. Choices
+are \code{"l2"} or \code{"pearson"}. Defaults to \code{"l2"}. Used only when
+\code{warping_class != "srsf"}. For the boundary-preserving warping class, the
+L2 distance between the SRSFs of the original curves is used.}
 
 \item{clustering_method}{A character vector specifying one or more clustering
 methods to be fit. Choices are \code{"kmeans"}, \code{"hclust-complete"},
@@ -40,6 +49,10 @@ warping functions to use for curve alignment. Choices are \code{"affine"},
 \item{centroid_type}{A character vector specifying one or more ways to
 compute centroids. Choices are \code{"mean"} or \code{"medoid"}. Defaults to all of
 them.}
+
+\item{cluster_on_phase}{A boolean specifying whether clustering should be
+based on phase variation or amplitude variation. Defaults to \code{FALSE} which
+implies amplitude variation.}
 }
 \value{
 An object of class \code{mcaps} which is a \code{\link[tibble:tibble]{tibble::tibble}} storing the

@@ -5,16 +5,9 @@
 #' objects of class [`caps`]. This is a helper function to facilitate comparison
 #' of clustering methods and choice of an *optimal* one.
 #'
-#' @param x A numeric matrix of shape \eqn{N \times M} specifying the grids of
-#'   size \eqn{M} on which each of the \eqn{N} curves have been observed.
-#' @param y A numeric array of shape \eqn{N \times L \times M} specifying the
-#'   \eqn{N}-sample of \eqn{L}-dimensional curves observed on grids of size
-#'   \eqn{M}.
+#' @inheritParams fdakmeans
 #' @param n_clusters_max An integer value specifying the maximum number of
 #'   clusers to use. Defaults to `5L`.
-#' @param metric A string specifying the metric used to compare curves.
-#'   Choices are `"l2"` or `"pearson"`. Defaults to `"l2"`. This is used only
-#'   when `warping_class != "srsf"`.
 #' @param clustering_method A character vector specifying one or more clustering
 #'   methods to be fit. Choices are `"kmeans"`, `"hclust-complete"`,
 #'   `"hclust-average"` or `"hclust-single"`. Defaults to all of them.
@@ -48,7 +41,8 @@ compare_caps <- function(x, y,
                                                "hclust-single"),
                          warping_class = c("affine", "dilation", "none",
                                            "shift", "srsf"),
-                         centroid_type = c("mean", "medoid", "lowess", "poly")) {
+                         centroid_type = c("mean", "medoid", "lowess", "poly"),
+                         cluster_on_phase = FALSE) {
   metric <- rlang::arg_match(metric)
   clustering_method <- rlang::arg_match(clustering_method, multiple = TRUE)
   warping_class <- rlang::arg_match(warping_class, multiple = TRUE)
@@ -76,6 +70,7 @@ compare_caps <- function(x, y,
               warping_class = .warping_class,
               centroid_type = .centroid_type,
               metric = metric,
+              cluster_on_phase = cluster_on_phase,
               use_verbose = FALSE
             )
           else {
@@ -88,6 +83,7 @@ compare_caps <- function(x, y,
               centroid_type = .centroid_type,
               metric = metric,
               linkage_criterion = linkage_criterion,
+              cluster_on_phase = cluster_on_phase,
               use_verbose = FALSE
             )
           }

@@ -10,17 +10,23 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>", 
+  fig.width = 7,
+  fig.height = 5,
+  fig.align = "center",
+  fig.retina = 2
 )
 ```
 
 ```{r setup}
 library(fdacluster)
+library(future)
 ```
 
 ## Theory
 
-Traditional hierarchical agglomerative clustering (HAC) is usually carried out in two mandatory steps with a third *optional* one:
+Traditional hierarchical agglomerative clustering (HAC) is usually carried out
+in two mandatory steps with a third *optional* one:
 
 1. Compute the distance matrix $D$ in which entry $d_{ij}$ stores the distance
 between observation $i$ and observation $j$;
@@ -41,12 +47,14 @@ computing the distance matrix. The idea is to assess how far two curves are
 after optimal phase alignment. This step is achieved through the 
 [`fdadist()`](https://astamm.github.io/fdacluster/reference/fdadist.html).
 
-**Step 2.** The process of building up the hierarchy of possible clustering 
-structures does not change once the distance matrix $D$ is known. In fact, from 
-a practical point of view with `R`, it is still achieved via a call to [`stats::hclust()`](https://rdrr.io/r/stats/hclust.html). Here, the user can 
-choose which linkage criterion to use for assessing distances between sets of 
-curves. For the sake of simplicity, only a subset of choices from the [`stats::hclust()`](https://rdrr.io/r/stats/hclust.html) function is actually 
-available in [**fdacluster**](https://astamm.github.io/fdacluster/), namely 
+**Step 2.** The process of building up the hierarchy of possible clustering
+structures does not change once the distance matrix $D$ is known. In fact, from
+a practical point of view with `R`, it is still achieved via a call to
+[`stats::hclust()`](https://rdrr.io/r/stats/hclust.html). Here, the user can
+choose which linkage criterion to use for assessing distances between sets of
+curves. For the sake of simplicity, only a subset of choices from the
+[`stats::hclust()`](https://rdrr.io/r/stats/hclust.html) function is actually
+available in [**fdacluster**](https://astamm.github.io/fdacluster/), namely
 `complete`, `average`, `single` and `ward.D2`.
 
 **Step 3.** Once the dendrogram is built, a big difference between multivariate 
@@ -111,3 +119,147 @@ seem very odd.
 ## Example
 
 ### Simulated data set
+
+Let us consider the following sample of $30$ simulated unidimensional curves:
+```{r data, echo=FALSE}
+matplot(
+  x = t(simulated30$x),
+  y = t(simulated30$y[, 1,]),
+  type = "l",
+  xlab = "x",
+  ylab = "y"
+)
+```
+
+Looking at the data set, it seems that we shall expect $3$ groups if we aim at
+clustering based on phase variability but probably only $2$ groups if we search
+for a clustering structure based on amplitude variability.
+
+### HAC based on amplitude variability
+
+We can perform HAC based on amplitude variability as follows:
+```{r hac-amplitude-run}
+out1 <- fdahclust(
+  simulated30$x,
+  simulated30$y,
+  n_clusters = 2,
+  centroid_type = "mean",
+  warping_class = "affine",
+  metric = "l2", 
+  cluster_on_phase = FALSE
+)
+```
+
+The
+[`fdahclust()`](https://astamm.github.io/fdacluster/reference/fdahclust.html)
+function returns an object of class
+[`caps`](https://astamm.github.io/fdacluster/reference/caps.html) (for
+**C**lustering with **A**mplitude and **P**hase **S**eparation) for which `S3`
+specialized methods of
+[`ggplot2::autoplot()`](https://astamm.github.io/fdacluster/reference/autoplot.caps.html)
+and
+[`graphics::plot()`](https://astamm.github.io/fdacluster/reference/plot.caps.html)
+have been implemented. Therefore, we can visualize the results simply with:
+```{r hac-amplitude-viz}
+plot(out1, type = "amplitude")
+plot(out1, type = "phase")
+diagnostic_plot(out1)
+```
+
+### HAC based on phase variability
+
+We can perform HAC based on phase variability only by switching the
+`cluster_on_phase` argument to `TRUE`:
+```{r hac-phase-run}
+out2 <- fdahclust(
+  simulated30$x,
+  simulated30$y,
+  n_clusters = 3,
+  centroid_type = "mean",
+  warping_class = "affine",
+  metric = "l2", 
+  cluster_on_phase = TRUE
+)
+```
+
+We can inspect the result:
+```{r hac-phase-viz}
+plot(out2, type = "amplitude")
+plot(out2, type = "phase")
+diagnostic_plot(out2)
+```
+
+### Choosing the number of clusters
+
+The helper function
+[`compare_caps()`](https://astamm.github.io/fdacluster/reference/compare_caps.html)
+can be used to get an intuition of the number of clusters that one should be
+looking for.
+
+For example, we can generate data to help choosing the number of clusters when
+clustering on amplitude data:
+```{r}
+ncores <- max(parallel::detectCores() - 1L, 1L)
+plan(multisession, workers = ncores)
+amplitude_data <- compare_caps(
+  x = simulated30$x, 
+  y = simulated30$y, 
+  n_clusters_max = 5L, 
+  metric = "l2", 
+  warping_class = c("none", "shift", "dilation", "affine"),
+  clustering_method = "hclust-complete", 
+  centroid_type = "mean", 
+  cluster_on_phase = FALSE
+)
+plan(sequential)
+```
+
+In this example. we asked through the specification of the optional argument
+`warping_class` to use multiple warping classes and store the clustering results
+separately in the output for later comparison. Multiple choices can be also used
+for arguments `clustering_method` and `centroid_type` although in the above
+example we chose to focus on the HAC with complete linkage using the mean as
+centroid type. The `metric` argument **must** however be unique as we need to
+use the same metric among methods for later comparison.
+
+The above code generates an object of class `mcaps` which has dedicated `S3`
+specializations of `ggplot2::autoplot()` and `graphics::plot()` as well. These
+methods gain two extra optional arguments:
+
+- `validation_criterion`: A string specifying the validation criterion to be 
+used for the comparison. Choices are `"wss"` or `"silhouette"`. Defaults to 
+`"wss"`.
+- `what`: A string specifying the kind of information to display about the 
+validation criterion. Choices are `"mean"` (which plots the mean values) or 
+`"distribution"` (which plots the boxplots). Defaults to `"mean"`.
+
+For example, one can can visualize the mean WSS for all specified methods as:
+```{r}
+plot(amplitude_data, validation_criterion = "wss", what = "mean")
+```
+
+In this case, the plot clearly shows that among the set of warping classes that
+has been considered, one choose use affine warping and search for $2$ groups
+when the goal is to cluster based on the amplitude data.
+
+Let us now perform the same analysis with the goal of clustering based on phase
+data:
+```{r}
+ncores <- max(parallel::detectCores() - 1L, 1L)
+plan(multisession, workers = ncores)
+phase_data <- compare_caps(
+  x = simulated30$x, 
+  y = simulated30$y, 
+  n_clusters_max = 5L, 
+  metric = "l2", 
+  warping_class = c("none", "shift", "dilation", "affine"),
+  clustering_method = "hclust-complete", 
+  centroid_type = "mean", 
+  cluster_on_phase = TRUE
+)
+plan(sequential)
+plot(phase_data, validation_criterion = "wss", what = "mean")
+```
+
+In this case, as expected by looking at the original data set, the plot suggests
+to use affine warping but to search for $3$ groups.

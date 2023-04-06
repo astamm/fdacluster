@@ -508,7 +508,7 @@ Rcpp::List KmaModel::FitModel()
         templateValues
     );
 
-    if (m_ClusterOnPhase && m_WarpingPointer->GetNumberOfParameters() > 0)
+    if (m_ClusterOnPhase)
     {
       for (unsigned int k = 0;k < m_NumberOfClusters;++k)
       {
