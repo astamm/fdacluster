@@ -73,21 +73,29 @@ of clustering methods and choice of an <em>optimal</em> one.</p>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
 <span>  clustering_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmeans"</span>, <span class="st">"hclust-complete"</span>, <span class="st">"hclust-average"</span>, <span class="st">"hclust-single"</span><span class="op">)</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
-<span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span>, <span class="st">"lowess"</span>, <span class="st">"poly"</span><span class="op">)</span></span>
+<span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span>, <span class="st">"lowess"</span>, <span class="st">"poly"</span><span class="op">)</span>,</span>
+<span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A numeric matrix of shape \(N \times M\) specifying the grids of
-size \(M\) on which each of the \(N\) curves have been observed.</p></dd>
+<dd><p>A numeric vector of length \(M\) or a numeric matrix of shape
+\(N \times M\) or an object of class <code><a href="https://rdrr.io/pkg/funData/man/funData-class.html" class="external-link">funData::funData</a></code>. If a numeric
+vector or matrix, it specifies the grid(s) of size \(M\) on which each of
+the \(N\) curves have been observed. If an object of class
+<code><a href="https://rdrr.io/pkg/funData/man/funData-class.html" class="external-link">funData::funData</a></code>, it contains the whole functional data set and the <code>y</code>
+argument is not used.</p></dd>
 
 
 <dt>y</dt>
-<dd><p>A numeric array of shape \(N \times L \times M\) specifying the
-\(N\)-sample of \(L\)-dimensional curves observed on grids of size
-\(M\).</p></dd>
+<dd><p>Either a numeric matrix of shape \(N \times M\) or a numeric array
+of shape \(N \times L \times M\) or an object of class <code><a href="https://rdrr.io/pkg/fda/man/fd.html" class="external-link">fda::fd</a></code>. If a
+numeric matrix or array, it specifies the \(N\)-sample of
+\(L\)-dimensional curves observed on grids of size \(M\). If an object
+of class <code><a href="https://rdrr.io/pkg/fda/man/fd.html" class="external-link">fda::fd</a></code>, it contains all the necessary information about the
+functional data set to be able to evaluate it on user-defined grids.</p></dd>
 
 
 <dt>n_clusters_max</dt>
@@ -96,9 +104,10 @@ clusers to use. Defaults to <code>5L</code>.</p></dd>
 
 
 <dt>metric</dt>
-<dd><p>A string specifying the metric used to compare curves.
-Choices are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. This is used only
-when <code>warping_class != "srsf"</code>.</p></dd>
+<dd><p>A string specifying the metric used to compare curves. Choices
+are <code>"l2"</code> or <code>"pearson"</code>. Defaults to <code>"l2"</code>. Used only when
+<code>warping_class != "srsf"</code>. For the boundary-preserving warping class, the
+L2 distance between the SRSFs of the original curves is used.</p></dd>
 
 
 <dt>clustering_method</dt>
@@ -117,6 +126,12 @@ warping functions to use for curve alignment. Choices are <code>"affine"</code>,
 <dd><p>A character vector specifying one or more ways to
 compute centroids. Choices are <code>"mean"</code> or <code>"medoid"</code>. Defaults to all of
 them.</p></dd>
+
+
+<dt>cluster_on_phase</dt>
+<dd><p>A boolean specifying whether clustering should be
+based on phase variation or amplitude variation. Defaults to <code>FALSE</code> which
+implies amplitude variation.</p></dd>
 
 </dl></div>
     <div class="section level2">

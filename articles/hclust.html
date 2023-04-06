@@ -88,7 +88,8 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://future.futureverse.org" class="external-link">future</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="theory">Theory<a class="anchor" aria-label="anchor" href="#theory"></a>
 </h2>
@@ -191,6 +192,156 @@ seem very odd.</p>
 <div class="section level3">
 <h3 id="simulated-data-set">Simulated data set<a class="anchor" aria-label="anchor" href="#simulated-data-set"></a>
 </h3>
+<p>Let us consider the following sample of <span class="math inline">\(30\)</span> simulated unidimensional curves:
+<img src="hclust_files/figure-html/data-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>Looking at the data set, it seems that we shall expect <span class="math inline">\(3\)</span> groups if we aim at clustering based on
+phase variability but probably only <span class="math inline">\(2\)</span> groups if we search for a clustering
+structure based on amplitude variability.</p>
+</div>
+<div class="section level3">
+<h3 id="hac-based-on-amplitude-variability">HAC based on amplitude variability<a class="anchor" aria-label="anchor" href="#hac-based-on-amplitude-variability"></a>
+</h3>
+<p>We can perform HAC based on amplitude variability as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdahclust.html">fdahclust</a></span><span class="op">(</span></span>
+<span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span>
+<span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span>
+<span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
+<span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span>
+<span>  metric <span class="op">=</span> <span class="st">"l2"</span>, </span>
+<span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing the distance matrix...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Calculating the tree...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Aligning all curves with respect to their centroid...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Consolidating output...</span></span></code></pre></div>
+<p>The <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html" class="external-link"><code>fdahclust()</code></a>
+function returns an object of class <a href="https://astamm.github.io/fdacluster/reference/caps.html" class="external-link"><code>caps</code></a>
+(for <strong>C</strong>lustering with <strong>A</strong>mplitude and
+<strong>P</strong>hase <strong>S</strong>eparation) for which
+<code>S3</code> specialized methods of <a href="https://astamm.github.io/fdacluster/reference/autoplot.caps.html" class="external-link"><code>ggplot2::autoplot()</code></a>
+and <a href="https://astamm.github.io/fdacluster/reference/plot.caps.html" class="external-link"><code>graphics::plot()</code></a>
+have been implemented. Therefore, we can visualize the results simply
+with:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out1</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 350 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="hclust_files/figure-html/hac-amplitude-viz-1.png" width="672" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out1</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hclust_files/figure-html/hac-amplitude-viz-2.png" width="672" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/diagnostic_plot.html">diagnostic_plot</a></span><span class="op">(</span><span class="va">out1</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hclust_files/figure-html/hac-amplitude-viz-3.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="hac-based-on-phase-variability">HAC based on phase variability<a class="anchor" aria-label="anchor" href="#hac-based-on-phase-variability"></a>
+</h3>
+<p>We can perform HAC based on phase variability only by switching the
+<code>cluster_on_phase</code> argument to <code>TRUE</code>:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdahclust.html">fdahclust</a></span><span class="op">(</span></span>
+<span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span>
+<span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span>
+<span>  n_clusters <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
+<span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span>
+<span>  metric <span class="op">=</span> <span class="st">"l2"</span>, </span>
+<span>  cluster_on_phase <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Computing the distance matrix...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Calculating the tree...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Aligning all curves with respect to their centroid...</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Consolidating output...</span></span></code></pre></div>
+<p>We can inspect the result:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out2</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 90 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="hclust_files/figure-html/hac-phase-viz-1.png" width="672" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out2</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hclust_files/figure-html/hac-phase-viz-2.png" width="672" style="display: block; margin: auto;"></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/diagnostic_plot.html">diagnostic_plot</a></span><span class="op">(</span><span class="va">out2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hclust_files/figure-html/hac-phase-viz-3.png" width="672" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level3">
+<h3 id="choosing-the-number-of-clusters">Choosing the number of clusters<a class="anchor" aria-label="anchor" href="#choosing-the-number-of-clusters"></a>
+</h3>
+<p>The helper function <a href="https://astamm.github.io/fdacluster/reference/compare_caps.html" class="external-link"><code>compare_caps()</code></a>
+can be used to get an intuition of the number of clusters that one
+should be looking for.</p>
+<p>For example, we can generate data to help choosing the number of
+clusters when clustering on amplitude data:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ncores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1L</span>, <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span>, workers <span class="op">=</span> <span class="va">ncores</span><span class="op">)</span></span>
+<span><span class="va">amplitude_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_caps.html">compare_caps</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>, </span>
+<span>  y <span class="op">=</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>, </span>
+<span>  n_clusters_max <span class="op">=</span> <span class="fl">5L</span>, </span>
+<span>  metric <span class="op">=</span> <span class="st">"l2"</span>, </span>
+<span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"dilation"</span>, <span class="st">"affine"</span><span class="op">)</span>,</span>
+<span>  clustering_method <span class="op">=</span> <span class="st">"hclust-complete"</span>, </span>
+<span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>, </span>
+<span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span></code></pre></div>
+<p>In this example. we asked through the specification of the optional
+argument <code>warping_class</code> to use multiple warping classes and
+store the clustering results separately in the output for later
+comparison. Multiple choices can be also used for arguments
+<code>clustering_method</code> and <code>centroid_type</code> although
+in the above example we chose to focus on the HAC with complete linkage
+using the mean as centroid type. The <code>metric</code> argument
+<strong>must</strong> however be unique as we need to use the same
+metric among methods for later comparison.</p>
+<p>The above code generates an object of class <code>mcaps</code> which
+has dedicated <code>S3</code> specializations of
+<code><a href="https://ggplot2.tidyverse.org/reference/autoplot.html" class="external-link">ggplot2::autoplot()</a></code> and <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">graphics::plot()</a></code> as
+well. These methods gain two extra optional arguments:</p>
+<ul>
+<li>
+<code>validation_criterion</code>: A string specifying the
+validation criterion to be used for the comparison. Choices are
+<code>"wss"</code> or <code>"silhouette"</code>. Defaults to
+<code>"wss"</code>.</li>
+<li>
+<code>what</code>: A string specifying the kind of information to
+display about the validation criterion. Choices are <code>"mean"</code>
+(which plots the mean values) or <code>"distribution"</code> (which
+plots the boxplots). Defaults to <code>"mean"</code>.</li>
+</ul>
+<p>For example, one can can visualize the mean WSS for all specified
+methods as:</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">amplitude_data</span>, validation_criterion <span class="op">=</span> <span class="st">"wss"</span>, what <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hclust_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>In this case, the plot clearly shows that among the set of warping
+classes that has been considered, one choose use affine warping and
+search for <span class="math inline">\(2\)</span> groups when the goal
+is to cluster based on the amplitude data.</p>
+<p>Let us now perform the same analysis with the goal of clustering
+based on phase data:</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ncores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/detectCores.html" class="external-link">detectCores</a></span><span class="op">(</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1L</span>, <span class="fl">1L</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multisession</span>, workers <span class="op">=</span> <span class="va">ncores</span><span class="op">)</span></span>
+<span><span class="va">phase_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_caps.html">compare_caps</a></span><span class="op">(</span></span>
+<span>  x <span class="op">=</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>, </span>
+<span>  y <span class="op">=</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>, </span>
+<span>  n_clusters_max <span class="op">=</span> <span class="fl">5L</span>, </span>
+<span>  metric <span class="op">=</span> <span class="st">"l2"</span>, </span>
+<span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"dilation"</span>, <span class="st">"affine"</span><span class="op">)</span>,</span>
+<span>  clustering_method <span class="op">=</span> <span class="st">"hclust-complete"</span>, </span>
+<span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>, </span>
+<span>  cluster_on_phase <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">sequential</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">phase_data</span>, validation_criterion <span class="op">=</span> <span class="st">"wss"</span>, what <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="hclust_files/figure-html/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;"></p>
+<p>In this case, as expected by looking at the original data set, the
+plot suggests to use affine warping but to search for <span class="math inline">\(3\)</span> groups.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
