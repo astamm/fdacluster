@@ -6,7 +6,7 @@
 \usage{
 fdakmeans(
   x,
-  y,
+  y = NULL,
   n_clusters = 1L,
   seeds = NULL,
   seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
@@ -28,12 +28,19 @@ fdakmeans(
 )
 }
 \arguments{
-\item{x}{A numeric matrix of shape \eqn{N \times M} specifying the grids of
-size \eqn{M} on which each of the \eqn{N} curves have been observed.}
+\item{x}{A numeric vector of length \eqn{M} or a numeric matrix of shape
+\eqn{N \times M} or an object of class \code{\link[funData:funData-class]{funData::funData}}. If a numeric
+vector or matrix, it specifies the grid(s) of size \eqn{M} on which each of
+the \eqn{N} curves have been observed. If an object of class
+\code{\link[funData:funData-class]{funData::funData}}, it contains the whole functional data set and the \code{y}
+argument is not used.}
 
-\item{y}{A numeric array of shape \eqn{N \times L \times M} specifying the
-\eqn{N}-sample of \eqn{L}-dimensional curves observed on grids of size
-\eqn{M}.}
+\item{y}{Either a numeric matrix of shape \eqn{N \times M} or a numeric array
+of shape \eqn{N \times L \times M} or an object of class \code{\link[fda:fd]{fda::fd}}. If a
+numeric matrix or array, it specifies the \eqn{N}-sample of
+\eqn{L}-dimensional curves observed on grids of size \eqn{M}. If an object
+of class \code{\link[fda:fd]{fda::fd}}, it contains all the necessary information about the
+functional data set to be able to evaluate it on user-defined grids.}
 
 \item{n_clusters}{An integer value specifying the number of clusters.
 Defaults to \code{1L}.}
@@ -130,12 +137,40 @@ number of warping class are implemented to achieve this separation.
 }
 \examples{
 res <- fdakmeans(
-  simulated30$x,
-  simulated30$y,
+  x = simulated30$x,
+  y = simulated30$y,
   seeds = c(1, 21),
   n_clusters = 2,
   centroid_type = "medoid",
   warping_class = "affine",
   metric = "pearson"
 )
+
+\dontshow{if (requireNamespace("fda", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+fd <- fda::as.fd(fda::smooth.basisPar(
+  simulated30$x[1, ],
+  t(simulated30$y[, 1, ]),
+  lambda = 0.00001)
+)
+res <- fdakmeans(
+  x = simulated30$x,
+  y = fd,
+  seeds = c(1, 21),
+  n_clusters = 2,
+  centroid_type = "medoid",
+  warping_class = "affine",
+  metric = "pearson"
+)
+\dontshow{\}) # examplesIf}
+\dontshow{if (requireNamespace("funData", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+fund <- funData::funData(simulated30$x[1, ], simulated30$y[, 1, ])
+res <- fdakmeans(
+  x = fund,
+  seeds = c(1, 21),
+  n_clusters = 2,
+  centroid_type = "medoid",
+  warping_class = "affine",
+  metric = "pearson"
+)
+\dontshow{\}) # examplesIf}
 }

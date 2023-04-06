@@ -102,3 +102,73 @@ check_centroid_type <- function(x) {
   }
   cli::cli_abort("The input argument {.arg centroid_type} should be one of {.code mean}, {.code medoid}, {.code lowessXX} or {.code polyXX}.")
 }
+
+format_inputs <- function(x, y = NULL) {
+  # Here x is N x M and y is N x L x M when provided
+  if (is.null(y) && is.null(rlang::check_installed("funData"))) {
+    if (inherits(x, "funData")) {
+      L <- 1
+      y <- x@X
+      dims <- dim(y)
+      N <- dims[1]
+      M <- dims[2]
+      y <- array(y, dim = c(N, L, M))
+      x <- x@argvals[[1]]
+    } else if (inherits(x, "multiFunData")) {
+      L <- length(x)
+      dims <- dim(x[[1]]@X)
+      N <- dims[1]
+      M <- dims[2]
+      y <- array(dim = c(N, L, M))
+      for (l in 1:L) y[, l, ] <- x[[l]]@X
+      x <- x[[1]]@argvals[[1]]
+    } else
+      cli::cli_abort("Functional data provided in a single argument {.arg x} must be either of class {.cls funData} or of class {.cls multiFunData}.")
+  } else if (is.null(rlang::check_installed("fda")) && fda::is.fd(y)) {
+    dims <- purrr::map_int(y$fdnames, length)
+    M <- dims[1]
+    N <- dims[2]
+    L <- dims[3]
+    if (is.vector(x)) {
+      if (length(x) != M)
+        cli::cli_abort("The number of function evaluations ({M}) does not match the grid size ({length(x)}).")
+      y <- fda::eval.fd(x, y)
+    } else {
+      if (nrow(x) != N)
+        cli::cli_abort("When provided multiple evaluation grids as a matrix, the number of rows should match the number of curves.")
+      if (ncol(x) != M)
+        cli::cli_abort("When provided multiple evaluation grids as a matrix, the number of columns should match the common grid size.")
+      y <- fda::eval.fd(t(x), y)
+    }
+    if (is.null(dim(y))) {
+      # y is a single 1-dimensional curve
+      y <- array(y, dim = c(length(y), 1, 1))
+    } else if (length(dim(y)) == 2) {
+      # y is N 1-dimensional curves
+      y <- array(y, dim = c(dim(y), 1))
+    }
+    y <- aperm(y, c(2, 3, 1))
+  } else {
+    if (length(dim(y)) == 2) {
+      y <- array(y, c(dim(y)[1], 1, dim(y)[2]))
+    }
+    dims <- dim(y)
+    N <- dims[1]
+    L <- dims[2]
+    M <- dims[3]
+  }
+
+  # Handle vector grid
+  if (is.vector(x)) {
+    x <- matrix(x, N, M, byrow = TRUE)
+  }
+
+  if (anyNA(x))
+    cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
+
+  if (anyNA(y))
+    cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
+
+  # output x matrix NxM and y array NxLxM
+  list(x = x, y = y)
+}

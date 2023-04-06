@@ -4,11 +4,18 @@
 #' for functional data, with possible joint amplitude and phase separation. A
 #' number of warping class are implemented to achieve this separation.
 #'
-#' @param x A numeric matrix of shape \eqn{N \times M} specifying the grids of
-#'   size \eqn{M} on which each of the \eqn{N} curves have been observed.
-#' @param y A numeric array of shape \eqn{N \times L \times M} specifying the
-#'   \eqn{N}-sample of \eqn{L}-dimensional curves observed on grids of size
-#'   \eqn{M}.
+#' @param x A numeric vector of length \eqn{M} or a numeric matrix of shape
+#'   \eqn{N \times M} or an object of class [`funData::funData`]. If a numeric
+#'   vector or matrix, it specifies the grid(s) of size \eqn{M} on which each of
+#'   the \eqn{N} curves have been observed. If an object of class
+#'   [`funData::funData`], it contains the whole functional data set and the `y`
+#'   argument is not used.
+#' @param y Either a numeric matrix of shape \eqn{N \times M} or a numeric array
+#'   of shape \eqn{N \times L \times M} or an object of class [`fda::fd`]. If a
+#'   numeric matrix or array, it specifies the \eqn{N}-sample of
+#'   \eqn{L}-dimensional curves observed on grids of size \eqn{M}. If an object
+#'   of class [`fda::fd`], it contains all the necessary information about the
+#'   functional data set to be able to evaluate it on user-defined grids.
 #' @param n_clusters An integer value specifying the number of clusters.
 #'   Defaults to `1L`.
 #' @param seeds An integer value or vector specifying the indices of the initial
@@ -84,15 +91,42 @@
 #' @export
 #' @examples
 #' res <- fdakmeans(
-#'   simulated30$x,
-#'   simulated30$y,
+#'   x = simulated30$x,
+#'   y = simulated30$y,
 #'   seeds = c(1, 21),
 #'   n_clusters = 2,
 #'   centroid_type = "medoid",
 #'   warping_class = "affine",
 #'   metric = "pearson"
 #' )
-fdakmeans <- function(x, y,
+#'
+#' @examplesIf requireNamespace("fda", quietly = TRUE)
+#' fd <- fda::as.fd(fda::smooth.basisPar(
+#'   simulated30$x[1, ],
+#'   t(simulated30$y[, 1, ]),
+#'   lambda = 0.00001)
+#' )
+#' res <- fdakmeans(
+#'   x = simulated30$x,
+#'   y = fd,
+#'   seeds = c(1, 21),
+#'   n_clusters = 2,
+#'   centroid_type = "medoid",
+#'   warping_class = "affine",
+#'   metric = "pearson"
+#' )
+#'
+#' @examplesIf requireNamespace("funData", quietly = TRUE)
+#' fund <- funData::funData(simulated30$x[1, ], simulated30$y[, 1, ])
+#' res <- fdakmeans(
+#'   x = fund,
+#'   seeds = c(1, 21),
+#'   n_clusters = 2,
+#'   centroid_type = "medoid",
+#'   warping_class = "affine",
+#'   metric = "pearson"
+#' )
+fdakmeans <- function(x, y = NULL,
                       n_clusters = 1L,
                       seeds = NULL,
                       seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
@@ -111,15 +145,17 @@ fdakmeans <- function(x, y,
                       compute_overall_center = FALSE,
                       add_silhouettes = TRUE,
                       expand_domain = TRUE) {
-  if (anyNA(x))
-    cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
-
-  if (anyNA(y))
-    cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
-
   call <- rlang::call_match(defaults = TRUE)
   call_name <- rlang::call_name(call)
   call_args <- rlang::call_args(call)
+
+  l <- format_inputs(x, y)
+  x <- l$x
+  y <- l$y
+  dims <- dim(y)
+  N <- dims[1]
+  L <- dims[2]
+  M <- dims[3]
 
   seeding_strategy <- rlang::arg_match(seeding_strategy)
   warping_class <- rlang::arg_match(warping_class)
@@ -128,21 +164,6 @@ fdakmeans <- function(x, y,
   centroid_type_args <- check_centroid_type(centroid_type)
   centroid_name <- centroid_type_args$name
   centroid_extra <- centroid_type_args$extra
-
-  # Handle one-dimensional data
-  if (length(dim(y)) == 2) {
-    y <- array(y, c(dim(y)[1], 1, dim(y)[2]))
-  }
-
-  dims <- dim(y)
-  N <- dims[1]
-  L <- dims[2]
-  M <- dims[3]
-
-  # Handle vector grid
-  if (is.vector(x)) {
-    x <- matrix(x, N, M, byrow = TRUE)
-  }
 
   # Handle seeds
   if (is.null(seeds)) {

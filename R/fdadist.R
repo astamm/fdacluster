@@ -15,35 +15,23 @@
 #' @export
 #' @examples
 #' D <- fdadist(simulated30$x, simulated30$y)
-fdadist <- function(x, y,
+fdadist <- function(x, y = NULL,
                     warping_class = c("affine", "dilation", "none", "shift", "srsf"),
                     metric = c("l2", "pearson"),
                     cluster_on_phase = FALSE,
                     labels = NULL) {
-  if (anyNA(x))
-    cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
-
-  if (anyNA(y))
-    cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
-
-  warping_class <- rlang::arg_match(warping_class)
-  metric <- rlang::arg_match(metric)
   call <- rlang::call_match(defaults = TRUE)
 
-  # Handle one-dimensional data
-  if (length(dim(y)) == 2) {
-    y <- array(y, c(dim(y)[1], 1, dim(y)[2]))
-  }
-
+  l <- format_inputs(x, y)
+  x <- l$x
+  y <- l$y
   dims <- dim(y)
   N <- dims[1]
   L <- dims[2]
   M <- dims[3]
 
-  # Handle vector grid
-  if (is.vector(x)) {
-    x <- matrix(x, N, M, byrow = TRUE)
-  }
+  warping_class <- rlang::arg_match(warping_class)
+  metric <- rlang::arg_match(metric)
 
   if (is.null(labels))
     labels <- 1:N
@@ -106,7 +94,7 @@ fdadist <- function(x, y,
   attr(d, "Size") <- N
   attr(d, "Diag") <- FALSE
   attr(d, "Upper") <- FALSE
-  attr(d, "call") <- rlang::call_match(defaults = TRUE)
+  attr(d, "call") <- call
   attr(d, "method") <- metric
   class(d) <- "dist"
   d

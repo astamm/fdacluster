@@ -20,7 +20,7 @@
 #' @export
 #' @examples
 #' out <- fdahclust(simulated30$x, simulated30$y)
-fdahclust <- function(x, y,
+fdahclust <- function(x, y = NULL,
                       n_clusters = 1L,
                       warping_class = c("affine", "dilation", "none", "shift", "srsf"),
                       centroid_type = c("mean", "medoid", "lowess", "poly"),
@@ -36,32 +36,20 @@ fdahclust <- function(x, y,
                       use_fence = FALSE,
                       check_total_dissimilarity = TRUE,
                       compute_overall_center = FALSE) {
-  if (anyNA(x))
-    cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
-
-  if (anyNA(y))
-    cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
-
   call <- rlang::call_match(defaults = TRUE)
-  warping_class <- rlang::arg_match(warping_class)
-  centroid_type <- rlang::arg_match(centroid_type)
-  metric <- rlang::arg_match(metric)
-  linkage_criterion <- rlang::arg_match(linkage_criterion)
 
-  # Handle one-dimensional data
-  if (length(dim(y)) == 2) {
-    y <- array(y, c(dim(y)[1], 1, dim(y)[2]))
-  }
-
+  l <- format_inputs(x, y)
+  x <- l$x
+  y <- l$y
   dims <- dim(y)
   N <- dims[1]
   L <- dims[2]
   M <- dims[3]
 
-  # Handle vector grid
-  if (is.vector(x)) {
-    x <- matrix(x, N, M, byrow = TRUE)
-  }
+  warping_class <- rlang::arg_match(warping_class)
+  centroid_type <- rlang::arg_match(centroid_type)
+  metric <- rlang::arg_match(metric)
+  linkage_criterion <- rlang::arg_match(linkage_criterion)
 
   if (use_verbose)
     cli::cli_alert_info("Computing the distance matrix...")
