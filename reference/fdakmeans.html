@@ -65,7 +65,7 @@ number of warping class are implemented to achieve this separation.</p>
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">fdakmeans</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
-<span>  <span class="va">y</span>,</span>
+<span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_clusters <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  seeds <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  seeding_strategy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmeans++"</span>, <span class="st">"exhaustive-kmeans++"</span>, <span class="st">"exhaustive"</span>, <span class="st">"hclust"</span><span class="op">)</span>,</span>
@@ -90,14 +90,21 @@ number of warping class are implemented to achieve this separation.</p>
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A numeric matrix of shape \(N \times M\) specifying the grids of
-size \(M\) on which each of the \(N\) curves have been observed.</p></dd>
+<dd><p>A numeric vector of length \(M\) or a numeric matrix of shape
+\(N \times M\) or an object of class <code><a href="https://rdrr.io/pkg/funData/man/funData-class.html" class="external-link">funData::funData</a></code>. If a numeric
+vector or matrix, it specifies the grid(s) of size \(M\) on which each of
+the \(N\) curves have been observed. If an object of class
+<code><a href="https://rdrr.io/pkg/funData/man/funData-class.html" class="external-link">funData::funData</a></code>, it contains the whole functional data set and the <code>y</code>
+argument is not used.</p></dd>
 
 
 <dt>y</dt>
-<dd><p>A numeric array of shape \(N \times L \times M\) specifying the
-\(N\)-sample of \(L\)-dimensional curves observed on grids of size
-\(M\).</p></dd>
+<dd><p>Either a numeric matrix of shape \(N \times M\) or a numeric array
+of shape \(N \times L \times M\) or an object of class <code><a href="https://rdrr.io/pkg/fda/man/fd.html" class="external-link">fda::fd</a></code>. If a
+numeric matrix or array, it specifies the \(N\)-sample of
+\(L\)-dimensional curves observed on grids of size \(M\). If an object
+of class <code><a href="https://rdrr.io/pkg/fda/man/fd.html" class="external-link">fda::fd</a></code>, it contains all the necessary information about the
+functional data set to be able to evaluate it on user-defined grids.</p></dd>
 
 
 <dt>n_clusters</dt>
@@ -231,8 +238,114 @@ is performed to fill in the missing values. Defaults to <code>TRUE</code>.</p></
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">fdakmeans</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span></span>
-<span class="r-in"><span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span></span>
+<span class="r-in"><span>  x <span class="op">=</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span></span>
+<span class="r-in"><span>  y <span class="op">=</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span>,</span></span>
+<span class="r-in"><span>  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  centroid_type <span class="op">=</span> <span class="st">"medoid"</span>,</span></span>
+<span class="r-in"><span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span></span>
+<span class="r-in"><span>  metric <span class="op">=</span> <span class="st">"pearson"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about the data set:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of observations: 30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of dimensions: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of points: 200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about cluster initialization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of clusters: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Initial seeds for cluster centers:          1        21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about the methods used within the algorithm:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping method: affine</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Center method: medoid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Dissimilarity method: pearson</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Optimization method: bobyqa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about warping parameter bounds:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping options:    0.1500   0.1500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about convergence criteria:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Maximum number of iterations: 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Distance relative tolerance: 0.001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about parallelization setup:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of threads: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Parallel method: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Other information:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Use fence to robustify: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Check total dissimilarity: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Compute overall center: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running k-centroid algorithm:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Active stopping criteria:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Memberships did not change.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">fd</span> <span class="op">&lt;-</span> <span class="fu">fda</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fda/man/as.fd.html" class="external-link">as.fd</a></span><span class="op">(</span><span class="fu">fda</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fda/man/smooth.basisPar.html" class="external-link">smooth.basisPar</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>,</span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">simulated30</span><span class="op">$</span><span class="va">y</span><span class="op">[</span>, <span class="fl">1</span>, <span class="op">]</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  lambda <span class="op">=</span> <span class="fl">0.00001</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">fdakmeans</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  x <span class="op">=</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span></span>
+<span class="r-in"><span>  y <span class="op">=</span> <span class="va">fd</span>,</span></span>
+<span class="r-in"><span>  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span></span>
+<span class="r-in"><span>  centroid_type <span class="op">=</span> <span class="st">"medoid"</span>,</span></span>
+<span class="r-in"><span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span></span>
+<span class="r-in"><span>  metric <span class="op">=</span> <span class="st">"pearson"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about the data set:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of observations: 30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of dimensions: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of points: 200</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about cluster initialization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of clusters: 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Initial seeds for cluster centers:          1        21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about the methods used within the algorithm:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping method: affine</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Center method: medoid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Dissimilarity method: pearson</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Optimization method: bobyqa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about warping parameter bounds:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping options:    0.1500   0.1500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about convergence criteria:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Maximum number of iterations: 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Distance relative tolerance: 0.001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Information about parallelization setup:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of threads: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Parallel method: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Other information:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Use fence to robustify: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Check total dissimilarity: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Compute overall center: 0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Running k-centroid algorithm:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Active stopping criteria:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Memberships did not change.</span>
+<span class="r-in"><span><span class="va">fund</span> <span class="op">&lt;-</span> <span class="fu">funData</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/funData/man/funData-class.html" class="external-link">funData</a></span><span class="op">(</span><span class="va">simulated30</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span><span class="op">[</span>, <span class="fl">1</span>, <span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">fdakmeans</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  x <span class="op">=</span> <span class="va">fund</span>,</span></span>
 <span class="r-in"><span>  seeds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">21</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>  centroid_type <span class="op">=</span> <span class="st">"medoid"</span>,</span></span>
