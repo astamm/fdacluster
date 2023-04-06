@@ -165,6 +165,9 @@ fdakmeans <- function(x, y = NULL,
   centroid_name <- centroid_type_args$name
   centroid_extra <- centroid_type_args$extra
 
+  if (centroid_name != "medoid" && parallel_method == 1L)
+    cli::cli_abort("Parallelization on the distance calculation loop is only available for computing medoids.")
+
   # Handle seeds
   if (is.null(seeds)) {
     if (use_verbose)

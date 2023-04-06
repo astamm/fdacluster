@@ -539,3 +539,138 @@ test_that('`fdakmeans()` works when clustering on phase.', {
   expect_equal(out$call_name, "fdakmeans")
   expect_true(inherits(out$call_args, "list"))
 })
+
+test_that('`fdakmeans()` works in verbose mode.', {
+  out <- fdakmeans(
+    simulated30$x,
+    simulated30$y,
+    seeds = c(1, 21),
+    n_clusters = 2,
+    centroid_type = "mean",
+    warping_class = "affine",
+    metric = "pearson",
+    use_verbose = TRUE
+  )
+
+  expect_true(is_caps(out))
+  expect_equal(length(out), 14)
+  expected_names <- c("original_curves", "aligned_curves", "center_curves",
+                      "warpings", "grids", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes",
+                      "amplitude_variation", "total_variation", "n_iterations",
+                      "call_name", "call_args")
+  expect_equal(names(out), expected_names)
+  expect_equal(dim(out$original_curves), c(30, 1, 200))
+  expect_equal(dim(out$aligned_curves), c(30, 1, 200))
+  expect_equal(dim(out$center_curves), c(2, 1, 200))
+  expect_equal(dim(out$grids), c(2, 200))
+  expect_equal(out$n_clusters, 2)
+  expect_equal(length(out$memberships), 30)
+  expect_equal(length(out$distances_to_center), 30)
+  expect_equal(dim(out$warpings), c(30, 200))
+  expect_equal(out$n_iterations, 2)
+  expect_equal(out$call_name, "fdakmeans")
+  expect_true(inherits(out$call_args, "list"))
+})
+
+test_that('`fdakmeans()` works with parallel mode on distance calculation.', {
+  out <- fdakmeans(
+    simulated30$x,
+    simulated30$y,
+    seeds = c(1, 21),
+    n_clusters = 2,
+    centroid_type = "medoid",
+    warping_class = "affine",
+    metric = "pearson",
+    use_verbose = FALSE,
+    parallel_method = 1L
+  )
+
+  expect_true(is_caps(out))
+  expect_equal(length(out), 14)
+  expected_names <- c("original_curves", "aligned_curves", "center_curves",
+                      "warpings", "grids", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes",
+                      "amplitude_variation", "total_variation", "n_iterations",
+                      "call_name", "call_args")
+  expect_equal(names(out), expected_names)
+  expect_equal(dim(out$original_curves), c(30, 1, 200))
+  expect_equal(dim(out$aligned_curves), c(30, 1, 200))
+  expect_equal(dim(out$center_curves), c(2, 1, 200))
+  expect_equal(dim(out$grids), c(2, 200))
+  expect_equal(out$n_clusters, 2)
+  expect_equal(length(out$memberships), 30)
+  expect_equal(length(out$distances_to_center), 30)
+  expect_equal(dim(out$warpings), c(30, 200))
+  expect_equal(out$n_iterations, 2)
+  expect_equal(out$call_name, "fdakmeans")
+  expect_true(inherits(out$call_args, "list"))
+})
+
+test_that('`fdakmeans()` works with fence adaptive algorithm.', {
+  out <- fdakmeans(
+    simulated30$x,
+    simulated30$y,
+    seeds = c(1, 21),
+    n_clusters = 2,
+    centroid_type = "mean",
+    warping_class = "affine",
+    metric = "pearson",
+    use_verbose = FALSE,
+    use_fence = TRUE
+  )
+
+  expect_true(is_caps(out))
+  expect_equal(length(out), 14)
+  expected_names <- c("original_curves", "aligned_curves", "center_curves",
+                      "warpings", "grids", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes",
+                      "amplitude_variation", "total_variation", "n_iterations",
+                      "call_name", "call_args")
+  expect_equal(names(out), expected_names)
+  expect_equal(dim(out$original_curves), c(30, 1, 200))
+  expect_equal(dim(out$aligned_curves), c(30, 1, 200))
+  expect_equal(dim(out$center_curves), c(2, 1, 200))
+  expect_equal(dim(out$grids), c(2, 200))
+  expect_equal(out$n_clusters, 2)
+  expect_equal(length(out$memberships), 30)
+  expect_equal(length(out$distances_to_center), 30)
+  expect_equal(dim(out$warpings), c(30, 200))
+  expect_equal(out$n_iterations, 2)
+  expect_equal(out$call_name, "fdakmeans")
+  expect_true(inherits(out$call_args, "list"))
+})
+
+test_that('`fdakmeans()` works with computation of overall center.', {
+  out <- fdakmeans(
+    simulated30$x,
+    simulated30$y,
+    seeds = c(1, 21),
+    n_clusters = 2,
+    centroid_type = "mean",
+    warping_class = "affine",
+    metric = "pearson",
+    use_verbose = FALSE,
+    compute_overall_center = TRUE
+  )
+
+  expect_true(is_caps(out))
+  expect_equal(length(out), 14)
+  expected_names <- c("original_curves", "aligned_curves", "center_curves",
+                      "warpings", "grids", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes",
+                      "amplitude_variation", "total_variation", "n_iterations",
+                      "call_name", "call_args")
+  expect_equal(names(out), expected_names)
+  expect_equal(dim(out$original_curves), c(30, 1, 200))
+  expect_equal(dim(out$aligned_curves), c(30, 1, 200))
+  expect_equal(dim(out$center_curves), c(2, 1, 200))
+  expect_equal(dim(out$grids), c(2, 200))
+  expect_equal(out$n_clusters, 2)
+  expect_equal(length(out$memberships), 30)
+  expect_equal(length(out$distances_to_center), 30)
+  expect_equal(dim(out$warpings), c(30, 200))
+  expect_equal(out$n_iterations, 2)
+  expect_equal(out$call_name, "fdakmeans")
+  expect_true(inherits(out$call_args, "list"))
+})

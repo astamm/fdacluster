@@ -98,7 +98,7 @@ check_centroid_type <- function(x) {
   if (grepl("poly", x, fixed = TRUE)) {
     degree_value <- as.numeric(gsub("\\D", "", x))
     if (is.na(degree_value)) degree_value <- 4
-    return(list(name = "lowess", extra = degree_value))
+    return(list(name = "poly", extra = degree_value))
   }
   cli::cli_abort("The input argument {.arg centroid_type} should be one of {.code mean}, {.code medoid}, {.code lowessXX} or {.code polyXX}.")
 }
