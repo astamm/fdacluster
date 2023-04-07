@@ -159,10 +159,22 @@ specialized methods of
 [`ggplot2::autoplot()`](https://astamm.github.io/fdacluster/reference/autoplot.caps.html)
 and
 [`graphics::plot()`](https://astamm.github.io/fdacluster/reference/plot.caps.html)
-have been implemented. Therefore, we can visualize the results simply with:
-```{r hac-amplitude-viz}
+have been implemented.
+
+For instance, we can visualize the original and aligned functional data set
+with:
+```{r hac-amplitude-viz-amplitude}
 plot(out1, type = "amplitude")
+```
+
+Or we can visualize the estimated warping functions with:
+```{r hac-amplitude-viz-phase}
 plot(out1, type = "phase")
+```
+
+Or we can visualize the distribution of *distances-to-center* and *silhouette*
+values across observations with:
+```{r hac-amplitude-viz-diag}
 diagnostic_plot(out1)
 ```
 
@@ -182,7 +194,7 @@ out2 <- fdahclust(
 )
 ```
 
-We can inspect the result:
+We can inspect the result as before:
 ```{r hac-phase-viz}
 plot(out2, type = "amplitude")
 plot(out2, type = "phase")
@@ -239,11 +251,11 @@ plot(amplitude_data, validation_criterion = "wss", what = "mean")
 ```
 
 In this case, the plot clearly shows that among the set of warping classes that
-has been considered, one choose use affine warping and search for $2$ groups
-when the goal is to cluster based on the amplitude data.
+has been considered, one should use affine warping and search for $2$ groups
+when the goal is to cluster based on amplitude variability.
 
 Let us now perform the same analysis with the goal of clustering based on phase
-data:
+variability instead:
 ```{r}
 ncores <- max(parallel::detectCores() - 1L, 1L)
 plan(multisession, workers = ncores)
