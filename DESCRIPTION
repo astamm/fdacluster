@@ -14,7 +14,7 @@ Authors@R: c(
     person(given = "Aymeric",
            family = "Stamm",
            role = c("cre", "ctb"),
-           email = "aymeric.stamm@math.cnrs.fr",
+           email = "aymeric.stamm@cnrs.fr",
            comment = c(ORCID = "0000-0002-8725-3654")),
     person(given = "Simone",
            family = "Vantini",
