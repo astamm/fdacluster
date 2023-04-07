@@ -103,16 +103,18 @@ test_that('`fdakmeans()` works with fixed initial seeds.', {
 })
 
 test_that('`fdakmeans()` works with kmeans++ seeding strategy.', {
-  out <- fdakmeans(
-    simulated30$x,
-    simulated30$y,
-    seeding_strategy = "kmeans++",
-    n_clusters = 2,
-    centroid_type = "mean",
-    warping_class = "affine",
-    metric = "pearson",
-    use_verbose = FALSE
-  )
+  withr::with_seed(1234, {
+    out <- fdakmeans(
+      simulated30$x,
+      simulated30$y,
+      seeding_strategy = "kmeans++",
+      n_clusters = 2,
+      centroid_type = "mean",
+      warping_class = "affine",
+      metric = "pearson",
+      use_verbose = FALSE
+    )
+  })
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
@@ -139,16 +141,18 @@ test_that('`fdakmeans()` works with exhaustive-kmeans++ seeding strategy.', {
   library(future)
   ncores <- max(parallel::detectCores() - 1, 1)
   plan(multisession, workers = ncores)
-  out <- fdakmeans(
-    simulated30$x,
-    simulated30$y,
-    seeding_strategy = "exhaustive-kmeans++",
-    n_clusters = 2,
-    centroid_type = "mean",
-    warping_class = "affine",
-    metric = "pearson",
-    use_verbose = FALSE
-  )
+  withr::with_seed(1234, {
+    out <- fdakmeans(
+      simulated30$x,
+      simulated30$y,
+      seeding_strategy = "exhaustive-kmeans++",
+      n_clusters = 2,
+      centroid_type = "mean",
+      warping_class = "affine",
+      metric = "pearson",
+      use_verbose = FALSE
+    )
+  })
   plan(sequential)
 
   expect_true(is_caps(out))

@@ -51,7 +51,8 @@ Suggests:
     future,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Imports: 
     cli,
     cluster,
