@@ -68,7 +68,7 @@ information.</p>
 <span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_clusters <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
-<span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span>, <span class="st">"lowess"</span>, <span class="st">"poly"</span><span class="op">)</span>,</span>
+<span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
 <span>  linkage_criterion <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"complete"</span>, <span class="st">"average"</span>, <span class="st">"single"</span>, <span class="st">"ward.D2"</span><span class="op">)</span>,</span>
 <span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -118,7 +118,13 @@ Defaults to <code>1L</code>.</p></dd>
 <dt>centroid_type</dt>
 <dd><p>A string specifying the type of centroid to compute.
 Choices are <code>"mean"</code>, <code>"medoid"</code>, <code>"lowess"</code> or <code>"poly"</code>. Defaults to
-<code>"mean"</code>.</p></dd>
+<code>"mean"</code>. If LOWESS appproximation is chosen, the user can append an
+integer between 0 and 100 as in <code>"lowess20"</code>. This number will be used as
+the smoother span. This gives the proportion of points in the plot which
+influence the smooth at each value. Larger values give more smoothness. The
+default value is 10%. If polynomial approximation is chosen, the user can
+append an positive integer as in <code>"poly3"</code>. This number will be used as the
+degree of the polynomial model. The default value is <code>4L</code>.</p></dd>
 
 
 <dt>metric</dt>

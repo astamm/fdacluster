@@ -143,7 +143,13 @@ Defaults to <code>"kmeans++"</code>, which is the fastest strategy.</p></dd>
 <dt>centroid_type</dt>
 <dd><p>A string specifying the type of centroid to compute.
 Choices are <code>"mean"</code>, <code>"medoid"</code>, <code>"lowess"</code> or <code>"poly"</code>. Defaults to
-<code>"mean"</code>.</p></dd>
+<code>"mean"</code>. If LOWESS appproximation is chosen, the user can append an
+integer between 0 and 100 as in <code>"lowess20"</code>. This number will be used as
+the smoother span. This gives the proportion of points in the plot which
+influence the smooth at each value. Larger values give more smoothness. The
+default value is 10%. If polynomial approximation is chosen, the user can
+append an positive integer as in <code>"poly3"</code>. This number will be used as the
+degree of the polynomial model. The default value is <code>4L</code>.</p></dd>
 
 
 <dt>metric</dt>
