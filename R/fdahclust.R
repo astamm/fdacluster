@@ -23,7 +23,7 @@
 fdahclust <- function(x, y = NULL,
                       n_clusters = 1L,
                       warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-                      centroid_type = c("mean", "medoid", "lowess", "poly"),
+                      centroid_type = "mean",
                       metric = c("l2", "pearson"),
                       linkage_criterion = c("complete", "average", "single", "ward.D2"),
                       cluster_on_phase = FALSE,
@@ -47,9 +47,16 @@ fdahclust <- function(x, y = NULL,
   M <- dims[3]
 
   warping_class <- rlang::arg_match(warping_class)
-  centroid_type <- rlang::arg_match(centroid_type)
   metric <- rlang::arg_match(metric)
   linkage_criterion <- rlang::arg_match(linkage_criterion)
+
+  centroid_type_args <- check_centroid_type(centroid_type)
+  centroid_name <- centroid_type_args$name
+  if (centroid_name != "medoid" && parallel_method == 1L)
+    cli::cli_abort("Parallelization on the distance calculation loop is only available for computing medoids.")
+
+  if (warping_class == "none" && cluster_on_phase)
+    cli::cli_abort("It makes no sense to cluster based on phase variability if no alignment is performed.")
 
   if (use_verbose)
     cli::cli_alert_info("Computing the distance matrix...")
@@ -122,8 +129,7 @@ fdahclust <- function(x, y = NULL,
       x = grids[labels, ],
       y = aligned_curves,
       warping_class = "none",
-      metric = metric,
-      cluster_on_phase = cluster_on_phase
+      metric = metric
     )
     silhouettes <- cluster::silhouette(labels, D)[, "sil_width"]
   }

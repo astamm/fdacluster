@@ -33,6 +33,9 @@ fdadist <- function(x, y = NULL,
   warping_class <- rlang::arg_match(warping_class)
   metric <- rlang::arg_match(metric)
 
+  if (warping_class == "none" && cluster_on_phase)
+    cli::cli_abort("It makes no sense to cluster based on phase variability if no alignment is performed.")
+
   if (is.null(labels))
     labels <- 1:N
 

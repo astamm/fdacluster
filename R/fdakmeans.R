@@ -39,7 +39,13 @@
 #'   `"affine"`. The SRSF class is the only class which is boundary-preserving.
 #' @param centroid_type A string specifying the type of centroid to compute.
 #'   Choices are `"mean"`, `"medoid"`, `"lowess"` or `"poly"`. Defaults to
-#'   `"mean"`.
+#'   `"mean"`. If LOWESS appproximation is chosen, the user can append an
+#'   integer between 0 and 100 as in `"lowess20"`. This number will be used as
+#'   the smoother span. This gives the proportion of points in the plot which
+#'   influence the smooth at each value. Larger values give more smoothness. The
+#'   default value is 10%. If polynomial approximation is chosen, the user can
+#'   append an positive integer as in `"poly3"`. This number will be used as the
+#'   degree of the polynomial model. The default value is `4L`.
 #' @param metric A string specifying the metric used to compare curves. Choices
 #'   are `"l2"` or `"pearson"`. Defaults to `"l2"`. Used only when
 #'   `warping_class != "srsf"`. For the boundary-preserving warping class, the
@@ -167,6 +173,9 @@ fdakmeans <- function(x, y = NULL,
 
   if (centroid_name != "medoid" && parallel_method == 1L)
     cli::cli_abort("Parallelization on the distance calculation loop is only available for computing medoids.")
+
+  if (warping_class == "none" && cluster_on_phase)
+    cli::cli_abort("It makes no sense to cluster based on phase variability if no alignment is performed.")
 
   # Handle seeds
   if (is.null(seeds)) {

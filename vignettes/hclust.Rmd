@@ -252,7 +252,7 @@ phase_data <- compare_caps(
   y = simulated30$y, 
   n_clusters_max = 5L, 
   metric = "l2", 
-  warping_class = c("none", "shift", "dilation", "affine"),
+  warping_class = c("shift", "dilation", "affine"),
   clustering_method = "hclust-complete", 
   centroid_type = "mean", 
   cluster_on_phase = TRUE
@@ -262,4 +262,7 @@ plot(phase_data, validation_criterion = "wss", what = "mean")
 ```
 
 In this case, as expected by looking at the original data set, the plot suggests
-to use affine warping but to search for $3$ groups.
+to search for $3$ groups. What is even more interesting is that there is in this
+case no improvement in terms of WSS by going from the shift warping class to the
+affine warping class. This was also expected by looking at the original data set
+but it is nice that it is also reflected in the output diagnostic.
