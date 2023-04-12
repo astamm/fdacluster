@@ -1,4 +1,4 @@
-# fdacluster 0.1.1.9000
+# fdacluster 0.2.0
 
 * Add hierarchical clustering;
 * Enforce `n_clusters` in output via linear programming (LP) using the 
