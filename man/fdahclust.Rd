@@ -2,7 +2,8 @@
 % Please edit documentation in R/fdahclust.R
 \name{fdahclust}
 \alias{fdahclust}
-\title{Hierarchical Clustering for Functional Data with Amplitude and Phase Separation}
+\title{Performs hierarchical clustering for functional data with amplitude and phase
+separation}
 \usage{
 fdahclust(
   x,
@@ -123,5 +124,27 @@ once hierarchical clustering is performed, curves within clusters need to be
 aligned to their corresponding centroid.
 }
 \examples{
-out <- fdahclust(simulated30$x, simulated30$y)
+#----------------------------------
+# Extracts 15 out of the 30 simulated curves in simulated30 data set
+idx <- c(1:5, 11:15, 21:25)
+x <- simulated30$x[idx, ]
+y <- simulated30$y[idx, , ]
+
+#----------------------------------
+# Runs an HAC with affine alignment, searching for 2 clusters
+out <- fdahclust(
+  x = x,
+  y = y,
+  n_clusters = 2,
+  warping_class = "affine"
+)
+
+#----------------------------------
+# Then visualize the results
+# Either with ggplot2 via ggplot2::autoplot(out)
+# or using graphics::plot()
+# You can visualize the original and aligned curves with:
+plot(out, type = "amplitude")
+# Or the estimated warping functions with:
+plot(out, type = "phase")
 }

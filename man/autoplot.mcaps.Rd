@@ -2,7 +2,7 @@
 % Please edit documentation in R/compare-caps.R
 \name{autoplot.mcaps}
 \alias{autoplot.mcaps}
-\title{Plot for \code{mcaps} object}
+\title{Visualizes results of multiple clustering strategies using ggplot2}
 \usage{
 \method{autoplot}{mcaps}(
   object,
@@ -24,6 +24,9 @@ validation criterion. Choices are \code{"mean"} (which plots the mean values) or
 
 \item{...}{Other arguments passed to specific methods.}
 }
+\value{
+An object of class \code{\link[ggplot2:ggplot]{ggplot2::ggplot}}.
+}
 \description{
 This is an S3 method implementation of the \code{\link[ggplot2:autoplot]{ggplot2::autoplot()}} generic
 for objects of class \code{mcaps} to visualize the performances of multiple
@@ -32,14 +35,6 @@ terms of silhouette values.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-out <- compare_caps(
-  x = simulated30$x,
-  y = simulated30$y,
-  n_clusters_max = 2,
-  warping_class = "affine",
-  clustering_method = "hclust-complete",
-  centroid_type = "mean"
-)
-ggplot2::autoplot(out)
+p <- ggplot2::ggplot(sim30_mcaps)
 \dontshow{\}) # examplesIf}
 }

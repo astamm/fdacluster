@@ -1,4 +1,4 @@
-#' Linear and Integer Programming
+#' Linear and integer programming
 #'
 #' Interface to `lp_solve` linear/integer programming system.
 #'

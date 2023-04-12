@@ -2,7 +2,7 @@
 % Please edit documentation in R/compare-caps.R
 \name{plot.mcaps}
 \alias{plot.mcaps}
-\title{Plot for \code{mcaps} object}
+\title{Plots results of multiple clustering strategies}
 \usage{
 \method{plot}{mcaps}(
   x,
@@ -31,13 +31,5 @@ objects applied on the same data sets either in terms of WSS or in terms of
 silhouette values.
 }
 \examples{
-out <- compare_caps(
-  x = simulated30$x,
-  y = simulated30$y,
-  n_clusters_max = 2,
-  warping_class = "affine",
-  clustering_method = "hclust-complete",
-  centroid_type = "mean"
-)
-plot(out)
+plot(sim30_mcaps)
 }

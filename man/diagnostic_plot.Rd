@@ -2,7 +2,8 @@
 % Please edit documentation in R/caps-diagnostic.R
 \name{diagnostic_plot}
 \alias{diagnostic_plot}
-\title{Diagnostic Plot for \code{\link{caps}} Objects}
+\title{Diagnostic plot for the result of a clustering strategy stored in a \code{caps}
+object}
 \usage{
 diagnostic_plot(x)
 }
@@ -18,14 +19,5 @@ each observation. Observations are ordered within cluster by decreasing value
 of silhouette.
 }
 \examples{
-out <- fdakmeans(
-  simulated30$x,
-  simulated30$y,
-  seeds = c(1, 21),
-  n_clusters = 2,
-  centroid_type = "medoid",
-  warping_class = "affine",
-  metric = "pearson"
-)
-diagnostic_plot(out)
+diagnostic_plot(sim30_caps)
 }

@@ -2,7 +2,8 @@
 % Please edit documentation in R/caps-plot.R
 \name{autoplot.caps}
 \alias{autoplot.caps}
-\title{Plot for \code{\link{caps}} objects}
+\title{Visualizes the result of a clustering strategy stored in a \code{caps} object with
+ggplot2}
 \usage{
 \method{autoplot}{caps}(object, type = c("amplitude", "phase"), ...)
 }
@@ -30,16 +31,7 @@ estimated warping functions are shown.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-res <- fdakmeans(
-  simulated30$x,
-  simulated30$y,
-  seeds = c(1, 21),
-  n_clusters = 2,
-  centroid_type = "medoid",
-  warping_class = "affine",
-  metric = "pearson"
-)
-ggplot2::autoplot(res, type = "amplitude")
-ggplot2::autoplot(res, type = "phase")
+ggplot2::autoplot(sim30_caps, type = "amplitude")
+ggplot2::autoplot(sim30_caps, type = "phase")
 \dontshow{\}) # examplesIf}
 }

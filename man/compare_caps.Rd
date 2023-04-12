@@ -2,7 +2,7 @@
 % Please edit documentation in R/compare-caps.R
 \name{compare_caps}
 \alias{compare_caps}
-\title{Multiple CAPS \code{mcaps} objects}
+\title{Generates results of multiple clustering strategies}
 \usage{
 compare_caps(
   x,
@@ -66,12 +66,30 @@ objects of class \code{\link{caps}}. This is a helper function to facilitate com
 of clustering methods and choice of an \emph{optimal} one.
 }
 \examples{
+#----------------------------------
+# Extracts 15 out of the 30 simulated curves in simulated30 data set
+idx <- c(1:5, 11:15, 21:25)
+x <- simulated30$x[idx, ]
+y <- simulated30$y[idx, , ]
+
+#----------------------------------
+# Runs an HAC with complete linkage with affine alignment, searching for up
+# to 2 clusters and using the sample mean as centroid type:
 out <- compare_caps(
-  x = simulated30$x,
-  y = simulated30$y,
+  x = x,
+  y = y,
   n_clusters_max = 2,
   warping_class = "affine",
   clustering_method = "hclust-complete",
   centroid_type = "mean"
 )
+
+#----------------------------------
+# Then visualize the results
+# Either with ggplot2 via ggplot2::autoplot(out)
+# or using graphics::plot()
+# You can visualize the WSS values:
+plot(out, validation_criterion = "wss")
+# Or the average silhouette values:
+plot(out, validation_criterion = "silhouette")
 }

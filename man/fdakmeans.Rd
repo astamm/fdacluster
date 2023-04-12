@@ -2,7 +2,8 @@
 % Please edit documentation in R/fdakmeans.R
 \name{fdakmeans}
 \alias{fdakmeans}
-\title{K-Means Clustering for Functional Data with Amplitude and Phase Separation}
+\title{Performs k-means clustering for functional data with amplitude and phase
+separation}
 \usage{
 fdakmeans(
   x,
@@ -142,41 +143,27 @@ for functional data, with possible joint amplitude and phase separation. A
 number of warping class are implemented to achieve this separation.
 }
 \examples{
-res <- fdakmeans(
-  x = simulated30$x,
-  y = simulated30$y,
-  seeds = c(1, 21),
+#----------------------------------
+# Extracts 15 out of the 30 simulated curves in simulated30 data set
+idx <- c(1:5, 11:15, 21:25)
+x <- simulated30$x[idx, ]
+y <- simulated30$y[idx, , ]
+
+#----------------------------------
+# Runs a k-means clustering with affine alignment, searching for 2 clusters
+out <- fdakmeans(
+  x = x,
+  y = y,
   n_clusters = 2,
-  centroid_type = "medoid",
-  warping_class = "affine",
-  metric = "pearson"
+  warping_class = "affine"
 )
 
-\dontshow{if (requireNamespace("fda", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-fd <- fda::as.fd(fda::smooth.basisPar(
-  simulated30$x[1, ],
-  t(simulated30$y[, 1, ]),
-  lambda = 0.00001)
-)
-res <- fdakmeans(
-  x = simulated30$x,
-  y = fd,
-  seeds = c(1, 21),
-  n_clusters = 2,
-  centroid_type = "medoid",
-  warping_class = "affine",
-  metric = "pearson"
-)
-\dontshow{\}) # examplesIf}
-\dontshow{if (requireNamespace("funData", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-fund <- funData::funData(simulated30$x[1, ], simulated30$y[, 1, ])
-res <- fdakmeans(
-  x = fund,
-  seeds = c(1, 21),
-  n_clusters = 2,
-  centroid_type = "medoid",
-  warping_class = "affine",
-  metric = "pearson"
-)
-\dontshow{\}) # examplesIf}
+#----------------------------------
+# Then visualize the results
+# Either with ggplot2 via ggplot2::autoplot(out)
+# or using graphics::plot()
+# You can visualize the original and aligned curves with:
+plot(out, type = "amplitude")
+# Or the estimated warping functions with:
+plot(out, type = "phase")
 }

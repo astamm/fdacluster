@@ -1,4 +1,4 @@
-#' Class for Clustering with Amplitude and Phase Separation
+#' Class for clustering with amplitude and phase separation
 #'
 #' The k-means algorithm with joint amplitude and phase separation produces a
 #' number of outputs. This class is meant to encapsulate them into a single

@@ -1,4 +1,5 @@
-#' Plot for [`caps`] objects
+#' Visualizes the result of a clustering strategy stored in a `caps` object with
+#' ggplot2
 #'
 #' This function creates a visualization of the result of the k-mean alignment
 #' algorithm and invisibly returns the corresponding [ggplot2::ggplot] object
@@ -19,17 +20,8 @@
 #'
 #' @export
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
-#' res <- fdakmeans(
-#'   simulated30$x,
-#'   simulated30$y,
-#'   seeds = c(1, 21),
-#'   n_clusters = 2,
-#'   centroid_type = "medoid",
-#'   warping_class = "affine",
-#'   metric = "pearson"
-#' )
-#' ggplot2::autoplot(res, type = "amplitude")
-#' ggplot2::autoplot(res, type = "phase")
+#' ggplot2::autoplot(sim30_caps, type = "amplitude")
+#' ggplot2::autoplot(sim30_caps, type = "phase")
 autoplot.caps <- function(object, type = c("amplitude", "phase"), ...) {
   type <- rlang::arg_match(type)
   if (type == "amplitude") {
@@ -75,7 +67,7 @@ autoplot.caps <- function(object, type = c("amplitude", "phase"), ...) {
   }
 }
 
-#' Plot for [`caps`] objects
+#' Plots the result of a clustering strategy stored in a `caps` object
 #'
 #' This function creates a visualization of the result of the k-mean alignment
 #' algorithm **without** returning the plot data as an object. The user can
@@ -90,17 +82,8 @@ autoplot.caps <- function(object, type = c("amplitude", "phase"), ...) {
 #'
 #' @export
 #' @examples
-#' res <- fdakmeans(
-#'   simulated30$x,
-#'   simulated30$y,
-#'   seeds = c(1, 21),
-#'   n_clusters = 2,
-#'   centroid_type = "medoid",
-#'   warping_class = "affine",
-#'   metric = "pearson"
-#' )
-#' plot(res, type = "amplitude")
-#' plot(res, type = "phase")
+#' plot(sim30_caps, type = "amplitude")
+#' plot(sim30_caps, type = "phase")
 plot.caps <- function(x, type = c("amplitude", "phase"), ...) {
   print(autoplot(x, type = type, ...))
 }

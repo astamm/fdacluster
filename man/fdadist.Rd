@@ -2,7 +2,8 @@
 % Please edit documentation in R/fdadist.R
 \name{fdadist}
 \alias{fdadist}
-\title{Distance Matrix for Functional Data with Amplitude and Phase Separation}
+\title{Computes the distance matrix for functional data with amplitude and phase
+separation}
 \usage{
 fdadist(
   x,
@@ -55,5 +56,6 @@ functional data sample. This can be achieved with or without phase and
 amplitude separation, which can be done using a variety of warping classes.
 }
 \examples{
-D <- fdadist(simulated30$x, simulated30$y)
+idx <- c(1:5, 11:15, 21:25)
+D <- fdadist(simulated30$x[idx, ], simulated30$y[idx, , ])
 }

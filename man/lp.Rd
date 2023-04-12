@@ -2,7 +2,7 @@
 % Please edit documentation in R/lp-export.R
 \name{lp}
 \alias{lp}
-\title{Linear and Integer Programming}
+\title{Linear and integer programming}
 \usage{
 lp(
   direction = "min",

@@ -2,7 +2,7 @@
 % Please edit documentation in R/caps-plot.R
 \name{plot.caps}
 \alias{plot.caps}
-\title{Plot for \code{\link{caps}} objects}
+\title{Plots the result of a clustering strategy stored in a \code{caps} object}
 \usage{
 \method{plot}{caps}(x, type = c("amplitude", "phase"), ...)
 }
@@ -25,15 +25,6 @@ original and aligned curves are shown or the phase information data in which
 case the estimated warping functions are shown.
 }
 \examples{
-res <- fdakmeans(
-  simulated30$x,
-  simulated30$y,
-  seeds = c(1, 21),
-  n_clusters = 2,
-  centroid_type = "medoid",
-  warping_class = "affine",
-  metric = "pearson"
-)
-plot(res, type = "amplitude")
-plot(res, type = "phase")
+plot(sim30_caps, type = "amplitude")
+plot(sim30_caps, type = "phase")
 }

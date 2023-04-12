@@ -4,7 +4,7 @@
 \alias{caps}
 \alias{as_caps}
 \alias{is_caps}
-\title{Class for Clustering with Amplitude and Phase Separation}
+\title{Class for clustering with amplitude and phase separation}
 \usage{
 as_caps(x)
 

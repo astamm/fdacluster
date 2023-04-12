@@ -1,4 +1,5 @@
-#' Distance Matrix for Functional Data with Amplitude and Phase Separation
+#' Computes the distance matrix for functional data with amplitude and phase
+#' separation
 #'
 #' This function computes the matrix of pairwise distances between curves a
 #' functional data sample. This can be achieved with or without phase and
@@ -14,7 +15,8 @@
 #'
 #' @export
 #' @examples
-#' D <- fdadist(simulated30$x, simulated30$y)
+#' idx <- c(1:5, 11:15, 21:25)
+#' D <- fdadist(simulated30$x[idx, ], simulated30$y[idx, , ])
 fdadist <- function(x, y = NULL,
                     warping_class = c("affine", "dilation", "none", "shift", "srsf"),
                     metric = c("l2", "pearson"),

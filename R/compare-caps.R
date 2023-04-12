@@ -1,4 +1,4 @@
-#' Multiple CAPS `mcaps` objects
+#' Generates results of multiple clustering strategies
 #'
 #' This function searches for clusters in the input data set using different
 #' strategies and generates an object of class `mcaps` which stores multiple
@@ -21,17 +21,35 @@
 #' @return An object of class `mcaps` which is a [`tibble::tibble`] storing the
 #'   objects of class [`caps`] in correspondence of each combination of possible
 #'   choices from the input arguments.
-#' @export
 #'
+#' @export
 #' @examples
+#' #----------------------------------
+#' # Extracts 15 out of the 30 simulated curves in simulated30 data set
+#' idx <- c(1:5, 11:15, 21:25)
+#' x <- simulated30$x[idx, ]
+#' y <- simulated30$y[idx, , ]
+#'
+#' #----------------------------------
+#' # Runs an HAC with complete linkage with affine alignment, searching for up
+#' # to 2 clusters and using the sample mean as centroid type:
 #' out <- compare_caps(
-#'   x = simulated30$x,
-#'   y = simulated30$y,
+#'   x = x,
+#'   y = y,
 #'   n_clusters_max = 2,
 #'   warping_class = "affine",
 #'   clustering_method = "hclust-complete",
 #'   centroid_type = "mean"
 #' )
+#'
+#' #----------------------------------
+#' # Then visualize the results
+#' # Either with ggplot2 via ggplot2::autoplot(out)
+#' # or using graphics::plot()
+#' # You can visualize the WSS values:
+#' plot(out, validation_criterion = "wss")
+#' # Or the average silhouette values:
+#' plot(out, validation_criterion = "silhouette")
 compare_caps <- function(x, y,
                          n_clusters_max = 5L,
                          metric = c("l2", "pearson"),
@@ -95,7 +113,7 @@ compare_caps <- function(x, y,
   df
 }
 
-#' Plot for `mcaps` object
+#' Visualizes results of multiple clustering strategies using ggplot2
 #'
 #' This is an S3 method implementation of the [`ggplot2::autoplot()`] generic
 #' for objects of class `mcaps` to visualize the performances of multiple
@@ -111,19 +129,12 @@ compare_caps <- function(x, y,
 #'   `"distribution"` (which plots the boxplots). Defaults to `"mean"`.
 #' @param ... Other arguments passed to specific methods.
 #'
+#' @return An object of class [`ggplot2::ggplot`].
+#'
 #' @importFrom ggplot2 autoplot
 #' @export
-#'
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
-#' out <- compare_caps(
-#'   x = simulated30$x,
-#'   y = simulated30$y,
-#'   n_clusters_max = 2,
-#'   warping_class = "affine",
-#'   clustering_method = "hclust-complete",
-#'   centroid_type = "mean"
-#' )
-#' ggplot2::autoplot(out)
+#' p <- ggplot2::ggplot(sim30_mcaps)
 autoplot.mcaps <- function(object,
                            validation_criterion = c("wss", "silhouette"),
                            what = c("mean", "distribution"),
@@ -202,7 +213,7 @@ autoplot.mcaps <- function(object,
   p
 }
 
-#' Plot for `mcaps` object
+#' Plots results of multiple clustering strategies
 #'
 #' This is an S3 method implementation of the [`graphics::plot()`] generic for
 #' objects of class `mcaps` to visualize the performances of multiple [`caps`]
@@ -216,17 +227,8 @@ autoplot.mcaps <- function(object,
 #'
 #' @importFrom graphics plot
 #' @export
-#'
 #' @examples
-#' out <- compare_caps(
-#'   x = simulated30$x,
-#'   y = simulated30$y,
-#'   n_clusters_max = 2,
-#'   warping_class = "affine",
-#'   clustering_method = "hclust-complete",
-#'   centroid_type = "mean"
-#' )
-#' plot(out)
+#' plot(sim30_mcaps)
 plot.mcaps <- function(x,
                        validation_criterion = c("wss", "silhouette"),
                        what = c("mean", "distribution"),

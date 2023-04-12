@@ -1,4 +1,5 @@
-#' Diagnostic Plot for [`caps`] Objects
+#' Diagnostic plot for the result of a clustering strategy stored in a `caps`
+#' object
 #'
 #' This function plots the values of the distance to center and silhouette for
 #' each observation. Observations are ordered within cluster by decreasing value
@@ -10,16 +11,7 @@
 #' @export
 #'
 #' @examples
-#' out <- fdakmeans(
-#'   simulated30$x,
-#'   simulated30$y,
-#'   seeds = c(1, 21),
-#'   n_clusters = 2,
-#'   centroid_type = "medoid",
-#'   warping_class = "affine",
-#'   metric = "pearson"
-#' )
-#' diagnostic_plot(out)
+#' diagnostic_plot(sim30_caps)
 diagnostic_plot <- function(x) {
   if (!is_caps(x))
     cli::cli_abort("The input argument {.arg x} should be of class {.cls caps}.")
