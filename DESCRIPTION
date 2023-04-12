@@ -1,28 +1,28 @@
 Package: fdacluster
 Title: Joint Clustering and Alignment of Functional Data
-Version: 0.1.1.9000
+Version: 0.2.0
 Type: Package
 Authors@R: c(
+    person(given = "Aymeric",
+           family = "Stamm",
+           role = c("aut", "cre"),
+           email = "aymeric.stamm@cnrs.fr",
+           comment = c(ORCID = "0000-0002-8725-3654")),
     person(given = "Laura",
            family = "Sangalli",
-           role = "aut",
+           role = "ctb",
            email = "laura.sangalli@polimi.it"),
     person(given = "Piercesare",
            family = "Secchi",
-           role = "aut",
+           role = "ctb",
            email = "piercesare.secchi@polimi.it"),
-    person(given = "Aymeric",
-           family = "Stamm",
-           role = c("cre", "ctb"),
-           email = "aymeric.stamm@cnrs.fr",
-           comment = c(ORCID = "0000-0002-8725-3654")),
     person(given = "Simone",
            family = "Vantini",
-           role = "aut",
+           role = "ctb",
            email = "simone.vantini@polimi.it"),
     person(given = "Valeria",
            family = "Vitelli",
-           role = "aut",
+           role = "ctb",
            email = "valeria.vitelli@medisin.uio.no"),
     person(given = "Alessandro",
            family = "Zito",
