@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">fdacluster</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -64,22 +64,24 @@
           
           <code><a href="caps.html">as_caps()</a></code> <code><a href="caps.html">is_caps()</a></code> 
         </dt>
-        <dd>Class for Clustering with Amplitude and Phase Separation</dd>
+        <dd>Class for clustering with amplitude and phase separation</dd>
       </dl><dl><dt>
           
           <code><a href="autoplot.caps.html">autoplot(<i>&lt;caps&gt;</i>)</a></code> 
         </dt>
-        <dd>Plot for <code>caps</code> objects</dd>
+        <dd>Visualizes the result of a clustering strategy stored in a <code>caps</code> object with
+ggplot2</dd>
       </dl><dl><dt>
           
           <code><a href="plot.caps.html">plot(<i>&lt;caps&gt;</i>)</a></code> 
         </dt>
-        <dd>Plot for <code>caps</code> objects</dd>
+        <dd>Plots the result of a clustering strategy stored in a <code>caps</code> object</dd>
       </dl><dl><dt>
           
           <code><a href="diagnostic_plot.html">diagnostic_plot()</a></code> 
         </dt>
-        <dd>Diagnostic Plot for <code>caps</code> Objects</dd>
+        <dd>Diagnostic plot for the result of a clustering strategy stored in a <code>caps</code>
+object</dd>
       </dl></div><div class="section level2">
       <h2 id="clustering-methods">Clustering methods<a class="anchor" aria-label="anchor" href="#clustering-methods"></a></h2>
       
@@ -95,17 +97,20 @@
           
           <code><a href="fdadist.html">fdadist()</a></code> 
         </dt>
-        <dd>Distance Matrix for Functional Data with Amplitude and Phase Separation</dd>
+        <dd>Computes the distance matrix for functional data with amplitude and phase
+separation</dd>
       </dl><dl><dt>
           
           <code><a href="fdahclust.html">fdahclust()</a></code> 
         </dt>
-        <dd>Hierarchical Clustering for Functional Data with Amplitude and Phase Separation</dd>
+        <dd>Performs hierarchical clustering for functional data with amplitude and phase
+separation</dd>
       </dl><dl><dt>
           
           <code><a href="fdakmeans.html">fdakmeans()</a></code> 
         </dt>
-        <dd>K-Means Clustering for Functional Data with Amplitude and Phase Separation</dd>
+        <dd>Performs k-means clustering for functional data with amplitude and phase
+separation</dd>
       </dl></div><div class="section level2">
       <h2 id="clustering-comparison">Clustering comparison<a class="anchor" aria-label="anchor" href="#clustering-comparison"></a></h2>
       
@@ -121,17 +126,17 @@
           
           <code><a href="compare_caps.html">compare_caps()</a></code> 
         </dt>
-        <dd>Multiple CAPS <code>mcaps</code> objects</dd>
+        <dd>Generates results of multiple clustering strategies</dd>
       </dl><dl><dt>
           
           <code><a href="autoplot.mcaps.html">autoplot(<i>&lt;mcaps&gt;</i>)</a></code> 
         </dt>
-        <dd>Plot for <code>mcaps</code> object</dd>
+        <dd>Visualizes results of multiple clustering strategies using ggplot2</dd>
       </dl><dl><dt>
           
           <code><a href="plot.mcaps.html">plot(<i>&lt;mcaps&gt;</i>)</a></code> 
         </dt>
-        <dd>Plot for <code>mcaps</code> object</dd>
+        <dd>Plots results of multiple clustering strategies</dd>
       </dl></div><div class="section level2">
       <h2 id="data-sets">Data sets<a class="anchor" aria-label="anchor" href="#data-sets"></a></h2>
       
@@ -158,13 +163,23 @@
           <code><a href="aneurisk65.html">aneurisk65</a></code> 
         </dt>
         <dd>Subset of the AneuRisk65 benchmark data set</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sim30_caps.html">sim30_caps</a></code> 
+        </dt>
+        <dd>A <code>caps</code> object from simulated data for examples</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sim30_mcaps.html">sim30_mcaps</a></code> 
+        </dt>
+        <dd>An <code>mcaps</code> object from simulated data for examples</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Laura Sangalli, Piercesare Secchi, Aymeric Stamm, Simone Vantini, Valeria Vitelli.</p>
+  <p></p><p>Developed by Aymeric Stamm.</p>
 </div>
 
 <div class="pkgdown-footer-right">

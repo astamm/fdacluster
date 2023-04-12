@@ -40,6 +40,9 @@
     <loc>/reference/diagnostic_plot.html</loc>
   </url>
   <url>
+    <loc>/reference/fdacluster-package.html</loc>
+  </url>
+  <url>
     <loc>/reference/fdadist.html</loc>
   </url>
   <url>
@@ -59,6 +62,12 @@
   </url>
   <url>
     <loc>/reference/plot.mcaps.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sim30_caps.html</loc>
+  </url>
+  <url>
+    <loc>/reference/sim30_mcaps.html</loc>
   </url>
   <url>
     <loc>/reference/simulated30.html</loc>
