@@ -46,18 +46,14 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Aymeric Stamm \email{aymeric.stamm@cnrs.fr} (\href{https://orcid.org/0000-0002-8725-3654}{ORCID}) [contributor]
-
-Authors:
-\itemize{
-  \item Laura Sangalli \email{laura.sangalli@polimi.it}
-  \item Piercesare Secchi \email{piercesare.secchi@polimi.it}
-  \item Simone Vantini \email{simone.vantini@polimi.it}
-  \item Valeria Vitelli \email{valeria.vitelli@medisin.uio.no}
-}
+\strong{Maintainer}: Aymeric Stamm \email{aymeric.stamm@cnrs.fr} (\href{https://orcid.org/0000-0002-8725-3654}{ORCID})
 
 Other contributors:
 \itemize{
+  \item Laura Sangalli \email{laura.sangalli@polimi.it} [contributor]
+  \item Piercesare Secchi \email{piercesare.secchi@polimi.it} [contributor]
+  \item Simone Vantini \email{simone.vantini@polimi.it} [contributor]
+  \item Valeria Vitelli \email{valeria.vitelli@medisin.uio.no} [contributor]
   \item Alessandro Zito \email{zito.ales@gmail.com} [contributor]
 }
 
