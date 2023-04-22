@@ -16,7 +16,7 @@
 #' @export
 #' @examples
 #' idx <- c(1:5, 11:15, 21:25)
-#' D <- fdadist(simulated30$x[idx, ], simulated30$y[idx, , ])
+#' D <- fdadist(simulated30_sub$x[idx, ], simulated30_sub$y[idx, , ])
 fdadist <- function(x, y = NULL,
                     warping_class = c("affine", "dilation", "none", "shift", "srsf"),
                     metric = c("l2", "pearson"),

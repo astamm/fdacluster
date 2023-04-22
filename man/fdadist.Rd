@@ -57,5 +57,5 @@ amplitude separation, which can be done using a variety of warping classes.
 }
 \examples{
 idx <- c(1:5, 11:15, 21:25)
-D <- fdadist(simulated30$x[idx, ], simulated30$y[idx, , ])
+D <- fdadist(simulated30_sub$x[idx, ], simulated30_sub$y[idx, , ])
 }

@@ -1,7 +1,7 @@
 test_that("`diagnostic_plot()` works", {
   out <- fdakmeans(
-    simulated30$x,
-    simulated30$y,
+    simulated30_sub$x,
+    simulated30_sub$y,
     seeds = c(1, 21),
     n_clusters = 2,
     centroid_type = "medoid",

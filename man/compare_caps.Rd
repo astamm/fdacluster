@@ -67,10 +67,10 @@ of clustering methods and choice of an \emph{optimal} one.
 }
 \examples{
 #----------------------------------
-# Extracts 15 out of the 30 simulated curves in simulated30 data set
+# Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
 idx <- c(1:5, 11:15, 21:25)
-x <- simulated30$x[idx, ]
-y <- simulated30$y[idx, , ]
+x <- simulated30_sub$x[idx, ]
+y <- simulated30_sub$y[idx, , ]
 
 #----------------------------------
 # Runs an HAC with complete linkage with affine alignment, searching for up

@@ -10,6 +10,18 @@
 #'
 "simulated30"
 
+#' Simulated data for examples
+#'
+#' A data set containing 30 simulated uni-dimensional curves.
+#'
+#' @format A list with abscissas x and values y:
+#' \describe{
+#'   \item{x}{Matrix 30x50;}
+#'   \item{y}{Array 30x1x50.}
+#' }
+#'
+"simulated30_sub"
+
 #' A `caps` object from simulated data for examples
 #'
 #' An object of class [`caps`] storing the result of the [`fdakmeans()`]

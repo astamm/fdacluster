@@ -58,15 +58,6 @@ the function \code{call_name} that produced this output.
 }
 }
 \examples{
-res <- fdakmeans(
-  simulated30$x,
-  simulated30$y,
-  seeds = c(1, 21),
-  n_clusters = 2,
-  centroid_type = "medoid",
-  warping_class = "affine",
-  metric = "pearson"
-)
-as_caps(res)
-is_caps(res)
+as_caps(sim30_caps)
+is_caps(sim30_caps)
 }

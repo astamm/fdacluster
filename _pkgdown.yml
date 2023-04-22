@@ -23,6 +23,7 @@ reference:
   - title: Data sets
   - contents:
     - simulated30
+    - simulated30_sub
     - simulated90
     - aneurisk65
     - sim30_caps
