@@ -146,10 +146,10 @@ choices from the input arguments.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#----------------------------------</span></span></span>
-<span class="r-in"><span><span class="co"># Extracts 15 out of the 30 simulated curves in simulated30 data set</span></span></span>
+<span class="r-in"><span><span class="co"># Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set</span></span></span>
 <span class="r-in"><span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">11</span><span class="op">:</span><span class="fl">15</span>, <span class="fl">21</span><span class="op">:</span><span class="fl">25</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">idx</span>, , <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">idx</span>, , <span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#----------------------------------</span></span></span>
 <span class="r-in"><span><span class="co"># Runs an HAC with complete linkage with affine alignment, searching for up</span></span></span>
