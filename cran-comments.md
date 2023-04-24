@@ -1,3 +1,8 @@
+## Resubmission
+
+This a resubmission in which I reduced the elapsed time of the examples for the 
+`caompare_caps()` function.
+
 ## Test environments
 * local macOS R installation, R 4.2.3
 * continuous integration via GH actions:
