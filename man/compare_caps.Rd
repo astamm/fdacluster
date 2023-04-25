@@ -7,7 +7,7 @@
 compare_caps(
   x,
   y,
-  n_clusters_max = 5L,
+  n_clusters = 1:5,
   metric = c("l2", "pearson"),
   clustering_method = c("kmeans", "hclust-complete", "hclust-average", "hclust-single"),
   warping_class = c("affine", "dilation", "none", "shift", "srsf"),
@@ -30,8 +30,8 @@ numeric matrix or array, it specifies the \eqn{N}-sample of
 of class \code{\link[fda:fd]{fda::fd}}, it contains all the necessary information about the
 functional data set to be able to evaluate it on user-defined grids.}
 
-\item{n_clusters_max}{An integer value specifying the maximum number of
-clusers to use. Defaults to \code{5L}.}
+\item{n_clusters}{An integer vector specifying a set of clustering partitions
+to create. Defaults to \code{1:5}.}
 
 \item{metric}{A string specifying the metric used to compare curves. Choices
 are \code{"l2"} or \code{"pearson"}. Defaults to \code{"l2"}. Used only when
@@ -78,7 +78,7 @@ y <- simulated30_sub$y[idx, , ]
 out <- compare_caps(
   x = x,
   y = y,
-  n_clusters_max = 1,
+  n_clusters = 2,
   warping_class = "affine",
   clustering_method = "hclust-complete",
   centroid_type = "mean"

@@ -6,8 +6,8 @@
 #' of clustering methods and choice of an *optimal* one.
 #'
 #' @inheritParams fdakmeans
-#' @param n_clusters_max An integer value specifying the maximum number of
-#'   clusers to use. Defaults to `5L`.
+#' @param n_clusters An integer vector specifying a set of clustering partitions
+#'   to create. Defaults to `1:5`.
 #' @param clustering_method A character vector specifying one or more clustering
 #'   methods to be fit. Choices are `"kmeans"`, `"hclust-complete"`,
 #'   `"hclust-average"` or `"hclust-single"`. Defaults to all of them.
@@ -36,7 +36,7 @@
 #' out <- compare_caps(
 #'   x = x,
 #'   y = y,
-#'   n_clusters_max = 1,
+#'   n_clusters = 2,
 #'   warping_class = "affine",
 #'   clustering_method = "hclust-complete",
 #'   centroid_type = "mean"
@@ -51,7 +51,7 @@
 #' # Or the average silhouette values:
 #' plot(out, validation_criterion = "silhouette")
 compare_caps <- function(x, y,
-                         n_clusters_max = 5L,
+                         n_clusters = 1:5,
                          metric = c("l2", "pearson"),
                          clustering_method = c("kmeans",
                                                "hclust-complete",
@@ -61,13 +61,17 @@ compare_caps <- function(x, y,
                                            "shift", "srsf"),
                          centroid_type = c("mean", "medoid", "lowess", "poly"),
                          cluster_on_phase = FALSE) {
+  if (!is.numeric(n_clusters))
+    cli::cli_abort("The argument {.arg n_clusters} should be an integer/numeric vector.")
+  if (length(n_clusters) == 1 && n_clusters == 1)
+    cli::cli_abort("It does not make sense to only create a partition with all the data.")
   metric <- rlang::arg_match(metric)
   clustering_method <- rlang::arg_match(clustering_method, multiple = TRUE)
   warping_class <- rlang::arg_match(warping_class, multiple = TRUE)
   centroid_type <- rlang::arg_match(centroid_type, multiple = TRUE)
 
   df <- tidyr::expand_grid(
-    n_clusters = 1:n_clusters_max,
+    n_clusters = n_clusters,
     clustering_method = clustering_method,
     warping_class = warping_class,
     centroid_type = centroid_type
