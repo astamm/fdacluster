@@ -69,7 +69,7 @@ of clustering methods and choice of an <em>optimal</em> one.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">compare_caps</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  <span class="va">y</span>,</span>
-<span>  n_clusters_max <span class="op">=</span> <span class="fl">5L</span>,</span>
+<span>  n_clusters <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,</span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
 <span>  clustering_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmeans"</span>, <span class="st">"hclust-complete"</span>, <span class="st">"hclust-average"</span>, <span class="st">"hclust-single"</span><span class="op">)</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
@@ -98,9 +98,9 @@ of class <code><a href="https://rdrr.io/pkg/fda/man/fd.html" class="external-lin
 functional data set to be able to evaluate it on user-defined grids.</p></dd>
 
 
-<dt>n_clusters_max</dt>
-<dd><p>An integer value specifying the maximum number of
-clusers to use. Defaults to <code>5L</code>.</p></dd>
+<dt>n_clusters</dt>
+<dd><p>An integer vector specifying a set of clustering partitions
+to create. Defaults to <code>1:5</code>.</p></dd>
 
 
 <dt>metric</dt>
@@ -157,7 +157,7 @@ choices from the input arguments.</p>
 <span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compare_caps</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  x <span class="op">=</span> <span class="va">x</span>,</span></span>
 <span class="r-in"><span>  y <span class="op">=</span> <span class="va">y</span>,</span></span>
-<span class="r-in"><span>  n_clusters_max <span class="op">=</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span></span>
 <span class="r-in"><span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span></span>
 <span class="r-in"><span>  clustering_method <span class="op">=</span> <span class="st">"hclust-complete"</span>,</span></span>
 <span class="r-in"><span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span></span></span>
@@ -174,7 +174,9 @@ choices from the input arguments.</p>
 <span class="r-plt img"><img src="compare_caps-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Or the average silhouette values:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span>, validation_criterion <span class="op">=</span> <span class="st">"silhouette"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in combine_vars(data, params$plot_env, rows, drop = params$drop):</span> Faceting variables must have at least one value</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_line()`: Each group consists of only one observation.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Do you need to adjust the <span style="color: #00BB00;">group</span> aesthetic?</span>
+<span class="r-plt img"><img src="compare_caps-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

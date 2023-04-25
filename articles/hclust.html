@@ -284,7 +284,7 @@ clusters when clustering on amplitude data:</p>
 <span><span class="va">amplitude_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_caps.html">compare_caps</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">x</span>, </span>
 <span>  y <span class="op">=</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">y</span>, </span>
-<span>  n_clusters_max <span class="op">=</span> <span class="fl">5L</span>, </span>
+<span>  n_clusters <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, </span>
 <span>  metric <span class="op">=</span> <span class="st">"l2"</span>, </span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"dilation"</span>, <span class="st">"affine"</span><span class="op">)</span>,</span>
 <span>  clustering_method <span class="op">=</span> <span class="st">"hclust-complete"</span>, </span>
@@ -334,7 +334,7 @@ based on phase variability instead:</p>
 <span><span class="va">phase_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_caps.html">compare_caps</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">x</span>, </span>
 <span>  y <span class="op">=</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">y</span>, </span>
-<span>  n_clusters_max <span class="op">=</span> <span class="fl">5L</span>, </span>
+<span>  n_clusters <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, </span>
 <span>  metric <span class="op">=</span> <span class="st">"l2"</span>, </span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"shift"</span>, <span class="st">"dilation"</span>, <span class="st">"affine"</span><span class="op">)</span>,</span>
 <span>  clustering_method <span class="op">=</span> <span class="st">"hclust-complete"</span>, </span>
