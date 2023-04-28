@@ -13,6 +13,7 @@ reference:
   - title: Clustering methods
   - contents:
     - fdadist
+    - fdadbscan
     - fdahclust
     - fdakmeans
   - title: Clustering comparison
