@@ -41,17 +41,15 @@ fdadist <- function(x, y = NULL,
   if (is.null(labels))
     labels <- 1:N
 
-  indices <- linear_index(N)
+  index_table <- linear_index(N)
   curve_pair <- array(dim = c(2, L, M))
   grid_pair <- array(dim = c(2, M))
 
-  .pairwise_distances <- function(linear_indices) {
-    pb <- progressr::progressor(along = linear_indices)
-    furrr::future_map_dbl(linear_indices, ~ {
+  .pairwise_distances <- function(index_table) {
+    pb <- progressr::progressor(steps = nrow(index_table))
+    furrr::future_map2_dbl(index_table$i, index_table$j, \(i, j) {
       pb()
 
-      i <- indices$i[.x]
-      j <- indices$j[.x]
       curve_pair[1, , ] <- y[i, , ]
       curve_pair[2, , ] <- y[j, , ]
       grid_pair[1, ] <- x[i, ]
@@ -92,7 +90,7 @@ fdadist <- function(x, y = NULL,
     }, .options = furrr::furrr_options(seed = TRUE))
   }
 
-  d <- .pairwise_distances(indices$k)
+  d <- .pairwise_distances(index_table)
 
   attributes(d) <- NULL
   attr(d, "Labels") <- labels
@@ -108,6 +106,6 @@ fdadist <- function(x, y = NULL,
 linear_index <- function(n) {
   res <- tidyr::expand_grid(i = 1:n, j = 1:n)
   res <- subset(res, res$j > res$i)
-  res$k <- n * (res$i - 1) - res$i * (res$i - 1) / 2 + res$j - res$i
+  # res$k <- as.integer(n * (res$i - 1) - res$i * (res$i - 1) / 2 + res$j - res$i)
   res
 }
