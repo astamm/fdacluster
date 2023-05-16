@@ -1,5 +1,5 @@
 N <- nrow(simulated30$x)
-P <- 50L
+P <- 30L
 x_in <- simulated30$x
 x_out <- matrix(nrow = N, ncol = P)
 y_in <- simulated30$y

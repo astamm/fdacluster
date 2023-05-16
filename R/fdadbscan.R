@@ -12,7 +12,7 @@
 #' @examples
 #' #----------------------------------
 #' # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
-#' idx <- c(1:5, 11:15, 21:25)
+#' idx <- c(1:5, 11:15)
 #' x <- simulated30_sub$x[idx, ]
 #' y <- simulated30_sub$y[idx, , ]
 #'
