@@ -118,7 +118,6 @@ y <- simulated30_sub$y[idx, , ]
 out <- fdadbscan(
   x = x,
   y = y,
-  n_clusters = 2,
   warping_class = "affine"
 )
 

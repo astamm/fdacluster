@@ -133,7 +133,7 @@ wrangle_single_component <- function(id, curves, grid, memberships) {
   curves <- curves[, id, ]
   N <- nrow(curves)
   M <- ncol(curves)
-  K <- nrow(grid)
+  K <- length(unique(memberships[memberships > 0]))
   purrr::map(1:K, \(cluster_id) {
     curves[memberships == cluster_id, , drop = FALSE] |>
       `colnames<-`(paste0("P", 1:M)) |>

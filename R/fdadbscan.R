@@ -21,7 +21,6 @@
 #' out <- fdadbscan(
 #'   x = x,
 #'   y = y,
-#'   n_clusters = 2,
 #'   warping_class = "affine"
 #' )
 #'
@@ -80,9 +79,9 @@ fdadbscan <- function(x, y,
   )
   Dm <- as.matrix(D)
 
-  results <- purrr::map(2:10, \(.min_pts) {
-    dsts <- sort(dbscan::kNNdist(D, k = .min_pts))
-    eps <- dsts[names(dsts)[which.max(diff(dsts))]]
+  results <- purrr::map(2:N, \(.min_pts) {
+    dsts <- sort(dbscan::kNNdist(D, k = .min_pts - 1))
+    eps <- dsts[which.max(diff(dsts))]
     obj <- dbscan::frNN(D, eps = eps)
     dbscan::dbscan(obj, minPts = .min_pts)
   })
@@ -91,9 +90,13 @@ fdadbscan <- function(x, y,
     mean(cluster::silhouette(.res$cluster, D)[, "sil_width"])
   })
 
-  dbres <- results[[which.max(sils)]]
+  if (all(is.na(sils)))
+    dbres <- results[[1]]
+  else
+    dbres <- results[[which.max(sils)]]
   labels <- dbres$cluster
-  n_clusters <- length(unique(labels))
+  print(labels)
+  n_clusters <- length(unique(labels[labels > 0]))
 
   if (use_verbose)
     cli::cli_alert_info("Aligning all curves with respect to their centroid...")
@@ -126,7 +129,13 @@ fdadbscan <- function(x, y,
   if (use_verbose)
     cli::cli_alert_info("Consolidating output...")
 
-  grids <- purrr::map(kmresults, \(km) km$grids[1, ])
+  # grids <- purrr::map(kmresults, \(km) km$grids[1, ])
+  grids <- purrr::imap(labels, \(.x, .y) {
+    if (.x == 0)
+      x[.y, ]
+    else
+      kmresults[[.x]]$grids[1, ]
+  })
   grids <- do.call(rbind, grids)
   original_curves <- array(dim = c(N, L, M))
   aligned_curves <- array(dim = c(N, L, M))
@@ -141,11 +150,19 @@ fdadbscan <- function(x, y,
     warpings[cluster_ids, ] <- kmresults[[k]]$warpings
     dtc[cluster_ids] <- kmresults[[k]]$distances_to_center
   }
+  noise_ids <- which(labels == 0)
+  if (length(noise_ids) > 0) {
+    original_curves[noise_ids, , ] <- y[noise_ids, , ]
+    aligned_curves[noise_ids, , ] <- y[noise_ids, , ]
+    warpings[noise_ids, ] <- x[noise_ids, ]
+    dtc[noise_ids] <- 0
+  }
 
   silhouettes <- NULL
   if (n_clusters > 1) {
     D <- fdadist(
-      x = grids[labels, ],
+      # x = grids[labels, ],
+      x = grids,
       y = aligned_curves,
       warping_class = "none",
       metric = metric
