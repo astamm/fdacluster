@@ -10,8 +10,29 @@
 #'
 #' @export
 #' @examples
-#' out <- fdadbscan(simulated30_sub$x, simulated30_sub$y, cluster_on_phase = TRUE)
-#' plot(out)
+#' #----------------------------------
+#' # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
+#' idx <- c(1:5, 11:15, 21:25)
+#' x <- simulated30_sub$x[idx, ]
+#' y <- simulated30_sub$y[idx, , ]
+#'
+#' #----------------------------------
+#' # Runs an HAC with affine alignment, searching for 2 clusters
+#' out <- fdadbscan(
+#'   x = x,
+#'   y = y,
+#'   n_clusters = 2,
+#'   warping_class = "affine"
+#' )
+#'
+#' #----------------------------------
+#' # Then visualize the results
+#' # Either with ggplot2 via ggplot2::autoplot(out)
+#' # or using graphics::plot()
+#' # You can visualize the original and aligned curves with:
+#' plot(out, type = "amplitude")
+#' # Or the estimated warping functions with:
+#' plot(out, type = "phase")
 fdadbscan <- function(x, y,
                       warping_class = c("affine", "dilation", "none", "shift", "srsf"),
                       centroid_type = "mean",
