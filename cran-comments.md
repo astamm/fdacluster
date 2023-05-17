@@ -1,3 +1,9 @@
+## Resubmission 3
+
+This a re-submission in which I:
+
+- have reduced the vignette compile time by precomputing lengthy parts.
+
 ## Resubmission 2
 
 This a re-submission in which I:

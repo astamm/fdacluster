@@ -95,7 +95,6 @@ fdadbscan <- function(x, y,
   else
     dbres <- results[[which.max(sils)]]
   labels <- dbres$cluster
-  print(labels)
   n_clusters <- length(unique(labels[labels > 0]))
 
   if (use_verbose)

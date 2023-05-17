@@ -16,11 +16,9 @@ knitr::opts_chunk$set(
   fig.align = "center",
   fig.retina = 2
 )
-```
-
-```{r setup}
 library(fdacluster)
 library(future)
+load("../R/sysdata.rda")
 ```
 
 ## Theory
@@ -210,7 +208,7 @@ looking for.
 
 For example, we can generate data to help choosing the number of clusters when
 clustering on amplitude data:
-```{r}
+```{r, eval=FALSE}
 ncores <- max(parallel::detectCores() - 1L, 1L)
 plan(multisession, workers = ncores)
 amplitude_data <- compare_caps(
@@ -256,7 +254,7 @@ when the goal is to cluster based on amplitude variability.
 
 Let us now perform the same analysis with the goal of clustering based on phase
 variability instead:
-```{r}
+```{r, eval=FALSE}
 ncores <- max(parallel::detectCores() - 1L, 1L)
 plan(multisession, workers = ncores)
 phase_data <- compare_caps(
@@ -270,8 +268,12 @@ phase_data <- compare_caps(
   cluster_on_phase = TRUE
 )
 plan(sequential)
+```
+
+```{r}
 plot(phase_data, validation_criterion = "wss", what = "mean")
 ```
+
 
 In this case, as expected by looking at the original data set, the plot suggests
 to search for $3$ groups. What is even more interesting is that there is in this

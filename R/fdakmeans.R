@@ -273,7 +273,6 @@ fdakmeans <- function(x, y = NULL,
     }
   } else {
     n_centroids <- length(seeds)
-    print(seeds)
     if (n_centroids != n_clusters && n_centroids != 1L)
       cli::cli_abort("The number of initial centroid indices provided by the {.arg seeds} argument should be either 1 or {n_clusters}.")
     if (n_centroids == 1L && n_clusters > 1L) {
