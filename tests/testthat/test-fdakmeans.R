@@ -162,6 +162,8 @@ test_that('`fdakmeans()` works with kmeans++ seeding strategy.', {
 })
 
 test_that('`fdakmeans()` works with exhaustive-kmeans++ seeding strategy.', {
+  skip_on_cran()
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -207,6 +209,8 @@ test_that('`fdakmeans()` works with exhaustive-kmeans++ seeding strategy.', {
 })
 
 test_that('`fdakmeans()` works with exhaustive seeding strategy.', {
+  skip_on_cran()
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]

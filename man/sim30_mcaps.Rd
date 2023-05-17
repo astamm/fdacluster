@@ -23,9 +23,9 @@ sim30_mcaps
 }
 \description{
 An object of class \code{mcaps} storing the result of the \code{\link[=compare_caps]{compare_caps()}}
-function applied on the data set \code{\link{simulated30}} for comparing the clustering
-structures found by the \code{\link[=fdakmeans]{fdakmeans()}} function with \code{mean} centroid type
-used with various classes of warping functions and varying number of
-clusters.
+function applied on the data set \code{\link{simulated30_sub}} for comparing the
+clustering structures found by the \code{\link[=fdakmeans]{fdakmeans()}} function with \code{mean}
+centroid type used with various classes of warping functions and varying
+number of clusters.
 }
 \keyword{datasets}
