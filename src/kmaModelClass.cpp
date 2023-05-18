@@ -235,7 +235,8 @@ void KmaModel::AssignObservations(arma::mat &warpingParameters,
       {
         observationMemberships(n) = k;
         observationDistances(n) = distancesToCenters(k, n);
-        warpingParameters.row(n) = arma::rowvec(allWarpingParameters.tube(n, k));
+        if (warpingParameters.n_cols > 0)
+          warpingParameters.row(n) = arma::rowvec(allWarpingParameters.tube(n, k));
         break;
       }
     }

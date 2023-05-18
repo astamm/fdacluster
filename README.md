@@ -14,9 +14,9 @@ status](https://www.r-pkg.org/badges/version/fdacluster)](https://CRAN.R-project
 <!-- badges: end -->
 
 The [**fdacluster**](https://astamm.github.io/fdacluster/) package
-provides implementations of the popular $k$-means and hierarchical
-agglomerative clustering (HAC) methods for functional data. Variability
-in functional data is intrinsically divided into three components:
+provides implementations of the $k$-means, hierarchical agglomerative
+and DBSCAN clustering methods for functional data. Variability in
+functional data is intrinsically divided into three components:
 *amplitude*, *phase* and *ancillary* variability. The first two sources
 of variability can be captured with a dedicated statistical analysis
 that integrates a *curve alignment* step. The $k$-means and HAC
@@ -24,13 +24,14 @@ algorithms implemented in
 [**fdacluster**](https://astamm.github.io/fdacluster/) provide
 clustering structures that are based either on ampltitude variation
 (default behavior) or phase variation. This is achieved by jointly
-performing clustering and alignment of a functional data set. The two
+performing clustering and alignment of a functional data set. The three
 main related functions are
 [`fdakmeans()`](https://astamm.github.io/fdacluster/reference/fdakmeans.html)
-and
+for the $k$-means,
 [`fdahclust()`](https://astamm.github.io/fdacluster/reference/fdahclust.html)
-for the $k$-means and HAC methods respectively. The methods handle
-**multivariate codomains**.
+for HAC and
+[`fdadbscan()`](https://astamm.github.io/fdacluster/reference/fdadbscan.html)
+for DBSCAN. The methods handle **multivariate codomains**.
 
 ## Installation
 

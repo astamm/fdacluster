@@ -1,3 +1,8 @@
+# fdacluster 0.2.1
+
+* Add DBSCAN clustering;
+* Fix C++ compiler issues that errored when accessing empty vectors.
+
 # fdacluster 0.2.0
 
 * Add hierarchical clustering;

@@ -1,25 +1,5 @@
-## Resubmission 3
-
-This a re-submission in which I:
-
-- have reduced the vignette compile time by precomputing lengthy parts.
-
-## Resubmission 2
-
-This a re-submission in which I:
-
-- skip k-means unit tests on CRAN when using exhaustive search for 
-initialization to keep the overall check time under 10 min on all platforms;
-- removed C++11 specification;
-- removed aneurisk65 data which is currently unused in the package but heavy.
-
-## Resubmission 1
-
-This a re-submission in which I reduced the elapsed time of the examples for the 
-`compare_caps()` function.
-
 ## Test environments
-* local macOS R installation, R 4.2.3
+* local macOS R installation, R 4.3.0
 * continuous integration via GH actions:
   * macOS latest release
   * windows latest release
