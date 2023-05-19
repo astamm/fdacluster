@@ -16,7 +16,7 @@ number of warping class are implemented to achieve this separation."><meta prope
     
     <a class="navbar-brand me-2" href="../index.html">fdacluster</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1.9000</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,8 +33,15 @@ number of warping class are implemented to achieve this separation."><meta prope
     <a class="dropdown-item" href="../articles/hclust.html">Hierarchical agglomerative clustering</a>
   </div>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-news">
+    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
+    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-05-19-fdacluster-021/">fdacluster 0.2.1</a>
+    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2022-05-10-fdacluster-011/">fdacluster 0.1.1</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../news/index.html">Changelog</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -268,7 +275,7 @@ is performed to fill in the missing values. Defaults to <code>TRUE</code>.</p></
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Information about cluster initialization:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of clusters: 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Initial seeds for cluster centers:          2        14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Initial seeds for cluster centers:         10         1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Information about the methods used within the algorithm:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping method: affine</span>
@@ -294,11 +301,11 @@ is performed to fill in the missing values. Defaults to <code>TRUE</code>.</p></
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Running k-centroid algorithm:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Active stopping criteria:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Memberships did not change.</span>
@@ -309,7 +316,7 @@ is performed to fill in the missing values. Defaults to <code>TRUE</code>.</p></
 <span class="r-in"><span><span class="co"># or using graphics::plot()</span></span></span>
 <span class="r-in"><span><span class="co"># You can visualize the original and aligned curves with:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 35 rows containing missing values (`geom_line()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 46 rows containing missing values (`geom_line()`).</span>
 <span class="r-plt img"><img src="fdakmeans-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Or the estimated warping functions with:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span></span>
