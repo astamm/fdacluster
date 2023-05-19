@@ -28,3 +28,10 @@ reference:
     - simulated90
     - sim30_caps
     - sim30_mcaps
+
+news:
+  releases:
+  - text: "fdacluster 0.2.1"
+    href: https://astamm.github.io/posts/2023-05-19-fdacluster-021/
+  - text: "fdacluster 0.1.1"
+    href: https://astamm.github.io/posts/2022-05-10-fdacluster-011/
