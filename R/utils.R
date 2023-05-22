@@ -105,7 +105,7 @@ check_centroid_type <- function(x) {
 
 format_inputs <- function(x, y = NULL) {
   # Here x is N x M and y is N x L x M when provided
-  if (is.null(y) && is.null(rlang::check_installed("funData"))) {
+  if (is.null(y) && rlang::is_installed("funData")) {
     if (inherits(x, "funData")) {
       L <- 1
       y <- x@X
@@ -124,7 +124,7 @@ format_inputs <- function(x, y = NULL) {
       x <- x[[1]]@argvals[[1]]
     } else
       cli::cli_abort("Functional data provided in a single argument {.arg x} must be either of class {.cls funData} or of class {.cls multiFunData}.")
-  } else if (is.null(rlang::check_installed("fda")) && fda::is.fd(y)) {
+  } else if (rlang::is_installed("fda") && inherits(y, "fd")) {
     dims <- purrr::map_int(y$fdnames, length)
     M <- dims[1]
     N <- dims[2]
