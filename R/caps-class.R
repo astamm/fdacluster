@@ -11,7 +11,7 @@
 #' - `original_curves`: A numeric matrix of shape \eqn{N \times L \times M}
 #' storing a sample with the \eqn{N} \eqn{L}-dimensional original curves
 #' observed on grids of size \eqn{M}.
-#' - `aligned_grids`: A numeric matrix of shape \eqn{N \times L \times M}
+#' - `aligned_curves`: A numeric matrix of shape \eqn{N \times L \times M}
 #' storing a sample with the \eqn{N} \eqn{L}-dimensional aligned curves observed
 #' on grids of size \eqn{M}.
 #' - `center_curves`: A numeric matrix of shape \eqn{K \times L \times M}
