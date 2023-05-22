@@ -1,3 +1,8 @@
+#' @import nloptr
+#' @importFrom ggplot2 autoplot
+#' @importFrom graphics plot
+#' @importFrom Rcpp evalCpp
+#' @importFrom rlang .data
 #' @useDynLib fdacluster, .registration = TRUE
 #'
 #' @references Arthur, D., and S. Vassilvitskii. 2007. “K-Means++ the Advantages
@@ -22,12 +27,3 @@
 #'
 #' @keywords internal
 "_PACKAGE"
-
-## usethis namespace: start
-#' @import nloptr
-#' @importFrom ggplot2 autoplot
-#' @importFrom graphics plot
-#' @importFrom Rcpp sourceCpp
-#' @importFrom rlang .data
-## usethis namespace: end
-NULL

@@ -386,27 +386,29 @@ fdakmeans <- function(x, y = NULL,
     return(as_caps(out))
   }
 
-  res <- kmap(
-    x = x,
-    y = y,
-    seeds = seeds,
-    warping_options = warping_options,
-    n_clust = n_clusters,
-    maximum_number_of_iterations = maximum_number_of_iterations,
-    number_of_threads = number_of_threads,
-    parallel_method = parallel_method,
-    distance_relative_tolerance = distance_relative_tolerance,
-    center_args = centroid_extra,
-    cluster_on_phase = cluster_on_phase,
-    use_fence = use_fence,
-    check_total_dissimilarity = check_total_dissimilarity,
-    use_verbose = use_verbose,
-    compute_overall_center = compute_overall_center,
-    warping_method = warping_class,
-    center_method = centroid_name,
-    dissimilarity_method = metric,
-    optimizer_method = "bobyqa"
-  )
+  withr::with_package("fdacluster", {
+    res <- kmap(
+      x = x,
+      y = y,
+      seeds = seeds,
+      warping_options = warping_options,
+      n_clust = n_clusters,
+      maximum_number_of_iterations = maximum_number_of_iterations,
+      number_of_threads = number_of_threads,
+      parallel_method = parallel_method,
+      distance_relative_tolerance = distance_relative_tolerance,
+      center_args = centroid_extra,
+      cluster_on_phase = cluster_on_phase,
+      use_fence = use_fence,
+      check_total_dissimilarity = check_total_dissimilarity,
+      use_verbose = use_verbose,
+      compute_overall_center = compute_overall_center,
+      warping_method = warping_class,
+      center_method = centroid_name,
+      dissimilarity_method = metric,
+      optimizer_method = "bobyqa"
+    )
+  })
 
   # Compute common grid per cluster
   common_grids <- purrr::map(1:n_clusters, \(cluster_id) {
