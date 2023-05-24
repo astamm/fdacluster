@@ -1,4 +1,7 @@
-# fdacluster (development version)
+# fdacluster 0.2.2
+
+* Make sure one can use **fdacluster** with namespace notation.
+* Make sure not to use **fda** or **funData** before checking it is available.
 
 # fdacluster 0.2.1
 
