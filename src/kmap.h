@@ -1,3 +1,6 @@
+#ifndef KMAP_H
+#define KMAP_H
+
 // Copyright (C) 2017 Alessandro Zito (zito.ales@gmail.com)
 //
 // This file is part of fdacluster.
@@ -45,3 +48,5 @@ Rcpp::List kmap(
     const std::string &dissimilarity_method,
     const std::string &optimizer_method
 );
+
+#endif /* KMAP_H */
