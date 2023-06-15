@@ -92,8 +92,7 @@ number of warping class are implemented to achieve this separation.</p>
 <span>  use_fence <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  check_total_dissimilarity <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  compute_overall_center <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  add_silhouettes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  expand_domain <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  add_silhouettes <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -152,14 +151,15 @@ Defaults to <code>"kmeans++"</code>, which is the fastest strategy.</p></dd>
 
 <dt>centroid_type</dt>
 <dd><p>A string specifying the type of centroid to compute.
-Choices are <code>"mean"</code>, <code>"medoid"</code>, <code>"lowess"</code> or <code>"poly"</code>. Defaults to
-<code>"mean"</code>. If LOWESS appproximation is chosen, the user can append an
-integer between 0 and 100 as in <code>"lowess20"</code>. This number will be used as
-the smoother span. This gives the proportion of points in the plot which
-influence the smooth at each value. Larger values give more smoothness. The
-default value is 10%. If polynomial approximation is chosen, the user can
-append an positive integer as in <code>"poly3"</code>. This number will be used as the
-degree of the polynomial model. The default value is <code>4L</code>.</p></dd>
+Choices are <code>"mean"</code>, <code>"median"</code> <code>"medoid"</code>, <code>"lowess"</code> or <code>"poly"</code>.
+Defaults to <code>"mean"</code>. If LOWESS appproximation is chosen, the user can
+append an integer between 0 and 100 as in <code>"lowess20"</code>. This number will be
+used as the smoother span. This gives the proportion of points in the plot
+which influence the smooth at each value. Larger values give more
+smoothness. The default value is 10%. If polynomial approximation is
+chosen, the user can append an positive integer as in <code>"poly3"</code>. This
+number will be used as the degree of the polynomial model. The default
+value is <code>4L</code>.</p></dd>
 
 
 <dt>metric</dt>
@@ -236,13 +236,6 @@ should be also computed. Defaults to <code>FALSE</code>. This is used only when
 be computed for each observation for internal validation of the clustering
 structure. Defaults to <code>TRUE</code>.</p></dd>
 
-
-<dt>expand_domain</dt>
-<dd><p>A boolean specifying how to define the within-cluster
-common grids. When set to <code>FALSE</code>, the intersection of the individual
-domains is used. When set to <code>TRUE</code>, the union is used and mean imputation
-is performed to fill in the missing values. Defaults to <code>TRUE</code>.</p></dd>
-
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -275,7 +268,7 @@ is performed to fill in the missing values. Defaults to <code>TRUE</code>.</p></
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Information about cluster initialization:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Number of clusters: 2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  - Initial seeds for cluster centers:         7        3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - Initial seeds for cluster centers:          1        11</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Information about the methods used within the algorithm:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Warping method: affine</span>
@@ -301,11 +294,11 @@ is performed to fill in the missing values. Defaults to <code>TRUE</code>.</p></
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Running k-centroid algorithm:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Iteration #2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #0: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    * Size of cluster #1: 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Active stopping criteria:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - Memberships did not change.</span>
@@ -316,7 +309,6 @@ is performed to fill in the missing values. Defaults to <code>TRUE</code>.</p></
 <span class="r-in"><span><span class="co"># or using graphics::plot()</span></span></span>
 <span class="r-in"><span><span class="co"># You can visualize the original and aligned curves with:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 48 rows containing missing values (`geom_line()`).</span>
 <span class="r-plt img"><img src="fdakmeans-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span><span class="co"># Or the estimated warping functions with:</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span></span>
