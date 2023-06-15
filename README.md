@@ -136,7 +136,6 @@ with:
 
 ``` r
 plot(out1, type = "amplitude")
-#> Warning: Removed 390 rows containing missing values (`geom_line()`).
 ```
 
 <img src="man/figures/README-kmeans-amplitude-viz-1.png" width="100%" />
@@ -212,7 +211,6 @@ We can inspect the result:
 
 ``` r
 plot(out2, type = "amplitude")
-#> Warning: Removed 100 rows containing missing values (`geom_line()`).
 ```
 
 <img src="man/figures/README-kmeans-phase-viz-1.png" width="100%" />

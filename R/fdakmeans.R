@@ -334,7 +334,8 @@ fdakmeans <- function(x, y = NULL,
     center_curves <- aperm(res$templates, c(3, 1, 2))
     warpings <- matrix(nrow = N, ncol = M)
     for (k in 1:n_clusters) {
-      aligned_curves[cluster_members[[k]], , ] <- t(res$fn[[k]])
+      Nc <- length(cluster_members[[k]])
+      aligned_curves[cluster_members[[k]], , ] <- aperm(array(res$fn[[k]], dim = c(L, M, Nc)), c(3, 1, 2))
       warpings[cluster_members[[k]], ] <- t(res$gam[[k]])
     }
 
