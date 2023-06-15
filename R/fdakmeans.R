@@ -39,14 +39,15 @@
 #'   `"affine"`, `"dilation"`, `"none"`, `"shift"` or `"srsf"`. Defaults to
 #'   `"affine"`. The SRSF class is the only class which is boundary-preserving.
 #' @param centroid_type A string specifying the type of centroid to compute.
-#'   Choices are `"mean"`, `"medoid"`, `"lowess"` or `"poly"`. Defaults to
-#'   `"mean"`. If LOWESS appproximation is chosen, the user can append an
-#'   integer between 0 and 100 as in `"lowess20"`. This number will be used as
-#'   the smoother span. This gives the proportion of points in the plot which
-#'   influence the smooth at each value. Larger values give more smoothness. The
-#'   default value is 10%. If polynomial approximation is chosen, the user can
-#'   append an positive integer as in `"poly3"`. This number will be used as the
-#'   degree of the polynomial model. The default value is `4L`.
+#'   Choices are `"mean"`, `"median"` `"medoid"`, `"lowess"` or `"poly"`.
+#'   Defaults to `"mean"`. If LOWESS appproximation is chosen, the user can
+#'   append an integer between 0 and 100 as in `"lowess20"`. This number will be
+#'   used as the smoother span. This gives the proportion of points in the plot
+#'   which influence the smooth at each value. Larger values give more
+#'   smoothness. The default value is 10%. If polynomial approximation is
+#'   chosen, the user can append an positive integer as in `"poly3"`. This
+#'   number will be used as the degree of the polynomial model. The default
+#'   value is `4L`.
 #' @param metric A string specifying the metric used to compare curves. Choices
 #'   are `"l2"` or `"pearson"`. Defaults to `"l2"`. Used only when
 #'   `warping_class != "srsf"`. For the boundary-preserving warping class, the
@@ -88,10 +89,6 @@
 #' @param add_silhouettes A boolean specifying whether silhouette values should
 #'   be computed for each observation for internal validation of the clustering
 #'   structure. Defaults to `TRUE`.
-#' @param expand_domain A boolean specifying how to define the within-cluster
-#'   common grids. When set to `FALSE`, the intersection of the individual
-#'   domains is used. When set to `TRUE`, the union is used and mean imputation
-#'   is performed to fill in the missing values. Defaults to `TRUE`.
 #'
 #' @return An object of class [`caps`].
 #'
@@ -137,8 +134,7 @@ fdakmeans <- function(x, y = NULL,
                       use_fence = FALSE,
                       check_total_dissimilarity = TRUE,
                       compute_overall_center = FALSE,
-                      add_silhouettes = TRUE,
-                      expand_domain = TRUE) {
+                      add_silhouettes = TRUE) {
   call <- rlang::call_match(defaults = TRUE)
   call_name <- rlang::call_name(call)
   call_args <- rlang::call_args(call)
@@ -411,6 +407,7 @@ fdakmeans <- function(x, y = NULL,
   })
 
   # Compute common grid per cluster
+  expand_domain <- FALSE
   common_grids <- purrr::map(1:n_clusters, \(cluster_id) {
     grids <- res$x_final[res$labels == cluster_id, , drop = FALSE]
     common_grid <- grids[1, ]
@@ -418,11 +415,11 @@ fdakmeans <- function(x, y = NULL,
       multiple_grids <- any(apply(grids, 2, stats::sd) != 0)
       if (multiple_grids) {
         if (expand_domain) {
-          grid_min <- min(grids[, 1])
-          grid_max <- max(grids[, M])
+          grid_min <- min(c(grids[, 1], res$x_centers_final[cluster_id, 1]))
+          grid_max <- max(c(grids[, M], res$x_centers_final[cluster_id, M]))
         } else {
-          grid_min <- max(grids[, 1])
-          grid_max <- min(grids[, M])
+          grid_min <- max(c(grids[, 1], res$x_centers_final[cluster_id, 1]))
+          grid_max <- min(c(grids[, M], res$x_centers_final[cluster_id, M]))
         }
         common_grid <- seq(grid_min, grid_max, length.out = M)
       }

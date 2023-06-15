@@ -89,7 +89,7 @@ ndims <- function(x){
 }
 
 check_centroid_type <- function(x) {
-  if (x == "mean" || x == "medoid") return(list(name = x, extra = 0))
+  if (x == "mean" || x == "median" || x == "medoid") return(list(name = x, extra = 0))
   if (grepl("lowess", x, fixed = TRUE)) {
     span_value <- as.numeric(gsub("\\D", "", x)) / 100
     if (is.na(span_value)) span_value <- 0.1

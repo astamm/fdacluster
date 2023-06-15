@@ -1,6 +1,6 @@
-#include "lowessCenterClass.h"
+#include "medianCenterClass.h"
 
-CenterType LowessCenterMethod::GetCenter(const arma::mat& inputGrid,
+CenterType MedianCenterMethod::GetCenter(const arma::mat& inputGrid,
                                          const arma::cube& inputValues,
                                          const std::shared_ptr<BaseDissimilarityFunction>& dissimilarityPointer)
 {
@@ -21,40 +21,34 @@ CenterType LowessCenterMethod::GetCenter(const arma::mat& inputGrid,
   double gridUpperBound = inputGrid.col(numberOfPoints - 1).min();
   arma::rowvec outGrid = arma::linspace<arma::rowvec>(gridLowerBound, gridUpperBound, numberOfPoints);
 
-  arma::mat meanValue(numberOfDimensions, numberOfPoints, arma::fill::zeros);
+  arma::uvec finiteIndices;
+  arma::mat medianValue(numberOfDimensions, numberOfPoints, arma::fill::zeros);
   arma::mat workMatrix;
-  std::vector<double> xIn, yIn;
-  arma::rowvec inGrid, inValue, outValue(outGrid.size());
-  arma::urowvec uniqueIndices;
-  Rcpp::Function statsLowess = m_StatsPackage["lowess"];
-  Rcpp::List lowessOutput;
+  arma::cube yIn(numberOfObservations, numberOfDimensions, numberOfPoints);
 
-  for (unsigned int l = 0;l < numberOfDimensions;++l)
+  // First interpolate to common grid
+  arma::rowvec inGrid;
+  arma::rowvec inValue;
+  arma::rowvec outValue;
+
+  for (unsigned int i = 0;i < numberOfObservations;++i)
   {
-    xIn.clear();
-    yIn.clear();
+    inGrid = inputGrid.row(i);
 
-    for (unsigned int i = 0;i < numberOfObservations;++i)
+    for (unsigned int j = 0;j < numberOfDimensions;++j)
     {
-      for (unsigned int j = 0;j < numberOfPoints;++j)
-      {
-        if (arma::is_finite(inputGrid(i, j)) && arma::is_finite(inputValues(i, l, j)))
-        {
-          xIn.push_back(inputGrid(i, j));
-          yIn.push_back(inputValues(i, l, j));
-        }
-      }
+      inValue = inputValues.tube(i, j);
+      arma::interp1(inGrid, inValue, outGrid, outValue, "*linear");
+      yIn.tube(i, j) = outValue;
     }
+  }
 
-    lowessOutput = statsLowess(xIn, yIn, Rcpp::_["f"] = this->GetSpanValue());
-    inGrid = Rcpp::as<arma::rowvec>(lowessOutput["x"]);
-    inValue = Rcpp::as<arma::rowvec>(lowessOutput["y"]);
-
-    uniqueIndices = arma::find_unique(inGrid).as_row();
-    inGrid = inGrid.cols(uniqueIndices);
-    inValue = inValue.cols(uniqueIndices);
-    arma::interp1(inGrid, inValue, outGrid, outValue, "*linear");
-    meanValue.row(l) = outValue;
+  // Next, compute point-wise mean
+  for (unsigned int i = 0;i < numberOfPoints;++i)
+  {
+    finiteIndices = arma::find_finite(yIn.slice(i).col(0));
+    workMatrix = yIn.slice(i).rows(finiteIndices);
+    medianValue.col(i) = arma::median(workMatrix, 0).as_col();
   }
 
   // Finally, compute dissimilarity between observations and center
@@ -65,13 +59,13 @@ CenterType LowessCenterMethod::GetCenter(const arma::mat& inputGrid,
     distancesToCenter(i) = dissimilarityPointer->GetDistance(
       outGrid,
       inputGrid.row(i),
-      meanValue,
+      medianValue,
       workMatrix
     );
   }
 
   outputCenter.centerGrid = outGrid;
-  outputCenter.centerValues = meanValue;
+  outputCenter.centerValues = medianValue;
   outputCenter.distancesToCenter = distancesToCenter;
 
   return outputCenter;

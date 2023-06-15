@@ -160,7 +160,6 @@ fdadbscan <- function(x, y,
   silhouettes <- NULL
   if (n_clusters > 1) {
     D <- fdadist(
-      # x = grids[labels, ],
       x = grids,
       y = aligned_curves,
       warping_class = "none",

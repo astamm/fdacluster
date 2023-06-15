@@ -43,14 +43,15 @@ functional data set to be able to evaluate it on user-defined grids.}
 \code{"affine"}. The SRSF class is the only class which is boundary-preserving.}
 
 \item{centroid_type}{A string specifying the type of centroid to compute.
-Choices are \code{"mean"}, \code{"medoid"}, \code{"lowess"} or \code{"poly"}. Defaults to
-\code{"mean"}. If LOWESS appproximation is chosen, the user can append an
-integer between 0 and 100 as in \code{"lowess20"}. This number will be used as
-the smoother span. This gives the proportion of points in the plot which
-influence the smooth at each value. Larger values give more smoothness. The
-default value is 10\%. If polynomial approximation is chosen, the user can
-append an positive integer as in \code{"poly3"}. This number will be used as the
-degree of the polynomial model. The default value is \code{4L}.}
+Choices are \code{"mean"}, \code{"median"} \code{"medoid"}, \code{"lowess"} or \code{"poly"}.
+Defaults to \code{"mean"}. If LOWESS appproximation is chosen, the user can
+append an integer between 0 and 100 as in \code{"lowess20"}. This number will be
+used as the smoother span. This gives the proportion of points in the plot
+which influence the smooth at each value. Larger values give more
+smoothness. The default value is 10\%. If polynomial approximation is
+chosen, the user can append an positive integer as in \code{"poly3"}. This
+number will be used as the degree of the polynomial model. The default
+value is \code{4L}.}
 
 \item{metric}{A string specifying the metric used to compare curves. Choices
 are \code{"l2"} or \code{"pearson"}. Defaults to \code{"l2"}. Used only when

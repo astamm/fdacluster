@@ -16,9 +16,9 @@ CenterType PolyCenterMethod::GetCenter(const arma::mat& inputGrid,
   if (inputGrid.n_cols != numberOfPoints)
     Rcpp::stop("The number of columns in x should match the third dimension of y.");
 
-  // Find largest grid
-  double gridLowerBound = inputGrid.min();
-  double gridUpperBound = inputGrid.max();
+  // Find intersection grid
+  double gridLowerBound = inputGrid.col(0).max();
+  double gridUpperBound = inputGrid.col(numberOfPoints - 1).min();
   arma::rowvec outGrid = arma::linspace<arma::rowvec>(gridLowerBound, gridUpperBound, numberOfPoints);
 
   arma::mat meanValue(numberOfDimensions, numberOfPoints, arma::fill::zeros);
