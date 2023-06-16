@@ -1,13 +1,12 @@
-test_that("`fdahclust()` works", {
+test_that("`fdadbscan()` works", {
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
   P <- dims[3]
   K <- 2L
-  out <- fdahclust(
+  out <- fdadbscan(
     x = simulated30_sub$x,
     y = simulated30_sub$y,
-    n_clusters = K,
     use_verbose = FALSE
   )
   expect_true(is_caps(out))
@@ -28,6 +27,6 @@ test_that("`fdahclust()` works", {
   expect_equal(length(out$distances_to_center), N)
   expect_equal(dim(out$warpings), c(N, P))
   expect_equal(out$n_iterations, 0)
-  expect_equal(out$call_name, "fdahclust")
+  expect_equal(out$call_name, "fdadbscan")
   expect_true(inherits(out$call_args, "list"))
 })

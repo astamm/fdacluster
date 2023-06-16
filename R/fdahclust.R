@@ -130,27 +130,41 @@ fdahclust <- function(x, y = NULL,
   if (use_verbose)
     cli::cli_alert_info("Consolidating output...")
 
-  grids <- purrr::map(kmresults, \(km) km$grids[1, ])
-  grids <- do.call(rbind, grids)
   original_curves <- array(dim = c(N, L, M))
   aligned_curves <- array(dim = c(N, L, M))
+  grids <- matrix(nrow = N, ncol = M)
   center_curves <- array(dim = c(n_clusters, L, M))
+  center_grids <- matrix(nrow = n_clusters, ncol = M)
   warpings <- matrix(nrow = N, ncol = M)
   dtc <- numeric(N)
   for (k in 1:n_clusters) {
     cluster_ids <- which(labels == k)
     original_curves[cluster_ids, , ] <- kmresults[[k]]$original_curves
     aligned_curves[cluster_ids, , ] <- kmresults[[k]]$aligned_curves
+    grids[cluster_ids, ] <- kmresults[[k]]$grids
     center_curves[k, , ] <- kmresults[[k]]$center_curves
+    center_grids[k, ] <- kmresults[[k]]$center_grids[1, ]
     warpings[cluster_ids, ] <- kmresults[[k]]$warpings
     dtc[cluster_ids] <- kmresults[[k]]$distances_to_center
   }
 
   silhouettes <- NULL
   if (n_clusters > 1) {
+    tmp_curves <- aligned_curves
+    tmp_grids <- grids
+    for (n in 1:N) {
+      tmp_grid <- grids[n, ]
+      tmp_curve <- tmp_curves[n, 1, ]
+      non_na_indices <- !is.na(tmp_curve)
+      t_min <- min(tmp_grid[non_na_indices])
+      t_max <- max(tmp_grid[non_na_indices])
+      tmp_grids[n, ] <- seq(t_min, t_max, length.out = M)
+      for (l in 1:L)
+        tmp_curves[n, l, ] <- approx(tmp_grid, aligned_curves[n, l, ], xout = tmp_grids[n, ])$y
+    }
     D <- fdadist(
-      x = grids[labels, ],
-      y = aligned_curves,
+      x = tmp_grids,
+      y = tmp_curves,
       warping_class = "none",
       metric = metric
     )
@@ -160,9 +174,10 @@ fdahclust <- function(x, y = NULL,
   out <- list(
     original_curves = original_curves,
     aligned_curves = aligned_curves,
-    center_curves = center_curves,
-    warpings = warpings,
     grids = grids,
+    center_curves = center_curves,
+    center_grids = center_grids,
+    warpings = warpings,
     n_clusters = n_clusters,
     memberships = labels,
     distances_to_center = dtc,

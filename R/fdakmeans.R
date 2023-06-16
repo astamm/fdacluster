@@ -366,9 +366,10 @@ fdakmeans <- function(x, y = NULL,
     out <- list(
       original_curves = original_curves,
       aligned_curves = aligned_curves,
+      grids = matrix(res$time, nrow = N, ncol = M, byrow = TRUE),
       center_curves = center_curves,
+      center_grids = matrix(res$time, nrow = n_clusters, ncol = M, byrow = TRUE),
       warpings = warpings,
-      grids = matrix(res$time, nrow = n_clusters, ncol = M, byrow = TRUE),
       n_clusters = n_clusters,
       memberships = res$labels,
       distances_to_center = res$distances_to_center,
@@ -436,12 +437,7 @@ fdakmeans <- function(x, y = NULL,
       aligned_curves[n, l, ] <- stats::approx(
         x = res$x_final[n, ],
         y = original_curves[n, l, ],
-        xout = common_grids[res$labels[n], ]
-      )$y
-      original_curves[n, l, ] <- stats::approx(
-        x = res$x[n, ],
-        y = original_curves[n, l, ],
-        xout = common_grids[res$labels[n], ]
+        xout = res$x[n, ]
       )$y
     }
   }
@@ -500,9 +496,10 @@ fdakmeans <- function(x, y = NULL,
   out <- list(
     original_curves = original_curves,
     aligned_curves = aligned_curves,
+    grids = res$x,
     center_curves = centers,
+    center_grids = common_grids,
     warpings = warpings,
-    grids = common_grids,
     n_clusters = res$n_clust_final,
     memberships = res$labels,
     distances_to_center = res$final_dissimilarity,
