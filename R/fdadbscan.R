@@ -130,7 +130,7 @@ fdadbscan <- function(x, y,
 
   grids <- purrr::imap(labels, \(.label, .id) {
     if (.label == 0)
-      x[.y, ]
+      x[.id, ]
     else {
       indices <- which(labels == .label)
       kmresults[[.label]]$grids[indices == .id, ]
@@ -172,7 +172,7 @@ fdadbscan <- function(x, y,
       t_max <- max(tmp_grid[non_na_indices])
       tmp_grids[n, ] <- seq(t_min, t_max, length.out = M)
       for (l in 1:L)
-        tmp_curves[n, l, ] <- approx(tmp_grid, aligned_curves[n, l, ], xout = tmp_grids[n, ])$y
+        tmp_curves[n, l, ] <- stats::approx(tmp_grid, aligned_curves[n, l, ], xout = tmp_grids[n, ])$y
     }
     D <- fdadist(
       x = tmp_grids,
