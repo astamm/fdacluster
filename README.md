@@ -120,10 +120,11 @@ out1 <- fdakmeans(
 #>  - Memberships did not change.
 ```
 
-Both the
-[`fdakmeans()`](https://astamm.github.io/fdacluster/reference/fdakmeans.html)
-and
+All of
+[`fdakmeans()`](https://astamm.github.io/fdacluster/reference/fdakmeans.html),
 [`fdahclust()`](https://astamm.github.io/fdacluster/reference/fdahclust.html)
+and
+[`fdadbscan()`](https://astamm.github.io/fdacluster/reference/fdadbscan.html)
 functions returns an object of class
 [`caps`](https://astamm.github.io/fdacluster/reference/caps.html) (for
 **C**lustering with **A**mplitude and **P**hase **S**eparation) for
@@ -136,7 +137,6 @@ with:
 
 ``` r
 plot(out1, type = "amplitude")
-#> Warning: Removed 787 rows containing missing values (`geom_line()`).
 ```
 
 <img src="man/figures/README-kmeans-amplitude-viz-1.png" width="100%" />
@@ -212,7 +212,6 @@ We can inspect the result:
 
 ``` r
 plot(out2, type = "amplitude")
-#> Warning: Removed 181 rows containing missing values (`geom_line()`).
 ```
 
 <img src="man/figures/README-kmeans-phase-viz-1.png" width="100%" />
@@ -223,11 +222,11 @@ plot(out2, type = "phase")
 
 <img src="man/figures/README-kmeans-phase-viz-2.png" width="100%" />
 
-We can perform similar analyses using HAC instead of $k$-means. The
-[**fdacluster**](https://astamm.github.io/fdacluster/) package also
-provides visualization tools to help choosing the optimal number of
-cluster based on WSS and silhouette values. This can be achieved by
-using a combination of the functions
+We can perform similar analyses using HAC or DBSCAN instead of
+$k$-means. The [**fdacluster**](https://astamm.github.io/fdacluster/)
+package also provides visualization tools to help choosing the optimal
+number of cluster based on WSS and silhouette values. This can be
+achieved by using a combination of the functions
 [`compare_caps()`](https://astamm.github.io/fdacluster/reference/compare_caps.html)
 and
 [`plot.mcaps()`](https://astamm.github.io/fdacluster/reference/plot.mcaps.html).

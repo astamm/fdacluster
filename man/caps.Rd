@@ -31,17 +31,21 @@ An object of class \code{\link{caps}} is a list with the following components:
 \item \code{original_curves}: A numeric matrix of shape \eqn{N \times L \times M}
 storing a sample with the \eqn{N} \eqn{L}-dimensional original curves
 observed on grids of size \eqn{M}.
+\item \code{original_grids}: A numeric matrix of size \eqn{N \times M} storing the
+grids of size \eqn{M} on which original curves are evaluated;
 \item \code{aligned_curves}: A numeric matrix of shape \eqn{N \times L \times M}
 storing a sample with the \eqn{N} \eqn{L}-dimensional aligned curves observed
 on grids of size \eqn{M}.
+\item \code{aligned_grids}: A numeric matrix of size \eqn{N \times M} storing the
+grids of size \eqn{M} on which aligned curves are evaluated;
 \item \code{center_curves}: A numeric matrix of shape \eqn{K \times L \times M}
 storing the \eqn{K} centers which are \eqn{L}-dimensional curves observed on
 a grid of size \eqn{M};
+\item \code{center_grids}: A numeric matrix of size \eqn{K \times M} storing the grids
+of size \eqn{M} on which center curves are evaluated;
 \item \code{warpings}: A numeric matrix of shape \eqn{N \times M} storing the
 estimated warping functions for each of the \eqn{N} curves evaluated on the
 within-cluster common \code{grids} of size \eqn{M};
-\item \code{grids}: A numeric matrix of size \eqn{K \times M} storing the
-within-cluster common grids of size \eqn{M} on which curves are evaluated;
 \item \code{n_clusters}: An integer value storing the number of clusters;
 \item \code{memberships}: An integer vector of length \eqn{N} storing the cluster ID
 which each curve belongs to;
@@ -49,6 +53,9 @@ which each curve belongs to;
 distance of each curve to the center of its cluster;
 \item \code{silhouettes}: A numeric vector of length \eqn{N} storing the silhouette
 values of each observation;
+\item \code{amplitude_variation}: A numeric value storing the fraction of total
+variation explained by amplitude variability.
+\item \code{total_variation}: A numeric value storing the amount of total variation.
 \item \code{n_iterations}: An integer value storing the number of iterations
 performed until convergence;
 \item \code{call_name}: A string storing the name of the function that was used to

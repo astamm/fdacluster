@@ -136,8 +136,8 @@ fdakmeans <- function(x, y = NULL,
                       compute_overall_center = FALSE,
                       add_silhouettes = TRUE) {
   call <- rlang::call_match(defaults = TRUE)
-  call_name <- rlang::call_name(call)
-  call_args <- rlang::call_args(call)
+  callname <- rlang::call_name(call)
+  callargs <- rlang::call_args(call)
 
   l <- format_inputs(x, y)
   x <- l$x
@@ -289,7 +289,11 @@ fdakmeans <- function(x, y = NULL,
     }
   }
 
-  call_args$seeds <- seeds
+  callargs$seeds <- seeds
+  callargs$seeding_strategy <- seeding_strategy
+  callargs$warping_class <- warping_class
+  callargs$metric <- metric
+
   seeds <- seeds - 1
 
   if (warping_class == "srsf") {
@@ -365,8 +369,9 @@ fdakmeans <- function(x, y = NULL,
 
     out <- list(
       original_curves = original_curves,
+      original_grids = matrix(res$time, nrow = N, ncol = M, byrow = TRUE),
       aligned_curves = aligned_curves,
-      grids = matrix(res$time, nrow = N, ncol = M, byrow = TRUE),
+      aligned_grids = matrix(res$time, nrow = N, ncol = M, byrow = TRUE),
       center_curves = center_curves,
       center_grids = matrix(res$time, nrow = n_clusters, ncol = M, byrow = TRUE),
       warpings = warpings,
@@ -377,8 +382,8 @@ fdakmeans <- function(x, y = NULL,
       amplitude_variation = amplitude_variation,
       total_variation = total_variation,
       n_iterations = length(res$qun),
-      call_name = call_name,
-      call_args = call_args
+      call_name = callname,
+      call_args = callargs
     )
 
     return(as_caps(out))
@@ -442,6 +447,8 @@ fdakmeans <- function(x, y = NULL,
     }
   }
 
+  clean_output <- remove_missing_points(res$x, aligned_curves)
+
   centers <- res$y_centers_final
   for (l in 1:L) {
     for (k in 1:res$n_clust_final) {
@@ -469,15 +476,15 @@ fdakmeans <- function(x, y = NULL,
   warpings <- matrix(nrow = N, ncol = M)
   if (warping_class == "none") {
     for (n in 1:N)
-      warpings[n, ] <- common_grids[res$labels[n], ]
+      warpings[n, ] <- res$x[n, ]
   } else {
     for (n in 1:N) {
       if (warping_class == "shift")
-        warpings[n, ] <- common_grids[res$labels[n], ] + res$parameters[n, 1]
+        warpings[n, ] <- clean_output$grids[n, ] + res$parameters[n, 1]
       else if (warping_class == "dilation")
-        warpings[n, ] <- common_grids[res$labels[n], ] * res$parameters[n, 1]
+        warpings[n, ] <- clean_output$grids[n, ] * res$parameters[n, 1]
       else
-        warpings[n, ] <- common_grids[res$labels[n], ] * res$parameters[n, 1] +
+        warpings[n, ] <- clean_output$grids[n, ] * res$parameters[n, 1] +
           res$parameters[n, 2]
     }
   }
@@ -495,8 +502,9 @@ fdakmeans <- function(x, y = NULL,
 
   out <- list(
     original_curves = original_curves,
-    aligned_curves = aligned_curves,
-    grids = res$x,
+    original_grids = res$x,
+    aligned_curves = clean_output$curves,
+    aligned_grids = clean_output$grids,
     center_curves = centers,
     center_grids = common_grids,
     warpings = warpings,
@@ -507,8 +515,8 @@ fdakmeans <- function(x, y = NULL,
     amplitude_variation = res$amplitude_variation,
     total_variation = res$total_variation,
     n_iterations = res$iterations,
-    call_name = call_name,
-    call_args = call_args
+    call_name = callname,
+    call_args = callargs
   )
 
   as_caps(out)

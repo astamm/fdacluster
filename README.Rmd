@@ -87,10 +87,11 @@ out1 <- fdakmeans(
 )
 ```
 
-Both the
-[`fdakmeans()`](https://astamm.github.io/fdacluster/reference/fdakmeans.html)
-and
+All of
+[`fdakmeans()`](https://astamm.github.io/fdacluster/reference/fdakmeans.html),
 [`fdahclust()`](https://astamm.github.io/fdacluster/reference/fdahclust.html)
+and
+[`fdadbscan()`](https://astamm.github.io/fdacluster/reference/fdadbscan.html)
 functions returns an object of class
 [`caps`](https://astamm.github.io/fdacluster/reference/caps.html) (for
 **C**lustering with
@@ -107,7 +108,8 @@ plot(out1, type = "phase")
 
 ### $k$-means based on phase variability
 
-We can perform $k$-means clustering based on phase variability only by switch the `cluster_on_phase` argument to `TRUE`:
+We can perform $k$-means clustering based on phase variability only by switch
+the `cluster_on_phase` argument to `TRUE`:
 
 ```{r kmeans-phase-run}
 out2 <- fdakmeans(
@@ -128,7 +130,7 @@ plot(out2, type = "amplitude")
 plot(out2, type = "phase")
 ```
 
-We can perform similar analyses using HAC instead of $k$-means. The
+We can perform similar analyses using HAC or DBSCAN instead of $k$-means. The
 [**fdacluster**](https://astamm.github.io/fdacluster/) package also provides
 visualization tools to help choosing the optimal number of cluster based on WSS
 and silhouette values. This can be achieved by using a combination of the

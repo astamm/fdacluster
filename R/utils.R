@@ -172,3 +172,22 @@ format_inputs <- function(x, y = NULL) {
   # output x matrix NxM and y array NxLxM
   list(x = x, y = y)
 }
+
+remove_missing_points <- function(grids, curves) {
+  dims <- dim(curves)
+  N <- dims[1]
+  L <- dims[2]
+  M <- dims[3]
+  out_grids <- grids
+  out_curves <- curves
+  for (n in 1:N) {
+    non_na_indices <- !is.na(curves[n, 1, ])
+    tmin <- min(grids[n, non_na_indices])
+    tmax <- max(grids[n, non_na_indices])
+    tout <- seq(tmin, tmax, length.out = M)
+    out_grids[n, ] <- tout
+    for (l in 1:L)
+      out_curves[n, l, ] <- stats::approx(grids[n, ], curves[n, l, ], xout = tout)$y
+  }
+  list(grids = out_grids, curves = out_curves)
+}

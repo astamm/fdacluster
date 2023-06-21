@@ -11,17 +11,19 @@ test_that("`fdahclust()` works", {
     use_verbose = FALSE
   )
   expect_true(is_caps(out))
-  expect_equal(length(out), 15)
-  expected_names <- c("original_curves", "aligned_curves", "grids",
-                      "center_curves", "center_grids", "warpings", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
+  expect_equal(length(out), 16)
+  expected_names <- c("original_curves", "original_grids", "aligned_curves",
+                      "aligned_grids", "center_curves", "center_grids",
+                      "warpings", "n_clusters", "memberships",
+                      "distances_to_center", "silhouettes",
                       "amplitude_variation", "total_variation", "n_iterations",
                       "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
+  expect_equal(dim(out$original_grids), c(N, P))
   expect_equal(dim(out$aligned_curves), dims)
+  expect_equal(dim(out$aligned_grids), c(N, P))
   expect_equal(dim(out$center_curves), c(K, L, P))
-  expect_equal(dim(out$grids), c(N, P))
   expect_equal(dim(out$center_grids), c(K, P))
   expect_equal(out$n_clusters, K)
   expect_equal(length(out$memberships), N)

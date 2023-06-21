@@ -47,6 +47,8 @@ fdadbscan <- function(x, y,
                       check_total_dissimilarity = TRUE,
                       compute_overall_center = FALSE) {
   call <- rlang::call_match(defaults = TRUE)
+  callname <- rlang::call_name(call)
+  callargs <- rlang::call_args(call)
 
   l <- format_inputs(x, y)
   x <- l$x
@@ -66,6 +68,9 @@ fdadbscan <- function(x, y,
 
   if (warping_class == "none" && cluster_on_phase)
     cli::cli_abort("It makes no sense to cluster based on phase variability if no alignment is performed.")
+
+  callargs$warping_class <- warping_class
+  callargs$metric <- metric
 
   if (use_verbose)
     cli::cli_alert_info("Computing the distance matrix...")
@@ -128,55 +133,37 @@ fdadbscan <- function(x, y,
   if (use_verbose)
     cli::cli_alert_info("Consolidating output...")
 
-  grids <- purrr::imap(labels, \(.label, .id) {
-    if (.label == 0)
-      x[.id, ]
-    else {
-      indices <- which(labels == .label)
-      kmresults[[.label]]$grids[indices == .id, ]
-    }
-  })
-  grids <- do.call(rbind, grids)
   original_curves <- array(dim = c(N, L, M))
+  original_curves[labels == 0, , ] <- y[labels == 0, , ]
+  original_grids <- matrix(nrow = N, ncol = M)
+  original_grids[labels == 0, ] <- x[labels == 0, ]
   aligned_curves <- array(dim = c(N, L, M))
+  aligned_curves[labels == 0, , ] <- y[labels == 0, , ]
+  aligned_grids <- matrix(nrow = N, ncol = M)
+  aligned_grids[labels == 0, ] <- x[labels == 0, ]
   center_curves <- array(dim = c(n_clusters, L, M))
   center_grids <- matrix(nrow = n_clusters, ncol = M)
   warpings <- matrix(nrow = N, ncol = M)
+  warpings[labels == 0, ] <- x[labels == 0, ]
   dtc <- numeric(N)
+  dtc[labels == 0] <- 0
   for (k in 1:n_clusters) {
     cluster_ids <- which(labels == k)
     original_curves[cluster_ids, , ] <- kmresults[[k]]$original_curves
+    original_grids[cluster_ids, ] <- kmresults[[k]]$original_grids
     aligned_curves[cluster_ids, , ] <- kmresults[[k]]$aligned_curves
+    aligned_grids[cluster_ids, ] <- kmresults[[k]]$aligned_grids
     center_curves[k, , ] <- kmresults[[k]]$center_curves
     center_grids[k, ] <- kmresults[[k]]$center_grids[1, ]
     warpings[cluster_ids, ] <- kmresults[[k]]$warpings
     dtc[cluster_ids] <- kmresults[[k]]$distances_to_center
   }
-  noise_ids <- which(labels == 0)
-  if (length(noise_ids) > 0) {
-    original_curves[noise_ids, , ] <- y[noise_ids, , ]
-    aligned_curves[noise_ids, , ] <- y[noise_ids, , ]
-    warpings[noise_ids, ] <- x[noise_ids, ]
-    dtc[noise_ids] <- 0
-  }
 
   silhouettes <- NULL
   if (n_clusters > 1) {
-    tmp_curves <- aligned_curves
-    tmp_grids <- grids
-    for (n in 1:N) {
-      tmp_grid <- grids[n, ]
-      tmp_curve <- tmp_curves[n, 1, ]
-      non_na_indices <- !is.na(tmp_curve)
-      t_min <- min(tmp_grid[non_na_indices])
-      t_max <- max(tmp_grid[non_na_indices])
-      tmp_grids[n, ] <- seq(t_min, t_max, length.out = M)
-      for (l in 1:L)
-        tmp_curves[n, l, ] <- stats::approx(tmp_grid, aligned_curves[n, l, ], xout = tmp_grids[n, ])$y
-    }
     D <- fdadist(
-      x = tmp_grids,
-      y = tmp_curves,
+      x = aligned_grids,
+      y = aligned_curves,
       warping_class = "none",
       metric = metric
     )
@@ -185,8 +172,9 @@ fdadbscan <- function(x, y,
 
   out <- list(
     original_curves = original_curves,
+    original_grids = original_grids,
     aligned_curves = aligned_curves,
-    grids = grids,
+    aligned_grids = aligned_grids,
     center_curves = center_curves,
     center_grids = center_grids,
     warpings = warpings,
@@ -197,8 +185,8 @@ fdadbscan <- function(x, y,
     amplitude_variation = sum(purrr::map_dbl(kmresults, "amplitude_variation")),
     total_variation = sum(purrr::map_dbl(kmresults, "total_variation")),
     n_iterations = 0,
-    call_name = rlang::call_name(call),
-    call_args = rlang::call_args(call)
+    call_name = callname,
+    call_args = callargs
   )
 
   as_caps(out)
