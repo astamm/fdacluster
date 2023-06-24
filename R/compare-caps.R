@@ -10,13 +10,14 @@
 #'   to create. Defaults to `1:5`.
 #' @param clustering_method A character vector specifying one or more clustering
 #'   methods to be fit. Choices are `"kmeans"`, `"hclust-complete"`,
-#'   `"hclust-average"` or `"hclust-single"`. Defaults to all of them.
+#'   `"hclust-average"`, `"hclust-single"` or `"dbscan"`. Defaults to all of
+#'   them.
 #' @param warping_class A character vector specifying one or more classes of
 #'   warping functions to use for curve alignment. Choices are `"affine"`,
 #'   `"dilation"`, `"none"`, `"shift"` or `"srsf"`. Defaults to all of them.
 #' @param centroid_type A character vector specifying one or more ways to
-#'   compute centroids. Choices are `"mean"` or `"medoid"`. Defaults to all of
-#'   them.
+#'   compute centroids. Choices are `"mean"`, `"medoid"`, `"median"`, `"lowess"`
+#'   or `"poly"`. Defaults to all of them.
 #'
 #' @return An object of class `mcaps` which is a [`tibble::tibble`] storing the
 #'   objects of class [`caps`] in correspondence of each combination of possible
@@ -25,41 +26,40 @@
 #' @export
 #' @examples
 #' #----------------------------------
-#' # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
-#' idx <- c(1:5, 11:15, 21:25)
-#' x <- simulated30_sub$x[idx, ]
-#' y <- simulated30_sub$y[idx, , ]
-#'
-#' #----------------------------------
-#' # Runs an HAC with complete linkage with affine alignment, searching for up
-#' # to 2 clusters and using the sample mean as centroid type:
-#' out <- compare_caps(
-#'   x = x,
-#'   y = y,
-#'   n_clusters = 2,
-#'   warping_class = "affine",
-#'   clustering_method = "hclust-complete",
+#' # Compare k-means results with k = 1, 2, 3, 4, 5 using mean centroid and
+#' # various warping classes.
+#' \dontrun{
+#' sim30_mcaps <- compare_caps(
+#'   x = simulated30_sub$x,
+#'   y = simulated30_sub$y,
+#'   warping_class = c("none", "shift", "dilation", "affine"),
+#'   clustering_method = "kmeans",
 #'   centroid_type = "mean"
 #' )
+#' }
 #'
 #' #----------------------------------
 #' # Then visualize the results
-#' # Either with ggplot2 via ggplot2::autoplot(out)
+#' # Either with ggplot2 via ggplot2::autoplot(sim30_mcaps)
 #' # or using graphics::plot()
 #' # You can visualize the WSS values:
-#' plot(out, validation_criterion = "wss")
+#' plot(sim30_mcaps, validation_criterion = "wss", what = "mean")
+#' plot(sim30_mcaps, validation_criterion = "wss", what = "distribution")
 #' # Or the average silhouette values:
-#' plot(out, validation_criterion = "silhouette")
+#' plot(sim30_mcaps, validation_criterion = "silhouette", what = "mean")
+#' plot(sim30_mcaps, validation_criterion = "silhouette", what = "distribution")
 compare_caps <- function(x, y,
                          n_clusters = 1:5,
                          metric = c("l2", "pearson"),
                          clustering_method = c("kmeans",
                                                "hclust-complete",
                                                "hclust-average",
-                                               "hclust-single"),
+                                               "hclust-single",
+                                               "dbscan"),
                          warping_class = c("affine", "dilation", "none",
                                            "shift", "srsf"),
-                         centroid_type = c("mean", "medoid", "lowess", "poly"),
+                         centroid_type = c("mean", "medoid", "median",
+                                           "lowess", "poly"),
                          cluster_on_phase = FALSE) {
   if (!is.numeric(n_clusters))
     cli::cli_abort("The argument {.arg n_clusters} should be an integer/numeric vector.")
@@ -76,6 +76,7 @@ compare_caps <- function(x, y,
     warping_class = warping_class,
     centroid_type = centroid_type
   ) |>
+    dplyr::filter(!(n_clusters > 1L & clustering_method == "dbscan")) |>
     dplyr::mutate(
       caps_obj = purrr::pmap(
         .l = list(
@@ -89,6 +90,16 @@ compare_caps <- function(x, y,
               y = y,
               n_clusters = .n_clusters,
               seeding_strategy = "exhaustive-kmeans++",
+              warping_class = .warping_class,
+              centroid_type = .centroid_type,
+              metric = metric,
+              cluster_on_phase = cluster_on_phase,
+              use_verbose = FALSE
+            )
+          else if (.clustering_method == "dbscan")
+            fdadbscan(
+              x = x,
+              y = y,
               warping_class = .warping_class,
               centroid_type = .centroid_type,
               metric = metric,
@@ -138,7 +149,7 @@ compare_caps <- function(x, y,
 #' @importFrom ggplot2 autoplot
 #' @export
 #' @examplesIf requireNamespace("ggplot2", quietly = TRUE)
-#' p <- ggplot2::ggplot(sim30_mcaps)
+#' p <- ggplot2::autoplot(sim30_mcaps)
 autoplot.mcaps <- function(object,
                            validation_criterion = c("wss", "silhouette"),
                            what = c("mean", "distribution"),

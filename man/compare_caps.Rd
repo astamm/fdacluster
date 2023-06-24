@@ -9,9 +9,10 @@ compare_caps(
   y,
   n_clusters = 1:5,
   metric = c("l2", "pearson"),
-  clustering_method = c("kmeans", "hclust-complete", "hclust-average", "hclust-single"),
+  clustering_method = c("kmeans", "hclust-complete", "hclust-average", "hclust-single",
+    "dbscan"),
   warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-  centroid_type = c("mean", "medoid", "lowess", "poly"),
+  centroid_type = c("mean", "medoid", "median", "lowess", "poly"),
   cluster_on_phase = FALSE
 )
 }
@@ -40,15 +41,16 @@ L2 distance between the SRSFs of the original curves is used.}
 
 \item{clustering_method}{A character vector specifying one or more clustering
 methods to be fit. Choices are \code{"kmeans"}, \code{"hclust-complete"},
-\code{"hclust-average"} or \code{"hclust-single"}. Defaults to all of them.}
+\code{"hclust-average"}, \code{"hclust-single"} or \code{"dbscan"}. Defaults to all of
+them.}
 
 \item{warping_class}{A character vector specifying one or more classes of
 warping functions to use for curve alignment. Choices are \code{"affine"},
 \code{"dilation"}, \code{"none"}, \code{"shift"} or \code{"srsf"}. Defaults to all of them.}
 
 \item{centroid_type}{A character vector specifying one or more ways to
-compute centroids. Choices are \code{"mean"} or \code{"medoid"}. Defaults to all of
-them.}
+compute centroids. Choices are \code{"mean"}, \code{"medoid"}, \code{"median"}, \code{"lowess"}
+or \code{"poly"}. Defaults to all of them.}
 
 \item{cluster_on_phase}{A boolean specifying whether clustering should be
 based on phase variation or amplitude variation. Defaults to \code{FALSE} which
@@ -67,29 +69,26 @@ of clustering methods and choice of an \emph{optimal} one.
 }
 \examples{
 #----------------------------------
-# Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
-idx <- c(1:5, 11:15, 21:25)
-x <- simulated30_sub$x[idx, ]
-y <- simulated30_sub$y[idx, , ]
-
-#----------------------------------
-# Runs an HAC with complete linkage with affine alignment, searching for up
-# to 2 clusters and using the sample mean as centroid type:
-out <- compare_caps(
-  x = x,
-  y = y,
-  n_clusters = 2,
-  warping_class = "affine",
-  clustering_method = "hclust-complete",
+# Compare k-means results with k = 1, 2, 3, 4, 5 using mean centroid and
+# various warping classes.
+\dontrun{
+sim30_mcaps <- compare_caps(
+  x = simulated30_sub$x,
+  y = simulated30_sub$y,
+  warping_class = c("none", "shift", "dilation", "affine"),
+  clustering_method = "kmeans",
   centroid_type = "mean"
 )
+}
 
 #----------------------------------
 # Then visualize the results
-# Either with ggplot2 via ggplot2::autoplot(out)
+# Either with ggplot2 via ggplot2::autoplot(sim30_mcaps)
 # or using graphics::plot()
 # You can visualize the WSS values:
-plot(out, validation_criterion = "wss")
+plot(sim30_mcaps, validation_criterion = "wss", what = "mean")
+plot(sim30_mcaps, validation_criterion = "wss", what = "distribution")
 # Or the average silhouette values:
-plot(out, validation_criterion = "silhouette")
+plot(sim30_mcaps, validation_criterion = "silhouette", what = "mean")
+plot(sim30_mcaps, validation_criterion = "silhouette", what = "distribution")
 }

@@ -35,6 +35,6 @@ terms of silhouette values.
 }
 \examples{
 \dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-p <- ggplot2::ggplot(sim30_mcaps)
+p <- ggplot2::autoplot(sim30_mcaps)
 \dontshow{\}) # examplesIf}
 }
