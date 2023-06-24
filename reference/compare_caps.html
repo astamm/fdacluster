@@ -31,6 +31,7 @@ of clustering methods and choice of an optimal one."><meta property="og:image" c
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/hclust.html">Hierarchical agglomerative clustering</a>
+    <a class="dropdown-item" href="../articles/kmeans-initialisation.html">Computing initial centroids in k-means</a>
   </div>
 </li>
 <li class="nav-item dropdown">
@@ -78,9 +79,10 @@ of clustering methods and choice of an <em>optimal</em> one.</p>
 <span>  <span class="va">y</span>,</span>
 <span>  n_clusters <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,</span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
-<span>  clustering_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmeans"</span>, <span class="st">"hclust-complete"</span>, <span class="st">"hclust-average"</span>, <span class="st">"hclust-single"</span><span class="op">)</span>,</span>
+<span>  clustering_method <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"kmeans"</span>, <span class="st">"hclust-complete"</span>, <span class="st">"hclust-average"</span>, <span class="st">"hclust-single"</span>,</span>
+<span>    <span class="st">"dbscan"</span><span class="op">)</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"affine"</span>, <span class="st">"dilation"</span>, <span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
-<span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span>, <span class="st">"lowess"</span>, <span class="st">"poly"</span><span class="op">)</span>,</span>
+<span>  centroid_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"medoid"</span>, <span class="st">"median"</span>, <span class="st">"lowess"</span>, <span class="st">"poly"</span><span class="op">)</span>,</span>
 <span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -120,7 +122,8 @@ L2 distance between the SRSFs of the original curves is used.</p></dd>
 <dt>clustering_method</dt>
 <dd><p>A character vector specifying one or more clustering
 methods to be fit. Choices are <code>"kmeans"</code>, <code>"hclust-complete"</code>,
-<code>"hclust-average"</code> or <code>"hclust-single"</code>. Defaults to all of them.</p></dd>
+<code>"hclust-average"</code>, <code>"hclust-single"</code> or <code>"dbscan"</code>. Defaults to all of
+them.</p></dd>
 
 
 <dt>warping_class</dt>
@@ -131,8 +134,8 @@ warping functions to use for curve alignment. Choices are <code>"affine"</code>,
 
 <dt>centroid_type</dt>
 <dd><p>A character vector specifying one or more ways to
-compute centroids. Choices are <code>"mean"</code> or <code>"medoid"</code>. Defaults to all of
-them.</p></dd>
+compute centroids. Choices are <code>"mean"</code>, <code>"medoid"</code>, <code>"median"</code>, <code>"lowess"</code>
+or <code>"poly"</code>. Defaults to all of them.</p></dd>
 
 
 <dt>cluster_on_phase</dt>
@@ -153,37 +156,32 @@ choices from the input arguments.</p>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#----------------------------------</span></span></span>
-<span class="r-in"><span><span class="co"># Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set</span></span></span>
-<span class="r-in"><span><span class="va">idx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="fl">11</span><span class="op">:</span><span class="fl">15</span>, <span class="fl">21</span><span class="op">:</span><span class="fl">25</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">x</span><span class="op">[</span><span class="va">idx</span>, <span class="op">]</span></span></span>
-<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">y</span><span class="op">[</span><span class="va">idx</span>, , <span class="op">]</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#----------------------------------</span></span></span>
-<span class="r-in"><span><span class="co"># Runs an HAC with complete linkage with affine alignment, searching for up</span></span></span>
-<span class="r-in"><span><span class="co"># to 2 clusters and using the sample mean as centroid type:</span></span></span>
-<span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">compare_caps</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  x <span class="op">=</span> <span class="va">x</span>,</span></span>
-<span class="r-in"><span>  y <span class="op">=</span> <span class="va">y</span>,</span></span>
-<span class="r-in"><span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span></span>
-<span class="r-in"><span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span></span>
-<span class="r-in"><span>  clustering_method <span class="op">=</span> <span class="st">"hclust-complete"</span>,</span></span>
+<span class="r-in"><span><span class="co"># Compare k-means results with k = 1, 2, 3, 4, 5 using mean centroid and</span></span></span>
+<span class="r-in"><span><span class="co"># various warping classes.</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">sim30_mcaps</span> <span class="op">&lt;-</span> <span class="fu">compare_caps</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  x <span class="op">=</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">x</span>,</span></span>
+<span class="r-in"><span>  y <span class="op">=</span> <span class="va">simulated30_sub</span><span class="op">$</span><span class="va">y</span>,</span></span>
+<span class="r-in"><span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"dilation"</span>, <span class="st">"affine"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  clustering_method <span class="op">=</span> <span class="st">"kmeans"</span>,</span></span>
 <span class="r-in"><span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#----------------------------------</span></span></span>
 <span class="r-in"><span><span class="co"># Then visualize the results</span></span></span>
-<span class="r-in"><span><span class="co"># Either with ggplot2 via ggplot2::autoplot(out)</span></span></span>
+<span class="r-in"><span><span class="co"># Either with ggplot2 via ggplot2::autoplot(sim30_mcaps)</span></span></span>
 <span class="r-in"><span><span class="co"># or using graphics::plot()</span></span></span>
 <span class="r-in"><span><span class="co"># You can visualize the WSS values:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span>, validation_criterion <span class="op">=</span> <span class="st">"wss"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_line()`: Each group consists of only one observation.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Do you need to adjust the <span style="color: #00BB00;">group</span> aesthetic?</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim30_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"wss"</span>, what <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="compare_caps-1.png" alt="" width="700" height="433"></span>
-<span class="r-in"><span><span class="co"># Or the average silhouette values:</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out</span>, validation_criterion <span class="op">=</span> <span class="st">"silhouette"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> `geom_line()`: Each group consists of only one observation.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Do you need to adjust the <span style="color: #00BB00;">group</span> aesthetic?</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim30_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"wss"</span>, what <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="compare_caps-2.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="co"># Or the average silhouette values:</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim30_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"silhouette"</span>, what <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="compare_caps-3.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">sim30_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"silhouette"</span>, what <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></span>
+<span class="r-plt img"><img src="compare_caps-4.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
