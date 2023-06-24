@@ -76,7 +76,7 @@ fdahclust(
   y,
   n_clusters = 1L,
   warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-  centroid_type = c("mean", "medoid", "lowess", "poly"),
+  centroid_type = c("mean", "median", "medoid", "lowess", "poly"),
   metric = c("l2", "pearson"),
   linkage_criterion = c("complete", "average", "single", "ward.D2"),
   cluster_on_phase = FALSE,
@@ -273,7 +273,6 @@ plan(sequential)
 ```{r}
 plot(phase_data, validation_criterion = "wss", what = "mean")
 ```
-
 
 In this case, as expected by looking at the original data set, the plot suggests
 to search for $3$ groups. What is even more interesting is that there is in this

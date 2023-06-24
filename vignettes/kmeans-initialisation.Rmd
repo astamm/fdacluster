@@ -1,0 +1,233 @@
+---
+title: "Computing initial centroids in k-means"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Computing initial centroids in k-means}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+load("../R/sysdata.rda")
+```
+
+```{r setup}
+library(fdacluster)
+true_groups <- c(rep(1, 20), rep(2, 10))
+```
+
+The $k$-mean algorithm for both multivariate or functional data requires an
+initial step in which we select $k$ observations among our sample to serve as
+initial centroids for the $k$ clusters we are looking for.
+
+It is well known and reported that the outcome of the $k$-mean algorithm is very
+sensitive to this initial choice. The functional $k$-mean algorithm
+implementation `fdakmeans()` in the **fdacluster** package includes a number of
+seeding strategies that automoatically set the initial centroids which makes the
+outcome more robust.
+
+## Manual specification of the initial seeds
+
+You can use the optional argument `seeds` which takes in an integer vector in
+which one can manually specify the indices of the observations that will be used
+as initial centroids. This vector hence needs to be of size `n_clusters`.
+
+```{r, eval=FALSE}
+out_manual <- fdakmeans(
+  x = simulated30$x,
+  y = simulated30$y,
+  n_clusters = 2,
+  seeds = c(1, 21),
+  warping_class = "affine",
+  centroid_type = "mean",
+  metric = "l2",
+  cluster_on_phase = FALSE,
+  use_verbose = FALSE
+)
+```
+
+```{r}
+knitr::kable(table(out_manual$memberships, true_groups))
+```
+
+This however leads to an outcome that is very sensitive to the initial choice in
+`seeds`:
+
+```{r, eval=FALSE}
+withr::with_seed(1234, {
+  initial_seeds <- replicate(10, sample.int(30, 2, replace = FALSE), simplify = FALSE)
+  outs_manual <- purrr::map(initial_seeds, \(.seeds) {
+    fdakmeans(
+      x = simulated30$x,
+      y = simulated30$y,
+      n_clusters = 2,
+      seeds = .seeds,
+      warping_class = "affine",
+      centroid_type = "mean",
+      metric = "l2",
+      cluster_on_phase = FALSE,
+      use_verbose = FALSE
+    )
+  })
+})
+```
+
+```{r}
+tibble::tibble(
+  Initialization = initial_seeds |> 
+    purrr::map_chr(\(.seeds) paste(.seeds, collapse = ",")), 
+  `Misclassification Rate (%)` = purrr::map_dbl(outs_manual, \(.clus) {
+    tbl <- table(.clus$memberships, true_groups)
+    round(min(tbl[1, 1] + tbl[2, 2], tbl[1, 2] + tbl[2, 1]) / 30 * 100, 2)
+  })
+) |> 
+  knitr::kable()
+```
+
+## $k$-means++
+
+The $k$-means++ strategy was originally proposed in @arthur2007k. The algorithm
+is nicely described on the corresponding
+[Wikipedia](https://en.wikipedia.org/wiki/K-means%2B%2B) page as follows:
+
+1. Choose one center uniformly at random among the data points.
+2. For each data point $x$ not chosen yet, compute $D(x)$, the distance between
+$x$ and the nearest center that has already been chosen.
+3. Choose one new data point at random as a new center, using a weighted
+probability distribution where a point $x$ is chosen with probability
+proportional to $D(x)^2$.
+4. Repeat Steps $2$ and $3$ until $k$ centers have been chosen.
+5. Now that the initial centers have been chosen, proceed using standard
+$k$-means clustering.
+
+Despite the probabilistic nature of the outcome that follows from this strategy,
+it provides a more robust $k$-means procedure:
+
+```{r, eval=FALSE}
+withr::with_seed(1234, {
+  outs_kpp <- replicate(10, {
+    fdakmeans(
+      x = simulated30$x,
+      y = simulated30$y,
+      n_clusters = 2,
+      seeding_strategy = "kmeans++",
+      warping_class = "affine",
+      centroid_type = "mean",
+      metric = "l2",
+      cluster_on_phase = FALSE,
+      use_verbose = FALSE
+    )
+  }, simplify = FALSE)
+})
+```
+
+```{r}
+tibble::tibble(
+  Run = 1:10, 
+  `Misclassification Rate (%)` = purrr::map_dbl(outs_kpp, \(.clus) {
+    tbl <- table(.clus$memberships, true_groups)
+    round(min(tbl[1, 1] + tbl[2, 2], tbl[1, 2] + tbl[2, 1]) / 30 * 100, 2)
+  })
+) |> 
+  knitr::kable()
+```
+
+## Exhaustive $k$-means++
+
+The $k$-means++ initialization procedure introduces two additional sources of
+randomness:
+
+- One for randomly picking the first centroid; and,
+- One for picking the remaining centroids based on a weighted probability 
+distribution.
+
+It is easy, with computational cost linear in $N$, to get rid of the first
+source of randomness by exhaustively run the $k$-means algorithm with
+$k$-means++ initialization strategy using each observation as possible centroid
+for the first cluster. We call it the exhaustive $k$-means++ strategy:
+
+```{r, eval=FALSE}
+withr::with_seed(1234, {
+  outs_ekpp <- replicate(10, {
+    fdakmeans(
+      x = simulated30$x,
+      y = simulated30$y,
+      n_clusters = 2,
+      seeding_strategy = "exhaustive-kmeans++",
+      warping_class = "affine",
+      centroid_type = "mean",
+      metric = "l2",
+      cluster_on_phase = FALSE,
+      use_verbose = FALSE
+    )
+  }, simplify = FALSE)
+})
+```
+
+```{r}
+tibble::tibble(
+  Run = 1:10, 
+  `Misclassification Rate (%)` = purrr::map_dbl(outs_ekpp, \(.clus) {
+    tbl <- table(.clus$memberships, true_groups)
+    round(min(tbl[1, 1] + tbl[2, 2], tbl[1, 2] + tbl[2, 1]) / 30 * 100, 2)
+  })
+) |> 
+  knitr::kable()
+```
+
+## Exhaustive search
+
+For completeness, it is also possible to perform an exhaustive search although
+this should rarely be practical. With our simulated data of $N = 30$ curves and
+looking for $2$, this would be achieved by setting `seeding_strategy =
+"exhaustive"` but would require to run the algorithm `r choose(30, 2)` times
+instead of $30$ times for the exhaustive $k$-means++ strategy which already
+achieves excellent robustness performances.
+
+## Hierarchial clustering
+
+An alternative is to use hierarchical clustering before $k$-means to get good
+initial candidates for centroids:
+
+```{r, eval=FALSE}
+out <- fdakmeans(
+  x = simulated30$x,
+  y = simulated30$y,
+  n_clusters = 2,
+  seeding_strategy = "hclust",
+  warping_class = "affine",
+  centroid_type = "mean",
+  metric = "l2",
+  cluster_on_phase = FALSE,
+  use_verbose = FALSE
+)
+```
+
+```{r}
+knitr::kable(table(out_hclust$memberships, true_groups))
+```
+
+This strategy is completely deterministic. In our case, it seems to work well.
+However, it will perform badly when $k$-means clustering and hierarchial
+clustering are not meant to provide the same clusters in the first place.
+
+Note that we could also implement a DBSCAN initialization strategy in a similar
+fashion, with the added benefit of autotuning the number of clusters to look
+for. This is not currently implemented but the user can very well carry that out
+by hand. First, run `fdadbscan()` on your data, which will tell you how many
+clusters you should search for. Then use cluster medoids as `seeds` argument for
+`fdakmeans()`.
+
+## Final recommandations
+
+For functional data sets with a reasonable sample size, we recommend to use the
+exhaustive $k$-means++ strategy. For moderate to large sample sizes, we
+recommend to switch to the $k$-means++ strategy. The latter is the current
+running default for `fdakmeans()`.
+
+## References
