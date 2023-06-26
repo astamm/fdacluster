@@ -76,7 +76,7 @@ compare_caps <- function(x, y,
     warping_class = warping_class,
     centroid_type = centroid_type
   ) |>
-    dplyr::filter(!(n_clusters > 1L & clustering_method == "dbscan")) |>
+    dplyr::filter(!(n_clusters > min(n_clusters) & clustering_method == "dbscan")) |>
     dplyr::mutate(
       caps_obj = purrr::pmap(
         .l = list(
