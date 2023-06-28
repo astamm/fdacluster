@@ -158,6 +158,77 @@ growth_caps <- fdahclust(
   cluster_on_phase = TRUE
 )
 
+# input-formats -----------------------------------------------------------
+
+growth <- fda::growth
+growthData <- funData::funData(
+  argvals = growth$age,
+  X = t(cbind(growth$hgtm, growth$hgtf))
+)
+out_growth <- fdakmeans(
+  x = growthData,
+  n_clusters = 2,
+  seeding_strategy = "exhaustive-kmeans++",
+  cluster_on_phase = TRUE,
+  use_verbose = FALSE
+)
+
+# Generates full grid
+argvals <- seq(0, 2 * pi, by = 0.01)
+# Simulate 30 irregular grids with various sampling points (number and values)
+indices <- replicate(30, sort(sample(1:length(argvals), sample(30:50, 1))))
+argvalsIrreg <- lapply(indices, \(i) argvals[i])
+# Simulate functional data with obvious grouping structure
+withr::with_seed(1234, {
+  simData <- funData::irregFunData(
+    argvals = argvalsIrreg,
+    X = mapply(
+      function(x, a, b) a * sin(x + b),
+      x = argvalsIrreg,
+      a = c(rgamma(10, 25, 50), rgamma(10, 50, 50), rgamma(10, 100, 50)),
+      b = c(rnorm(10, -1, 0.2), rnorm(10, 0, 0.2), rnorm(10, 1, 0.2))
+    )
+  )
+})
+out_sim <- fdakmeans(
+  x = simData,
+  n_clusters = 3,
+  seeding_strategy = "exhaustive-kmeans++",
+  use_verbose = FALSE
+)
+
+cycle_perc <- (0:19) / 19 * 100
+hipData <- t(fda::gait[, , 1])
+hipData <- hipData
+kneeData <- t(fda::gait[, , 2])
+kneeData <- kneeData
+gaitData <- funData::multiFunData(
+  funData::funData(argvals = cycle_perc, X = hipData),
+  funData::funData(argvals = cycle_perc, X = kneeData)
+)
+out_gait <- fdakmeans(
+  x = gaitData,
+  n_clusters = 1,
+  seeding_strategy = "exhaustive",
+  warping_class = "srsf",
+  use_verbose = FALSE
+)
+
+bspl <- fda::create.fourier.basis(rangeval = c(0, 100), nbasis = 5)
+gaitDataFD <- fda::smooth.basis(
+  argvals = cycle_perc,
+  y = fda::gait,
+  fdParobj = bspl
+)$fd
+out_gait_fd <- fdakmeans(
+  x = cycle_perc,
+  y = gaitDataFD,
+  n_clusters = 1,
+  seeding_strategy = "exhaustive",
+  warping_class = "srsf",
+  use_verbose = FALSE
+)
+
 plan(sequential)
 
 usethis::use_data(
@@ -171,6 +242,10 @@ usethis::use_data(
   out_hclust,
   growth_mcaps,
   growth_caps,
+  out_growth,
+  out_sim,
+  out_gait,
+  out_gait_fd,
   internal = TRUE,
   overwrite = TRUE,
   compress = "xz",

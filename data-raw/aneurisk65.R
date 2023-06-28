@@ -6,7 +6,7 @@ tmp_dir <- tempdir()
 zipfile <- paste0(tmp_dir, "/aneurisk65.zip")
 zipdir <- paste0(tmp_dir, "/aneurisk")
 download.file(
-  url = "https://statistics.mox.polimi.it/wp-content/uploads/2015/07/AneuRisk65_ReadMe.zip",
+  url = "http://ecm2.mathcs.emory.edu/aneuriskdata/files/Carotid-data_MBI_workshop.zip",
   destfile = zipfile
 )
 unzip(
@@ -43,6 +43,38 @@ selected_data <- all_data |>
     values = c(x, y, z)
   )
 
+xValues <- funData::irregFunData(
+  argvals = purrr::map(selected_data$grids, "s"),
+  X = purrr::map(selected_data$values, "x")
+)
+
+out <- fdakmeans(xValues, n_clusters = 2)
+
+funData::plot(yValues)
+
+M <- xValues@argvals |> map_int(length) |> mean() |> round()
+xValues@argvals |>
+  map(\(grid) seq(min(grid), max(grid), length.out = M)) |>
+  do.call(rbind, args = _) |> dim()
+xValues@X |>
+  imap(\(values, id) approx(xValues@argvals[[id]], values, n = M)$y) |>
+  do.call(rbind, args = _) |> dim()
+
+yValues <- funData::irregFunData(
+  argvals = purrr::map(selected_data$grids, "s"),
+  X = purrr::map(selected_data$values, "y")
+)
+
+zValues <- funData::irregFunData(
+  argvals = purrr::map(selected_data$grids, "s"),
+  X = purrr::map(selected_data$values, "z")
+)
+
+allValues <- funData::multiFunData(xValues, yValues, zValues)
+
+growthData <- funData::funData(argvals = fda::growth$age, X = t(fda::growth$hgtm))
+dim(growthData@X)
+
 # Put grids and values in array format
 n <- nrow(selected_data)
 d <- unique(purrr::map_int(selected_data$values, ncol))
@@ -71,4 +103,4 @@ aneurisk65 <- list()
 aneurisk65$x <- aneurisk_grids
 aneurisk65$y <- aneurisk_values
 
-usethis::use_data(aneurisk65, overwrite = TRUE, compress = "xz")
+# usethis::use_data(aneurisk65, overwrite = TRUE, compress = "xz")

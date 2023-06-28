@@ -107,6 +107,11 @@ format_inputs <- function(x, y = NULL) {
   # Here x is N x M and y is N x L x M when provided
   if (is.null(y) && rlang::is_installed("funData")) {
     if (inherits(x, "funData")) {
+      if (length(x@argvals) > 1)
+        cli::cli_abort(c(
+          "The {.pkg fdacluster} package does not support functional data defined ",
+          "on multivariate domains."
+        ))
       L <- 1
       y <- x@X
       dims <- dim(y)
@@ -114,16 +119,52 @@ format_inputs <- function(x, y = NULL) {
       M <- dims[2]
       y <- array(y, dim = c(N, L, M))
       x <- x@argvals[[1]]
+    } else if (inherits(x, "irregFunData")) {
+      L <- 1
+      N <- length(x@argvals)
+      M <- x@argvals |>
+        purrr::map_int(length) |>
+        mean() |>
+        round()
+      y <- array(dim = c(N, L, M))
+      y[, 1, ] <- x@X |>
+        purrr::imap(\(values, id) stats::approx(x@argvals[[id]], values, n = M)$y) |>
+        do.call(rbind, args = _)
+      x <- x@argvals |>
+        purrr::map(\(grid) seq(min(grid), max(grid), length.out = M)) |>
+        do.call(rbind, args = _)
     } else if (inherits(x, "multiFunData")) {
       L <- length(x)
       dims <- dim(x[[1]]@X)
+      grid <- x[[1]]@argvals[[1]]
+      purrr::walk(x, \(fData) {
+        if (length(fData@argvals) != 1)
+          cli::cli_abort(c(
+            "The {.pkg fdacluster} package does not support functional data ",
+            "defined on multivariate domains."
+          ))
+        if (any(fData@argvals[[1]] != grid))
+          cli::cli_abort(c(
+            "All components of the {.cls multiFunData} object must share the same ",
+            "evaluation grids."
+          ))
+        if (any(dim(fData@X) != dims))
+          cli::cli_abort(c(
+            "All components of the {.cls multiFunData} object must have values ",
+            "stored in matrices with the same dimensions."
+          ))
+      })
       N <- dims[1]
       M <- dims[2]
       y <- array(dim = c(N, L, M))
       for (l in 1:L) y[, l, ] <- x[[l]]@X
-      x <- x[[1]]@argvals[[1]]
+      x <- grid
     } else
-      cli::cli_abort("Functional data provided in a single argument {.arg x} must be either of class {.cls funData} or of class {.cls multiFunData}.")
+      cli::cli_abort(c(
+        "Functional data provided in a single argument {.arg x} must be either of ",
+        "class {.cls funData} or of class {.cls irregFunData} or of class ",
+        "{.cls multiFunData}."
+      ))
   } else if (rlang::is_installed("fda") && inherits(y, "fd")) {
     dims <- purrr::map_int(y$fdnames, length)
     M <- dims[1]
@@ -131,13 +172,22 @@ format_inputs <- function(x, y = NULL) {
     L <- dims[3]
     if (is.vector(x)) {
       if (length(x) != M)
-        cli::cli_abort("The number of function evaluations ({M}) does not match the grid size ({length(x)}).")
+        cli::cli_abort(c(
+          "The number of function evaluations ({M}) does not match the grid ",
+          "size ({length(x)})."
+        ))
       y <- fda::eval.fd(x, y)
     } else {
       if (nrow(x) != N)
-        cli::cli_abort("When provided multiple evaluation grids as a matrix, the number of rows should match the number of curves.")
+        cli::cli_abort(c(
+          "When provided multiple evaluation grids as a matrix, the number of ",
+          "rows should match the number of curves."
+        ))
       if (ncol(x) != M)
-        cli::cli_abort("When provided multiple evaluation grids as a matrix, the number of columns should match the common grid size.")
+        cli::cli_abort(c(
+          "When provided multiple evaluation grids as a matrix, the number of ",
+          "columns should match the common grid size."
+        ))
       y <- fda::eval.fd(t(x), y)
     }
     if (is.null(dim(y))) {
