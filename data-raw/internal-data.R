@@ -175,11 +175,11 @@ out_growth <- fdakmeans(
 
 # Generates full grid
 argvals <- seq(0, 2 * pi, by = 0.01)
-# Simulate 30 irregular grids with various sampling points (number and values)
-indices <- replicate(30, sort(sample(1:length(argvals), sample(30:50, 1))))
-argvalsIrreg <- lapply(indices, \(i) argvals[i])
 # Simulate functional data with obvious grouping structure
 withr::with_seed(1234, {
+  # Simulate 30 irregular grids with various sampling points (number and values)
+  indices <- replicate(30, sort(sample(1:length(argvals), sample(30:50, 1))))
+  argvalsIrreg <- lapply(indices, \(i) argvals[i])
   simData <- funData::irregFunData(
     argvals = argvalsIrreg,
     X = mapply(

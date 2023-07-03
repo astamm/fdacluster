@@ -340,7 +340,7 @@ fdakmeans <- function(x, y = NULL,
     for (k in 1:n_clusters) {
       Nc <- length(cluster_members[[k]])
       aligned_curves[cluster_members[[k]], , ] <- aperm(array(res$fn[[k]], dim = c(L, M, Nc)), c(3, 1, 2))
-      warpings[cluster_members[[k]], ] <- t(res$gam[[k]])
+      warpings[cluster_members[[k]], ] <- t(apply(t(res$gam[[k]]), 1, fdasrvf::invertGamma)) * diff(range(common_grid)) + min(common_grid)
     }
 
     q0 <- res$q0
@@ -370,11 +370,9 @@ fdakmeans <- function(x, y = NULL,
     out <- list(
       original_curves = original_curves,
       original_grids = matrix(res$time, nrow = N, ncol = M, byrow = TRUE),
-      aligned_curves = aligned_curves,
-      aligned_grids = matrix(res$time, nrow = N, ncol = M, byrow = TRUE),
+      aligned_grids = warpings,
       center_curves = center_curves,
       center_grids = matrix(res$time, nrow = n_clusters, ncol = M, byrow = TRUE),
-      warpings = warpings,
       n_clusters = n_clusters,
       memberships = res$labels,
       distances_to_center = res$distances_to_center,
@@ -413,82 +411,6 @@ fdakmeans <- function(x, y = NULL,
     )
   })
 
-  # Compute common grid per cluster
-  expand_domain <- FALSE
-  common_grids <- purrr::map(1:n_clusters, \(cluster_id) {
-    grids <- res$x_final[res$labels == cluster_id, , drop = FALSE]
-    common_grid <- grids[1, ]
-    if (nrow(grids) > 1) {
-      multiple_grids <- any(apply(grids, 2, stats::sd) != 0)
-      if (multiple_grids) {
-        if (expand_domain) {
-          grid_min <- min(c(grids[, 1], res$x_centers_final[cluster_id, 1]))
-          grid_max <- max(c(grids[, M], res$x_centers_final[cluster_id, M]))
-        } else {
-          grid_min <- max(c(grids[, 1], res$x_centers_final[cluster_id, 1]))
-          grid_max <- min(c(grids[, M], res$x_centers_final[cluster_id, M]))
-        }
-        common_grid <- seq(grid_min, grid_max, length.out = M)
-      }
-    }
-    common_grid
-  })
-  common_grids <- do.call(rbind, common_grids)
-
-  original_curves <- res$y
-  aligned_curves <- original_curves
-  for (l in 1:L) {
-    for (n in 1:N) {
-      aligned_curves[n, l, ] <- stats::approx(
-        x = res$x_final[n, ],
-        y = original_curves[n, l, ],
-        xout = res$x[n, ]
-      )$y
-    }
-  }
-
-  clean_output <- remove_missing_points(res$x, aligned_curves)
-
-  centers <- res$y_centers_final
-  for (l in 1:L) {
-    for (k in 1:res$n_clust_final) {
-      centers[k, l, ] <- stats::approx(
-        x = res$x_centers_final[k, ],
-        y = res$y_centers_final[k, l, ],
-        xout = common_grids[k, ]
-      )$y
-    }
-  }
-
-  if (expand_domain) {
-    # Mean imputation
-    for (l in 1:L) {
-      X <- aligned_curves[, l, ]
-      Xc <- centers[, l, ]
-      if (n_clusters == 1) Xc <- matrix(Xc, nrow = 1)
-      X <- rbind(X, Xc)
-      Xi <- impute_via_mean(X, c(res$labels, 1:n_clusters))
-      aligned_curves[, l, ] <- Xi[1:N, ]
-      centers[, l, ] <- Xi[(N + 1):nrow(Xi), ]
-    }
-  }
-
-  warpings <- matrix(nrow = N, ncol = M)
-  if (warping_class == "none") {
-    for (n in 1:N)
-      warpings[n, ] <- res$x[n, ]
-  } else {
-    for (n in 1:N) {
-      if (warping_class == "shift")
-        warpings[n, ] <- clean_output$grids[n, ] + res$parameters[n, 1]
-      else if (warping_class == "dilation")
-        warpings[n, ] <- clean_output$grids[n, ] * res$parameters[n, 1]
-      else
-        warpings[n, ] <- clean_output$grids[n, ] * res$parameters[n, 1] +
-          res$parameters[n, 2]
-    }
-  }
-
   silhouettes <- NULL
   if (n_clusters > 1 && add_silhouettes) {
     D <- fdadist(
@@ -501,13 +423,11 @@ fdakmeans <- function(x, y = NULL,
   }
 
   out <- list(
-    original_curves = original_curves,
+    original_curves = res$y,
     original_grids = res$x,
-    aligned_curves = clean_output$curves,
-    aligned_grids = clean_output$grids,
-    center_curves = centers,
-    center_grids = common_grids,
-    warpings = warpings,
+    aligned_grids = res$x_final,
+    center_curves = res$y_centers_final,
+    center_grids = res$x_centers_final,
     n_clusters = res$n_clust_final,
     memberships = res$labels,
     distances_to_center = res$final_dissimilarity,

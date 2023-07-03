@@ -65,7 +65,7 @@ M$.
 
 The reason for such a choice of native format is computation efficiency.
 However, the [R landscape of functional data
-analysis](https://cran.r-project.org/web/views/FunctionalData.html) is very
+analysis](https://cran.r-project.org/view=FunctionalData) is very
 rich. This has led us to make
 [**fdacluster**](https://astamm.github.io/fdacluster/index.html) compatible with
 other standard ways of storing functional data in R. Specifically, we added

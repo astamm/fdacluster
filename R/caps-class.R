@@ -13,11 +13,9 @@
 #' observed on grids of size \eqn{M}.
 #' - `original_grids`: A numeric matrix of size \eqn{N \times M} storing the
 #' grids of size \eqn{M} on which original curves are evaluated;
-#' - `aligned_curves`: A numeric matrix of shape \eqn{N \times L \times M}
-#' storing a sample with the \eqn{N} \eqn{L}-dimensional aligned curves observed
-#' on grids of size \eqn{M}.
 #' - `aligned_grids`: A numeric matrix of size \eqn{N \times M} storing the
-#' grids of size \eqn{M} on which aligned curves are evaluated;
+#' grids of size \eqn{M} on which original curves must be evaluated to be
+#' aligned;
 #' - `center_curves`: A numeric matrix of shape \eqn{K \times L \times M}
 #' storing the \eqn{K} centers which are \eqn{L}-dimensional curves observed on
 #' a grid of size \eqn{M};
@@ -64,15 +62,16 @@ as_caps <- function(x) {
   if (!inherits(x, "list"))
     cli::cli_abort("The input argument {.arg x} should be a list.")
 
-  if (length(x) != 16)
-    cli::cli_abort("The input argument {.arg x} should be a list of length 15.")
-
-  expected_names <- c("original_curves", "original_grids", "aligned_curves",
-                      "aligned_grids", "center_curves", "center_grids",
-                      "warpings", "n_clusters", "memberships",
-                      "distances_to_center", "silhouettes",
+  expected_names <- c("original_curves", "original_grids", "aligned_grids",
+                      "center_curves", "center_grids", "n_clusters",
+                      "memberships", "distances_to_center", "silhouettes",
                       "amplitude_variation", "total_variation", "n_iterations",
                       "call_name", "call_args")
+
+  n <- length(expected_names)
+  if (length(x) != n)
+    cli::cli_abort("The input argument {.arg x} should be a list of length {n}.")
+
   if (any(names(x) != expected_names))
     cli::cli_abort("The input argument {.arg x} should be a list with components {expected_names}.")
 

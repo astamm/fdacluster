@@ -33,11 +33,9 @@ storing a sample with the \eqn{N} \eqn{L}-dimensional original curves
 observed on grids of size \eqn{M}.
 \item \code{original_grids}: A numeric matrix of size \eqn{N \times M} storing the
 grids of size \eqn{M} on which original curves are evaluated;
-\item \code{aligned_curves}: A numeric matrix of shape \eqn{N \times L \times M}
-storing a sample with the \eqn{N} \eqn{L}-dimensional aligned curves observed
-on grids of size \eqn{M}.
 \item \code{aligned_grids}: A numeric matrix of size \eqn{N \times M} storing the
-grids of size \eqn{M} on which aligned curves are evaluated;
+grids of size \eqn{M} on which original curves must be evaluated to be
+aligned;
 \item \code{center_curves}: A numeric matrix of shape \eqn{K \times L \times M}
 storing the \eqn{K} centers which are \eqn{L}-dimensional curves observed on
 a grid of size \eqn{M};

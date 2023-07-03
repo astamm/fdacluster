@@ -10,24 +10,21 @@ test_that("`fdadbscan()` works", {
     use_verbose = FALSE
   )
   expect_true(is_caps(out))
-  expect_equal(length(out), 16)
-  expected_names <- c("original_curves", "original_grids", "aligned_curves",
-                      "aligned_grids", "center_curves", "center_grids",
-                      "warpings", "n_clusters", "memberships",
-                      "distances_to_center", "silhouettes",
+  expect_equal(length(out), 14)
+  expected_names <- c("original_curves", "original_grids", "aligned_grids",
+                      "center_curves", "center_grids", "n_clusters",
+                      "memberships", "distances_to_center", "silhouettes",
                       "amplitude_variation", "total_variation", "n_iterations",
                       "call_name", "call_args")
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
-  expect_equal(dim(out$aligned_curves), dims)
   expect_equal(dim(out$aligned_grids), c(N, P))
   expect_equal(dim(out$center_curves), c(K, L, P))
   expect_equal(dim(out$center_grids), c(K, P))
   expect_equal(out$n_clusters, K)
   expect_equal(length(out$memberships), N)
   expect_equal(length(out$distances_to_center), N)
-  expect_equal(dim(out$warpings), c(N, P))
   expect_equal(out$n_iterations, 0)
   expect_equal(out$call_name, "fdadbscan")
   expect_true(inherits(out$call_args, "list"))

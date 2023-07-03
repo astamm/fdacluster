@@ -92,7 +92,7 @@ plot_data_amplitude <- function(x) {
   dplyr::bind_rows(
     format_viz(x$original_grids, x$original_curves, x$memberships) |>
       dplyr::mutate(curve_type = "Original Curves"),
-    format_viz(x$aligned_grids, x$aligned_curves, x$memberships) |>
+    format_viz(x$aligned_grids, x$original_curves, x$memberships) |>
       dplyr::mutate(curve_type = "Aligned Curves")
   ) |>
     dplyr::mutate(curve_type = factor(
@@ -102,18 +102,13 @@ plot_data_amplitude <- function(x) {
 }
 
 plot_data_phase <- function(x) {
-  x$warpings |>
-    `colnames<-`(paste0("P", 1:ncol(x$warpings))) |>
-    tibble::as_tibble() |>
-    dplyr::mutate(
-      curve_id = as.factor(1:dplyr::n()),
-      membership = as.factor(x$memberships)
-    ) |>
-    tidyr::pivot_longer(cols = -c("curve_id", "membership")) |>
-    tidyr::nest(data = -c("curve_id", "membership")) |>
-    dplyr::mutate(grid = purrr::map(.data$curve_id, \(id) x$aligned_grids[id, ])) |>
-    tidyr::unnest(cols = c("data", "grid")) |>
-    dplyr::select(-"name")
+  tibble::tibble(
+    grid = purrr::array_tree(x$original_grids, margin = 1),
+    value = purrr::array_tree(x$aligned_grids, margin = 1),
+    curve_id = as.factor(1:nrow(x$original_grids)),
+    membership = as.factor(x$memberships)
+  ) |>
+    tidyr::unnest(cols = c("grid", "value"))
 }
 
 format_viz <- function(grids, curves, memberships) {

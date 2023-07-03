@@ -138,21 +138,17 @@ fdahclust <- function(x, y = NULL,
 
   original_curves <- array(dim = c(N, L, M))
   original_grids <- matrix(nrow = N, ncol = M)
-  aligned_curves <- array(dim = c(N, L, M))
   aligned_grids <- matrix(nrow = N, ncol = M)
   center_curves <- array(dim = c(n_clusters, L, M))
   center_grids <- matrix(nrow = n_clusters, ncol = M)
-  warpings <- matrix(nrow = N, ncol = M)
   dtc <- numeric(N)
   for (k in 1:n_clusters) {
     cluster_ids <- which(labels == k)
     original_curves[cluster_ids, , ] <- kmresults[[k]]$original_curves
     original_grids[cluster_ids, ] <- kmresults[[k]]$original_grids
-    aligned_curves[cluster_ids, , ] <- kmresults[[k]]$aligned_curves
     aligned_grids[cluster_ids, ] <- kmresults[[k]]$aligned_grids
     center_curves[k, , ] <- kmresults[[k]]$center_curves
     center_grids[k, ] <- kmresults[[k]]$center_grids[1, ]
-    warpings[cluster_ids, ] <- kmresults[[k]]$warpings
     dtc[cluster_ids] <- kmresults[[k]]$distances_to_center
   }
 
@@ -160,7 +156,7 @@ fdahclust <- function(x, y = NULL,
   if (n_clusters > 1) {
     D <- fdadist(
       x = aligned_grids,
-      y = aligned_curves,
+      y = original_curves,
       warping_class = "none",
       metric = metric
     )
@@ -170,11 +166,9 @@ fdahclust <- function(x, y = NULL,
   out <- list(
     original_curves = original_curves,
     original_grids = original_grids,
-    aligned_curves = aligned_curves,
     aligned_grids = aligned_grids,
     center_curves = center_curves,
     center_grids = center_grids,
-    warpings = warpings,
     n_clusters = n_clusters,
     memberships = labels,
     distances_to_center = dtc,
