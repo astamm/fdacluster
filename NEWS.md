@@ -1,3 +1,5 @@
+# fdacluster (development version)
+
 # fdacluster 0.3.0
 
 * Added median centroid type;
