@@ -1,10 +1,5 @@
 ---
-title: "Hierarchical agglomerative clustering"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Hierarchical agglomerative clustering}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+title: "Hierarchical clustering"
 ---
 
 ```{r, include = FALSE}

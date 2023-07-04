@@ -1,10 +1,5 @@
 ---
 title: "Supported input formats"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{Input formats}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
 bibliography: references.bib
 ---
 

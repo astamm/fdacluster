@@ -1,3 +1,9 @@
+## Resubmission
+
+This is a resubmission in which I:
+
+* Moved two vignettes in articles (only available on website) to reduce package size to meet CRAN requirements.
+
 ## Test environments
 * local macOS R installation, R 4.3.1
 * continuous integration via GH actions:
