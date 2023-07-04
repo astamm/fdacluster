@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-load("../R/sysdata.rda")
+load("../../R/sysdata.rda")
 ```
 
 ```{r setup}
