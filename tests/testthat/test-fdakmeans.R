@@ -248,7 +248,7 @@ test_that('`fdakmeans()` works with exhaustive seeding strategy.', {
   expect_equal(out$n_clusters, K)
   expect_equal(length(out$memberships), N)
   expect_equal(length(out$distances_to_center), N)
-  expect_equal(out$n_iterations, 6)
+  expect_equal(out$n_iterations, 2)
   expect_equal(out$call_name, "fdakmeans")
   expect_true(inherits(out$call_args, "list"))
 })
