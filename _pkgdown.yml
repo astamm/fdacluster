@@ -37,3 +37,6 @@ news:
     href: https://astamm.github.io/posts/2023-05-19-fdacluster-021/
   - text: "fdacluster 0.1.1"
     href: https://astamm.github.io/posts/2022-05-10-fdacluster-011/
+  talks:
+  - text: "Rencontres R 2023"
+    href: https://astamm.github.io/talks/2023-06-22-fdacluster-021/
