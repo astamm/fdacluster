@@ -27,6 +27,10 @@ double PearsonDissimilarityFunction::GetDistance(const arma::rowvec& grid1,
       squaredNorm2Value += arma::dot(workVector, workVector);
     }
 
+    double epsValue = std::sqrt(std::numeric_limits<double>::epsilon());
+    if (squaredNorm1Value < epsValue && squaredNorm2Value < epsValue)
+      return 0.0;
+
     squaredNorm1Value /= ((double)nPts - 1.0);
     squaredNorm2Value /= ((double)nPts - 1.0);
 

@@ -32,5 +32,9 @@ double L2DissimilarityFunction::GetDistance(const arma::rowvec& grid1,
       squaredNorm2Value += arma::dot(workVector, workVector);
     }
 
+    double epsValue = std::sqrt(std::numeric_limits<double>::epsilon());
+    if (squaredNorm1Value < epsValue && squaredNorm2Value < epsValue)
+      return 0.0;
+
     return std::sqrt(squaredDistanceValue) / (std::sqrt(squaredNorm1Value) + std::sqrt(squaredNorm2Value));
 }
