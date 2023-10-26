@@ -343,6 +343,19 @@ fdakmeans <- function(x, y = NULL,
       warpings[cluster_members[[k]], ] <- t(apply(t(res$gam[[k]]), 1, fdasrvf::invertGamma)) * diff(range(common_grid)) + min(common_grid)
     }
 
+    if (cluster_on_phase)
+    {
+      res$distances_to_center <- sqrt(purrr::map_dbl(1:N, \(n) {
+        trapz(
+          x = common_grid,
+          y = (warpings[n, ] - common_grid)^2
+        )
+      }))
+    }
+
+    # AST: warning -- if cluster on phase in ON, below does not make sense, also
+    # clustering is still performed on amplitude for SRSF, only distances to
+    # centers are transformed in the output
     q0 <- res$q0
     if (length(dim(q0)) == 2L) # This should be done in fdasrvf package
       dim(q0) <- c(1, dim(q0))
