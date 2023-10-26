@@ -322,6 +322,7 @@ fdakmeans <- function(x, y = NULL,
       }
     }
 
+    # AST: nonempty should be 1 but badly handled in fdasrvf
     res <- fdasrvf::kmeans_align(
       f = yperm,
       time = common_grid,
@@ -329,7 +330,8 @@ fdakmeans <- function(x, y = NULL,
       seeds = seeds + 1,
       centroid_type = centroid_type,
       max_iter = maximum_number_of_iterations,
-      use_verbose = use_verbose
+      use_verbose = use_verbose,
+      nonempty = 2L
     )
 
     original_curves <- aperm(array(res$f0, dim = c(L, M, N)), c(3, 1, 2))
