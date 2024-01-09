@@ -28,8 +28,8 @@
 <link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
 <link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Joint Clustering and Alignment of Functional Data">
 <meta property="og:description" content='Implementations of the k-means, hierarchical agglomerative and 
@@ -153,50 +153,9 @@
 <span>  n_clusters <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span>
-<span>  metric <span class="op">=</span> <span class="st">"pearson"</span>, </span>
+<span>  metric <span class="op">=</span> <span class="st">"normalized_l2"</span>, </span>
 <span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Information about the data set:</span></span>
-<span><span class="co">#&gt;  - Number of observations: 30</span></span>
-<span><span class="co">#&gt;  - Number of dimensions: 1</span></span>
-<span><span class="co">#&gt;  - Number of points: 200</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about cluster initialization:</span></span>
-<span><span class="co">#&gt;  - Number of clusters: 2</span></span>
-<span><span class="co">#&gt;  - Initial seeds for cluster centers:          1        21</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about the methods used within the algorithm:</span></span>
-<span><span class="co">#&gt;  - Warping method: affine</span></span>
-<span><span class="co">#&gt;  - Center method: mean</span></span>
-<span><span class="co">#&gt;  - Dissimilarity method: pearson</span></span>
-<span><span class="co">#&gt;  - Optimization method: bobyqa</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about warping parameter bounds:</span></span>
-<span><span class="co">#&gt;  - Warping options:    0.1500   0.1500</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about convergence criteria:</span></span>
-<span><span class="co">#&gt;  - Maximum number of iterations: 100</span></span>
-<span><span class="co">#&gt;  - Distance relative tolerance: 0.001</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about parallelization setup:</span></span>
-<span><span class="co">#&gt;  - Number of threads: 1</span></span>
-<span><span class="co">#&gt;  - Parallel method: 0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Other information:</span></span>
-<span><span class="co">#&gt;  - Use fence to robustify: 0</span></span>
-<span><span class="co">#&gt;  - Check total dissimilarity: 1</span></span>
-<span><span class="co">#&gt;  - Compute overall center: 0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Running k-centroid algorithm:</span></span>
-<span><span class="co">#&gt;  - Iteration #1</span></span>
-<span><span class="co">#&gt;    * Size of cluster #0: 20</span></span>
-<span><span class="co">#&gt;    * Size of cluster #1: 10</span></span>
-<span><span class="co">#&gt;  - Iteration #2</span></span>
-<span><span class="co">#&gt;    * Size of cluster #0: 20</span></span>
-<span><span class="co">#&gt;    * Size of cluster #1: 10</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Active stopping criteria:</span></span>
-<span><span class="co">#&gt;  - Memberships did not change.</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <p>All of <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdakmeans()</code></a>, <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html" class="external-link"><code>fdahclust()</code></a> and <a href="https://astamm.github.io/fdacluster/reference/fdadbscan.html" class="external-link"><code>fdadbscan()</code></a> functions returns an object of class <a href="https://astamm.github.io/fdacluster/reference/caps.html" class="external-link"><code>caps</code></a> (for <strong>C</strong>lustering with <strong>A</strong>mplitude and <strong>P</strong>hase <strong>S</strong>eparation) for which <code>S3</code> specialized methods of <a href="https://astamm.github.io/fdacluster/reference/autoplot.caps.html" class="external-link"><code>ggplot2::autoplot()</code></a> and <a href="https://astamm.github.io/fdacluster/reference/plot.caps.html" class="external-link"><code>graphics::plot()</code></a> have been implemented. Therefore, we can visualize the results simply with:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out1</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span></code></pre></div>
@@ -218,52 +177,9 @@
 <span>  n_clusters <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="st">"affine"</span>,</span>
-<span>  metric <span class="op">=</span> <span class="st">"pearson"</span>, </span>
+<span>  metric <span class="op">=</span> <span class="st">"normalized_l2"</span>, </span>
 <span>  cluster_on_phase <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Information about the data set:</span></span>
-<span><span class="co">#&gt;  - Number of observations: 30</span></span>
-<span><span class="co">#&gt;  - Number of dimensions: 1</span></span>
-<span><span class="co">#&gt;  - Number of points: 200</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about cluster initialization:</span></span>
-<span><span class="co">#&gt;  - Number of clusters: 3</span></span>
-<span><span class="co">#&gt;  - Initial seeds for cluster centers:          1        11        21</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about the methods used within the algorithm:</span></span>
-<span><span class="co">#&gt;  - Warping method: affine</span></span>
-<span><span class="co">#&gt;  - Center method: mean</span></span>
-<span><span class="co">#&gt;  - Dissimilarity method: pearson</span></span>
-<span><span class="co">#&gt;  - Optimization method: bobyqa</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about warping parameter bounds:</span></span>
-<span><span class="co">#&gt;  - Warping options:    0.1500   0.1500</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about convergence criteria:</span></span>
-<span><span class="co">#&gt;  - Maximum number of iterations: 100</span></span>
-<span><span class="co">#&gt;  - Distance relative tolerance: 0.001</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Information about parallelization setup:</span></span>
-<span><span class="co">#&gt;  - Number of threads: 1</span></span>
-<span><span class="co">#&gt;  - Parallel method: 0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Other information:</span></span>
-<span><span class="co">#&gt;  - Use fence to robustify: 0</span></span>
-<span><span class="co">#&gt;  - Check total dissimilarity: 1</span></span>
-<span><span class="co">#&gt;  - Compute overall center: 0</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Running k-centroid algorithm:</span></span>
-<span><span class="co">#&gt;  - Iteration #1</span></span>
-<span><span class="co">#&gt;    * Size of cluster #0: 10</span></span>
-<span><span class="co">#&gt;    * Size of cluster #1: 10</span></span>
-<span><span class="co">#&gt;    * Size of cluster #2: 10</span></span>
-<span><span class="co">#&gt;  - Iteration #2</span></span>
-<span><span class="co">#&gt;    * Size of cluster #0: 10</span></span>
-<span><span class="co">#&gt;    * Size of cluster #1: 10</span></span>
-<span><span class="co">#&gt;    * Size of cluster #2: 10</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Active stopping criteria:</span></span>
-<span><span class="co">#&gt;  - Memberships did not change.</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <p>We can inspect the result:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">out2</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span></code></pre></div>
@@ -310,7 +226,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/astamm/fdacluster/actions" class="external-link"><img src="https://github.com/astamm/fdacluster/workflows/R-CMD-check/badge.svg" alt="check-standard"></a></li>
+<li><a href="https://github.com/astamm/fdacluster/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/astamm/fdacluster/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://github.com/astamm/fdacluster/actions" class="external-link"><img src="https://github.com/astamm/fdacluster/workflows/test-coverage/badge.svg" alt="test-coverage"></a></li>
 <li><a href="https://app.codecov.io/gh/astamm/fdacluster" class="external-link"><img src="https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg" alt="codecov"></a></li>
 <li><a href="https://github.com/astamm/fdacluster/actions" class="external-link"><img src="https://github.com/astamm/fdacluster/workflows/pkgdown/badge.svg" alt="pkgdown"></a></li>
