@@ -5,7 +5,7 @@
 
 <!-- badges: start -->
 
-[![check-standard](https://github.com/astamm/fdacluster/workflows/R-CMD-check/badge.svg)](https://github.com/astamm/fdacluster/actions)
+[![R-CMD-check](https://github.com/astamm/fdacluster/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/astamm/fdacluster/actions/workflows/R-CMD-check.yaml)
 [![test-coverage](https://github.com/astamm/fdacluster/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdacluster/actions)
 [![codecov](https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg)](https://app.codecov.io/gh/astamm/fdacluster)
 [![pkgdown](https://github.com/astamm/fdacluster/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdacluster/actions)
@@ -74,50 +74,9 @@ out1 <- fdakmeans(
   n_clusters = 2,
   centroid_type = "mean",
   warping_class = "affine",
-  metric = "pearson", 
+  metric = "normalized_l2", 
   cluster_on_phase = FALSE
 )
-#> Information about the data set:
-#>  - Number of observations: 30
-#>  - Number of dimensions: 1
-#>  - Number of points: 200
-#> 
-#> Information about cluster initialization:
-#>  - Number of clusters: 2
-#>  - Initial seeds for cluster centers:          1        21
-#> 
-#> Information about the methods used within the algorithm:
-#>  - Warping method: affine
-#>  - Center method: mean
-#>  - Dissimilarity method: pearson
-#>  - Optimization method: bobyqa
-#> 
-#> Information about warping parameter bounds:
-#>  - Warping options:    0.1500   0.1500
-#> 
-#> Information about convergence criteria:
-#>  - Maximum number of iterations: 100
-#>  - Distance relative tolerance: 0.001
-#> 
-#> Information about parallelization setup:
-#>  - Number of threads: 1
-#>  - Parallel method: 0
-#> 
-#> Other information:
-#>  - Use fence to robustify: 0
-#>  - Check total dissimilarity: 1
-#>  - Compute overall center: 0
-#> 
-#> Running k-centroid algorithm:
-#>  - Iteration #1
-#>    * Size of cluster #0: 20
-#>    * Size of cluster #1: 10
-#>  - Iteration #2
-#>    * Size of cluster #0: 20
-#>    * Size of cluster #1: 10
-#> 
-#> Active stopping criteria:
-#>  - Memberships did not change.
 ```
 
 All of
@@ -160,52 +119,9 @@ out2 <- fdakmeans(
   n_clusters = 3,
   centroid_type = "mean",
   warping_class = "affine",
-  metric = "pearson", 
+  metric = "normalized_l2", 
   cluster_on_phase = TRUE
 )
-#> Information about the data set:
-#>  - Number of observations: 30
-#>  - Number of dimensions: 1
-#>  - Number of points: 200
-#> 
-#> Information about cluster initialization:
-#>  - Number of clusters: 3
-#>  - Initial seeds for cluster centers:          1        11        21
-#> 
-#> Information about the methods used within the algorithm:
-#>  - Warping method: affine
-#>  - Center method: mean
-#>  - Dissimilarity method: pearson
-#>  - Optimization method: bobyqa
-#> 
-#> Information about warping parameter bounds:
-#>  - Warping options:    0.1500   0.1500
-#> 
-#> Information about convergence criteria:
-#>  - Maximum number of iterations: 100
-#>  - Distance relative tolerance: 0.001
-#> 
-#> Information about parallelization setup:
-#>  - Number of threads: 1
-#>  - Parallel method: 0
-#> 
-#> Other information:
-#>  - Use fence to robustify: 0
-#>  - Check total dissimilarity: 1
-#>  - Compute overall center: 0
-#> 
-#> Running k-centroid algorithm:
-#>  - Iteration #1
-#>    * Size of cluster #0: 10
-#>    * Size of cluster #1: 10
-#>    * Size of cluster #2: 10
-#>  - Iteration #2
-#>    * Size of cluster #0: 10
-#>    * Size of cluster #1: 10
-#>    * Size of cluster #2: 10
-#> 
-#> Active stopping criteria:
-#>  - Memberships did not change.
 ```
 
 We can inspect the result:
