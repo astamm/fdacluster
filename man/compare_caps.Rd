@@ -35,9 +35,13 @@ functional data set to be able to evaluate it on user-defined grids.}
 to create. Defaults to \code{1:5}.}
 
 \item{metric}{A string specifying the metric used to compare curves. Choices
-are \code{"l2"} or \code{"pearson"}. Defaults to \code{"l2"}. Used only when
-\code{warping_class != "srsf"}. For the boundary-preserving warping class, the
-L2 distance between the SRSFs of the original curves is used.}
+are \code{"l2"}, \code{"normalized_l2"} or \code{"pearson"}. If \code{transformation == "srsf"}, the metric \strong{must be} \code{"l2"} because the SRSF transform maps
+absolutely continuous functions to square-integrable functions. If
+\code{transformation == "identity"} and \code{warping_class} is either \code{dilation} or
+\code{affine}, the metric cab be either \code{"normalized_l2"} or \code{"pearson"}. The L2
+distance is indeed \strong{not} dilation-invariant or affine-invariant. The
+metric can also be \code{"l2"} if \code{warping_class == "shift"}. Defaults to
+\code{"l2"}.}
 
 \item{clustering_method}{A character vector specifying one or more clustering
 methods to be fit. Choices are \code{"kmeans"}, \code{"hclust-complete"},

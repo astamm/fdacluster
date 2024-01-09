@@ -7,6 +7,8 @@ test_that("`fdadbscan()` works", {
   out <- fdadbscan(
     x = simulated30_sub$x,
     y = simulated30_sub$y,
+    warping_class = "affine",
+    metric = "normalized_l2",
     use_verbose = FALSE
   )
   expect_true(is_caps(out))

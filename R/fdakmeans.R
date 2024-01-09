@@ -35,9 +35,18 @@
 #'   initial centroids or `"hclust"` which first performs hierarchical
 #'   clustering using Ward's linkage criterion to identify initial centroids.
 #'   Defaults to `"kmeans++"`, which is the fastest strategy.
-#' @param warping_class A string specifying the warping class Choices are
-#'   `"affine"`, `"dilation"`, `"none"`, `"shift"` or `"srsf"`. Defaults to
-#'   `"affine"`. The SRSF class is the only class which is boundary-preserving.
+#' @param is_domain_interval A boolean specifying whether the sample of curves
+#'   is defined on a fixed interval. Defaults to `FALSE`.
+#' @param transformation A string specifying the transformation to apply to the
+#'   original sample of curves. Choices are no transformation (`transformation =
+#'   "identity"`) or square-root slope function `transformation = "srsf"`.
+#'   Defaults to `"identity"`.
+#' @param warping_class A string specifying the class of warping functions.
+#'   Choices are no warping (`warping_class = "none"`), shift `y = x + b`
+#'   (`warping_class = "shift"`), dilation `y = ax` (`warping_class =
+#'   "dilation"`), affine `y = ax + b` (`warping_class = "affine"`) or
+#'   boundary-preserving diffeomorphism (`warping_class = "bpd"`). Defaults to
+#'   `"none"`.
 #' @param centroid_type A string specifying the type of centroid to compute.
 #'   Choices are `"mean"`, `"median"` `"medoid"`, `"lowess"` or `"poly"`.
 #'   Defaults to `"mean"`. If LOWESS appproximation is chosen, the user can
@@ -49,14 +58,19 @@
 #'   number will be used as the degree of the polynomial model. The default
 #'   value is `4L`.
 #' @param metric A string specifying the metric used to compare curves. Choices
-#'   are `"l2"` or `"pearson"`. Defaults to `"l2"`. Used only when
-#'   `warping_class != "srsf"`. For the boundary-preserving warping class, the
-#'   L2 distance between the SRSFs of the original curves is used.
+#'   are `"l2"`, `"normalized_l2"` or `"pearson"`. If `transformation ==
+#'   "srsf"`, the metric **must be** `"l2"` because the SRSF transform maps
+#'   absolutely continuous functions to square-integrable functions. If
+#'   `transformation == "identity"` and `warping_class` is either `dilation` or
+#'   `affine`, the metric cab be either `"normalized_l2"` or `"pearson"`. The L2
+#'   distance is indeed **not** dilation-invariant or affine-invariant. The
+#'   metric can also be `"l2"` if `warping_class == "shift"`. Defaults to
+#'   `"l2"`.
 #' @param cluster_on_phase A boolean specifying whether clustering should be
 #'   based on phase variation or amplitude variation. Defaults to `FALSE` which
 #'   implies amplitude variation.
 #' @param use_verbose A boolean specifying whether the algorithm should output
-#'   details of the steps to the console. Defaults to `TRUE`.
+#'   details of the steps to the console. Defaults to `FALSE`.
 #' @param warping_options A numeric vector supplied as a helper to the chosen
 #'   `warping_class` to decide on warping parameter bounds. This is used only
 #'   when `warping_class != "srsf"`.
@@ -106,7 +120,8 @@
 #'   x = x,
 #'   y = y,
 #'   n_clusters = 2,
-#'   warping_class = "affine"
+#'   warping_class = "affine",
+#'   metric = "normalized_l2"
 #' )
 #'
 #' #----------------------------------
@@ -117,29 +132,48 @@
 #' plot(out, type = "amplitude")
 #' # Or the estimated warping functions with:
 #' plot(out, type = "phase")
-fdakmeans <- function(x, y = NULL,
-                      n_clusters = 1L,
-                      seeds = NULL,
-                      seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
-                      warping_class = c("affine", "dilation", "none", "shift", "srsf"),
-                      centroid_type = "mean",
-                      metric = c("l2", "pearson"),
-                      cluster_on_phase = FALSE,
-                      use_verbose = TRUE,
-                      warping_options = c(0.15, 0.15),
-                      maximum_number_of_iterations = 100L,
-                      number_of_threads = 1L,
-                      parallel_method = 0L,
-                      distance_relative_tolerance = 0.001,
-                      use_fence = FALSE,
-                      check_total_dissimilarity = TRUE,
-                      compute_overall_center = FALSE,
-                      add_silhouettes = TRUE) {
+fdakmeans <- function(
+    x, y = NULL,
+    n_clusters = 1L,
+    seeds = NULL,
+    seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
+    is_domain_interval = FALSE,
+    transformation = c("identity", "srsf"),
+    warping_class = c("none", "shift", "dilation", "affine", "bpd"),
+    centroid_type = "mean",
+    metric = c("l2", "normalized_l2", "pearson"),
+    cluster_on_phase = FALSE, # TODO: implement arg to say if distance is based on original data, amplitude or phase
+    use_verbose = FALSE,
+    warping_options = c(0.15, 0.15),
+    maximum_number_of_iterations = 100L,
+    number_of_threads = 1L,
+    parallel_method = 0L,
+    distance_relative_tolerance = 0.001,
+    use_fence = FALSE,
+    check_total_dissimilarity = TRUE,
+    compute_overall_center = FALSE,
+    add_silhouettes = TRUE) {
   call <- rlang::call_match(defaults = TRUE)
   callname <- rlang::call_name(call)
   callargs <- rlang::call_args(call)
 
-  l <- format_inputs(x, y)
+  transformation <- rlang::arg_match(transformation)
+  callargs$transformation <- transformation
+
+  warping_class <- rlang::arg_match(warping_class)
+  callargs$warping_class <- warping_class
+
+  metric <- rlang::arg_match(metric)
+  callargs$metric <- metric
+
+  l <- format_inputs(x, y, is_domain_interval)
+  check_option_compatibility(
+    is_domain_interval = is_domain_interval,
+    transformation = transformation,
+    warping_class = warping_class,
+    metric = metric
+  )
+
   x <- l$x
   y <- l$y
   dims <- dim(y)
@@ -148,8 +182,7 @@ fdakmeans <- function(x, y = NULL,
   M <- dims[3]
 
   seeding_strategy <- rlang::arg_match(seeding_strategy)
-  warping_class <- rlang::arg_match(warping_class)
-  metric <- rlang::arg_match(metric)
+  callargs$seeding_strategy <- seeding_strategy
 
   centroid_type_args <- check_centroid_type(centroid_type)
   centroid_name <- centroid_type_args$name
@@ -157,6 +190,9 @@ fdakmeans <- function(x, y = NULL,
 
   if (centroid_name != "medoid" && parallel_method == 1L)
     cli::cli_abort("Parallelization on the distance calculation loop is only available for computing medoids.")
+
+  callargs$centroid_type <- centroid_name
+  callargs$centroid_extra <- centroid_extra
 
   if (warping_class == "none" && cluster_on_phase)
     cli::cli_abort("It makes no sense to cluster based on phase variability if no alignment is performed.")
@@ -290,37 +326,14 @@ fdakmeans <- function(x, y = NULL,
   }
 
   callargs$seeds <- seeds
-  callargs$seeding_strategy <- seeding_strategy
-  callargs$warping_class <- warping_class
-  callargs$metric <- metric
-
   seeds <- seeds - 1
 
-  if (warping_class == "srsf") {
-    # Compute common grid
-    common_grid <- x[1, ]
-    multiple_grids <- FALSE
-    if (N > 1) {
-      multiple_grids <- any(apply(x, 2, stats::sd) != 0)
-      if (multiple_grids) {
-        grid_min <- max(x[, 1])
-        grid_max <- min(x[, M])
-        common_grid <- seq(grid_min, grid_max, length.out = M)
-      }
-    }
+  if (transformation == "srsf" && warping_class %in% c("none", "bpd")) {
+    if (!(centroid_name %in% c("mean", "medoid")))
+      cli::cli_abort("Only mean and medoid centroids are available for SRSFs using the {.fn fdasrvf::kmeans_align} function.")
 
     yperm <- aperm(y, c(2, 3, 1))
-
-    if (multiple_grids) {
-      for (l in 1:L) {
-        for (n in 1:N)
-          yperm[l, , n] <- stats::approx(
-            x = x[n, ],
-            y = yperm[l, , n],
-            xout = common_grid
-          )$y
-      }
-    }
+    common_grid <- x[1, ]
 
     # AST: nonempty should be 1 but badly handled in fdasrvf
     res <- fdasrvf::kmeans_align(
@@ -331,7 +344,8 @@ fdakmeans <- function(x, y = NULL,
       centroid_type = centroid_type,
       max_iter = maximum_number_of_iterations,
       use_verbose = use_verbose,
-      nonempty = 2L
+      nonempty = 2L,
+      alignment = (warping_class == "bpd")
     )
 
     original_curves <- aperm(array(res$f0, dim = c(L, M, N)), c(3, 1, 2))
@@ -376,8 +390,11 @@ fdakmeans <- function(x, y = NULL,
       D <- fdadist(
         x = common_grid,
         y = aligned_curves,
+        is_domain_interval = is_domain_interval,
+        transformation = transformation,
         warping_class = "none",
-        metric = metric
+        metric = metric,
+        cluster_on_phase = FALSE
       )
       silhouettes <- cluster::silhouette(res$labels, D)[, "sil_width"]
     }
@@ -402,37 +419,49 @@ fdakmeans <- function(x, y = NULL,
     return(as_caps(out))
   }
 
-  withr::with_package("fdacluster", {
-    res <- kmap(
-      x = x,
-      y = y,
-      seeds = seeds,
-      warping_options = warping_options,
-      n_clust = n_clusters,
-      maximum_number_of_iterations = maximum_number_of_iterations,
-      number_of_threads = number_of_threads,
-      parallel_method = parallel_method,
-      distance_relative_tolerance = distance_relative_tolerance,
-      center_args = centroid_extra,
-      cluster_on_phase = cluster_on_phase,
-      use_fence = use_fence,
-      check_total_dissimilarity = check_total_dissimilarity,
-      use_verbose = use_verbose,
-      compute_overall_center = compute_overall_center,
-      warping_method = warping_class,
-      center_method = centroid_name,
-      dissimilarity_method = metric,
-      optimizer_method = "bobyqa"
-    )
-  })
+  # Handle transformation
+  if (transformation == "srsf") {
+    for (i in 1:N) {
+      y[i, ,] <- fdasrvf::f_to_srvf(
+        f = y[i, , ],
+        time = x[i, ],
+        multidimensional = TRUE
+      )
+    }
+  }
+
+  res <- kmap(
+    x = x,
+    y = y,
+    n_clust = n_clusters,
+    seeds = seeds,
+    cluster_on_phase = cluster_on_phase,
+    warping_options = warping_options,
+    maximum_number_of_iterations = maximum_number_of_iterations,
+    number_of_threads = number_of_threads,
+    parallel_method = parallel_method,
+    distance_relative_tolerance = distance_relative_tolerance,
+    center_args = centroid_extra,
+    use_fence = use_fence,
+    check_total_dissimilarity = check_total_dissimilarity,
+    use_verbose = use_verbose,
+    compute_overall_center = compute_overall_center,
+    warping_method = warping_class,
+    center_method = centroid_name,
+    dissimilarity_method = metric,
+    optimizer_method = "bobyqa"
+  )
 
   silhouettes <- NULL
   if (n_clusters > 1 && add_silhouettes) {
     D <- fdadist(
       x = res$x_final,
       y = res$y,
+      is_domain_interval = is_domain_interval,
+      transformation = transformation,
       warping_class = "none",
-      metric = metric
+      metric = metric,
+      cluster_on_phase = FALSE
     )
     silhouettes <- cluster::silhouette(res$labels, D)[, "sil_width"]
   }

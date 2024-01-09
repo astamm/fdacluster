@@ -103,7 +103,7 @@ check_centroid_type <- function(x) {
   cli::cli_abort("The input argument {.arg centroid_type} should be one of {.code mean}, {.code medoid}, {.code lowessXX} or {.code polyXX}.")
 }
 
-format_inputs <- function(x, y = NULL) {
+format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
   # Here x is N x M and y is N x L x M when provided
   if (is.null(y) && rlang::is_installed("funData")) {
     if (inherits(x, "funData")) {
@@ -219,8 +219,41 @@ format_inputs <- function(x, y = NULL) {
   if (anyNA(y))
     cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
 
+  # Check if sample defined on a common interval
+  lower_bound <- min(x[, 1])
+  upper_bound <- max(x[, M])
+  are_domains_equal <- all(x[, 1] == lower_bound) && all(x[, M] == upper_bound)
+  if (is_domain_interval && !are_domains_equal)
+    cli::cli_abort("The functional data are not defined on a common interval but argument {.arg is_domain_interval} specifies that they are.")
+  if (is_domain_interval) {
+    cli::cli_alert_info("Resample the curves to make sure they are evaluated on the same grid.")
+    common_grid <- seq(lower_bound, upper_bound, length.out = M)
+    for (i in 1:N) {
+      for (l in 1:L) {
+        y[i, l, ] <- stats::approx(x[i, ], y[i, l, ], xout = common_grid)$y
+      }
+      x[i, ] <- common_grid
+    }
+  }
+
   # output x matrix NxM and y array NxLxM
   list(x = x, y = y)
+}
+
+check_option_compatibility <- function(is_domain_interval, transformation, warping_class, metric) {
+  if (is_domain_interval) {
+    if (transformation != "srsf")
+      cli::cli_abort("The functional domain is an interval. The only available transformation is the SRSF transformation.")
+    if (warping_class != "none" && warping_class != "bpd")
+      cli::cli_abort('The functional domain is an interval. The only available warping classes are {.code "none"} and {.code "bpd"}.')
+    if (warping_class == "bpd" && metric != "l2")
+      cli::cli_abort("The only metric invariant by boundary-preserving diffeomorphisms is the L2 metric.")
+  } else {
+    if (warping_class == "bpd")
+      cli::cli_abort("It does not make sense to use boundary-preserving diffeomorphisms for aligning curves defined on the real line.")
+    if ((warping_class == "dilation" || warping_class == "affine") && metric == "l2")
+      cli::cli_abort("The L2 metric is neither dilation-invariant nor affine-invariant.")
+  }
 }
 
 remove_missing_points <- function(grids, curves) {

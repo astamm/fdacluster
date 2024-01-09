@@ -32,7 +32,8 @@
 #'   x = x,
 #'   y = y,
 #'   n_clusters = 2,
-#'   warping_class = "affine"
+#'   warping_class = "affine",
+#'   metric = "normalized_l2"
 #' )
 #'
 #' #----------------------------------
@@ -45,12 +46,14 @@
 #' plot(out, type = "phase")
 fdahclust <- function(x, y = NULL,
                       n_clusters = 1L,
-                      warping_class = c("affine", "dilation", "none", "shift", "srsf"),
+                      is_domain_interval = FALSE,
+                      transformation = c("identity", "srsf"),
+                      warping_class = c("none", "shift", "dilation", "affine", "bpd"),
                       centroid_type = "mean",
-                      metric = c("l2", "pearson"),
-                      linkage_criterion = c("complete", "average", "single", "ward.D2"),
+                      metric = c("l2", "normalized_l2", "pearson"),
                       cluster_on_phase = FALSE,
-                      use_verbose = TRUE,
+                      linkage_criterion = c("complete", "average", "single", "ward.D2"),
+                      use_verbose = FALSE,
                       warping_options = c(0.15, 0.15),
                       maximum_number_of_iterations = 100L,
                       number_of_threads = 1L,
@@ -63,7 +66,23 @@ fdahclust <- function(x, y = NULL,
   callname <- rlang::call_name(call)
   callargs <- rlang::call_args(call)
 
-  l <- format_inputs(x, y)
+  transformation <- rlang::arg_match(transformation)
+  callargs$transformation <- transformation
+
+  warping_class <- rlang::arg_match(warping_class)
+  callargs$warping_class <- warping_class
+
+  metric <- rlang::arg_match(metric)
+  callargs$metric <- metric
+
+  l <- format_inputs(x, y, is_domain_interval)
+  check_option_compatibility(
+    is_domain_interval = is_domain_interval,
+    transformation = transformation,
+    warping_class = warping_class,
+    metric = metric
+  )
+
   x <- l$x
   y <- l$y
   dims <- dim(y)
@@ -71,20 +90,20 @@ fdahclust <- function(x, y = NULL,
   L <- dims[2]
   M <- dims[3]
 
-  warping_class <- rlang::arg_match(warping_class)
-  metric <- rlang::arg_match(metric)
-  linkage_criterion <- rlang::arg_match(linkage_criterion)
-
   centroid_type_args <- check_centroid_type(centroid_type)
   centroid_name <- centroid_type_args$name
+  centroid_extra <- centroid_type_args$extra
+
   if (centroid_name != "medoid" && parallel_method == 1L)
     cli::cli_abort("Parallelization on the distance calculation loop is only available for computing medoids.")
+
+  callargs$centroid_type <- centroid_name
+  callargs$centroid_extra <- centroid_extra
 
   if (warping_class == "none" && cluster_on_phase)
     cli::cli_abort("It makes no sense to cluster based on phase variability if no alignment is performed.")
 
-  callargs$warping_class <- warping_class
-  callargs$metric <- metric
+  linkage_criterion <- rlang::arg_match(linkage_criterion)
   callargs$linkage_criterion <- linkage_criterion
 
   if (use_verbose)
@@ -93,6 +112,8 @@ fdahclust <- function(x, y = NULL,
   D <- fdadist(
     x = x,
     y = y,
+    is_domain_interval = is_domain_interval,
+    transformation = transformation,
     warping_class = warping_class,
     metric = metric,
     cluster_on_phase = cluster_on_phase
@@ -115,16 +136,18 @@ fdahclust <- function(x, y = NULL,
       x = x[cluster_ids, , drop = FALSE],
       y = y[cluster_ids, , , drop = FALSE],
       n_clusters = 1,
-      warping_class = warping_class,
       seeds = medoid_idx,
-      maximum_number_of_iterations = maximum_number_of_iterations,
+      is_domain_interval = is_domain_interval,
+      transformation = transformation,
+      warping_class = warping_class,
       centroid_type = centroid_type,
       metric = metric,
+      cluster_on_phase = cluster_on_phase,
+      maximum_number_of_iterations = maximum_number_of_iterations,
       warping_options = warping_options,
       number_of_threads = number_of_threads,
       parallel_method = parallel_method,
       distance_relative_tolerance = distance_relative_tolerance,
-      cluster_on_phase = cluster_on_phase,
       use_fence = use_fence,
       check_total_dissimilarity = check_total_dissimilarity,
       use_verbose = FALSE,
@@ -157,8 +180,11 @@ fdahclust <- function(x, y = NULL,
     D <- fdadist(
       x = aligned_grids,
       y = original_curves,
+      is_domain_interval = is_domain_interval,
+      transformation = transformation,
       warping_class = "none",
-      metric = metric
+      metric = metric,
+      cluster_on_phase = FALSE
     )
     silhouettes <- cluster::silhouette(labels, D)[, "sil_width"]
   }

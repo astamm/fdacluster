@@ -409,7 +409,7 @@ test_that('`fdakmeans()` works with shift warping.', {
   expect_true(inherits(out$call_args, "list"))
 })
 
-test_that('`fdakmeans()` works with srsf warping.', {
+test_that('`fdakmeans()` works with boundary-preserving diffeomorphism warping.', {
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -421,9 +421,11 @@ test_that('`fdakmeans()` works with srsf warping.', {
     simulated30_sub$y,
     seeds = c(1, 21),
     n_clusters = K,
+    is_domain_interval = TRUE,
+    transformation = "srsf",
     centroid_type = "mean",
-    warping_class = "srsf",
-    metric = "pearson",
+    warping_class = "bpd",
+    metric = "l2",
     use_verbose = FALSE
   )
 
@@ -604,7 +606,7 @@ test_that('`fdakmeans()` works with poly centroid.', {
   expect_true(inherits(out$call_args, "list"))
 })
 
-test_that('`fdakmeans()` works with l2 metric.', {
+test_that('`fdakmeans()` works with normalized l2 metric.', {
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -618,7 +620,7 @@ test_that('`fdakmeans()` works with l2 metric.', {
     n_clusters = K,
     centroid_type = "mean",
     warping_class = "affine",
-    metric = "l2",
+    metric = "normalized_l2",
     use_verbose = FALSE
   )
 
