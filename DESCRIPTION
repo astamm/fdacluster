@@ -58,7 +58,8 @@ Suggests:
     future,
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr
 Imports: 
     cli,
     cluster,
@@ -75,8 +76,7 @@ Imports:
     Rcpp,
     rlang,
     tibble,
-    tidyr,
-    withr
+    tidyr
 Depends:
     R (>= 3.5.0)
 URL: https://astamm.github.io/fdacluster/index.html, https://github.com/astamm/fdacluster
