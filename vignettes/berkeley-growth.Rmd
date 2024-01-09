@@ -195,7 +195,7 @@ growth_mcaps <- compare_caps(
   x = x,
   y = t(y1),
   n_clusters = 2,
-  metric = "l2", 
+  metric = "normalized_l2", 
   clustering_method = c(
     "kmeans", 
     "hclust-complete", 
@@ -247,7 +247,7 @@ growth_caps <- fdahclust(
   x = x,
   y = t(y1),
   n_clusters = 2,
-  metric = "l2",
+  metric = "normalized_l2",
   warping_class = "affine", 
   centroid_type = "mean",
   cluster_on_phase = TRUE

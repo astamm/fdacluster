@@ -206,12 +206,14 @@ fdakmeans <- function(
         x = x,
         y = y,
         n_clusters = n_clusters,
+        is_domain_interval = is_domain_interval,
+        transformation = transformation,
         warping_class = warping_class,
+        metric = metric,
+        cluster_on_phase = cluster_on_phase,
         maximum_number_of_iterations = maximum_number_of_iterations,
         centroid_type = centroid_type,
-        metric = metric,
         linkage_criterion = "ward.D2",
-        cluster_on_phase = cluster_on_phase,
         use_verbose = FALSE
       )
       seeds <- 1:n_clusters |>
@@ -221,6 +223,8 @@ fdakmeans <- function(
       D <- fdadist(
         x = x,
         y = y,
+        is_domain_interval = is_domain_interval,
+        transformation = transformation,
         warping_class = warping_class,
         metric = metric,
         cluster_on_phase = cluster_on_phase
@@ -239,6 +243,8 @@ fdakmeans <- function(
       D <- fdadist(
         x = x,
         y = y,
+        is_domain_interval = is_domain_interval,
+        transformation = transformation,
         warping_class = warping_class,
         metric = metric,
         cluster_on_phase = cluster_on_phase
@@ -256,10 +262,13 @@ fdakmeans <- function(
             seeds <- c(seeds, sample(non_seeds, 1L, prob = Dvec^2))
           }
         }
+
         km <- fdakmeans(
           x = x,
           y = y,
           n_clusters = n_clusters,
+          is_domain_interval = is_domain_interval,
+          transformation = transformation,
           warping_class = warping_class,
           seeds = seeds,
           maximum_number_of_iterations = maximum_number_of_iterations,
@@ -270,7 +279,7 @@ fdakmeans <- function(
           use_fence = use_fence,
           cluster_on_phase = cluster_on_phase,
           use_verbose = FALSE,
-          add_silhouettes = add_silhouettes
+          add_silhouettes = FALSE
         )
         list(caps = km, totss = sum(km$distances_to_center))
       }, .options = furrr::furrr_options(seed = TRUE))
@@ -284,6 +293,8 @@ fdakmeans <- function(
         fdakmeans(
           x = x, y = y,
           n_clusters = n_clusters,
+          is_domain_interval = is_domain_interval,
+          transformation = transformation,
           warping_class = warping_class,
           seeds = .seeds,
           maximum_number_of_iterations = maximum_number_of_iterations,
@@ -311,6 +322,8 @@ fdakmeans <- function(
       D <- fdadist(
         x = x,
         y = y,
+        is_domain_interval = is_domain_interval,
+        transformation = transformation,
         warping_class = warping_class,
         metric = metric,
         cluster_on_phase = cluster_on_phase

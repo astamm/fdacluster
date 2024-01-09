@@ -241,19 +241,30 @@ format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
 }
 
 check_option_compatibility <- function(is_domain_interval, transformation, warping_class, metric) {
+  out <- .check_option_compatibility(is_domain_interval, transformation, warping_class, metric)
+  if (out == 1L)
+    cli::cli_abort("The functional domain is an interval. The only available transformation is the SRSF transformation.")
+  if (out == 2L)
+    cli::cli_abort('The functional domain is an interval. The only available warping classes are {.code "none"} and {.code "bpd"}.')
+  if (out == 3L)
+    cli::cli_abort("The only metric invariant by boundary-preserving diffeomorphisms is the L2 metric.")
+
+  if (out == 4L)
+    cli::cli_abort("It does not make sense to use boundary-preserving diffeomorphisms for aligning curves defined on the real line.")
+  if (out == 5L)
+    cli::cli_abort("The L2 metric is neither dilation-invariant nor affine-invariant.")
+}
+
+.check_option_compatibility <- function(is_domain_interval, transformation, warping_class, metric) {
   if (is_domain_interval) {
-    if (transformation != "srsf")
-      cli::cli_abort("The functional domain is an interval. The only available transformation is the SRSF transformation.")
-    if (warping_class != "none" && warping_class != "bpd")
-      cli::cli_abort('The functional domain is an interval. The only available warping classes are {.code "none"} and {.code "bpd"}.')
-    if (warping_class == "bpd" && metric != "l2")
-      cli::cli_abort("The only metric invariant by boundary-preserving diffeomorphisms is the L2 metric.")
+    if (transformation != "srsf") return(1)
+    if (warping_class != "none" && warping_class != "bpd") return(2)
+    if (warping_class == "bpd" && metric != "l2") return(3)
   } else {
-    if (warping_class == "bpd")
-      cli::cli_abort("It does not make sense to use boundary-preserving diffeomorphisms for aligning curves defined on the real line.")
-    if ((warping_class == "dilation" || warping_class == "affine") && metric == "l2")
-      cli::cli_abort("The L2 metric is neither dilation-invariant nor affine-invariant.")
+    if (warping_class == "bpd") return(4)
+    if ((warping_class == "dilation" || warping_class == "affine") && metric == "l2") return(5)
   }
+  0
 }
 
 remove_missing_points <- function(grids, curves) {

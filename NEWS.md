@@ -16,9 +16,10 @@ warping classes because it is not invariant to these transformations.
 of the website.
 * Now uses package **distops** for computing distance matrices.
 * Reduced number of dependencies: removed dplyr, tidyr, forcats, (progressr, tidyr, furrr, purrr).
+* Updated `README` file.
 * Updated GHA workflows.
+* Updated vignettes.
 * Bug fixes.
-
 
 # fdacluster 0.3.0
 

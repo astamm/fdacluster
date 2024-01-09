@@ -8,10 +8,12 @@ compare_caps(
   x,
   y,
   n_clusters = 1:5,
-  metric = c("l2", "pearson"),
+  is_domain_interval = FALSE,
+  transformation = c("identity", "srsf"),
+  metric = c("l2", "normalized_l2", "pearson"),
   clustering_method = c("kmeans", "hclust-complete", "hclust-average", "hclust-single",
     "dbscan"),
-  warping_class = c("affine", "dilation", "none", "shift", "srsf"),
+  warping_class = c("none", "shift", "dilation", "affine", "bpd"),
   centroid_type = c("mean", "medoid", "median", "lowess", "poly"),
   cluster_on_phase = FALSE
 )
@@ -33,6 +35,13 @@ functional data set to be able to evaluate it on user-defined grids.}
 
 \item{n_clusters}{An integer vector specifying a set of clustering partitions
 to create. Defaults to \code{1:5}.}
+
+\item{is_domain_interval}{A boolean specifying whether the sample of curves
+is defined on a fixed interval. Defaults to \code{FALSE}.}
+
+\item{transformation}{A string specifying the transformation to apply to the
+original sample of curves. Choices are no transformation (\code{transformation = "identity"}) or square-root slope function \code{transformation = "srsf"}.
+Defaults to \code{"identity"}.}
 
 \item{metric}{A string specifying the metric used to compare curves. Choices
 are \code{"l2"}, \code{"normalized_l2"} or \code{"pearson"}. If \code{transformation == "srsf"}, the metric \strong{must be} \code{"l2"} because the SRSF transform maps

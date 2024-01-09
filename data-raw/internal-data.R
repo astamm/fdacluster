@@ -10,7 +10,7 @@ amplitude_data <- compare_caps(
   x = simulated30_sub$x,
   y = simulated30_sub$y,
   n_clusters = 1:5,
-  metric = "l2",
+  metric = "normalized_l2",
   warping_class = c("none", "shift", "dilation", "affine"),
   clustering_method = "hclust-complete",
   centroid_type = "mean",
@@ -21,7 +21,7 @@ phase_data <- compare_caps(
   x = simulated30_sub$x,
   y = simulated30_sub$y,
   n_clusters = 1:5,
-  metric = "l2",
+  metric = "normalized_l2",
   warping_class = c("shift", "dilation", "affine"),
   clustering_method = "hclust-complete",
   centroid_type = "mean",
@@ -37,7 +37,7 @@ out_manual <- fdakmeans(
   seeds = c(1, 21),
   warping_class = "affine",
   centroid_type = "mean",
-  metric = "l2",
+  metric = "normalized_l2",
   cluster_on_phase = FALSE,
   use_verbose = FALSE
 )
@@ -52,7 +52,7 @@ withr::with_seed(1234, {
       seeds = .seeds,
       warping_class = "affine",
       centroid_type = "mean",
-      metric = "l2",
+      metric = "normalized_l2",
       cluster_on_phase = FALSE,
       use_verbose = FALSE
     )
@@ -68,7 +68,7 @@ withr::with_seed(1234, {
       seeding_strategy = "kmeans++",
       warping_class = "affine",
       centroid_type = "mean",
-      metric = "l2",
+      metric = "normalized_l2",
       cluster_on_phase = FALSE,
       use_verbose = FALSE
     )
@@ -84,7 +84,7 @@ withr::with_seed(1234, {
       seeding_strategy = "exhaustive-kmeans++",
       warping_class = "affine",
       centroid_type = "mean",
-      metric = "l2",
+      metric = "normalized_l2",
       cluster_on_phase = FALSE,
       use_verbose = FALSE
     )
@@ -98,7 +98,7 @@ out_hclust <- fdakmeans(
   seeding_strategy = "hclust",
   warping_class = "affine",
   centroid_type = "mean",
-  metric = "l2",
+  metric = "normalized_l2",
   cluster_on_phase = FALSE,
   use_verbose = FALSE
 )
@@ -142,7 +142,7 @@ growth_mcaps <- compare_caps(
   x = x,
   y = t(y1),
   n_clusters = 2,
-  metric = "l2",
+  metric = "normalized_l2",
   centroid_type = "mean",
   warping_class = "affine",
   cluster_on_phase = TRUE
@@ -152,7 +152,7 @@ growth_caps <- fdahclust(
   x = x,
   y = t(y1),
   n_clusters = 2,
-  metric = "l2",
+  metric = "normalized_l2",
   warping_class = "affine",
   centroid_type = "mean",
   cluster_on_phase = TRUE
@@ -169,6 +169,8 @@ out_growth <- fdakmeans(
   x = growthData,
   n_clusters = 2,
   seeding_strategy = "exhaustive-kmeans++",
+  warping_class = "affine",
+  metric = "normalized_l2",
   cluster_on_phase = TRUE,
   use_verbose = FALSE
 )
@@ -210,7 +212,10 @@ out_gait <- fdakmeans(
   x = gaitData,
   n_clusters = 1,
   seeding_strategy = "exhaustive",
-  warping_class = "srsf",
+  is_domain_interval = TRUE,
+  transformation = "srsf",
+  warping_class = "bpd",
+  metric = "l2",
   use_verbose = FALSE
 )
 
@@ -225,7 +230,10 @@ out_gait_fd <- fdakmeans(
   y = gaitDataFD,
   n_clusters = 1,
   seeding_strategy = "exhaustive",
-  warping_class = "srsf",
+  is_domain_interval = TRUE,
+  transformation = "srsf",
+  warping_class = "bpd",
+  metric = "l2",
   use_verbose = FALSE
 )
 

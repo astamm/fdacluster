@@ -50,14 +50,16 @@
 #' plot(sim30_mcaps, validation_criterion = "silhouette", what = "distribution")
 compare_caps <- function(x, y,
                          n_clusters = 1:5,
-                         metric = c("l2", "pearson"),
+                         is_domain_interval = FALSE,
+                         transformation = c("identity", "srsf"),
+                         metric = c("l2", "normalized_l2", "pearson"),
                          clustering_method = c("kmeans",
                                                "hclust-complete",
                                                "hclust-average",
                                                "hclust-single",
                                                "dbscan"),
-                         warping_class = c("affine", "dilation", "none",
-                                           "shift", "srsf"),
+                         warping_class = c("none", "shift", "dilation",
+                                           "affine", "bpd"),
                          centroid_type = c("mean", "medoid", "median",
                                            "lowess", "poly"),
                          cluster_on_phase = FALSE) {
@@ -65,7 +67,10 @@ compare_caps <- function(x, y,
     cli::cli_abort("The argument {.arg n_clusters} should be an integer/numeric vector.")
   if (length(n_clusters) == 1 && n_clusters == 1)
     cli::cli_abort("It does not make sense to only create a partition with all the data.")
+
+  transformation <- rlang::arg_match(transformation)
   metric <- rlang::arg_match(metric)
+
   clustering_method <- rlang::arg_match(clustering_method, multiple = TRUE)
   warping_class <- rlang::arg_match(warping_class, multiple = TRUE)
   centroid_type <- rlang::arg_match(centroid_type, multiple = TRUE)
@@ -76,6 +81,13 @@ compare_caps <- function(x, y,
     warping_class = warping_class,
     centroid_type = centroid_type
   ) |>
+    dplyr::filter(purrr::map_int(warping_class, \(.warping_class) {
+      .check_option_compatibility(
+        is_domain_interval = is_domain_interval,
+        transformation = transformation,
+        warping_class = .warping_class,
+        metric = metric)
+    }) == 0) |>
     dplyr::filter(!(n_clusters > min(n_clusters) & clustering_method == "dbscan")) |>
     dplyr::mutate(
       caps_obj = purrr::pmap(

@@ -586,9 +586,6 @@ Rcpp::List KmaModel::FitModel()
     templateGrids.set_size(numberOfClusters, m_NumberOfPoints);
     templateValues.set_size(numberOfClusters, m_NumberOfDimensions, m_NumberOfPoints);
 
-    if (m_UseVerbose)
-      Rcpp::Rcout << " - Updating templates" << std::endl;
-
     this->UpdateTemplates(
         numberOfIterations,
         clusterIndices,
@@ -603,7 +600,7 @@ Rcpp::List KmaModel::FitModel()
     templateValuesContainer(numberOfIterations) = templateValues;
 
     // Check total dissimilarity
-    if (m_CheckTotalDissimilarity)
+    if (m_CheckTotalDissimilarity && numberOfIterations > 1)
     {
       double totalDissimilarity = arma::sum(observationDistances);
       double oldTotalDissimilarity = arma::sum(oldObservationDistances);
