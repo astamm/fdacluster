@@ -11,6 +11,7 @@
 #include "polyCenterClass.h"
 #include "pearsonDissimilarityClass.h"
 #include "l2DissimilarityClass.h"
+#include "normalizedL2DissimilarityClass.h"
 
 #include "utilityFunctions.h"
 #include "sharedFactoryClass.h"
@@ -100,6 +101,7 @@ void KmaModel::SetDissimilarityMethod(const std::string &val)
   SharedFactory<BaseDissimilarityFunction> dissimilarityFactory;
   dissimilarityFactory.Register<PearsonDissimilarityFunction>("pearson");
   dissimilarityFactory.Register<L2DissimilarityFunction>("l2");
+  dissimilarityFactory.Register<NormalizedL2DissimilarityFunction>("normalized_l2");
 
   m_DissimilarityPointer = dissimilarityFactory.Instantiate(val);
 
@@ -472,7 +474,7 @@ Rcpp::List KmaModel::FitModel()
   unsigned int numberOfClusters = m_NumberOfClusters;
   arma::rowvec observationDistances(m_NumberOfObservations, arma::fill::ones);
   arma::rowvec oldObservationDistances(m_NumberOfObservations, arma::fill::zeros);
-  arma::urowvec observationMemberships(m_NumberOfObservations, arma::fill::ones);
+  arma::urowvec observationMemberships(m_NumberOfObservations, arma::fill::zeros);
   arma::urowvec oldObservationMemberships(m_NumberOfObservations, arma::fill::zeros);
   arma::urowvec clusterIndices = arma::linspace<arma::urowvec>(0, m_NumberOfClusters - 1, m_NumberOfClusters);
   arma::mat warpedGrids = m_InputGrids;
@@ -584,6 +586,9 @@ Rcpp::List KmaModel::FitModel()
     templateGrids.set_size(numberOfClusters, m_NumberOfPoints);
     templateValues.set_size(numberOfClusters, m_NumberOfDimensions, m_NumberOfPoints);
 
+    if (m_UseVerbose)
+      Rcpp::Rcout << " - Updating templates" << std::endl;
+
     this->UpdateTemplates(
         numberOfIterations,
         clusterIndices,
@@ -612,6 +617,7 @@ Rcpp::List KmaModel::FitModel()
         observationDistances = oldObservationDistances;
         observationMemberships = oldObservationMemberships;
         --numberOfIterations;
+        break;
       }
     }
   }

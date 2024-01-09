@@ -10,31 +10,10 @@ double L2DissimilarityFunction::GetDistance(const arma::rowvec& grid1,
     if (pair.Grid.is_empty())
         return DBL_MAX;
 
-    unsigned int nDim = pair.Values1.n_rows;
     unsigned int nPts = pair.Grid.size();
 
     if (nPts <= 1.0)
         return DBL_MAX;
 
-    double squaredDistanceValue = 0.0;
-    double squaredNorm1Value = 0.0;
-    double squaredNorm2Value = 0.0;
-
-    arma::rowvec workVector;
-
-    for (unsigned int k = 0;k < nDim;++k)
-    {
-      workVector = pair.Values1.row(k).cols(1, nPts - 1) - pair.Values2.row(k).cols(1, nPts - 1);
-      squaredDistanceValue += arma::dot(workVector, workVector);
-      workVector = pair.Values1.row(k).cols(1, nPts - 1);
-      squaredNorm1Value += arma::dot(workVector, workVector);
-      workVector = pair.Values2.row(k).cols(1, nPts - 1);
-      squaredNorm2Value += arma::dot(workVector, workVector);
-    }
-
-    double epsValue = std::sqrt(std::numeric_limits<double>::epsilon());
-    if (squaredNorm1Value < epsValue && squaredNorm2Value < epsValue)
-      return 0.0;
-
-    return std::sqrt(squaredDistanceValue) / (std::sqrt(squaredNorm1Value) + std::sqrt(squaredNorm2Value));
+    return std::sqrt(arma::sum(arma::trapz(pair.Grid, arma::pow(pair.Values1 - pair.Values2, 2.0), 1)));
 }
