@@ -108,7 +108,7 @@ fdadist <- function(x, y = NULL,
         out <- max(km$distances_to_center)
 
       out
-    }, .options = furrr::furrr_options(seed = TRUE))
+    }, .options = furrr::furrr_options(seed = TRUE, packages = "fdacluster"))
   }
 
   d <- .pairwise_distances(index_table)

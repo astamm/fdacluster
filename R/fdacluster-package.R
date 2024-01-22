@@ -1,7 +1,7 @@
 #' @import nloptr
 #' @importFrom ggplot2 autoplot
 #' @importFrom graphics plot
-#' @importFrom Rcpp evalCpp
+#' @importFrom Rcpp sourceCpp
 #' @importFrom rlang .data
 #' @useDynLib fdacluster, .registration = TRUE
 #'

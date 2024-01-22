@@ -282,7 +282,7 @@ fdakmeans <- function(
           add_silhouettes = FALSE
         )
         list(caps = km, totss = sum(km$distances_to_center))
-      }, .options = furrr::furrr_options(seed = TRUE))
+      }, .options = furrr::furrr_options(seed = TRUE, packages = "fdacluster"))
       best_idx <- which.min(purrr::map_dbl(out, "totss"))
       return(purrr::map(out, "caps")[[best_idx]])
     } else if (seeding_strategy == "exhaustive") {
@@ -308,7 +308,7 @@ fdakmeans <- function(
           use_verbose = FALSE,
           add_silhouettes = FALSE
         )
-      }, .options = furrr::furrr_options(seed = NULL))
+      }, .options = furrr::furrr_options(seed = NULL, packages = "fdacluster"))
       dtcs <- sols |>
         purrr::map("distances_to_center") |>
         purrr::map_dbl(sum)
