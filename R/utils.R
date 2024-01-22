@@ -226,7 +226,6 @@ format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
   if (is_domain_interval && !are_domains_equal)
     cli::cli_abort("The functional data are not defined on a common interval but argument {.arg is_domain_interval} specifies that they are.")
   if (is_domain_interval) {
-    cli::cli_alert_info("Resample the curves to make sure they are evaluated on the same grid.")
     common_grid <- seq(lower_bound, upper_bound, length.out = M)
     for (i in 1:N) {
       for (l in 1:L) {
