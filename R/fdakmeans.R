@@ -357,7 +357,7 @@ fdakmeans <- function(
       centroid_type = centroid_type,
       max_iter = maximum_number_of_iterations,
       use_verbose = use_verbose,
-      nonempty = 2L,
+      nonempty = 2L, scale = FALSE,
       alignment = (warping_class == "bpd")
     )
 
