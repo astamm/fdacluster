@@ -11,7 +11,7 @@ navbar:
       text: "Talks"
       menu:
       - text: "Rencontres R 2023"
-        contents: https://astamm.github.io/talks/2023-06-22-fdacluster-021/
+        href: https://astamm.github.io/talks/2023-06-22-fdacluster-021/
 
 reference:
   - title: The caps class
