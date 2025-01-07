@@ -16,20 +16,8 @@ diagnostic_plot <- function(x) {
   if (!is_caps(x))
     cli::cli_abort("The input argument {.arg x} should be of class {.cls caps}.")
 
-  tibble::tibble(
-    `Distance to center` = x$distances_to_center,
-    Silhouette = x$silhouettes,
-    Membership = as.factor(x$memberships)
-  ) |>
-    dplyr::mutate(ObservationID = as.character(1:dplyr::n())) |>
-    dplyr::group_by(.data$Membership) |>
-    dplyr::mutate(ObservationID = forcats::fct_reorder(
-      .f = .data$ObservationID,
-      .x = .data$Silhouette,
-      .desc = TRUE
-    )) |>
-    dplyr::ungroup() |>
-    tidyr::pivot_longer(cols = c("Distance to center", "Silhouette")) |>
+  x |>
+    diagnostic_plot_data() |>
     ggplot2::ggplot(ggplot2::aes(
       x = .data$ObservationID,
       y = .data$value,
@@ -45,4 +33,22 @@ diagnostic_plot <- function(x) {
     ggplot2::scale_y_continuous(expand = ggplot2::expansion(mult = c(0, 0.05))) +
     ggplot2::theme_bw() +
     ggplot2::theme(legend.position = "none")
+}
+
+diagnostic_plot_data <- function(x) {
+  obs_id <- seq_len(length(x$memberships))
+  groups <- sort(unique(x$memberships))
+  levels <- do.call(c, lapply(groups, function(g) {
+    ind <- x$memberships == g
+    obs_id[ind][order(x$silhouettes[ind], decreasing = TRUE)]
+  }))
+  data.frame(
+    Membership = as.factor(rep(x$memberships, each = 2L)),
+    ObservationID = factor(
+      rep(obs_id, each = 2L),
+      levels = levels
+    ),
+    name = rep(c("Distance to center", "Silhouette"), length(x$memberships)),
+    value = as.numeric(rbind(x$distances_to_center, x$silhouettes))
+  )
 }

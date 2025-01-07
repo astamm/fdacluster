@@ -25,7 +25,7 @@
 autoplot.caps <- function(object, type = c("amplitude", "phase"), ...) {
   type <- rlang::arg_match(type)
   if (type == "amplitude") {
-    wrangled_data <- plot_data_amplitude(object)
+    wrangled_data <- plot_amplitude_data(object)
     wrangled_data |>
       ggplot2::ggplot(ggplot2::aes(
         x = .data$grid,
@@ -47,7 +47,7 @@ autoplot.caps <- function(object, type = c("amplitude", "phase"), ...) {
       ggplot2::theme_bw() +
       ggplot2::theme(legend.position = "none")
   } else if (type == "phase") {
-    wrangled_data <- plot_data_phase(object)
+    wrangled_data <- plot_phase_data(object)
     wrangled_data |>
       ggplot2::ggplot(ggplot2::aes(
         x = .data$grid,
@@ -88,27 +88,24 @@ plot.caps <- function(x, type = c("amplitude", "phase"), ...) {
   print(autoplot(x, type = type, ...))
 }
 
-plot_data_amplitude <- function(x) {
-  dplyr::bind_rows(
-    format_viz(x$original_grids, x$original_curves, x$memberships) |>
-      dplyr::mutate(curve_type = "Original Curves"),
-    format_viz(x$aligned_grids, x$original_curves, x$memberships) |>
-      dplyr::mutate(curve_type = "Aligned Curves")
-  ) |>
-    dplyr::mutate(curve_type = factor(
-      .data$curve_type,
-      levels = c("Original Curves", "Aligned Curves")
-    ))
+plot_amplitude_data <- function(x) {
+  original_data <- format_viz(x$original_grids, x$original_curves, x$memberships)
+  aligned_data <- format_viz(x$aligned_grids, x$original_curves, x$memberships)
+  original_data$curve_type <- "Original Curves"
+  aligned_data$curve_type <- "Aligned Curves"
+  curve_type_levels <- c("Original Curves", "Aligned Curves")
+  original_data$curve_type <- factor(original_data$curve_type, levels = curve_type_levels)
+  aligned_data$curve_type <- factor(aligned_data$curve_type, levels = curve_type_levels)
+  rbind(original_data, aligned_data)
 }
 
-plot_data_phase <- function(x) {
-  tibble::tibble(
-    grid = purrr::array_tree(x$original_grids, margin = 1),
-    value = purrr::array_tree(x$aligned_grids, margin = 1),
+plot_phase_data <- function(x) {
+  data.frame(
+    grid = as.vector(x$original_grids),
+    value = as.vector(x$aligned_grids),
     curve_id = as.factor(1:nrow(x$original_grids)),
     membership = as.factor(x$memberships)
-  ) |>
-    tidyr::unnest(cols = c("grid", "value"))
+  )
 }
 
 format_viz <- function(grids, curves, memberships) {
@@ -116,21 +113,20 @@ format_viz <- function(grids, curves, memberships) {
   N <- dims[1]
   L <- dims[2]
   M <- dims[3]
-  purrr::map(1:L, \(l) {
+  lapply(1:L, function(l) {
     unicurves <- curves[, l, ]
-    tibble::tibble(
-      grid = purrr::array_tree(grids, margin = 1),
-      value = purrr::array_tree(unicurves, margin = 1),
+    data.frame(
+      grid = as.vector(grids),
+      value = as.vector(unicurves),
       membership = memberships,
       curve_id = 1:N,
       component_id = l
-    ) |>
-      tidyr::unnest(cols = c(.data$grid, .data$value))
+    )
   }) |>
-    dplyr::bind_rows() |>
-    dplyr::mutate(
-      membership = as.factor(.data$membership),
-      curve_id = as.factor(.data$curve_id),
-      component_id = as.factor(.data$component_id)
+    do.call(what = rbind, args = _) |>
+    transform(
+      membership = as.factor(membership),
+      curve_id = as.factor(curve_id),
+      component_id = as.factor(component_id)
     )
 }
