@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/astamm/fdacluster/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/astamm/fdacluster/actions/workflows/R-CMD-check.yaml)
 [![test-coverage](https://github.com/astamm/fdacluster/workflows/test-coverage/badge.svg)](https://github.com/astamm/fdacluster/actions)
-[![codecov](https://codecov.io/gh/astamm/fdacluster/branch/master/graph/badge.svg)](https://app.codecov.io/gh/astamm/fdacluster)
+[![Codecov test coverage](https://codecov.io/gh/astamm/fdacluster/graph/badge.svg)](https://app.codecov.io/gh/astamm/fdacluster)
 [![pkgdown](https://github.com/astamm/fdacluster/workflows/pkgdown/badge.svg)](https://github.com/astamm/fdacluster/actions)
 [![CRAN status](https://www.r-pkg.org/badges/version/fdacluster)](https://CRAN.R-project.org/package=fdacluster)
 <!-- badges: end -->

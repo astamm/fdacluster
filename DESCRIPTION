@@ -79,6 +79,6 @@ Imports:
     tidyr
 Depends:
     R (>= 3.5.0)
-URL: https://astamm.github.io/fdacluster/index.html, https://github.com/astamm/fdacluster
+URL: https://astamm.github.io/fdacluster/, https://github.com/astamm/fdacluster
 Config/testthat/edition: 3
 VignetteBuilder: knitr

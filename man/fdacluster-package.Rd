@@ -42,6 +42,7 @@ Useful links:
 \itemize{
   \item \url{https://astamm.github.io/fdacluster/index.html}
   \item \url{https://github.com/astamm/fdacluster}
+  \item \url{https://astamm.github.io/fdacluster/}
 }
 
 }
