@@ -7,32 +7,6 @@ navbar:
     left: [reference, articles, news, talks]
     right: [search, github, lightswitch]
   components:
-    reference:
-      - title: The caps class
-      - contents:
-        - as_caps
-        - is_caps
-        - autoplot.caps
-        - plot.caps
-        - diagnostic_plot
-      - title: Clustering methods
-      - contents:
-        - fdadist
-        - fdadbscan
-        - fdahclust
-        - fdakmeans
-      - title: Clustering comparison
-      - contents:
-        - compare_caps
-        - autoplot.mcaps
-        - plot.mcaps
-      - title: Data sets
-      - contents:
-        - simulated30
-        - simulated30_sub
-        - simulated90
-        - sim30_caps
-        - sim30_mcaps
     news:
       releases:
       - text: "fdacluster 0.3.0"
@@ -46,3 +20,30 @@ navbar:
       menu:
       - text: "Rencontres R 2023"
         contents: https://astamm.github.io/talks/2023-06-22-fdacluster-021/
+
+reference:
+  - title: The caps class
+  - contents:
+    - as_caps
+    - is_caps
+    - autoplot.caps
+    - plot.caps
+    - diagnostic_plot
+  - title: Clustering methods
+  - contents:
+    - fdadist
+    - fdadbscan
+    - fdahclust
+    - fdakmeans
+  - title: Clustering comparison
+  - contents:
+    - compare_caps
+    - autoplot.mcaps
+    - plot.mcaps
+  - title: Data sets
+  - contents:
+    - simulated30
+    - simulated30_sub
+    - simulated90
+    - sim30_caps
+    - sim30_mcaps
