@@ -5,82 +5,61 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="fdacluster">
 <title>Hierarchical clustering • fdacluster</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Hierarchical clustering">
-<meta property="og:description" content="fdacluster">
-<meta property="og:image" content="/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Hierarchical clustering">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">fdacluster</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/hierarchial-clustering.html">Hierarchical clustering</a>
-    <a class="dropdown-item" href="../articles/input-formats.html">Supported input formats</a>
-    <a class="dropdown-item" href="../articles/berkeley-growth.html">Analysis of Berkeley growth data</a>
-    <a class="dropdown-item" href="../articles/kmeans-initialisation.html">Computing initial centroids in k-means</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/berkeley-growth.html">Analysis of Berkeley growth data</a></li>
+    <li><a class="dropdown-item" href="../articles/hierarchial-clustering.html">Hierarchical clustering</a></li>
+    <li><a class="dropdown-item" href="../articles/input-formats.html">Supported input formats</a></li>
+    <li><a class="dropdown-item" href="../articles/kmeans-initialisation.html">Computing initial centroids in k-means</a></li>
+  </ul>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-news">
-    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
-    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-07-04-fdacluster-030/">fdacluster 0.3.0</a>
-    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-05-19-fdacluster-021/">fdacluster 0.2.1</a>
-    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2022-05-10-fdacluster-011/">fdacluster 0.1.1</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="../news/index.html">Changelog</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-news">
+<li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-07-04-fdacluster-030/">fdacluster 0.3.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-05-19-fdacluster-021/">fdacluster 0.2.1</a></li>
+    <li><a class="external-link dropdown-item" href="https://astamm.github.io/posts/2022-05-10-fdacluster-011/">fdacluster 0.1.1</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
+  </ul>
 </li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/astamm/fdacluster/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/astamm/fdacluster/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -92,7 +71,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Hierarchical clustering</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/astamm/fdacluster/blob/HEAD/vignettes/articles/hierarchial-clustering.Rmd" class="external-link"><code>vignettes/articles/hierarchial-clustering.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/astamm/fdacluster/blob/master/vignettes/articles/hierarchial-clustering.Rmd" class="external-link"><code>vignettes/articles/hierarchial-clustering.Rmd</code></a></small>
       <div class="d-none name"><code>hierarchial-clustering.Rmd</code></div>
     </div>
 
@@ -105,15 +84,21 @@
 carried out in two mandatory steps with a third <em>optional</em>
 one:</p>
 <ol style="list-style-type: decimal">
-<li>Compute the distance matrix <span class="math inline">\(D\)</span>
-in which entry <span class="math inline">\(d_{ij}\)</span> stores the
-distance between observation <span class="math inline">\(i\)</span> and
-observation <span class="math inline">\(j\)</span>;</li>
+<li>Compute the distance matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+in which entry
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">d_{ij}</annotation></semantics></math>
+stores the distance between observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+and observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>;</li>
 <li>Compute the hierarchy of clustering structures in the form of a
 dendrogram by first assuming each observation belongs to its own cluster
 and progressively merge observations and groups of observations together
 using a so-called <em>linkage criterion</em>;</li>
-<li>[optional] Cut the tree at a given distance in order to form <span class="math inline">\(k\)</span> clusters.</li>
+<li>[optional] Cut the tree at a given distance in order to form
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+clusters.</li>
 </ol>
 <p>Each of these steps incurs slight modifications when it comes to
 clustering functional data.</p>
@@ -126,9 +111,9 @@ matrix. The idea is to assess how far two curves are after optimal phase
 alignment. This step is achieved through the <a href="https://astamm.github.io/fdacluster/reference/fdadist.html" class="external-link"><code>fdadist()</code></a>.</p>
 <p><strong>Step 2.</strong> The process of building up the hierarchy of
 possible clustering structures does not change once the distance matrix
-<span class="math inline">\(D\)</span> is known. In fact, from a
-practical point of view with <code>R</code>, it is still achieved via a
-call to <a href="https://rdrr.io/r/stats/hclust.html" class="external-link"><code>stats::hclust()</code></a>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
+is known. In fact, from a practical point of view with <code>R</code>,
+it is still achieved via a call to <a href="https://rdrr.io/r/stats/hclust.html" class="external-link"><code>stats::hclust()</code></a>.
 Here, the user can choose which linkage criterion to use for assessing
 distances between sets of curves. For the sake of simplicity, only a
 subset of choices from the <a href="https://rdrr.io/r/stats/hclust.html" class="external-link"><code>stats::hclust()</code></a>
@@ -144,8 +129,9 @@ last alignment to the centroid of the cluster they have been assigned
 to. Then, and only then, within-cluster sum of squared distances to
 centroid and silhouette values can be assessed. This step is achieved
 through a call to <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdakmeans()</code></a>
-with <span class="math inline">\(k = 1\)</span> and initial centroid
-corresponding to the cluster medoid.</p>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k = 1</annotation></semantics></math>
+and initial centroid corresponding to the cluster medoid.</p>
 </div>
 <div class="section level2">
 <h2 id="using-fdacluster">Using <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a><a class="anchor" aria-label="anchor" href="#using-fdacluster"></a>
@@ -190,10 +176,12 @@ observed curves. The user can switch on the use of phase data instead by
 using <code>cluster_on_phase = TRUE</code>.</p>
 <p>The second group of arguments are set to sensible default values and
 are used for the internal call to <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdakmeans()</code></a>
-with <span class="math inline">\(k = 1\)</span>, which performs
-within-cluster alignment to centroid once groups have been determined by
-cutting the dendrogram at the appropriate height. These arguments are
-not meant to be changed unless the results of the clustering via <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html" class="external-link"><code>fdahclust()</code></a>
+with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k = 1</annotation></semantics></math>,
+which performs within-cluster alignment to centroid once groups have
+been determined by cutting the dendrogram at the appropriate height.
+These arguments are not meant to be changed unless the results of the
+clustering via <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html" class="external-link"><code>fdahclust()</code></a>
 seem very odd.</p>
 </div>
 <div class="section level2">
@@ -202,11 +190,17 @@ seem very odd.</p>
 <div class="section level3">
 <h3 id="simulated-data-set">Simulated data set<a class="anchor" aria-label="anchor" href="#simulated-data-set"></a>
 </h3>
-<p>Let us consider the following sample of <span class="math inline">\(30\)</span> simulated unidimensional curves:
+<p>Let us consider the following sample of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+simulated unidimensional curves:
 <img src="hierarchial-clustering_files/figure-html/data-1.png" width="672" style="display: block; margin: auto;"></p>
-<p>Looking at the data set, it seems that we shall expect <span class="math inline">\(3\)</span> groups if we aim at clustering based on
-phase variability but probably only <span class="math inline">\(2\)</span> groups if we search for a clustering
-structure based on amplitude variability.</p>
+<p>Looking at the data set, it seems that we shall expect
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+groups if we aim at clustering based on phase variability but probably
+only
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+groups if we search for a clustering structure based on amplitude
+variability.</p>
 </div>
 <div class="section level3">
 <h3 id="hac-based-on-amplitude-variability">HAC based on amplitude variability<a class="anchor" aria-label="anchor" href="#hac-based-on-amplitude-variability"></a>
@@ -324,8 +318,9 @@ methods as:</p>
 <p><img src="hierarchial-clustering_files/figure-html/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>In this case, the plot clearly shows that among the set of warping
 classes that has been considered, one should use affine warping and
-search for <span class="math inline">\(2\)</span> groups when the goal
-is to cluster based on amplitude variability.</p>
+search for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+groups when the goal is to cluster based on amplitude variability.</p>
 <p>Let us now perform the same analysis with the goal of clustering
 based on phase variability instead:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -346,7 +341,8 @@ based on phase variability instead:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">phase_data</span>, validation_criterion <span class="op">=</span> <span class="st">"wss"</span>, what <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="hierarchial-clustering_files/figure-html/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;"></p>
 <p>In this case, as expected by looking at the original data set, the
-plot suggests to search for <span class="math inline">\(3\)</span>
+plot suggests to search for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
 groups. What is even more interesting is that there is in this case no
 improvement in terms of WSS by going from the shift warping class to the
 affine warping class. This was also expected by looking at the original
@@ -354,28 +350,26 @@ data set but it is nice that it is also reflected in the output
 diagnostic.</p>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Aymeric Stamm.</p>
+  <p>Developed by Aymeric Stamm.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

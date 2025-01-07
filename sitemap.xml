@@ -1,90 +1,32 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/articles/berkeley-growth.html</loc>
-  </url>
-  <url>
-    <loc>/articles/hierarchial-clustering.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/input-formats.html</loc>
-  </url>
-  <url>
-    <loc>/articles/kmeans-initialisation.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/autoplot.caps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/autoplot.mcaps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/caps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/compare_caps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/diagnostic_plot.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fdacluster-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fdadbscan.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fdadist.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fdahclust.html</loc>
-  </url>
-  <url>
-    <loc>/reference/fdakmeans.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/lp.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.caps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plot.mcaps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim30_caps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/sim30_mcaps.html</loc>
-  </url>
-  <url>
-    <loc>/reference/simulated30.html</loc>
-  </url>
-  <url>
-    <loc>/reference/simulated30_sub.html</loc>
-  </url>
-  <url>
-    <loc>/reference/simulated90.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/LICENSE.html</loc></url>
+<url><loc>/articles/berkeley-growth.html</loc></url>
+<url><loc>/articles/hierarchial-clustering.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/input-formats.html</loc></url>
+<url><loc>/articles/kmeans-initialisation.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/autoplot.caps.html</loc></url>
+<url><loc>/reference/autoplot.mcaps.html</loc></url>
+<url><loc>/reference/caps.html</loc></url>
+<url><loc>/reference/compare_caps.html</loc></url>
+<url><loc>/reference/diagnostic_plot.html</loc></url>
+<url><loc>/reference/fdacluster-package.html</loc></url>
+<url><loc>/reference/fdadbscan.html</loc></url>
+<url><loc>/reference/fdadist.html</loc></url>
+<url><loc>/reference/fdahclust.html</loc></url>
+<url><loc>/reference/fdakmeans.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/lp.html</loc></url>
+<url><loc>/reference/plot.caps.html</loc></url>
+<url><loc>/reference/plot.mcaps.html</loc></url>
+<url><loc>/reference/sim30_caps.html</loc></url>
+<url><loc>/reference/sim30_mcaps.html</loc></url>
+<url><loc>/reference/simulated30.html</loc></url>
+<url><loc>/reference/simulated30_sub.html</loc></url>
+<url><loc>/reference/simulated90.html</loc></url>
 </urlset>
+

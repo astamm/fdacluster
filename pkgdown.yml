@@ -1,10 +1,9 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7
+pandoc: 3.1.11
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  hierarchial-clustering: hierarchial-clustering.html
-  input-formats: input-formats.html
   berkeley-growth: berkeley-growth.html
+  articles/hierarchial-clustering: hierarchial-clustering.html
+  articles/input-formats: input-formats.html
   kmeans-initialisation: kmeans-initialisation.html
-last_built: 2024-02-19T16:01Z
-
+last_built: 2025-01-07T16:48Z

@@ -5,82 +5,61 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="fdacluster">
 <title>Computing initial centroids in k-means • fdacluster</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Computing initial centroids in k-means">
-<meta property="og:description" content="fdacluster">
-<meta property="og:image" content="/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Computing initial centroids in k-means">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">fdacluster</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/hierarchial-clustering.html">Hierarchical clustering</a>
-    <a class="dropdown-item" href="../articles/input-formats.html">Supported input formats</a>
-    <a class="dropdown-item" href="../articles/berkeley-growth.html">Analysis of Berkeley growth data</a>
-    <a class="dropdown-item" href="../articles/kmeans-initialisation.html">Computing initial centroids in k-means</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/berkeley-growth.html">Analysis of Berkeley growth data</a></li>
+    <li><a class="dropdown-item" href="../articles/hierarchial-clustering.html">Hierarchical clustering</a></li>
+    <li><a class="dropdown-item" href="../articles/input-formats.html">Supported input formats</a></li>
+    <li><a class="dropdown-item" href="../articles/kmeans-initialisation.html">Computing initial centroids in k-means</a></li>
+  </ul>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-news">
-    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
-    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-07-04-fdacluster-030/">fdacluster 0.3.0</a>
-    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-05-19-fdacluster-021/">fdacluster 0.2.1</a>
-    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2022-05-10-fdacluster-011/">fdacluster 0.1.1</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="../news/index.html">Changelog</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-news">
+<li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-07-04-fdacluster-030/">fdacluster 0.3.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-05-19-fdacluster-021/">fdacluster 0.2.1</a></li>
+    <li><a class="external-link dropdown-item" href="https://astamm.github.io/posts/2022-05-10-fdacluster-011/">fdacluster 0.1.1</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
+  </ul>
 </li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/astamm/fdacluster/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/astamm/fdacluster/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -92,7 +71,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Computing initial centroids in k-means</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/astamm/fdacluster/blob/HEAD/vignettes/kmeans-initialisation.Rmd" class="external-link"><code>vignettes/kmeans-initialisation.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/astamm/fdacluster/blob/master/vignettes/kmeans-initialisation.Rmd" class="external-link"><code>vignettes/kmeans-initialisation.Rmd</code></a></small>
       <div class="d-none name"><code>kmeans-initialisation.Rmd</code></div>
     </div>
 
@@ -100,16 +79,25 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span>
 <span><span class="va">true_groups</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">20</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">10</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p>The <span class="math inline">\(k\)</span>-mean algorithm for both
-multivariate or functional data requires an initial step in which we
-select <span class="math inline">\(k\)</span> observations among our
-sample to serve as initial centroids for the <span class="math inline">\(k\)</span> clusters we are looking for.</p>
-<p>It is well known and reported that the outcome of the <span class="math inline">\(k\)</span>-mean algorithm is very sensitive to
-this initial choice. The functional <span class="math inline">\(k\)</span>-mean algorithm implementation
-<code><a href="../reference/fdakmeans.html">fdakmeans()</a></code> in the <strong>fdacluster</strong> package
-includes a number of seeding strategies that automoatically set the
-initial centroids which makes the outcome more robust.</p>
+<p>The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-mean
+algorithm for both multivariate or functional data requires an initial
+step in which we select
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+observations among our sample to serve as initial centroids for the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+clusters we are looking for.</p>
+<p>It is well known and reported that the outcome of the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-mean
+algorithm is very sensitive to this initial choice. The functional
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-mean
+algorithm implementation <code><a href="../reference/fdakmeans.html">fdakmeans()</a></code> in the
+<strong>fdacluster</strong> package includes a number of seeding
+strategies that automoatically set the initial centroids which makes the
+outcome more robust.</p>
 <div class="section level2">
 <h2 id="manual-specification-of-the-initial-seeds">Manual specification of the initial seeds<a class="anchor" aria-label="anchor" href="#manual-specification-of-the-initial-seeds"></a>
 </h2>
@@ -227,27 +215,44 @@ initial choice in <code>seeds</code>:</p>
 </div>
 <div class="section level2">
 <h2 id="k-means">
-<span class="math inline">\(k\)</span>-means++<a class="anchor" aria-label="anchor" href="#k-means"></a>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means++<a class="anchor" aria-label="anchor" href="#k-means"></a>
 </h2>
-<p>The <span class="math inline">\(k\)</span>-means++ strategy was
-originally proposed in <span class="citation">Arthur and Vassilvitskii
-(2007)</span>. The algorithm is nicely described on the corresponding <a href="https://en.wikipedia.org/wiki/K-means%2B%2B" class="external-link">Wikipedia</a> page as
+<p>The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means++
+strategy was originally proposed in <span class="citation">Arthur and
+Vassilvitskii (2007)</span>. The algorithm is nicely described on the
+corresponding <a href="https://en.wikipedia.org/wiki/K-means%2B%2B" class="external-link">Wikipedia</a> page as
 follows:</p>
 <ol style="list-style-type: decimal">
 <li>Choose one center uniformly at random among the data points.</li>
-<li>For each data point <span class="math inline">\(x\)</span> not
-chosen yet, compute <span class="math inline">\(D(x)\)</span>, the
-distance between <span class="math inline">\(x\)</span> and the nearest
-center that has already been chosen.</li>
+<li>For each data point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+not chosen yet, compute
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">D(x)</annotation></semantics></math>,
+the distance between
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+and the nearest center that has already been chosen.</li>
 <li>Choose one new data point at random as a new center, using a
-weighted probability distribution where a point <span class="math inline">\(x\)</span> is chosen with probability proportional
-to <span class="math inline">\(D(x)^2\)</span>.</li>
-<li>Repeat Steps <span class="math inline">\(2\)</span> and <span class="math inline">\(3\)</span> until <span class="math inline">\(k\)</span> centers have been chosen.</li>
+weighted probability distribution where a point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
+is chosen with probability proportional to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>D</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">D(x)^2</annotation></semantics></math>.</li>
+<li>Repeat Steps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>3</mn><annotation encoding="application/x-tex">3</annotation></semantics></math>
+until
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+centers have been chosen.</li>
 <li>Now that the initial centers have been chosen, proceed using
-standard <span class="math inline">\(k\)</span>-means clustering.</li>
+standard
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
+clustering.</li>
 </ol>
 <p>Despite the probabilistic nature of the outcome that follows from
-this strategy, it provides a more robust <span class="math inline">\(k\)</span>-means procedure:</p>
+this strategy, it provides a more robust
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
+procedure:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">1234</span>, <span class="op">{</span></span>
 <span>  <span class="va">outs_kpp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="fl">10</span>, <span class="op">{</span></span>
@@ -323,19 +328,27 @@ this strategy, it provides a more robust <span class="math inline">\(k\)</span>-
 </table>
 </div>
 <div class="section level2">
-<h2 id="exhaustive-k-means">Exhaustive <span class="math inline">\(k\)</span>-means++<a class="anchor" aria-label="anchor" href="#exhaustive-k-means"></a>
+<h2 id="exhaustive-k-means">Exhaustive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means++<a class="anchor" aria-label="anchor" href="#exhaustive-k-means"></a>
 </h2>
-<p>The <span class="math inline">\(k\)</span>-means++ initialization
-procedure introduces two additional sources of randomness:</p>
+<p>The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means++
+initialization procedure introduces two additional sources of
+randomness:</p>
 <ul>
 <li>One for randomly picking the first centroid; and,</li>
 <li>One for picking the remaining centroids based on a weighted
 probability distribution.</li>
 </ul>
-<p>It is easy, with computational cost linear in <span class="math inline">\(N\)</span>, to get rid of the first source of
-randomness by exhaustively run the <span class="math inline">\(k\)</span>-means algorithm with <span class="math inline">\(k\)</span>-means++ initialization strategy using
-each observation as possible centroid for the first cluster. We call it
-the exhaustive <span class="math inline">\(k\)</span>-means++
+<p>It is easy, with computational cost linear in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>,
+to get rid of the first source of randomness by exhaustively run the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
+algorithm with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means++
+initialization strategy using each observation as possible centroid for
+the first cluster. We call it the exhaustive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means++
 strategy:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">withr</span><span class="fu">::</span><span class="fu"><a href="https://withr.r-lib.org/reference/with_seed.html" class="external-link">with_seed</a></span><span class="op">(</span><span class="fl">1234</span>, <span class="op">{</span></span>
@@ -416,16 +429,23 @@ strategy:</p>
 </h2>
 <p>For completeness, it is also possible to perform an exhaustive search
 although this should rarely be practical. With our simulated data of
-<span class="math inline">\(N = 30\)</span> curves and looking for <span class="math inline">\(2\)</span>, this would be achieved by setting
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>N</mi><mo>=</mo><mn>30</mn></mrow><annotation encoding="application/x-tex">N = 30</annotation></semantics></math>
+curves and looking for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>2</mn><annotation encoding="application/x-tex">2</annotation></semantics></math>,
+this would be achieved by setting
 <code>seeding_strategy = "exhaustive"</code> but would require to run
-the algorithm 435 times instead of <span class="math inline">\(30\)</span> times for the exhaustive <span class="math inline">\(k\)</span>-means++ strategy which already achieves
-excellent robustness performances.</p>
+the algorithm 435 times instead of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>30</mn><annotation encoding="application/x-tex">30</annotation></semantics></math>
+times for the exhaustive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means++
+strategy which already achieves excellent robustness performances.</p>
 </div>
 <div class="section level2">
 <h2 id="hierarchial-clustering">Hierarchial clustering<a class="anchor" aria-label="anchor" href="#hierarchial-clustering"></a>
 </h2>
-<p>An alternative is to use hierarchical clustering before <span class="math inline">\(k\)</span>-means to get good initial candidates
-for centroids:</p>
+<p>An alternative is to use hierarchical clustering before
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
+to get good initial candidates for centroids:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdakmeans.html">fdakmeans</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">simulated30</span><span class="op">$</span><span class="va">x</span>,</span>
@@ -457,9 +477,10 @@ for centroids:</p>
 </tbody>
 </table>
 <p>This strategy is completely deterministic. In our case, it seems to
-work well. However, it will perform badly when <span class="math inline">\(k\)</span>-means clustering and hierarchial
-clustering are not meant to provide the same clusters in the first
-place.</p>
+work well. However, it will perform badly when
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
+clustering and hierarchial clustering are not meant to provide the same
+clusters in the first place.</p>
 <p>Note that we could also implement a DBSCAN initialization strategy in
 a similar fashion, with the added benefit of autotuning the number of
 clusters to look for. This is not currently implemented but the user can
@@ -472,15 +493,18 @@ Then use cluster medoids as <code>seeds</code> argument for
 <h2 id="final-recommandations">Final recommandations<a class="anchor" aria-label="anchor" href="#final-recommandations"></a>
 </h2>
 <p>For functional data sets with a reasonable sample size, we recommend
-to use the exhaustive <span class="math inline">\(k\)</span>-means++
+to use the exhaustive
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means++
 strategy. For moderate to large sample sizes, we recommend to switch to
-the <span class="math inline">\(k\)</span>-means++ strategy. The latter
-is the current running default for <code><a href="../reference/fdakmeans.html">fdakmeans()</a></code>.</p>
+the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means++
+strategy. The latter is the current running default for
+<code><a href="../reference/fdakmeans.html">fdakmeans()</a></code>.</p>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
 <div id="ref-arthur2007k" class="csl-entry">
 Arthur, D., and S. Vassilvitskii. 2007. <span>“K-Means++ the Advantages
 of Careful Seeding.”</span> In <em>Proceedings of the Eighteenth Annual
@@ -488,28 +512,26 @@ ACM-SIAM Symposium on Discrete Algorithms</em>, 1027–35.
 </div>
 </div>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Aymeric Stamm.</p>
+  <p>Developed by Aymeric Stamm.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>

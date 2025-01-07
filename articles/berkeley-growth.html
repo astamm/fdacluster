@@ -5,82 +5,61 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="fdacluster">
 <title>Analysis of Berkeley growth data • fdacluster</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Analysis of Berkeley growth data">
-<meta property="og:description" content="fdacluster">
-<meta property="og:image" content="/logo.png">
-<!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
-<script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-<![endif]-->
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Analysis of Berkeley growth data">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
-    
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
-    
+
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
+
     <a class="navbar-brand me-2" href="../index.html">fdacluster</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
 
-    
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/hierarchial-clustering.html">Hierarchical clustering</a>
-    <a class="dropdown-item" href="../articles/input-formats.html">Supported input formats</a>
-    <a class="dropdown-item" href="../articles/berkeley-growth.html">Analysis of Berkeley growth data</a>
-    <a class="dropdown-item" href="../articles/kmeans-initialisation.html">Computing initial centroids in k-means</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+<li><a class="dropdown-item" href="../articles/berkeley-growth.html">Analysis of Berkeley growth data</a></li>
+    <li><a class="dropdown-item" href="../articles/hierarchial-clustering.html">Hierarchical clustering</a></li>
+    <li><a class="dropdown-item" href="../articles/input-formats.html">Supported input formats</a></li>
+    <li><a class="dropdown-item" href="../articles/kmeans-initialisation.html">Computing initial centroids in k-means</a></li>
+  </ul>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-news">News</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-news">
-    <h6 class="dropdown-header" data-toc-skip>Releases</h6>
-    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-07-04-fdacluster-030/">fdacluster 0.3.0</a>
-    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-05-19-fdacluster-021/">fdacluster 0.2.1</a>
-    <a class="external-link dropdown-item" href="https://astamm.github.io/posts/2022-05-10-fdacluster-011/">fdacluster 0.1.1</a>
-    <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="../news/index.html">Changelog</a>
-  </div>
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-news">
+<li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
+    <li><a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-07-04-fdacluster-030/">fdacluster 0.3.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://astamm.github.io/posts/2023-05-19-fdacluster-021/">fdacluster 0.2.1</a></li>
+    <li><a class="external-link dropdown-item" href="https://astamm.github.io/posts/2022-05-10-fdacluster-011/">fdacluster 0.1.1</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><a class="dropdown-item" href="../news/index.html">Changelog</a></li>
+  </ul>
 </li>
       </ul>
-<form class="form-inline my-2 my-lg-0" role="search">
-        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
-</form>
-
-      <ul class="navbar-nav">
-<li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/astamm/fdacluster/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
+<ul class="navbar-nav">
+<li class="nav-item"><form class="form-inline" role="search">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
+</form></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/astamm/fdacluster/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
-    
+
   </div>
 </nav><div class="container template-article">
 
@@ -92,7 +71,7 @@
       <img src="../logo.png" class="logo" alt=""><h1>Analysis of Berkeley growth data</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/astamm/fdacluster/blob/HEAD/vignettes/berkeley-growth.Rmd" class="external-link"><code>vignettes/berkeley-growth.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/astamm/fdacluster/blob/master/vignettes/berkeley-growth.Rmd" class="external-link"><code>vignettes/berkeley-growth.Rmd</code></a></small>
       <div class="d-none name"><code>berkeley-growth.Rmd</code></div>
     </div>
 
@@ -100,6 +79,8 @@
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
+<span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="the-berkeley-growth-data">The Berkeley growth data<a class="anchor" aria-label="anchor" href="#the-berkeley-growth-data"></a>
@@ -131,42 +112,57 @@ age:</p>
 <span>    y <span class="op">=</span> <span class="st">"Height (cm)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="berkeley-growth_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
-<p>A single observation is actually a time series <span class="math inline">\(\mathbf{x}_i = (x_i(t_1), \dots,
-x_i(t_M))^\top\)</span>. We can hypothesize that we know what happened
-between any two consecutive points <span class="math inline">\(t_j\)</span> and <span class="math inline">\(t_{j+1}\)</span> even though we did not observe
-the data in <span class="math inline">\((t_j, t_{j+1})\)</span>. This is
-usually achieved via splines or Fourier or wavelet basis decomposition
-to confer the observation with some degree of regularity and to account
-for possible periodicity or other specificity of the data point. This
-step of <em>data representation</em> effectively transforms the original
-observation <span class="math inline">\(\mathbf{x}_i\)</span> which was
-a time series into a functional data point <span class="math inline">\(x_i : \mathcal{D} \to \mathcal{M}\)</span>.</p>
+<p>A single observation is actually a time series
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐱</mi><mi>i</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>M</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{x}_i = (x_i(t_1), \dots,
+x_i(t_M))^\top</annotation></semantics></math>. We can hypothesize that
+we know what happened between any two consecutive points
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mi>j</mi></msub><annotation encoding="application/x-tex">t_j</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>t</mi><mrow><mi>j</mi><mo>+</mo><mn>1</mn></mrow></msub><annotation encoding="application/x-tex">t_{j+1}</annotation></semantics></math>
+even though we did not observe the data in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>j</mi></msub><mo>,</mo><msub><mi>t</mi><mrow><mi>j</mi><mo>+</mo><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(t_j, t_{j+1})</annotation></semantics></math>.
+This is usually achieved via splines or Fourier or wavelet basis
+decomposition to confer the observation with some degree of regularity
+and to account for possible periodicity or other specificity of the data
+point. This step of <em>data representation</em> effectively transforms
+the original observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐱</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{x}_i</annotation></semantics></math>
+which was a time series into a functional data point
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>:</mo><mi>𝒟</mi><mo>→</mo><mi>ℳ</mi></mrow><annotation encoding="application/x-tex">x_i :
+\mathcal{D} \to \mathcal{M}</annotation></semantics></math>.</p>
 </div>
 <div class="section level2">
 <h2 id="functional-data-representation">Functional data representation<a class="anchor" aria-label="anchor" href="#functional-data-representation"></a>
 </h2>
-<p>Given an orthonormal basis <span class="math inline">\(\{e_b\}_{b\ge
-1}\)</span> of the functional space which observations are assumed to
-belong to, we can model observation <span class="math inline">\(x_i\)</span> as:</p>
-<p><span class="math display">\[
+<p>Given an orthonormal basis
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">{</mo><msub><mi>e</mi><mi>b</mi></msub><msub><mo stretchy="false" form="postfix">}</mo><mrow><mi>b</mi><mo>≥</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">\{e_b\}_{b\ge 1}</annotation></semantics></math>
+of the functional space which observations are assumed to belong to, we
+can model observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>x</mi><mi>i</mi></msub><annotation encoding="application/x-tex">x_i</annotation></semantics></math>
+as:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>=</mo><msub><mi>f</mi><mi>i</mi></msub><mo>+</mo><msub><mi>ε</mi><mi>i</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
 x_i = f_i + \varepsilon_i,
-\]</span> where: <span class="math display">\[
+</annotation></semantics></math> where:
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munderover><mo>∑</mo><mrow><mi>b</mi><mo>=</mo><mn>1</mn></mrow><mi>B</mi></munderover><msub><mi>f</mi><mrow><mi>i</mi><mi>b</mi></mrow></msub><msub><mi>e</mi><mi>b</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>t</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
 f_i(t) = \sum_{b=1}^B f_{ib} e_b(t),
-\]</span> for some truncation <span class="math inline">\(B\)</span>.
-The coefficients <span class="math inline">\(f_{ib}\)</span> are then
-adjusted by minimizing a cost function that usually includes the data
-attachment term and a rougness penalty term as a way to enforce some
-regularity into the functional representation. It is common to use for
-instance the norm of the second derivative as roughness penalty, in
+</annotation></semantics></math> for some truncation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>B</mi><annotation encoding="application/x-tex">B</annotation></semantics></math>.
+The coefficients
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>f</mi><mrow><mi>i</mi><mi>b</mi></mrow></msub><annotation encoding="application/x-tex">f_{ib}</annotation></semantics></math>
+are then adjusted by minimizing a cost function that usually includes
+the data attachment term and a rougness penalty term as a way to enforce
+some regularity into the functional representation. It is common to use
+for instance the norm of the second derivative as roughness penalty, in
 which case the cost function becomes:</p>
-<p><span class="math display">\[
-\sum_{m=1}^M \left( x_i(t_m) - f_i(t_m) \right)^2 + \lambda \sum_{m=1}^M
-\left[ f_i^{(2)}(t_m) \right]^2
-\]</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munderover><mo>∑</mo><mrow><mi>m</mi><mo>=</mo><mn>1</mn></mrow><mi>M</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><msub><mi>f</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mo>+</mo><mi>λ</mi><munderover><mo>∑</mo><mrow><mi>m</mi><mo>=</mo><mn>1</mn></mrow><mi>M</mi></munderover><msup><mrow><mo stretchy="true" form="prefix">[</mo><msubsup><mi>f</mi><mi>i</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>2</mn><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>m</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">]</mo></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">
+\sum_{m=1}^M \left( x_i(t_m) - f_i(t_m) \right)^2 + \lambda \sum_{m=1}^M \left[ f_i^{(2)}(t_m) \right]^2
+</annotation></semantics></math></p>
 <p>In practice, such a functional representation can be achieved in R
 using the <strong>fda</strong> package. The following code adjusts a
-B-spline representation to the growth curves where the weight <span class="math inline">\(\lambda\)</span> of the roughness penalty is
-determined by minimizing the generalized cross-validation criterion:</p>
+B-spline representation to the growth curves where the weight
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
+of the roughness penalty is determined by minimizing the generalized
+cross-validation criterion:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">basisobj</span> <span class="op">&lt;-</span> <span class="fu">fda</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fda/man/create.bspline.basis.html" class="external-link">create.bspline.basis</a></span><span class="op">(</span>rangeval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, nbasis <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
 <span><span class="va">fd_vals</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">N</span>, \<span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
@@ -265,9 +261,10 @@ variability.</li>
 </ul>
 <p>However, we still have several possible clustering methods that we
 can explore to perform such a task. Namely, <a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
-implements the <span class="math inline">\(k\)</span>-means algorithm as
-well as hierarchical clustering and DBSCAN. We can compare these
-different clustering strategies:</p>
+implements the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
+algorithm as well as hierarchical clustering and DBSCAN. We can compare
+these different clustering strategies:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">growth_mcaps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_caps.html">compare_caps</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">x</span>,</span>
@@ -306,7 +303,9 @@ across observation in the form of a boxplot
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">growth_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"wss"</span>, what <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="berkeley-growth_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 <p>In terms of within-cluster distances to center (WSS), hierarchical
-agglomerative clustering with average or complete linkage and <span class="math inline">\(k\)</span>-means stand out.</p>
+agglomerative clustering with average or complete linkage and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
+stand out.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">growth_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"silhouette"</span>, what <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="berkeley-growth_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
@@ -385,28 +384,26 @@ characteristics of these girls which might explain why our clustering
 <em>sees them</em> as boys as well as understanding why 1 boy is seen as
 a girl.</p>
 </div>
-  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
 
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Aymeric Stamm.</p>
+  <p>Developed by Aymeric Stamm.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
 </div>
 
-  
 
-  
+
+
 
   </body>
 </html>
