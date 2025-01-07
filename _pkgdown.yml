@@ -7,14 +7,6 @@ navbar:
     left: [reference, articles, news, talks]
     right: [search, github, lightswitch]
   components:
-    news:
-      releases:
-      - text: "fdacluster 0.3.0"
-        href: https://astamm.github.io/posts/2023-07-04-fdacluster-030/
-      - text: "fdacluster 0.2.1"
-        href: https://astamm.github.io/posts/2023-05-19-fdacluster-021/
-      - text: "fdacluster 0.1.1"
-        href: https://astamm.github.io/posts/2022-05-10-fdacluster-011/
     talks:
       text: "Talks"
       menu:
@@ -47,3 +39,12 @@ reference:
     - simulated90
     - sim30_caps
     - sim30_mcaps
+
+news:
+  releases:
+  - text: "fdacluster 0.3.0"
+    href: https://astamm.github.io/posts/2023-07-04-fdacluster-030/
+  - text: "fdacluster 0.2.1"
+    href: https://astamm.github.io/posts/2023-05-19-fdacluster-021/
+  - text: "fdacluster 0.1.1"
+    href: https://astamm.github.io/posts/2022-05-10-fdacluster-011/
