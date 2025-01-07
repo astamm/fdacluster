@@ -40,9 +40,8 @@ https://doi.org/10.1007/s11749-011-0268-9.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://astamm.github.io/fdacluster/index.html}
-  \item \url{https://github.com/astamm/fdacluster}
   \item \url{https://astamm.github.io/fdacluster/}
+  \item \url{https://github.com/astamm/fdacluster}
 }
 
 }
