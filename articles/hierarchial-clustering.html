@@ -108,7 +108,7 @@ It is therefore natural when computing the distance between two curves
 to minimize such a distance over all possible warping functions in a
 chosen class, i.e. to integrate alignment when computing the distance
 matrix. The idea is to assess how far two curves are after optimal phase
-alignment. This step is achieved through the <a href="https://astamm.github.io/fdacluster/reference/fdadist.html" class="external-link"><code>fdadist()</code></a>.</p>
+alignment. This step is achieved through the <a href="https://astamm.github.io/fdacluster/reference/fdadist.html"><code>fdadist()</code></a>.</p>
 <p><strong>Step 2.</strong> The process of building up the hierarchy of
 possible clustering structures does not change once the distance matrix
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>D</mi><annotation encoding="application/x-tex">D</annotation></semantics></math>
@@ -117,7 +117,7 @@ it is still achieved via a call to <a href="https://rdrr.io/r/stats/hclust.html"
 Here, the user can choose which linkage criterion to use for assessing
 distances between sets of curves. For the sake of simplicity, only a
 subset of choices from the <a href="https://rdrr.io/r/stats/hclust.html" class="external-link"><code>stats::hclust()</code></a>
-function is actually available in <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a>,
+function is actually available in <a href="https://astamm.github.io/fdacluster/"><strong>fdacluster</strong></a>,
 namely <code>complete</code>, <code>average</code>, <code>single</code>
 and <code>ward.D2</code>.</p>
 <p><strong>Step 3.</strong> Once the dendrogram is built, a big
@@ -128,15 +128,15 @@ grouping structure has been chosen, all the curves need to undergo a
 last alignment to the centroid of the cluster they have been assigned
 to. Then, and only then, within-cluster sum of squared distances to
 centroid and silhouette values can be assessed. This step is achieved
-through a call to <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdakmeans()</code></a>
+through a call to <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html"><code>fdakmeans()</code></a>
 with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k = 1</annotation></semantics></math>
 and initial centroid corresponding to the cluster medoid.</p>
 </div>
 <div class="section level2">
-<h2 id="using-fdacluster">Using <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a><a class="anchor" aria-label="anchor" href="#using-fdacluster"></a>
+<h2 id="using-fdacluster">Using <a href="https://astamm.github.io/fdacluster/"><strong>fdacluster</strong></a><a class="anchor" aria-label="anchor" href="#using-fdacluster"></a>
 </h2>
-<p>All these steps have been enpapsulated into a single function in <a href="https://astamm.github.io/fdacluster/" class="external-link"><strong>fdacluster</strong></a>
+<p>All these steps have been enpapsulated into a single function in <a href="https://astamm.github.io/fdacluster/"><strong>fdacluster</strong></a>
 for ease of usage:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/fdahclust.html">fdahclust</a></span><span class="op">(</span></span>
@@ -175,13 +175,13 @@ amplitude data after alignment for assigning cluster membership of the
 observed curves. The user can switch on the use of phase data instead by
 using <code>cluster_on_phase = TRUE</code>.</p>
 <p>The second group of arguments are set to sensible default values and
-are used for the internal call to <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html" class="external-link"><code>fdakmeans()</code></a>
+are used for the internal call to <a href="https://astamm.github.io/fdacluster/reference/fdakmeans.html"><code>fdakmeans()</code></a>
 with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">k = 1</annotation></semantics></math>,
 which performs within-cluster alignment to centroid once groups have
 been determined by cutting the dendrogram at the appropriate height.
 These arguments are not meant to be changed unless the results of the
-clustering via <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html" class="external-link"><code>fdahclust()</code></a>
+clustering via <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html"><code>fdahclust()</code></a>
 seem very odd.</p>
 </div>
 <div class="section level2">
@@ -216,12 +216,12 @@ variability.</p>
 <span>  metric <span class="op">=</span> <span class="st">"normalized_l2"</span>, </span>
 <span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>The <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html" class="external-link"><code>fdahclust()</code></a>
-function returns an object of class <a href="https://astamm.github.io/fdacluster/reference/caps.html" class="external-link"><code>caps</code></a>
+<p>The <a href="https://astamm.github.io/fdacluster/reference/fdahclust.html"><code>fdahclust()</code></a>
+function returns an object of class <a href="https://astamm.github.io/fdacluster/reference/caps.html"><code>caps</code></a>
 (for <strong>C</strong>lustering with <strong>A</strong>mplitude and
 <strong>P</strong>hase <strong>S</strong>eparation) for which
-<code>S3</code> specialized methods of <a href="https://astamm.github.io/fdacluster/reference/autoplot.caps.html" class="external-link"><code>ggplot2::autoplot()</code></a>
-and <a href="https://astamm.github.io/fdacluster/reference/plot.caps.html" class="external-link"><code>graphics::plot()</code></a>
+<code>S3</code> specialized methods of <a href="https://astamm.github.io/fdacluster/reference/autoplot.caps.html"><code>ggplot2::autoplot()</code></a>
+and <a href="https://astamm.github.io/fdacluster/reference/plot.caps.html"><code>graphics::plot()</code></a>
 have been implemented.</p>
 <p>For instance, we can visualize the original and aligned functional
 data set with:</p>
@@ -267,7 +267,7 @@ and <em>silhouette</em> values across observations with:</p>
 <div class="section level3">
 <h3 id="choosing-the-number-of-clusters">Choosing the number of clusters<a class="anchor" aria-label="anchor" href="#choosing-the-number-of-clusters"></a>
 </h3>
-<p>The helper function <a href="https://astamm.github.io/fdacluster/reference/compare_caps.html" class="external-link"><code>compare_caps()</code></a>
+<p>The helper function <a href="https://astamm.github.io/fdacluster/reference/compare_caps.html"><code>compare_caps()</code></a>
 can be used to get an intuition of the number of clusters that one
 should be looking for.</p>
 <p>For example, we can generate data to help choosing the number of

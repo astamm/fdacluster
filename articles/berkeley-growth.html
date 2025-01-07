@@ -78,7 +78,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/">fdacluster</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
 <span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
@@ -260,7 +260,7 @@ themselves;</li>
 variability.</li>
 </ul>
 <p>However, we still have several possible clustering methods that we
-can explore to perform such a task. Namely, <a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+can explore to perform such a task. Namely, <a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 implements the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
 algorithm as well as hierarchical clustering and DBSCAN. We can compare
@@ -282,9 +282,9 @@ these different clustering strategies:</p>
 <span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  cluster_on_phase <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>This generates an object of class <a href="https://astamm.github.io/fdacluster/reference/compare_caps.html" class="external-link"><code>mcaps</code></a>
-which has specialized <code>S3</code> methods for both <a href="https://astamm.github.io/fdacluster/reference/plot.mcaps.html" class="external-link"><code>graphics::plot()</code></a>
-and <a href="https://astamm.github.io/fdacluster/reference/autoplot.mcaps.html" class="external-link"><code>ggplot2::autoplot()</code></a>.
+<p>This generates an object of class <a href="https://astamm.github.io/fdacluster/reference/compare_caps.html"><code>mcaps</code></a>
+which has specialized <code>S3</code> methods for both <a href="https://astamm.github.io/fdacluster/reference/plot.mcaps.html"><code>graphics::plot()</code></a>
+and <a href="https://astamm.github.io/fdacluster/reference/autoplot.mcaps.html"><code>ggplot2::autoplot()</code></a>.
 When called on an object of class <code>mcaps</code>, these methods gain
 the optional arguments:</p>
 <ul>
@@ -325,10 +325,10 @@ with complete linkage for example:</p>
 <span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  cluster_on_phase <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>This generates an object of class <a href="https://astamm.github.io/fdacluster/reference/caps.html" class="external-link"><code>caps</code></a>
-which has specialized <code>S3</code> methods for both <a href="https://astamm.github.io/fdacluster/reference/plot.caps.html" class="external-link"><code>graphics::plot()</code></a>
-and <a href="https://astamm.github.io/fdacluster/reference/autoplot.caps.html" class="external-link"><code>ggplot2::autoplot()</code></a>.
-When called on an object of class <a href="https://astamm.github.io/fdacluster/reference/caps.html" class="external-link"><code>caps</code></a>,
+<p>This generates an object of class <a href="https://astamm.github.io/fdacluster/reference/caps.html"><code>caps</code></a>
+which has specialized <code>S3</code> methods for both <a href="https://astamm.github.io/fdacluster/reference/plot.caps.html"><code>graphics::plot()</code></a>
+and <a href="https://astamm.github.io/fdacluster/reference/autoplot.caps.html"><code>ggplot2::autoplot()</code></a>.
+When called on an object of class <a href="https://astamm.github.io/fdacluster/reference/caps.html"><code>caps</code></a>,
 these methods gain the optional argument <code>type</code> which can be
 one of <code>amplitude</code> or <code>phase</code>.</p>
 <p>The default is <code>type = "amplitude"</code> in which case curves
@@ -345,7 +345,7 @@ membership:</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">growth_caps</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="berkeley-growth_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
 <p>It is also possible to show a visual inspection of internal cluster
-validation via the <a href="https://astamm.github.io/fdacluster/reference/diagnostic_plot.html" class="external-link"><code>diagnostic_plot()</code></a>
+validation via the <a href="https://astamm.github.io/fdacluster/reference/diagnostic_plot.html"><code>diagnostic_plot()</code></a>
 function, which shows individual distance-to-center and silhouette
 values, with observations ordered by decreasing value of intra-cluster
 silhouette:</p>

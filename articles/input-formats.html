@@ -78,11 +78,11 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/index.html" class="external-link">fdacluster</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/">fdacluster</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
 <span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
-<p>We shall recall that <a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+<p>We shall recall that <a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 handles only functional data on univariate domains. This is because
 alignment (a.k.a. registration) of curves defined on multivariate
 domains is much more complex. The codomain of the functional data can
@@ -102,7 +102,7 @@ the dimension of the codomain of the curves.</li>
 <div class="section level2">
 <h2 id="native-format">Native format<a class="anchor" aria-label="anchor" href="#native-format"></a>
 </h2>
-<p>The native format in <a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+<p>The native format in <a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 consists in a pair of vector/matrix <code>x</code> and matrix/array
 <code>y</code> respectively storing the evaluation grids and the values
 of the curves on these grids.</p>
@@ -145,7 +145,7 @@ M</annotation></semantics></math>.</p>
 </h2>
 <p>The reason for such a choice of native format is computation
 efficiency. However, the <a href="https://cran.r-project.org/view=FunctionalData" class="external-link">R landscape of
-functional data analysis</a> is very rich. This has led us to make <a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+functional data analysis</a> is very rich. This has led us to make <a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 compatible with other standard ways of storing functional data in R.
 Specifically, we added support for the <code>fd</code> class from the <a href="https://cran.r-project.org/package=fda" class="external-link"><strong>fda</strong></a>
 package and for the <code>funData</code> and <code>multiFunData</code>
@@ -188,7 +188,7 @@ elements of functional data that may be defined on different dimensional
 domains (e.g., functions and images).</li>
 </ol>
 </blockquote>
-<p>The <a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+<p>The <a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 package focuses on functional data defined on uni-dimensional domains
 with possibly multivariate codomains and possibly different evaluation
 grids per curve. As such, support for all three classes is needed. This
@@ -262,7 +262,7 @@ format:</p>
 <h4 id="example-for-fundata-support-growth-data">Example for <code>funData</code> support: Growth Data<a class="anchor" aria-label="anchor" href="#example-for-fundata-support-growth-data"></a>
 </h4>
 <p>The following lines of code demonstrates how clustering functions in
-<a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+<a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 handle objects of class <code>funData</code> using the Berkeley growth
 data study developed in <span class="citation">Silverman and Ramsay
 (2002)</span>.</p>
@@ -287,7 +287,7 @@ data study developed in <span class="citation">Silverman and Ramsay
 <h4 id="example-for-irregfundata-support-simulated-data">Example for <code>irregFunData</code> support: Simulated Data<a class="anchor" aria-label="anchor" href="#example-for-irregfundata-support-simulated-data"></a>
 </h4>
 <p>The following lines of code demonstrates how clustering functions in
-<a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+<a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 handle objects of class <code>irregFunData</code> using in-house
 simulated data on the fly.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -322,7 +322,7 @@ simulated data on the fly.</p>
 <h4 id="example-for-multifundata-support-gait-data">Example for <code>multiFunData</code> support: Gait Data<a class="anchor" aria-label="anchor" href="#example-for-multifundata-support-gait-data"></a>
 </h4>
 <p>The following lines of code demonstrates how clustering functions in
-<a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+<a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 handle objects of class <code>multiFunData</code> using the gait data
 study developed in <span class="citation">Silverman and Ramsay
 (2002)</span>.</p>
@@ -387,7 +387,7 @@ variables for multivariate functional data objects. A functional data
 object is <em>univariate</em> if <code>coef</code> is a vector or matrix
 and <em>multivariate</em> if it is a three-dimensional array.</p>
 </blockquote>
-<p>Consequently, the <a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+<p>Consequently, the <a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 package handles objects of class <code>fd</code> by considering that
 <code>x</code>, as in native format, stores the unidimensional grids and
 <code>y</code> is an object of class <code>fd</code>. It then parses the
@@ -429,7 +429,7 @@ data in the following way:</p>
 <h4 id="example-for-fd-support-gait-data">Example for <code>fd</code> support: Gait Data<a class="anchor" aria-label="anchor" href="#example-for-fd-support-gait-data"></a>
 </h4>
 <p>The following lines of code demonstrates how clustering functions in
-<a href="https://astamm.github.io/fdacluster/index.html" class="external-link"><strong>fdacluster</strong></a>
+<a href="https://astamm.github.io/fdacluster/index.html"><strong>fdacluster</strong></a>
 handle objects of class <code>fd</code> using the gait data study
 developed in <span class="citation">Silverman and Ramsay
 (2002)</span>.</p>
