@@ -2,42 +2,47 @@ url: https://astamm.github.io/fdacluster/
 template:
   bootstrap: 5
 
-reference:
-  - title: The caps class
-  - contents:
-    - as_caps
-    - is_caps
-    - autoplot.caps
-    - plot.caps
-    - diagnostic_plot
-  - title: Clustering methods
-  - contents:
-    - fdadist
-    - fdadbscan
-    - fdahclust
-    - fdakmeans
-  - title: Clustering comparison
-  - contents:
-    - compare_caps
-    - autoplot.mcaps
-    - plot.mcaps
-  - title: Data sets
-  - contents:
-    - simulated30
-    - simulated30_sub
-    - simulated90
-    - sim30_caps
-    - sim30_mcaps
-
-news:
-  releases:
-  - text: "fdacluster 0.3.0"
-    href: https://astamm.github.io/posts/2023-07-04-fdacluster-030/
-  - text: "fdacluster 0.2.1"
-    href: https://astamm.github.io/posts/2023-05-19-fdacluster-021/
-  - text: "fdacluster 0.1.1"
-    href: https://astamm.github.io/posts/2022-05-10-fdacluster-011/
-
-talks:
-  title: "Rencontres R 2023"
-  contents: https://astamm.github.io/talks/2023-06-22-fdacluster-021/
+navbar:
+  structure:
+    left: [reference, articles, news, talks]
+    right: [search, github, lightswitch]
+  components:
+    reference:
+      - title: The caps class
+      - contents:
+        - as_caps
+        - is_caps
+        - autoplot.caps
+        - plot.caps
+        - diagnostic_plot
+      - title: Clustering methods
+      - contents:
+        - fdadist
+        - fdadbscan
+        - fdahclust
+        - fdakmeans
+      - title: Clustering comparison
+      - contents:
+        - compare_caps
+        - autoplot.mcaps
+        - plot.mcaps
+      - title: Data sets
+      - contents:
+        - simulated30
+        - simulated30_sub
+        - simulated90
+        - sim30_caps
+        - sim30_mcaps
+    news:
+      releases:
+      - text: "fdacluster 0.3.0"
+        href: https://astamm.github.io/posts/2023-07-04-fdacluster-030/
+      - text: "fdacluster 0.2.1"
+        href: https://astamm.github.io/posts/2023-05-19-fdacluster-021/
+      - text: "fdacluster 0.1.1"
+        href: https://astamm.github.io/posts/2022-05-10-fdacluster-011/
+    talks:
+      text: "Talks"
+      menu:
+      - text: "Rencontres R 2023"
+        contents: https://astamm.github.io/talks/2023-06-22-fdacluster-021/
