@@ -285,22 +285,55 @@ remove_missing_points <- function(grids, curves) {
   list(grids = out_grids, curves = out_curves)
 }
 
-unnest_one <- function(x, col) {
-  times <- lengths(x[[col]])
-  base_names <- names(x)[!names(x) == col]
-  out <- base_names |>
-    sapply(\(n) rep(x[[n]], times = times)) |>
-    cbind() |>
-    as.data.frame()
+unnest_string <- function(x, cols) {
+  times <- lengths(x[[cols[1]]])
+  if (length(cols) > 1) {
+    for (i in 2:length(cols)) {
+      if (!all(lengths(x[[cols[i]]]) == times)) {
+        cli::cli_abort("All columns in the dataset must have the same length.")
+      }
+    }
+  }
+
+  base_names <- names(x)[!(names(x) %in% cols)]
+  out <- lapply(base_names, \(.base_name) {
+    do.call(c, mapply(\(.x, .times) {
+      is_factor <- is.factor(.x)
+      if (is_factor) {
+        lvls <- levels(.x)
+        .x <- as.character(.x)
+      }
+      if (is.character(.x)) {
+        if (length(.x) == 1) {
+          out <- rep(.x, .times)
+          if (is_factor) {
+            out <- factor(out, levels = lvls)
+          }
+          return(out)
+        }
+        out <- replicate(.times, .x, simplify = FALSE)
+        if (is_factor) {
+          out <- lapply(out, \(.out) factor(.out, levels = lvls))
+        }
+        return(out)
+      }
+      mat <- tcrossprod(rep(1, .times), .x)
+      if (ncol(mat) == 1) {
+        return(rep(.x, .times))
+      }
+      out <- lapply(seq_len(nrow(mat)), \(i) mat[i, ])
+    }, x[[.base_name]], times, SIMPLIFY = FALSE))
+  })
   names(out) <- base_names
-  out[[col]] <- unlist(x[[col]])
+  out <- tibble::as_tibble(out)
+  for (col in cols) {
+    out[[col]] <- unlist(x[[col]])
+  }
   out
 }
 
 unnest <- function(x, ...) {
   cols <- rlang::enquos(...)
-  out <- x
-  for (col in cols)
-    out <- unnest_one(out, rlang::as_name(col))
-  out
+  cols <- sapply(cols, \(x) rlang::as_name(x))
+  unnest_string(x, cols)
 }

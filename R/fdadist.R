@@ -125,8 +125,8 @@ fdadist <- function(x, y = NULL,
 }
 
 linear_index <- function(n) {
-  res <- tidyr::expand_grid(i = 1:n, j = 1:n)
-  res <- subset(res, res$j > res$i)
-  # res$k <- as.integer(n * (res$i - 1) - res$i * (res$i - 1) / 2 + res$j - res$i)
-  res
+  df <- expand.grid(j = 1:n, i = 1:n)
+  df <- subset(df, df$j > df$i)
+  rownames(df) <- NULL
+  df[, 2:1]
 }

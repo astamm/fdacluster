@@ -7,17 +7,69 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-load("../R/sysdata.rda")
-```
 
-```{r setup}
+load("../R/sysdata.rda")
+
 library(fdacluster)
 library(ggplot2)
+
+unnest_string <- function(x, cols) {
+  times <- lengths(x[[cols[1]]])
+  if (length(cols) > 1) {
+    for (i in 2:length(cols)) {
+      if (!all(lengths(x[[cols[i]]]) == times)) {
+        cli::cli_abort("All columns in the dataset must have the same length.")
+      }
+    }
+  }
+  
+  base_names <- names(x)[!(names(x) %in% cols)]
+  out <- lapply(base_names, \(.base_name) {
+    do.call(c, mapply(\(.x, .times) {
+      is_factor <- is.factor(.x)
+      if (is_factor) {
+        lvls <- levels(.x)
+        .x <- as.character(.x)
+      }
+      if (is.character(.x)) {
+        if (length(.x) == 1) {
+          out <- rep(.x, .times)
+          if (is_factor) {
+            out <- factor(out, levels = lvls)
+          }
+          return(out)
+        }
+        out <- replicate(.times, .x, simplify = FALSE)
+        if (is_factor) {
+          out <- lapply(out, \(.out) factor(.out, levels = lvls))
+        }
+        return(out)
+      }
+      mat <- tcrossprod(rep(1, .times), .x)
+      if (ncol(mat) == 1) {
+        return(rep(.x, .times))
+      }
+      out <- lapply(seq_len(nrow(mat)), \(i) mat[i, ])
+    }, x[[.base_name]], times, SIMPLIFY = FALSE))
+  })
+  names(out) <- base_names
+  out <- tibble::as_tibble(out)
+  for (col in cols) {
+    out[[col]] <- unlist(x[[col]])
+  }
+  out
+}
+
+unnest <- function(x, ...) {
+  cols <- rlang::enquos(...)
+  cols <- sapply(cols, \(x) rlang::as_name(x))
+  unnest_string(x, cols)
+}
 ```
 
 ## The Berkeley growth data
@@ -27,7 +79,10 @@ which the height in cm has been measured over time on a common grid of age:
 
 ```{r, fig.width=7, fig.retina=2}
 growth <- fda::growth
-mb <- as.factor(c(rep("male", dim(growth$hgtm)[2]), rep("female", dim(growth$hgtf)[2])))
+mb <- as.factor(c(
+  rep("male", dim(growth$hgtm)[2]), 
+  rep("female", dim(growth$hgtf)[2])
+))
 N <- length(mb)
 x <- growth$age
 M <- length(x)
@@ -38,14 +93,14 @@ tibble::tibble(
   Gender = mb,
   CurveID = 1:N
 ) |> 
-  tidyr::unnest(cols = c(Age, Height)) |> 
-  ggplot(aes(Age, Height, color = Gender, group = CurveID)) + 
-  geom_point() + 
+  unnest(Age, Height) |> 
+  ggplot(aes(Age, Height, color = Gender, group = CurveID)) +
+  geom_point() +
   geom_line() +
-  theme_bw() + 
+  theme_bw() +
   labs(
-    title = "Heights of 39 boys and 54 girls from age 1 to 18", 
-    x = "Age (years)", 
+    title = "Heights of 39 boys and 54 girls from age 1 to 18",
+    x = "Age (years)",
     y = "Height (cm)"
   )
 ```
@@ -124,7 +179,7 @@ tibble::tibble(
   Gender = mb,
   CurveID = 1:N
 ) |> 
-  tidyr::unnest(cols = c(Age, Height)) |> 
+  unnest(Age, Height) |> 
   ggplot(aes(Age, Height, color = Gender, group = CurveID)) + 
   geom_point() + 
   geom_line() +
@@ -146,7 +201,7 @@ tibble::tibble(
   Gender = mb,
   CurveID = 1:N
 ) |>
-  tidyr::unnest(cols = c(Age, Height)) |>
+  unnest(Age, Height) |>
   ggplot(aes(Age, Height, color = Gender, group = CurveID)) +
   geom_point() +
   geom_line() +
