@@ -284,3 +284,23 @@ remove_missing_points <- function(grids, curves) {
   }
   list(grids = out_grids, curves = out_curves)
 }
+
+unnest_one <- function(x, col) {
+  times <- lengths(x[[col]])
+  base_names <- names(x)[!names(x) == col]
+  out <- base_names |>
+    sapply(\(n) rep(x[[n]], times = times)) |>
+    cbind() |>
+    as.data.frame()
+  names(out) <- base_names
+  out[[col]] <- unlist(x[[col]])
+  out
+}
+
+unnest <- function(x, ...) {
+  cols <- rlang::enquos(...)
+  out <- x
+  for (col in cols)
+    out <- unnest_one(out, rlang::as_name(col))
+  out
+}

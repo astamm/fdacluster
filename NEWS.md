@@ -13,9 +13,9 @@ distance; the former cannot be used in combination with dilation or affine
 warping classes because it is not invariant to these transformations.
 * Integrated distances in C++ classes are now computed via `arma::trapz()`.
 * Added talk given at *Rencontres R 2023* in Avignon, France to the News section 
-of the website. TO DO
+of the website.
 * Now uses package **distops** for computing distance matrices. TO DO
-* Reduced number of dependencies: removed dplyr, tidyr, forcats, (progressr, tidyr, furrr, purrr). TO DO
+* Reduced number of dependencies: removed dplyr, forcats, (TO DO: tidyr, purrr/furrr).
 * Updated `README` file.
 * Updated GHA workflows.
 * Updated vignettes.

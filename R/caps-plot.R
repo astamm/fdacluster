@@ -113,7 +113,7 @@ format_viz <- function(grids, curves, memberships) {
   N <- dims[1]
   L <- dims[2]
   M <- dims[3]
-  lapply(1:L, function(l) {
+  out <- lapply(1:L, function(l) {
     unicurves <- curves[, l, ]
     data.frame(
       grid = as.vector(grids),
@@ -123,10 +123,9 @@ format_viz <- function(grids, curves, memberships) {
       component_id = l
     )
   }) |>
-    do.call(what = rbind, args = _) |>
-    transform(
-      membership = as.factor(membership),
-      curve_id = as.factor(curve_id),
-      component_id = as.factor(component_id)
-    )
+    do.call(what = rbind, args = _)
+  out$membership <- as.factor(out$membership)
+  out$curve_id <- as.factor(out$curve_id)
+  out$component_id <- as.factor(out$component_id)
+  out
 }
