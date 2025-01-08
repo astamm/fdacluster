@@ -89,20 +89,18 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://astamm.github.io/fdacluster/">fdacluster</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Error in get(paste0(generic, ".", class), envir = get_method_env()) : </span></span>
-<span><span class="co">#&gt;   object 'type_sum.accel' not found</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="the-berkeley-growth-data">The Berkeley growth data<a class="anchor" aria-label="anchor" href="#the-berkeley-growth-data"></a>
 </h2>
 <p>A total of 93 children (39 boys and 54 girls) have been followed on
 which the height in cm has been measured over time on a common grid of
 age:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">growth</span> <span class="op">&lt;-</span> <span class="fu">fda</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/fda/man/growth.html" class="external-link">growth</a></span></span>
-<span><span class="va">mb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">growth</span><span class="op">$</span><span class="va">hgtm</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"female"</span>, <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">growth</span><span class="op">$</span><span class="va">hgtf</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">mb</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"male"</span>, <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">growth</span><span class="op">$</span><span class="va">hgtm</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span>, </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"female"</span>, <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">growth</span><span class="op">$</span><span class="va">hgtf</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mb</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">growth</span><span class="op">$</span><span class="va">age</span></span>
 <span><span class="va">M</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
@@ -113,17 +111,17 @@ age:</p>
 <span>  Gender <span class="op">=</span> <span class="va">mb</span>,</span>
 <span>  CurveID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span>, color <span class="op">=</span> <span class="va">Gender</span>, group <span class="op">=</span> <span class="va">CurveID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">"Heights of 39 boys and 54 girls from age 1 to 18"</span>, </span>
-<span>    x <span class="op">=</span> <span class="st">"Age (years)"</span>, </span>
+<span>  <span class="fu">unnest</span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span>, color <span class="op">=</span> <span class="va">Gender</span>, group <span class="op">=</span> <span class="va">CurveID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
+<span>    title <span class="op">=</span> <span class="st">"Heights of 39 boys and 54 girls from age 1 to 18"</span>,</span>
+<span>    x <span class="op">=</span> <span class="st">"Age (years)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Height (cm)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-2-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-1-1.png" width="672"></p>
 <p>A single observation is actually a time series
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐱</mi><mi>i</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>M</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{x}_i = (x_i(t_1), \dots,
 x_i(t_M))^\top</annotation></semantics></math>. We can hypothesize that
@@ -175,7 +173,7 @@ B-spline representation to the growth curves where the weight
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>λ</mi><annotation encoding="application/x-tex">\lambda</annotation></semantics></math>
 of the roughness penalty is determined by minimizing the generalized
 cross-validation criterion:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">basisobj</span> <span class="op">&lt;-</span> <span class="fu">fda</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fda/man/create.bspline.basis.html" class="external-link">create.bspline.basis</a></span><span class="op">(</span>rangeval <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, nbasis <span class="op">=</span> <span class="fl">15</span><span class="op">)</span></span>
 <span><span class="va">fd_vals</span> <span class="op">&lt;-</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">N</span>, \<span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">yobs</span> <span class="op">&lt;-</span> <span class="va">y0</span><span class="op">[</span>, <span class="va">n</span><span class="op">]</span></span>
@@ -201,7 +199,7 @@ cross-validation criterion:</p>
 <span>  basisobj <span class="op">=</span> <span class="va">basisobj</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>We can now take a look of the data under this representation:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y0</span> <span class="op">&lt;-</span> <span class="fu">fda</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fda/man/eval.fd.html" class="external-link">eval.fd</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">fd</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  Age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">N</span>, <span class="va">x</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
@@ -209,19 +207,19 @@ cross-validation criterion:</p>
 <span>  Gender <span class="op">=</span> <span class="va">mb</span>,</span>
 <span>  CurveID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span>, color <span class="op">=</span> <span class="va">Gender</span>, group <span class="op">=</span> <span class="va">CurveID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">unnest</span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span>, color <span class="op">=</span> <span class="va">Gender</span>, group <span class="op">=</span> <span class="va">CurveID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"Heights of 39 boys and 54 girls from age 1 to 18"</span>, </span>
 <span>    x <span class="op">=</span> <span class="st">"Age (years)"</span>, </span>
 <span>    y <span class="op">=</span> <span class="st">"Height (cm)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
 <p>We can also compute and display the growth rate:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu">fda</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fda/man/eval.fd.html" class="external-link">eval.fd</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">fd</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  Age <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">replicate</a></span><span class="op">(</span><span class="va">N</span>, <span class="va">x</span>, simplify <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>,</span>
@@ -229,17 +227,17 @@ cross-validation criterion:</p>
 <span>  Gender <span class="op">=</span> <span class="va">mb</span>,</span>
 <span>  CurveID <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="va">N</span></span>
 <span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html" class="external-link">unnest</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span>, color <span class="op">=</span> <span class="va">Gender</span>, group <span class="op">=</span> <span class="va">CurveID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>  <span class="fu">unnest</span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">ggplot</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span><span class="va">Age</span>, <span class="va">Height</span>, color <span class="op">=</span> <span class="va">Gender</span>, group <span class="op">=</span> <span class="va">CurveID</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_point</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">geom_line</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">labs</span><span class="op">(</span></span>
 <span>    title <span class="op">=</span> <span class="st">"Growth velocity of 39 boys and 54 girls from age 1 to 18"</span>,</span>
 <span>    x <span class="op">=</span> <span class="st">"Age (years)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Growth velocity (cm/year)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
 <p>This graph is interesting because it tells us that</p>
 <ul>
 <li>there is a first peak of growth velocity common to boys and girls
@@ -277,7 +275,7 @@ implements the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
 algorithm as well as hierarchical clustering and DBSCAN. We can compare
 these different clustering strategies:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">growth_mcaps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_caps.html">compare_caps</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">x</span>,</span>
 <span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">y1</span><span class="op">)</span>,</span>
@@ -311,23 +309,23 @@ be displayed (<code>what = "mean"</code>) or the entire distribution
 across observation in the form of a boxplot
 (<code>what = "distribution"</code>).</li>
 </ul>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">growth_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"wss"</span>, what <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
 <p>In terms of within-cluster distances to center (WSS), hierarchical
 agglomerative clustering with average or complete linkage and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
 stand out.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">growth_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"silhouette"</span>, what <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-8-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
 <p>In terms of individual silhouette values, DBSCAN does not appear in
 the comparison because it auto-detects the number of clusters and only
 found 1 cluster. Of the other methods, hierarchical agglomerative
 clustering with average or complete linkage stand out.</p>
 <p>We can therefore proceed with hierarchical agglomerative clustering
 with complete linkage for example:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">growth_caps</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/fdahclust.html">fdahclust</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="va">x</span>,</span>
 <span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">y1</span><span class="op">)</span>,</span>
@@ -346,34 +344,34 @@ one of <code>amplitude</code> or <code>phase</code>.</p>
 <p>The default is <code>type = "amplitude"</code> in which case curves
 before and after alignment are shown and colored by cluster
 membership:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">growth_caps</span>, type <span class="op">=</span> <span class="st">"amplitude"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in data.frame(grid = as.vector(grids), value = as.vector(unicurves), :</span></span>
 <span><span class="co">#&gt; row names were found from a short variable and have been discarded</span></span>
 <span><span class="co">#&gt; Warning in data.frame(grid = as.vector(grids), value = as.vector(unicurves), :</span></span>
 <span><span class="co">#&gt; row names were found from a short variable and have been discarded</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
 <p>When <code>type = "phase"</code>, the warping functions are instead
 displayed which gives a sense of the phase variability in the data
 <em>after</em> phase alignment. Again, they are colored by cluster
 membership:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">growth_caps</span>, type <span class="op">=</span> <span class="st">"phase"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in data.frame(grid = as.vector(x$original_grids), value =</span></span>
 <span><span class="co">#&gt; as.vector(x$aligned_grids), : row names were found from a short variable and</span></span>
 <span><span class="co">#&gt; have been discarded</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
 <p>It is also possible to show a visual inspection of internal cluster
 validation via the <a href="https://astamm.github.io/fdacluster/reference/diagnostic_plot.html"><code>diagnostic_plot()</code></a>
 function, which shows individual distance-to-center and silhouette
 values, with observations ordered by decreasing value of intra-cluster
 silhouette:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/diagnostic_plot.html">diagnostic_plot</a></span><span class="op">(</span><span class="va">growth_caps</span><span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-12-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
 <p>Finally, we can explore the correspondence between the non-supervised
 groups that we found and the actual gender distribution:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">growth_caps</span><span class="op">$</span><span class="va">memberships</span>, <span class="va">mb</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">`rownames&lt;-`</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Group 1"</span>, <span class="st">"Group 2"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
