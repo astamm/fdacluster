@@ -217,8 +217,8 @@ fdakmeans <- function(
         use_verbose = FALSE
       )
       seeds <- 1:n_clusters |>
-        purrr::map(~ which(out$memberships == .x)) |>
-        purrr::map_int(~ .x[which.min(out$distances_to_center[.x])])
+        lapply(\(.x) which(out$memberships == .x)) |>
+        sapply(\(.x) .x[which.min(out$distances_to_center[.x])])
     } else if (seeding_strategy == "kmeans++") {
       D <- fdadist(
         x = x,
@@ -283,8 +283,8 @@ fdakmeans <- function(
         )
         list(caps = km, totss = sum(km$distances_to_center))
       }, .options = furrr::furrr_options(seed = TRUE, packages = "fdacluster"))
-      best_idx <- which.min(purrr::map_dbl(out, "totss"))
-      return(purrr::map(out, "caps")[[best_idx]])
+      best_idx <- which.min(sapply(out, \(.x) .x$totss))
+      return(lapply(out, \(.x) .x$caps)[[best_idx]])
     } else if (seeding_strategy == "exhaustive") {
       sols <- utils::combn(N, n_clusters, simplify = FALSE)
       pb <- progressr::progressor(steps = length(sols))
@@ -310,8 +310,8 @@ fdakmeans <- function(
         )
       }, .options = furrr::furrr_options(seed = NULL, packages = "fdacluster"))
       dtcs <- sols |>
-        purrr::map("distances_to_center") |>
-        purrr::map_dbl(sum)
+        lapply(\(.x) .x$distances_to_center) |>
+        sapply(sum)
       return(as_caps(sols[[which.min(dtcs)]]))
     }
   } else {
@@ -374,7 +374,7 @@ fdakmeans <- function(
 
     if (cluster_on_phase)
     {
-      res$distances_to_center <- sqrt(purrr::map_dbl(1:N, \(n) {
+      res$distances_to_center <- sqrt(sapply(1:N, \(n) {
         trapz(
           x = common_grid,
           y = (warpings[n, ] - common_grid)^2
@@ -389,8 +389,8 @@ fdakmeans <- function(
     if (length(dim(q0)) == 2L) # This should be done in fdasrvf package
       dim(q0) <- c(1, dim(q0))
     amplitude_variation <- sum(res$distances_to_center^2)
-    total_variation <- sum(purrr::map_dbl(1:N, \(n) {
-      sum(purrr::map_dbl(1:L, \(l) {
+    total_variation <- sum(sapply(1:N, \(n) {
+      sum(sapply(1:L, \(l) {
         trapz(
           x = common_grid,
           y = (q0[l, , n] - res$templates.q[l, , res$labels[n]])^2

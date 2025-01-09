@@ -123,21 +123,21 @@ format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
       L <- 1
       N <- length(x@argvals)
       M <- x@argvals |>
-        purrr::map_int(length) |>
+        sapply(length) |>
         mean() |>
         round()
       y <- array(dim = c(N, L, M))
       y[, 1, ] <- x@X |>
-        purrr::imap(\(values, id) stats::approx(x@argvals[[id]], values, n = M)$y) |>
+        imap(\(values, id) stats::approx(x@argvals[[id]], values, n = M)$y) |>
         do.call(rbind, args = _)
       x <- x@argvals |>
-        purrr::map(\(grid) seq(min(grid), max(grid), length.out = M)) |>
+        lapply(\(grid) seq(min(grid), max(grid), length.out = M)) |>
         do.call(rbind, args = _)
     } else if (inherits(x, "multiFunData")) {
       L <- length(x)
       dims <- dim(x[[1]]@X)
       grid <- x[[1]]@argvals[[1]]
-      purrr::walk(x, \(fData) {
+      lapply(x, \(fData) {
         if (length(fData@argvals) != 1)
           cli::cli_abort(c(
             "The {.pkg fdacluster} package does not support functional data ",
@@ -166,7 +166,7 @@ format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
         "{.cls multiFunData}."
       ))
   } else if (rlang::is_installed("fda") && inherits(y, "fd")) {
-    dims <- purrr::map_int(y$fdnames, length)
+    dims <- sapply(y$fdnames, length)
     M <- dims[1]
     N <- dims[2]
     L <- dims[3]
@@ -336,4 +336,15 @@ unnest <- function(x, ...) {
   cols <- rlang::enquos(...)
   cols <- sapply(cols, \(x) rlang::as_name(x))
   unnest_string(x, cols)
+}
+
+matrix_tree <- function(x, margin = 1) {
+  if (margin == 1) {
+    return(lapply(seq_len(nrow(x)), \(i) x[i, ]))
+  }
+  lapply(seq_len(ncol(x)), \(i) x[, i])
+}
+
+imap <- function(.x, .f, ...) {
+  mapply(.f, .x, seq_along(.x), ..., SIMPLIFY = FALSE)
 }

@@ -61,7 +61,7 @@ This however leads to an outcome that is very sensitive to the initial choice in
 ```{r, eval=FALSE}
 withr::with_seed(1234, {
   initial_seeds <- replicate(10, sample.int(30, 2, replace = FALSE), simplify = FALSE)
-  outs_manual <- purrr::map(initial_seeds, \(.seeds) {
+  outs_manual <- lapply(initial_seeds, \(.seeds) {
     fdakmeans(
       x = simulated30$x,
       y = simulated30$y,
@@ -80,8 +80,8 @@ withr::with_seed(1234, {
 ```{r}
 tibble::tibble(
   Initialization = initial_seeds |> 
-    purrr::map_chr(\(.seeds) paste(.seeds, collapse = ",")), 
-  `Misclassification Rate (%)` = purrr::map_dbl(outs_manual, \(.clus) {
+    sapply(\(.seeds) paste(.seeds, collapse = ",")), 
+  `Misclassification Rate (%)` = sapply(outs_manual, \(.clus) {
     tbl <- table(.clus$memberships, true_groups)
     round(min(tbl[1, 1] + tbl[2, 2], tbl[1, 2] + tbl[2, 1]) / 30 * 100, 2)
   })
@@ -129,7 +129,7 @@ withr::with_seed(1234, {
 ```{r}
 tibble::tibble(
   Run = 1:10, 
-  `Misclassification Rate (%)` = purrr::map_dbl(outs_kpp, \(.clus) {
+  `Misclassification Rate (%)` = sapply(outs_kpp, \(.clus) {
     tbl <- table(.clus$memberships, true_groups)
     round(min(tbl[1, 1] + tbl[2, 2], tbl[1, 2] + tbl[2, 1]) / 30 * 100, 2)
   })
@@ -172,7 +172,7 @@ withr::with_seed(1234, {
 ```{r}
 tibble::tibble(
   Run = 1:10, 
-  `Misclassification Rate (%)` = purrr::map_dbl(outs_ekpp, \(.clus) {
+  `Misclassification Rate (%)` = sapply(outs_ekpp, \(.clus) {
     tbl <- table(.clus$memberships, true_groups)
     round(min(tbl[1, 1] + tbl[2, 2], tbl[1, 2] + tbl[2, 1]) / 30 * 100, 2)
   })

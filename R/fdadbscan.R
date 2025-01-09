@@ -104,13 +104,13 @@ fdadbscan <- function(x, y,
   )
   Dm <- as.matrix(D)
 
-  results <- purrr::map(2:N, \(.min_pts) {
+  results <- lapply(2:N, \(.min_pts) {
     dsts <- sort(dbscan::kNNdist(D, k = .min_pts - 1))
     eps <- dsts[which.max(diff(dsts))]
     obj <- dbscan::frNN(D, eps = eps)
     dbscan::dbscan(obj, minPts = .min_pts)
   })
-  sils <- purrr::map_dbl(results, \(.res) {
+  sils <- sapply(results, \(.res) {
     if (length(unique(.res$cluster)) == 1) return(NA)
     mean(cluster::silhouette(.res$cluster, D)[, "sil_width"])
   })
@@ -199,8 +199,8 @@ fdadbscan <- function(x, y,
     memberships = labels,
     distances_to_center = dtc,
     silhouettes = silhouettes,
-    amplitude_variation = sum(purrr::map_dbl(kmresults, "amplitude_variation")),
-    total_variation = sum(purrr::map_dbl(kmresults, "total_variation")),
+    amplitude_variation = sum(sapply(kmresults, \(.x) .x$amplitude_variation)),
+    total_variation = sum(sapply(kmresults, \(.x) .x$total_variation)),
     n_iterations = 0,
     call_name = callname,
     call_args = callargs

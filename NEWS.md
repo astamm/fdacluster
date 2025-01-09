@@ -15,7 +15,7 @@ warping classes because it is not invariant to these transformations.
 * Added talk given at *Rencontres R 2023* in Avignon, France to the News section 
 of the website.
 * Now uses package **distops** for computing distance matrices. TO DO
-* Reduced number of dependencies: removed dplyr, forcats, tidyr (TO DO: purrr/furrr).
+* Reduced number of dependencies: removed dplyr, forcats, tidyr, purrr (TO DO: furrr).
 * Updated `README` file.
 * Updated GHA workflows.
 * Updated vignettes.

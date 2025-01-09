@@ -70,6 +70,13 @@ unnest <- function(x, ...) {
   cols <- sapply(cols, \(x) rlang::as_name(x))
   unnest_string(x, cols)
 }
+
+matrix_tree <- function(x, margin = 1) {
+  if (margin == 1) {
+    return(lapply(seq_len(nrow(x)), \(i) x[i, ]))
+  }
+  lapply(seq_len(ncol(x)), \(i) x[, i])
+}
 ```
 
 ## The Berkeley growth data
@@ -89,7 +96,7 @@ M <- length(x)
 y0 <- cbind(growth$hgtm, growth$hgtf)
 tibble::tibble(
   Age = replicate(N, x, simplify = FALSE),
-  Height = purrr::array_tree(y0, margin = 2),
+  Height = matrix_tree(y0, margin = 2),
   Gender = mb,
   CurveID = 1:N
 ) |> 
@@ -144,7 +151,7 @@ by minimizing the generalized cross-validation criterion:
 
 ```{r}
 basisobj <- fda::create.bspline.basis(rangeval = range(x), nbasis = 15)
-fd_vals <- purrr::map(1:N, \(n) {
+fd_vals <- lapply(1:N, \(n) {
   yobs <- y0[, n]
   result <- fda::smooth.basis(x, yobs, basisobj)
   yfd <- result$fd
@@ -163,8 +170,8 @@ fd_vals <- purrr::map(1:N, \(n) {
 })
 fd <- fda::fd(
   coef = fd_vals |>
-    purrr::map("coefs") |>
-    purrr::reduce(cbind),
+    lapply(\(.x) .x$coefs) |>
+    do.call(cbind, args = _),
   basisobj = basisobj
 )
 ```
@@ -175,7 +182,7 @@ We can now take a look of the data under this representation:
 y0 <- fda::eval.fd(x, fd, 0)
 tibble::tibble(
   Age = replicate(N, x, simplify = FALSE),
-  Height = purrr::array_tree(y0, margin = 2),
+  Height = matrix_tree(y0, margin = 2),
   Gender = mb,
   CurveID = 1:N
 ) |> 
@@ -197,7 +204,7 @@ We can also compute and display the growth rate:
 y1 <- fda::eval.fd(x, fd, 1)
 tibble::tibble(
   Age = replicate(N, x, simplify = FALSE),
-  Height = purrr::array_tree(y1, margin = 2),
+  Height = matrix_tree(y1, margin = 2),
   Gender = mb,
   CurveID = 1:N
 ) |>

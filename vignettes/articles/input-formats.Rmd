@@ -121,21 +121,21 @@ if (inherits(x, "funData")) {
   L <- 1
   N <- length(x@argvals)
   M <- x@argvals |> 
-    purrr::map_int(length) |> 
+    sapply(length) |> 
     mean() |> 
     round()
   y <- array(dim = c(N, L, M))
   y[, 1, ] <- x@X |> 
-    purrr::imap(\(values, id) approx(x@argvals[[id]], values, n = M)$y) |> 
+    imap(\(values, id) approx(x@argvals[[id]], values, n = M)$y) |> 
     do.call(rbind, args = _)
   x <- x@argvals |> 
-    purrr::map(\(grid) seq(min(grid), max(grid), length.out = M)) |> 
+    lapply(\(grid) seq(min(grid), max(grid), length.out = M)) |> 
     do.call(rbind, args = _)
 } else if (inherits(x, "multiFunData")) {
   L <- length(x)
   dims <- dim(x[[1]]@X)
   grid <- x[[1]]@argvals[[1]]
-  purrr::walk(x, \(fData) {
+  lapply(x, \(fData) {
     if (length(fData@argvals) != 1)
       cli::cli_abort(c(
         "The {.pkg fdacluster} package does not support functional data ", 
@@ -298,7 +298,7 @@ unidimensional grids and `y` is an object of class `fd`. It then parses the data
 in the following way:
 
 ```r
-dims <- purrr::map_int(y$fdnames, length)
+dims <- sapply(y$fdnames, length)
 M <- dims[1]
 N <- dims[2]
 L <- dims[3]
