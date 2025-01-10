@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fdacluster</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,9 +51,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="fdacluster-development-version">fdacluster (development version)<a class="anchor" aria-label="anchor" href="#fdacluster-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.4.0" id="fdacluster-040">fdacluster 0.4.0<a class="anchor" aria-label="anchor" href="#fdacluster-040"></a></h2>
 <div class="section level3">
-<h3 id="major-features-development-version">Major features<a class="anchor" aria-label="anchor" href="#major-features-development-version"></a></h3>
+<h3 id="major-features-0-4-0">Major features<a class="anchor" aria-label="anchor" href="#major-features-0-4-0"></a></h3>
 <ul><li>Expanded arguments of <code><a href="../reference/fdakmeans.html">fdakmeans()</a></code> to allow for more control over the type of input functional data:
 <ul><li>
 <code>is_domain_interval</code> allows one to state if all curves are defined on the same fixed interval;</li>
@@ -65,7 +65,7 @@
 <li>Created two separate C++ classes for <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>2</mn></msup><annotation encoding="application/x-tex">L^2</annotation></semantics></math> distance and normalized <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>L</mi><mn>2</mn></msup><annotation encoding="application/x-tex">L^2</annotation></semantics></math> distance; the former cannot be used in combination with dilation or affine warping classes because it is not invariant to these transformations.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="minor-improvements-and-bug-fixes-development-version">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-development-version"></a></h3>
+<h3 id="minor-improvements-and-bug-fixes-0-4-0">Minor improvements and bug fixes<a class="anchor" aria-label="anchor" href="#minor-improvements-and-bug-fixes-0-4-0"></a></h3>
 <ul><li>Integrated distances in C++ classes are now computed via <code>arma::trapz()</code>.</li>
 <li>Added talk given at <em>Rencontres R 2023</em> in Avignon, France to the News section of the website.</li>
 <li>Reduced number of dependencies: removed dplyr, forcats, tidyr, purrr.</li>
