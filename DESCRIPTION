@@ -1,6 +1,6 @@
 Package: fdacluster
 Title: Joint Clustering and Alignment of Functional Data
-Version: 0.3.0.9000
+Version: 0.4.0
 Authors@R: c(
     person(given = "Aymeric",
            family = "Stamm",
