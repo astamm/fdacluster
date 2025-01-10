@@ -348,3 +348,28 @@ matrix_tree <- function(x, margin = 1) {
 imap <- function(.x, .f, ...) {
   mapply(.f, .x, seq_along(.x), ..., SIMPLIFY = FALSE)
 }
+
+future_map2_dbl <- function(.x, .y, .f, ...,
+                            future_envir = parent.frame(),
+                            future_stdout = TRUE,
+                            future_confitions = "condition",
+                            future_globals = TRUE,
+                            future_packages = NULL,
+                            future_scheduling = 1,
+                            future_chunk_size = NULL,
+                            future_label = "future_mapply-%d") {
+  future.apply::future_mapply(
+    FUN = .f, .x, .y,
+    MoreArgs = rlang::list2(...),
+    SIMPLIFY = TRUE,
+    future.envir = future_envir,
+    future.stdout = future_stdout,
+    future.conditions = future_confitions,
+    future.globals = future_globals,
+    future.packages = future_packages,
+    future.seed = TRUE,
+    future.scheduling = future_scheduling,
+    future.chunk.size = future_chunk_size,
+    future.label = future_label
+  )
+}

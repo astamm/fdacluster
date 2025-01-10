@@ -64,7 +64,7 @@ fdadist <- function(x, y = NULL,
 
   .pairwise_distances <- function(index_table) {
     pb <- progressr::progressor(steps = nrow(index_table))
-    furrr::future_map2_dbl(index_table$i, index_table$j, \(i, j) {
+    future_map2_dbl(index_table$i, index_table$j, \(i, j) {
       pb()
 
       curve_pair[1, , ] <- y[i, , ]
@@ -108,7 +108,7 @@ fdadist <- function(x, y = NULL,
         out <- max(km$distances_to_center)
 
       out
-    }, .options = furrr::furrr_options(seed = TRUE, packages = "fdacluster"))
+    })
   }
 
   d <- .pairwise_distances(index_table)

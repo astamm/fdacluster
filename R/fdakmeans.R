@@ -251,7 +251,7 @@ fdakmeans <- function(
       )
       Dm <- as.matrix(D)
       pb <- progressr::progressor(steps = N)
-      out <- furrr::future_map(1:N, \(n) {
+      out <- future.apply::future_lapply(1:N, \(n) {
         pb()
         seeds <- n
         if (n_clusters > 1L) {
@@ -282,13 +282,13 @@ fdakmeans <- function(
           add_silhouettes = FALSE
         )
         list(caps = km, totss = sum(km$distances_to_center))
-      }, .options = furrr::furrr_options(seed = TRUE, packages = "fdacluster"))
+      }, future.seed = TRUE)
       best_idx <- which.min(sapply(out, \(.x) .x$totss))
       return(lapply(out, \(.x) .x$caps)[[best_idx]])
     } else if (seeding_strategy == "exhaustive") {
       sols <- utils::combn(N, n_clusters, simplify = FALSE)
       pb <- progressr::progressor(steps = length(sols))
-      sols <- furrr::future_map(sols, \(.seeds) {
+      sols <- future.apply::future_lapply(sols, \(.seeds) {
         pb()
         fdakmeans(
           x = x, y = y,
@@ -308,7 +308,7 @@ fdakmeans <- function(
           use_verbose = FALSE,
           add_silhouettes = FALSE
         )
-      }, .options = furrr::furrr_options(seed = NULL, packages = "fdacluster"))
+      }, future.seed = TRUE)
       dtcs <- sols |>
         lapply(\(.x) .x$distances_to_center) |>
         sapply(sum)

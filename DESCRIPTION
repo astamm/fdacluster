@@ -65,7 +65,7 @@ Imports:
     cluster,
     dbscan,
     fdasrvf,
-    furrr,
+    future.apply,
     ggplot2,
     lpSolve,
     nloptr,
