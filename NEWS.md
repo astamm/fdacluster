@@ -3,7 +3,7 @@
 ## Bug fixes
 
 * Properly set up future workers by ensuring that fdacluster is loaded.
-* Replace SRSF acronym with the corret SRVF one.
+* Replace SRSF acronym with the correct SRVF one.
 
 # fdacluster 0.4.0
 
