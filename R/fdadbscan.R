@@ -35,7 +35,7 @@
 #' plot(out, type = "phase")
 fdadbscan <- function(x, y,
                       is_domain_interval = FALSE,
-                      transformation = c("identity", "srsf"),
+                      transformation = c("identity", "srvf"),
                       warping_class = c("none", "shift", "dilation", "affine", "bpd"),
                       centroid_type = "mean",
                       metric = c("l2", "normalized_l2", "pearson"),

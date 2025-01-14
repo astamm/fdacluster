@@ -242,7 +242,7 @@ format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
 check_option_compatibility <- function(is_domain_interval, transformation, warping_class, metric) {
   out <- .check_option_compatibility(is_domain_interval, transformation, warping_class, metric)
   if (out == 1L)
-    cli::cli_abort("The functional domain is an interval. The only available transformation is the SRSF transformation.")
+    cli::cli_abort("The functional domain is an interval. The only available transformation is the SRVF transformation.")
   if (out == 2L)
     cli::cli_abort('The functional domain is an interval. The only available warping classes are {.code "none"} and {.code "bpd"}.')
   if (out == 3L)
@@ -256,7 +256,7 @@ check_option_compatibility <- function(is_domain_interval, transformation, warpi
 
 .check_option_compatibility <- function(is_domain_interval, transformation, warping_class, metric) {
   if (is_domain_interval) {
-    if (transformation != "srsf") return(1)
+    if (transformation != "srvf") return(1)
     if (warping_class != "none" && warping_class != "bpd") return(2)
     if (warping_class == "bpd" && metric != "l2") return(3)
   } else {
@@ -352,9 +352,10 @@ imap <- function(.x, .f, ...) {
 future_map2_dbl <- function(.x, .y, .f, ...,
                             future_envir = parent.frame(),
                             future_stdout = TRUE,
-                            future_confitions = "condition",
+                            future_conditions = "condition",
                             future_globals = TRUE,
                             future_packages = NULL,
+                            future_seed = TRUE,
                             future_scheduling = 1,
                             future_chunk_size = NULL,
                             future_label = "future_mapply-%d") {
@@ -364,10 +365,10 @@ future_map2_dbl <- function(.x, .y, .f, ...,
     SIMPLIFY = TRUE,
     future.envir = future_envir,
     future.stdout = future_stdout,
-    future.conditions = future_confitions,
+    future.conditions = future_conditions,
     future.globals = future_globals,
     future.packages = future_packages,
-    future.seed = TRUE,
+    future.seed = future_seed,
     future.scheduling = future_scheduling,
     future.chunk.size = future_chunk_size,
     future.label = future_label

@@ -1,3 +1,11 @@
+## Quick patch release
+
+
+I am submitting a patch release days ago from last release because I did not
+set up future workers correctly (i.e. with **fdacluster** loaded in them) which 
+breaks reverse dependency **squat**. This is now fixed. I plan submitting a new
+release of **squat** as soon as this patch release is accepted.
+
 ## Test environments
 * local macOS R installation, R 4.4.2
 * continuous integration via GH actions:

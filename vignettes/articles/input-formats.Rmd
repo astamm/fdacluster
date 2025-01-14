@@ -248,7 +248,7 @@ out_gait <- fdakmeans(
   x = gaitData,
   n_clusters = 1,
   seeding_strategy = "exhaustive",
-  warping_class = "srsf",
+  warping_class = "srvf",
   use_verbose = FALSE
 )
 ```
@@ -350,7 +350,7 @@ out_gait_fd <- fdakmeans(
   y = gaitDataFD,
   n_clusters = 1, 
   seeding_strategy = "exhaustive",
-  warping_class = "srsf",
+  warping_class = "srvf",
   use_verbose = FALSE
 )
 ```

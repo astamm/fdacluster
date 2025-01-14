@@ -213,7 +213,7 @@ out_gait <- fdakmeans(
   n_clusters = 1,
   seeding_strategy = "exhaustive",
   is_domain_interval = TRUE,
-  transformation = "srsf",
+  transformation = "srvf",
   warping_class = "bpd",
   metric = "l2",
   use_verbose = FALSE
@@ -231,7 +231,7 @@ out_gait_fd <- fdakmeans(
   n_clusters = 1,
   seeding_strategy = "exhaustive",
   is_domain_interval = TRUE,
-  transformation = "srsf",
+  transformation = "srvf",
   warping_class = "bpd",
   metric = "l2",
   use_verbose = FALSE

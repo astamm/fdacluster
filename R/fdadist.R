@@ -19,7 +19,7 @@
 #' D <- fdadist(simulated30_sub$x[idx, ], simulated30_sub$y[idx, , ])
 fdadist <- function(x, y = NULL,
                     is_domain_interval = FALSE,
-                    transformation = c("identity", "srsf"),
+                    transformation = c("identity", "srvf"),
                     warping_class = c("none", "shift", "dilation", "affine", "bpd"),
                     metric = c("l2", "normalized_l2", "pearson"),
                     cluster_on_phase = FALSE,
@@ -108,8 +108,8 @@ fdadist <- function(x, y = NULL,
         out <- max(km$distances_to_center)
 
       out
-    })
-  }
+    }, future_seed = TRUE, future_packages = "fdacluster"
+  )}
 
   d <- .pairwise_distances(index_table)
 

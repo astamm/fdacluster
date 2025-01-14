@@ -14,7 +14,7 @@
 #'   them.
 #' @param warping_class A character vector specifying one or more classes of
 #'   warping functions to use for curve alignment. Choices are `"affine"`,
-#'   `"dilation"`, `"none"`, `"shift"` or `"srsf"`. Defaults to all of them.
+#'   `"dilation"`, `"none"`, `"shift"` or `"bpd"`. Defaults to all of them.
 #' @param centroid_type A character vector specifying one or more ways to
 #'   compute centroids. Choices are `"mean"`, `"medoid"`, `"median"`, `"lowess"`
 #'   or `"poly"`. Defaults to all of them.
@@ -51,7 +51,7 @@
 compare_caps <- function(x, y,
                          n_clusters = 1:5,
                          is_domain_interval = FALSE,
-                         transformation = c("identity", "srsf"),
+                         transformation = c("identity", "srvf"),
                          metric = c("l2", "normalized_l2", "pearson"),
                          clustering_method = c("kmeans",
                                                "hclust-complete",

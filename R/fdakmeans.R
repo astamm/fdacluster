@@ -39,7 +39,7 @@
 #'   is defined on a fixed interval. Defaults to `FALSE`.
 #' @param transformation A string specifying the transformation to apply to the
 #'   original sample of curves. Choices are no transformation (`transformation =
-#'   "identity"`) or square-root slope function `transformation = "srsf"`.
+#'   "identity"`) or square-root velocity function `transformation = "srvf"`.
 #'   Defaults to `"identity"`.
 #' @param warping_class A string specifying the class of warping functions.
 #'   Choices are no warping (`warping_class = "none"`), shift `y = x + b`
@@ -59,7 +59,7 @@
 #'   value is `4L`.
 #' @param metric A string specifying the metric used to compare curves. Choices
 #'   are `"l2"`, `"normalized_l2"` or `"pearson"`. If `transformation ==
-#'   "srsf"`, the metric **must be** `"l2"` because the SRSF transform maps
+#'   "srvf"`, the metric **must be** `"l2"` because the SRVF transform maps
 #'   absolutely continuous functions to square-integrable functions. If
 #'   `transformation == "identity"` and `warping_class` is either `dilation` or
 #'   `affine`, the metric cab be either `"normalized_l2"` or `"pearson"`. The L2
@@ -73,33 +73,33 @@
 #'   details of the steps to the console. Defaults to `FALSE`.
 #' @param warping_options A numeric vector supplied as a helper to the chosen
 #'   `warping_class` to decide on warping parameter bounds. This is used only
-#'   when `warping_class != "srsf"`.
+#'   when `warping_class != "srvf"`.
 #' @param maximum_number_of_iterations An integer specifying the maximum number
 #'   of iterations before the algorithm stops if no other convergence criterion
 #'   was met. Defaults to `100L`.
 #' @param number_of_threads An integer value specifying the number of threads
 #'   used for parallelization. Defaults to `1L`. This is used only when
-#'   `warping_class != "srsf"`.
+#'   `warping_class != "srvf"`.
 #' @param parallel_method An integer value specifying the type of desired
 #'   parallelization for template computation, If `0L`, templates are computed
 #'   in parallel. If `1L`, parallelization occurs within a single template
 #'   computation (only for the medoid method as of now). Defaults to `0L`. This
-#'   is used only when `warping_class != "srsf"`.
+#'   is used only when `warping_class != "srvf"`.
 #' @param distance_relative_tolerance A numeric value specifying a relative
 #'   tolerance on the distance update between two iterations. If all
 #'   observations have not sufficiently improved in that sense, the algorithm
 #'   stops. Defaults to `1e-3`. This is used only when `warping_class !=
-#'   "srsf"`.
+#'   "srvf"`.
 #' @param use_fence A boolean specifying whether the fence algorithm should be
 #'   used to robustify the algorithm against outliers. Defaults to `FALSE`. This
-#'   is used only when `warping_class != "srsf"`.
+#'   is used only when `warping_class != "srvf"`.
 #' @param check_total_dissimilarity A boolean specifying whether an additional
 #'   stopping criterion based on improvement of the total dissimilarity should
 #'   be used. Defaults to `TRUE`. This is used only when `warping_class !=
-#'   "srsf"`.
+#'   "srvf"`.
 #' @param compute_overall_center A boolean specifying whether the overall center
 #'   should be also computed. Defaults to `FALSE`. This is used only when
-#'   `warping_class != "srsf"`.
+#'   `warping_class != "srvf"`.
 #' @param add_silhouettes A boolean specifying whether silhouette values should
 #'   be computed for each observation for internal validation of the clustering
 #'   structure. Defaults to `TRUE`.
@@ -138,7 +138,7 @@ fdakmeans <- function(
     seeds = NULL,
     seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
     is_domain_interval = FALSE,
-    transformation = c("identity", "srsf"),
+    transformation = c("identity", "srvf"),
     warping_class = c("none", "shift", "dilation", "affine", "bpd"),
     centroid_type = "mean",
     metric = c("l2", "normalized_l2", "pearson"),
@@ -282,7 +282,7 @@ fdakmeans <- function(
           add_silhouettes = FALSE
         )
         list(caps = km, totss = sum(km$distances_to_center))
-      }, future.seed = TRUE)
+      }, future.seed = TRUE, future.packages = "fdacluster")
       best_idx <- which.min(sapply(out, \(.x) .x$totss))
       return(lapply(out, \(.x) .x$caps)[[best_idx]])
     } else if (seeding_strategy == "exhaustive") {
@@ -308,7 +308,7 @@ fdakmeans <- function(
           use_verbose = FALSE,
           add_silhouettes = FALSE
         )
-      }, future.seed = TRUE)
+      }, future.seed = TRUE, future.packages = "fdacluster")
       dtcs <- sols |>
         lapply(\(.x) .x$distances_to_center) |>
         sapply(sum)
@@ -341,9 +341,9 @@ fdakmeans <- function(
   callargs$seeds <- seeds
   seeds <- seeds - 1
 
-  if (transformation == "srsf" && warping_class %in% c("none", "bpd")) {
+  if (transformation == "srvf" && warping_class %in% c("none", "bpd")) {
     if (!(centroid_name %in% c("mean", "medoid")))
-      cli::cli_abort("Only mean and medoid centroids are available for SRSFs using the {.fn fdasrvf::kmeans_align} function.")
+      cli::cli_abort("Only mean and medoid centroids are available for SRVFs using the {.fn fdasrvf::kmeans_align} function.")
 
     yperm <- aperm(y, c(2, 3, 1))
     common_grid <- x[1, ]
@@ -383,7 +383,7 @@ fdakmeans <- function(
     }
 
     # AST: warning -- if cluster on phase in ON, below does not make sense, also
-    # clustering is still performed on amplitude for SRSF, only distances to
+    # clustering is still performed on amplitude for SRVF, only distances to
     # centers are transformed in the output
     q0 <- res$q0
     if (length(dim(q0)) == 2L) # This should be done in fdasrvf package
@@ -433,9 +433,9 @@ fdakmeans <- function(
   }
 
   # Handle transformation
-  if (transformation == "srsf") {
+  if (transformation == "srvf") {
     for (i in 1:N) {
-      y[i, ,] <- fdasrvf::f_to_srvf(
+      y[i, , ] <- fdasrvf::f_to_srvf(
         f = y[i, , ],
         time = x[i, ],
         multidimensional = TRUE

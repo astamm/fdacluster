@@ -422,7 +422,7 @@ test_that('`fdakmeans()` works with boundary-preserving diffeomorphism warping.'
     seeds = c(1, 21),
     n_clusters = K,
     is_domain_interval = TRUE,
-    transformation = "srsf",
+    transformation = "srvf",
     centroid_type = "mean",
     warping_class = "bpd",
     metric = "l2",

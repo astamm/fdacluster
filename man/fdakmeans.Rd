@@ -12,7 +12,7 @@ fdakmeans(
   seeds = NULL,
   seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
   is_domain_interval = FALSE,
-  transformation = c("identity", "srsf"),
+  transformation = c("identity", "srvf"),
   warping_class = c("none", "shift", "dilation", "affine", "bpd"),
   centroid_type = "mean",
   metric = c("l2", "normalized_l2", "pearson"),
@@ -69,7 +69,7 @@ Defaults to \code{"kmeans++"}, which is the fastest strategy.}
 is defined on a fixed interval. Defaults to \code{FALSE}.}
 
 \item{transformation}{A string specifying the transformation to apply to the
-original sample of curves. Choices are no transformation (\code{transformation = "identity"}) or square-root slope function \code{transformation = "srsf"}.
+original sample of curves. Choices are no transformation (\code{transformation = "identity"}) or square-root velocity function \code{transformation = "srvf"}.
 Defaults to \code{"identity"}.}
 
 \item{warping_class}{A string specifying the class of warping functions.
@@ -90,7 +90,7 @@ number will be used as the degree of the polynomial model. The default
 value is \code{4L}.}
 
 \item{metric}{A string specifying the metric used to compare curves. Choices
-are \code{"l2"}, \code{"normalized_l2"} or \code{"pearson"}. If \code{transformation == "srsf"}, the metric \strong{must be} \code{"l2"} because the SRSF transform maps
+are \code{"l2"}, \code{"normalized_l2"} or \code{"pearson"}. If \code{transformation == "srvf"}, the metric \strong{must be} \code{"l2"} because the SRVF transform maps
 absolutely continuous functions to square-integrable functions. If
 \code{transformation == "identity"} and \code{warping_class} is either \code{dilation} or
 \code{affine}, the metric cab be either \code{"normalized_l2"} or \code{"pearson"}. The L2
@@ -107,7 +107,7 @@ details of the steps to the console. Defaults to \code{FALSE}.}
 
 \item{warping_options}{A numeric vector supplied as a helper to the chosen
 \code{warping_class} to decide on warping parameter bounds. This is used only
-when \code{warping_class != "srsf"}.}
+when \code{warping_class != "srvf"}.}
 
 \item{maximum_number_of_iterations}{An integer specifying the maximum number
 of iterations before the algorithm stops if no other convergence criterion
@@ -115,30 +115,30 @@ was met. Defaults to \code{100L}.}
 
 \item{number_of_threads}{An integer value specifying the number of threads
 used for parallelization. Defaults to \code{1L}. This is used only when
-\code{warping_class != "srsf"}.}
+\code{warping_class != "srvf"}.}
 
 \item{parallel_method}{An integer value specifying the type of desired
 parallelization for template computation, If \code{0L}, templates are computed
 in parallel. If \code{1L}, parallelization occurs within a single template
 computation (only for the medoid method as of now). Defaults to \code{0L}. This
-is used only when \code{warping_class != "srsf"}.}
+is used only when \code{warping_class != "srvf"}.}
 
 \item{distance_relative_tolerance}{A numeric value specifying a relative
 tolerance on the distance update between two iterations. If all
 observations have not sufficiently improved in that sense, the algorithm
-stops. Defaults to \code{1e-3}. This is used only when \code{warping_class != "srsf"}.}
+stops. Defaults to \code{1e-3}. This is used only when \code{warping_class != "srvf"}.}
 
 \item{use_fence}{A boolean specifying whether the fence algorithm should be
 used to robustify the algorithm against outliers. Defaults to \code{FALSE}. This
-is used only when \code{warping_class != "srsf"}.}
+is used only when \code{warping_class != "srvf"}.}
 
 \item{check_total_dissimilarity}{A boolean specifying whether an additional
 stopping criterion based on improvement of the total dissimilarity should
-be used. Defaults to \code{TRUE}. This is used only when \code{warping_class != "srsf"}.}
+be used. Defaults to \code{TRUE}. This is used only when \code{warping_class != "srvf"}.}
 
 \item{compute_overall_center}{A boolean specifying whether the overall center
 should be also computed. Defaults to \code{FALSE}. This is used only when
-\code{warping_class != "srsf"}.}
+\code{warping_class != "srvf"}.}
 
 \item{add_silhouettes}{A boolean specifying whether silhouette values should
 be computed for each observation for internal validation of the clustering

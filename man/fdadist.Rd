@@ -9,7 +9,7 @@ fdadist(
   x,
   y = NULL,
   is_domain_interval = FALSE,
-  transformation = c("identity", "srsf"),
+  transformation = c("identity", "srvf"),
   warping_class = c("none", "shift", "dilation", "affine", "bpd"),
   metric = c("l2", "normalized_l2", "pearson"),
   cluster_on_phase = FALSE,
@@ -35,7 +35,7 @@ functional data set to be able to evaluate it on user-defined grids.}
 is defined on a fixed interval. Defaults to \code{FALSE}.}
 
 \item{transformation}{A string specifying the transformation to apply to the
-original sample of curves. Choices are no transformation (\code{transformation = "identity"}) or square-root slope function \code{transformation = "srsf"}.
+original sample of curves. Choices are no transformation (\code{transformation = "identity"}) or square-root velocity function \code{transformation = "srvf"}.
 Defaults to \code{"identity"}.}
 
 \item{warping_class}{A string specifying the class of warping functions.
@@ -45,7 +45,7 @@ boundary-preserving diffeomorphism (\code{warping_class = "bpd"}). Defaults to
 \code{"none"}.}
 
 \item{metric}{A string specifying the metric used to compare curves. Choices
-are \code{"l2"}, \code{"normalized_l2"} or \code{"pearson"}. If \code{transformation == "srsf"}, the metric \strong{must be} \code{"l2"} because the SRSF transform maps
+are \code{"l2"}, \code{"normalized_l2"} or \code{"pearson"}. If \code{transformation == "srvf"}, the metric \strong{must be} \code{"l2"} because the SRVF transform maps
 absolutely continuous functions to square-integrable functions. If
 \code{transformation == "identity"} and \code{warping_class} is either \code{dilation} or
 \code{affine}, the metric cab be either \code{"normalized_l2"} or \code{"pearson"}. The L2

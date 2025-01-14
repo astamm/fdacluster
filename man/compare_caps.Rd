@@ -9,7 +9,7 @@ compare_caps(
   y,
   n_clusters = 1:5,
   is_domain_interval = FALSE,
-  transformation = c("identity", "srsf"),
+  transformation = c("identity", "srvf"),
   metric = c("l2", "normalized_l2", "pearson"),
   clustering_method = c("kmeans", "hclust-complete", "hclust-average", "hclust-single",
     "dbscan"),
@@ -40,11 +40,11 @@ to create. Defaults to \code{1:5}.}
 is defined on a fixed interval. Defaults to \code{FALSE}.}
 
 \item{transformation}{A string specifying the transformation to apply to the
-original sample of curves. Choices are no transformation (\code{transformation = "identity"}) or square-root slope function \code{transformation = "srsf"}.
+original sample of curves. Choices are no transformation (\code{transformation = "identity"}) or square-root velocity function \code{transformation = "srvf"}.
 Defaults to \code{"identity"}.}
 
 \item{metric}{A string specifying the metric used to compare curves. Choices
-are \code{"l2"}, \code{"normalized_l2"} or \code{"pearson"}. If \code{transformation == "srsf"}, the metric \strong{must be} \code{"l2"} because the SRSF transform maps
+are \code{"l2"}, \code{"normalized_l2"} or \code{"pearson"}. If \code{transformation == "srvf"}, the metric \strong{must be} \code{"l2"} because the SRVF transform maps
 absolutely continuous functions to square-integrable functions. If
 \code{transformation == "identity"} and \code{warping_class} is either \code{dilation} or
 \code{affine}, the metric cab be either \code{"normalized_l2"} or \code{"pearson"}. The L2
@@ -59,7 +59,7 @@ them.}
 
 \item{warping_class}{A character vector specifying one or more classes of
 warping functions to use for curve alignment. Choices are \code{"affine"},
-\code{"dilation"}, \code{"none"}, \code{"shift"} or \code{"srsf"}. Defaults to all of them.}
+\code{"dilation"}, \code{"none"}, \code{"shift"} or \code{"bpd"}. Defaults to all of them.}
 
 \item{centroid_type}{A character vector specifying one or more ways to
 compute centroids. Choices are \code{"mean"}, \code{"medoid"}, \code{"median"}, \code{"lowess"}
