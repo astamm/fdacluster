@@ -11,7 +11,7 @@ information."><meta property="og:image" content="https://astamm.github.io/fdaclu
 
     <a class="navbar-brand me-2" href="../index.html">fdacluster</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,7 +68,7 @@ information.</p>
 <span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  n_clusters <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>  is_domain_interval <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  transformation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
+<span>  transformation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"srvf"</span><span class="op">)</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"dilation"</span>, <span class="st">"affine"</span>, <span class="st">"bpd"</span><span class="op">)</span>,</span>
 <span>  centroid_type <span class="op">=</span> <span class="st">"mean"</span>,</span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"normalized_l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
@@ -120,7 +120,7 @@ is defined on a fixed interval. Defaults to <code>FALSE</code>.</p></dd>
 
 <dt id="arg-transformation">transformation<a class="anchor" aria-label="anchor" href="#arg-transformation"></a></dt>
 <dd><p>A string specifying the transformation to apply to the
-original sample of curves. Choices are no transformation (<code>transformation = "identity"</code>) or square-root slope function <code>transformation = "srsf"</code>.
+original sample of curves. Choices are no transformation (<code>transformation = "identity"</code>) or square-root velocity function <code>transformation = "srvf"</code>.
 Defaults to <code>"identity"</code>.</p></dd>
 
 
@@ -147,7 +147,7 @@ value is <code>4L</code>.</p></dd>
 
 <dt id="arg-metric">metric<a class="anchor" aria-label="anchor" href="#arg-metric"></a></dt>
 <dd><p>A string specifying the metric used to compare curves. Choices
-are <code>"l2"</code>, <code>"normalized_l2"</code> or <code>"pearson"</code>. If <code>transformation == "srsf"</code>, the metric <strong>must be</strong> <code>"l2"</code> because the SRSF transform maps
+are <code>"l2"</code>, <code>"normalized_l2"</code> or <code>"pearson"</code>. If <code>transformation == "srvf"</code>, the metric <strong>must be</strong> <code>"l2"</code> because the SRVF transform maps
 absolutely continuous functions to square-integrable functions. If
 <code>transformation == "identity"</code> and <code>warping_class</code> is either <code>dilation</code> or
 <code>affine</code>, the metric cab be either <code>"normalized_l2"</code> or <code>"pearson"</code>. The L2
@@ -178,7 +178,7 @@ details of the steps to the console. Defaults to <code>FALSE</code>.</p></dd>
 <dt id="arg-warping-options">warping_options<a class="anchor" aria-label="anchor" href="#arg-warping-options"></a></dt>
 <dd><p>A numeric vector supplied as a helper to the chosen
 <code>warping_class</code> to decide on warping parameter bounds. This is used only
-when <code>warping_class != "srsf"</code>.</p></dd>
+when <code>warping_class != "srvf"</code>.</p></dd>
 
 
 <dt id="arg-maximum-number-of-iterations">maximum_number_of_iterations<a class="anchor" aria-label="anchor" href="#arg-maximum-number-of-iterations"></a></dt>
@@ -190,7 +190,7 @@ was met. Defaults to <code>100L</code>.</p></dd>
 <dt id="arg-number-of-threads">number_of_threads<a class="anchor" aria-label="anchor" href="#arg-number-of-threads"></a></dt>
 <dd><p>An integer value specifying the number of threads
 used for parallelization. Defaults to <code>1L</code>. This is used only when
-<code>warping_class != "srsf"</code>.</p></dd>
+<code>warping_class != "srvf"</code>.</p></dd>
 
 
 <dt id="arg-parallel-method">parallel_method<a class="anchor" aria-label="anchor" href="#arg-parallel-method"></a></dt>
@@ -198,32 +198,32 @@ used for parallelization. Defaults to <code>1L</code>. This is used only when
 parallelization for template computation, If <code>0L</code>, templates are computed
 in parallel. If <code>1L</code>, parallelization occurs within a single template
 computation (only for the medoid method as of now). Defaults to <code>0L</code>. This
-is used only when <code>warping_class != "srsf"</code>.</p></dd>
+is used only when <code>warping_class != "srvf"</code>.</p></dd>
 
 
 <dt id="arg-distance-relative-tolerance">distance_relative_tolerance<a class="anchor" aria-label="anchor" href="#arg-distance-relative-tolerance"></a></dt>
 <dd><p>A numeric value specifying a relative
 tolerance on the distance update between two iterations. If all
 observations have not sufficiently improved in that sense, the algorithm
-stops. Defaults to <code>1e-3</code>. This is used only when <code>warping_class != "srsf"</code>.</p></dd>
+stops. Defaults to <code>1e-3</code>. This is used only when <code>warping_class != "srvf"</code>.</p></dd>
 
 
 <dt id="arg-use-fence">use_fence<a class="anchor" aria-label="anchor" href="#arg-use-fence"></a></dt>
 <dd><p>A boolean specifying whether the fence algorithm should be
 used to robustify the algorithm against outliers. Defaults to <code>FALSE</code>. This
-is used only when <code>warping_class != "srsf"</code>.</p></dd>
+is used only when <code>warping_class != "srvf"</code>.</p></dd>
 
 
 <dt id="arg-check-total-dissimilarity">check_total_dissimilarity<a class="anchor" aria-label="anchor" href="#arg-check-total-dissimilarity"></a></dt>
 <dd><p>A boolean specifying whether an additional
 stopping criterion based on improvement of the total dissimilarity should
-be used. Defaults to <code>TRUE</code>. This is used only when <code>warping_class != "srsf"</code>.</p></dd>
+be used. Defaults to <code>TRUE</code>. This is used only when <code>warping_class != "srvf"</code>.</p></dd>
 
 
 <dt id="arg-compute-overall-center">compute_overall_center<a class="anchor" aria-label="anchor" href="#arg-compute-overall-center"></a></dt>
 <dd><p>A boolean specifying whether the overall center
 should be also computed. Defaults to <code>FALSE</code>. This is used only when
-<code>warping_class != "srsf"</code>.</p></dd>
+<code>warping_class != "srvf"</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

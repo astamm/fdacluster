@@ -11,7 +11,7 @@ amplitude separation, which can be done using a variety of warping classes."><me
 
     <a class="navbar-brand me-2" href="../index.html">fdacluster</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.4.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,7 @@ amplitude separation, which can be done using a variety of warping classes.</p>
 <span>  <span class="va">x</span>,</span>
 <span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  is_domain_interval <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  transformation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"srsf"</span><span class="op">)</span>,</span>
+<span>  transformation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"identity"</span>, <span class="st">"srvf"</span><span class="op">)</span>,</span>
 <span>  warping_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"shift"</span>, <span class="st">"dilation"</span>, <span class="st">"affine"</span>, <span class="st">"bpd"</span><span class="op">)</span>,</span>
 <span>  metric <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"l2"</span>, <span class="st">"normalized_l2"</span>, <span class="st">"pearson"</span><span class="op">)</span>,</span>
 <span>  cluster_on_phase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
@@ -104,7 +104,7 @@ is defined on a fixed interval. Defaults to <code>FALSE</code>.</p></dd>
 
 <dt id="arg-transformation">transformation<a class="anchor" aria-label="anchor" href="#arg-transformation"></a></dt>
 <dd><p>A string specifying the transformation to apply to the
-original sample of curves. Choices are no transformation (<code>transformation = "identity"</code>) or square-root slope function <code>transformation = "srsf"</code>.
+original sample of curves. Choices are no transformation (<code>transformation = "identity"</code>) or square-root velocity function <code>transformation = "srvf"</code>.
 Defaults to <code>"identity"</code>.</p></dd>
 
 
@@ -118,7 +118,7 @@ boundary-preserving diffeomorphism (<code>warping_class = "bpd"</code>). Default
 
 <dt id="arg-metric">metric<a class="anchor" aria-label="anchor" href="#arg-metric"></a></dt>
 <dd><p>A string specifying the metric used to compare curves. Choices
-are <code>"l2"</code>, <code>"normalized_l2"</code> or <code>"pearson"</code>. If <code>transformation == "srsf"</code>, the metric <strong>must be</strong> <code>"l2"</code> because the SRSF transform maps
+are <code>"l2"</code>, <code>"normalized_l2"</code> or <code>"pearson"</code>. If <code>transformation == "srvf"</code>, the metric <strong>must be</strong> <code>"l2"</code> because the SRVF transform maps
 absolutely continuous functions to square-integrable functions. If
 <code>transformation == "identity"</code> and <code>warping_class</code> is either <code>dilation</code> or
 <code>affine</code>, the metric cab be either <code>"normalized_l2"</code> or <code>"pearson"</code>. The L2
