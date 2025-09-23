@@ -1,4 +1,5 @@
 #include "lowessCenterClass.h"
+#include <cmath>
 
 CenterType LowessCenterMethod::GetCenter(const arma::mat& inputGrid,
                                          const arma::cube& inputValues,
@@ -38,7 +39,7 @@ CenterType LowessCenterMethod::GetCenter(const arma::mat& inputGrid,
     {
       for (unsigned int j = 0;j < numberOfPoints;++j)
       {
-        if (arma::is_finite(inputGrid(i, j)) && arma::is_finite(inputValues(i, l, j)))
+        if (std::isfinite(inputGrid(i, j)) && std::isfinite(inputValues(i, l, j)))
         {
           xIn.push_back(inputGrid(i, j));
           yIn.push_back(inputValues(i, l, j));

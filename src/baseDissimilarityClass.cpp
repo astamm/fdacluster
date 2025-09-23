@@ -1,4 +1,5 @@
 #include "baseDissimilarityClass.h"
+#include <cmath>
 
 FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::rowvec& grid1,
                                                                    const arma::rowvec& grid2,
@@ -36,7 +37,7 @@ FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::r
     unsigned int c = 0;
     for (unsigned int i = 0;i < nPts1;++i)
     {
-        if (arma::is_finite(grid1(i)) && arma::is_finite(values1.col(i)))
+        if (std::isfinite(grid1(i)) && values1.col(i).is_finite())
         {
             cleanGrid1(c) = grid1(i);
             cleanValues1.col(c) = values1.col(i);
@@ -50,7 +51,7 @@ FunctionPairType BaseDissimilarityFunction::GetComparableFunctions(const arma::r
     c = 0;
     for (unsigned int i = 0;i < nPts2;++i)
     {
-        if (arma::is_finite(grid2(i)) && arma::is_finite(values2.col(i)))
+        if (std::isfinite(grid2(i)) && values2.col(i).is_finite())
         {
             cleanGrid2(c) = grid2(i);
             cleanValues2.col(c) = values2.col(i);
