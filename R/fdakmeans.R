@@ -133,26 +133,33 @@
 #' # Or the estimated warping functions with:
 #' plot(out, type = "phase")
 fdakmeans <- function(
-    x, y = NULL,
-    n_clusters = 1L,
-    seeds = NULL,
-    seeding_strategy = c("kmeans++", "exhaustive-kmeans++", "exhaustive", "hclust"),
-    is_domain_interval = FALSE,
-    transformation = c("identity", "srvf"),
-    warping_class = c("none", "shift", "dilation", "affine", "bpd"),
-    centroid_type = "mean",
-    metric = c("l2", "normalized_l2", "pearson"),
-    cluster_on_phase = FALSE, # TODO: implement arg to say if distance is based on original data, amplitude or phase
-    use_verbose = FALSE,
-    warping_options = c(0.15, 0.15),
-    maximum_number_of_iterations = 100L,
-    number_of_threads = 1L,
-    parallel_method = 0L,
-    distance_relative_tolerance = 0.001,
-    use_fence = FALSE,
-    check_total_dissimilarity = TRUE,
-    compute_overall_center = FALSE,
-    add_silhouettes = TRUE) {
+  x,
+  y = NULL,
+  n_clusters = 1L,
+  seeds = NULL,
+  seeding_strategy = c(
+    "kmeans++",
+    "exhaustive-kmeans++",
+    "exhaustive",
+    "hclust"
+  ),
+  is_domain_interval = FALSE,
+  transformation = c("identity", "srvf"),
+  warping_class = c("none", "shift", "dilation", "affine", "bpd"),
+  centroid_type = "mean",
+  metric = c("l2", "normalized_l2", "pearson"),
+  cluster_on_phase = FALSE, # TODO: implement arg to say if distance is based on original data, amplitude or phase
+  use_verbose = FALSE,
+  warping_options = c(0.15, 0.15),
+  maximum_number_of_iterations = 100L,
+  number_of_threads = 1L,
+  parallel_method = 0L,
+  distance_relative_tolerance = 0.001,
+  use_fence = FALSE,
+  check_total_dissimilarity = TRUE,
+  compute_overall_center = FALSE,
+  add_silhouettes = TRUE
+) {
   call <- rlang::call_match(defaults = TRUE)
   callname <- rlang::call_name(call)
   callargs <- rlang::call_args(call)
@@ -189,18 +196,24 @@ fdakmeans <- function(
   centroid_extra <- centroid_type_args$extra
 
   if (centroid_name != "medoid" && parallel_method == 1L)
-    cli::cli_abort("Parallelization on the distance calculation loop is only available for computing medoids.")
+    cli::cli_abort(
+      "Parallelization on the distance calculation loop is only available for computing medoids."
+    )
 
   callargs$centroid_type <- centroid_name
   callargs$centroid_extra <- centroid_extra
 
   if (warping_class == "none" && cluster_on_phase)
-    cli::cli_abort("It makes no sense to cluster based on phase variability if no alignment is performed.")
+    cli::cli_abort(
+      "It makes no sense to cluster based on phase variability if no alignment is performed."
+    )
 
   # Handle seeds
   if (is.null(seeds)) {
     if (use_verbose)
-      cli::cli_alert_info("Computing initial centroids using {seeding_strategy} strategy...")
+      cli::cli_alert_info(
+        "Computing initial centroids using {seeding_strategy} strategy..."
+      )
     if (seeding_strategy == "hclust") {
       out <- fdahclust(
         x = x,
@@ -251,64 +264,75 @@ fdakmeans <- function(
       )
       Dm <- as.matrix(D)
       pb <- progressr::progressor(steps = N)
-      out <- future.apply::future_lapply(1:N, \(n) {
-        pb()
-        seeds <- n
-        if (n_clusters > 1L) {
-          for (k in 2:n_clusters) {
-            Dsub <- Dm[seeds, -seeds, drop = FALSE]
-            Dvec <- apply(Dsub, 2L, min)
-            non_seeds <- setdiff(1:N, seeds)
-            seeds <- c(seeds, sample(non_seeds, 1L, prob = Dvec^2))
+      out <- future.apply::future_lapply(
+        1:N,
+        \(n) {
+          pb()
+          seeds <- n
+          if (n_clusters > 1L) {
+            for (k in 2:n_clusters) {
+              Dsub <- Dm[seeds, -seeds, drop = FALSE]
+              Dvec <- apply(Dsub, 2L, min)
+              non_seeds <- setdiff(1:N, seeds)
+              seeds <- c(seeds, sample(non_seeds, 1L, prob = Dvec^2))
+            }
           }
-        }
 
-        km <- fdakmeans(
-          x = x,
-          y = y,
-          n_clusters = n_clusters,
-          is_domain_interval = is_domain_interval,
-          transformation = transformation,
-          warping_class = warping_class,
-          seeds = seeds,
-          maximum_number_of_iterations = maximum_number_of_iterations,
-          centroid_type = centroid_type,
-          metric = metric,
-          warping_options = warping_options,
-          distance_relative_tolerance = distance_relative_tolerance,
-          use_fence = use_fence,
-          cluster_on_phase = cluster_on_phase,
-          use_verbose = FALSE,
-          add_silhouettes = FALSE
-        )
-        list(caps = km, totss = sum(km$distances_to_center))
-      }, future.seed = TRUE, future.packages = "fdacluster")
+          km <- fdakmeans(
+            x = x,
+            y = y,
+            n_clusters = n_clusters,
+            is_domain_interval = is_domain_interval,
+            transformation = transformation,
+            warping_class = warping_class,
+            seeds = seeds,
+            maximum_number_of_iterations = maximum_number_of_iterations,
+            centroid_type = centroid_type,
+            metric = metric,
+            warping_options = warping_options,
+            distance_relative_tolerance = distance_relative_tolerance,
+            use_fence = use_fence,
+            cluster_on_phase = cluster_on_phase,
+            use_verbose = FALSE,
+            add_silhouettes = FALSE
+          )
+          list(caps = km, totss = sum(km$distances_to_center))
+        },
+        future.seed = TRUE,
+        future.packages = "fdacluster"
+      )
       best_idx <- which.min(sapply(out, \(.x) .x$totss))
       return(lapply(out, \(.x) .x$caps)[[best_idx]])
     } else if (seeding_strategy == "exhaustive") {
       sols <- utils::combn(N, n_clusters, simplify = FALSE)
       pb <- progressr::progressor(steps = length(sols))
-      sols <- future.apply::future_lapply(sols, \(.seeds) {
-        pb()
-        fdakmeans(
-          x = x, y = y,
-          n_clusters = n_clusters,
-          is_domain_interval = is_domain_interval,
-          transformation = transformation,
-          warping_class = warping_class,
-          seeds = .seeds,
-          maximum_number_of_iterations = maximum_number_of_iterations,
-          centroid_type = centroid_type,
-          metric = metric,
-          warping_options = warping_options,
-          distance_relative_tolerance = distance_relative_tolerance,
-          cluster_on_phase = cluster_on_phase,
-          use_fence = use_fence,
-          check_total_dissimilarity = check_total_dissimilarity,
-          use_verbose = FALSE,
-          add_silhouettes = FALSE
-        )
-      }, future.seed = TRUE, future.packages = "fdacluster")
+      sols <- future.apply::future_lapply(
+        sols,
+        \(.seeds) {
+          pb()
+          fdakmeans(
+            x = x,
+            y = y,
+            n_clusters = n_clusters,
+            is_domain_interval = is_domain_interval,
+            transformation = transformation,
+            warping_class = warping_class,
+            seeds = .seeds,
+            maximum_number_of_iterations = maximum_number_of_iterations,
+            centroid_type = centroid_type,
+            metric = metric,
+            warping_options = warping_options,
+            distance_relative_tolerance = distance_relative_tolerance,
+            cluster_on_phase = cluster_on_phase,
+            use_fence = use_fence,
+            check_total_dissimilarity = check_total_dissimilarity,
+            use_verbose = FALSE,
+            add_silhouettes = FALSE
+          )
+        },
+        future.seed = TRUE,
+        future.packages = "fdacluster"
+      )
       dtcs <- sols |>
         lapply(\(.x) .x$distances_to_center) |>
         sapply(sum)
@@ -317,7 +341,9 @@ fdakmeans <- function(
   } else {
     n_centroids <- length(seeds)
     if (n_centroids != n_clusters && n_centroids != 1L)
-      cli::cli_abort("The number of initial centroid indices provided by the {.arg seeds} argument should be either 1 or {n_clusters}.")
+      cli::cli_abort(
+        "The number of initial centroid indices provided by the {.arg seeds} argument should be either 1 or {n_clusters}."
+      )
     if (n_centroids == 1L && n_clusters > 1L) {
       D <- fdadist(
         x = x,
@@ -343,12 +369,25 @@ fdakmeans <- function(
 
   if (transformation == "srvf" && warping_class %in% c("none", "bpd")) {
     if (!(centroid_name %in% c("mean", "medoid")))
-      cli::cli_abort("Only mean and medoid centroids are available for SRVFs using the {.fn fdasrvf::kmeans_align} function.")
+      cli::cli_abort(
+        "Only mean and medoid centroids are available for SRVFs using the {.fn fdasrvf::kmeans_align} function."
+      )
 
     yperm <- aperm(y, c(2, 3, 1))
     common_grid <- x[1, ]
 
     # AST: nonempty should be 1 but badly handled in fdasrvf
+    save(
+      seeds,
+      common_grid,
+      yperm,
+      n_clusters,
+      centroid_type,
+      maximum_number_of_iterations,
+      use_verbose,
+      warping_class,
+      file = "~/Downloads/fdasrvf_kmeans_align.RData"
+    )
     res <- fdasrvf::kmeans_align(
       f = yperm,
       time = common_grid,
@@ -357,7 +396,8 @@ fdakmeans <- function(
       centroid_type = centroid_type,
       max_iter = maximum_number_of_iterations,
       use_verbose = use_verbose,
-      nonempty = 2L, scale = FALSE,
+      nonempty = 2L,
+      scale = FALSE,
       alignment = (warping_class == "bpd")
     )
 
@@ -368,12 +408,20 @@ fdakmeans <- function(
     warpings <- matrix(nrow = N, ncol = M)
     for (k in 1:n_clusters) {
       Nc <- length(cluster_members[[k]])
-      aligned_curves[cluster_members[[k]], , ] <- aperm(array(res$fn[[k]], dim = c(L, M, Nc)), c(3, 1, 2))
-      warpings[cluster_members[[k]], ] <- t(apply(t(res$gam[[k]]), 1, fdasrvf::invertGamma)) * diff(range(common_grid)) + min(common_grid)
+      aligned_curves[cluster_members[[k]], , ] <- aperm(
+        array(res$fn[[k]], dim = c(L, M, Nc)),
+        c(3, 1, 2)
+      )
+      warpings[cluster_members[[k]], ] <- t(apply(
+        t(res$gam[[k]]),
+        1,
+        fdasrvf::invertGamma
+      )) *
+        diff(range(common_grid)) +
+        min(common_grid)
     }
 
-    if (cluster_on_phase)
-    {
+    if (cluster_on_phase) {
       res$distances_to_center <- sqrt(sapply(1:N, \(n) {
         trapz(
           x = common_grid,
@@ -386,7 +434,8 @@ fdakmeans <- function(
     # clustering is still performed on amplitude for SRVF, only distances to
     # centers are transformed in the output
     q0 <- res$q0
-    if (length(dim(q0)) == 2L) # This should be done in fdasrvf package
+    if (length(dim(q0)) == 2L)
+      # This should be done in fdasrvf package
       dim(q0) <- c(1, dim(q0))
     amplitude_variation <- sum(res$distances_to_center^2)
     total_variation <- sum(sapply(1:N, \(n) {
@@ -417,7 +466,12 @@ fdakmeans <- function(
       original_grids = matrix(res$time, nrow = N, ncol = M, byrow = TRUE),
       aligned_grids = warpings,
       center_curves = center_curves,
-      center_grids = matrix(res$time, nrow = n_clusters, ncol = M, byrow = TRUE),
+      center_grids = matrix(
+        res$time,
+        nrow = n_clusters,
+        ncol = M,
+        byrow = TRUE
+      ),
       n_clusters = n_clusters,
       memberships = res$labels,
       distances_to_center = res$distances_to_center,

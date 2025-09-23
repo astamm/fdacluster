@@ -30,7 +30,7 @@ aligned curves are shown or the phase information data in which case the
 estimated warping functions are shown.
 }
 \examples{
-\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 ggplot2::autoplot(sim30_caps, type = "amplitude")
 ggplot2::autoplot(sim30_caps, type = "phase")
 \dontshow{\}) # examplesIf}

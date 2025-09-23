@@ -34,7 +34,7 @@ for objects of class \code{mcaps} to visualize the performances of multiple
 terms of silhouette values.
 }
 \examples{
-\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (requireNamespace("ggplot2", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 p <- ggplot2::autoplot(sim30_mcaps)
 \dontshow{\}) # examplesIf}
 }
