@@ -120,7 +120,7 @@ age:</p>
 <span>    x <span class="op">=</span> <span class="st">"Age (years)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Height (cm)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-1-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-1-1.png" class="r-plt" alt="" width="672"></p>
 <p>A single observation is actually a time series
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐱</mi><mi>i</mi></msub><mo>=</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mn>1</mn></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>i</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>t</mi><mi>M</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>⊤</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{x}_i = (x_i(t_1), \dots,
 x_i(t_M))^\top</annotation></semantics></math>. We can hypothesize that
@@ -216,7 +216,7 @@ cross-validation criterion:</p>
 <span>    x <span class="op">=</span> <span class="st">"Age (years)"</span>, </span>
 <span>    y <span class="op">=</span> <span class="st">"Height (cm)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="672"></p>
 <p>We can also compute and display the growth rate:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu">fda</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fda/man/eval.fd.html" class="external-link">eval.fd</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">fd</span>, <span class="fl">1</span><span class="op">)</span></span>
@@ -236,7 +236,7 @@ cross-validation criterion:</p>
 <span>    x <span class="op">=</span> <span class="st">"Age (years)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Growth velocity (cm/year)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-4-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="" width="672"></p>
 <p>This graph is interesting because it tells us that</p>
 <ul>
 <li>there is a first peak of growth velocity common to boys and girls
@@ -310,14 +310,14 @@ across observation in the form of a boxplot
 </ul>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">growth_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"wss"</span>, what <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="672"></p>
 <p>In terms of within-cluster distances to center (WSS), hierarchical
 agglomerative clustering with average or complete linkage and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-means
 stand out.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">growth_mcaps</span>, validation_criterion <span class="op">=</span> <span class="st">"silhouette"</span>, what <span class="op">=</span> <span class="st">"distribution"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-7-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="" width="672"></p>
 <p>In terms of individual silhouette values, DBSCAN does not appear in
 the comparison because it auto-detects the number of clusters and only
 found 1 cluster. Of the other methods, hierarchical agglomerative
@@ -349,7 +349,7 @@ membership:</p>
 <span><span class="co">#&gt; row names were found from a short variable and have been discarded</span></span>
 <span><span class="co">#&gt; Warning in data.frame(grid = as.vector(grids), value = as.vector(unicurves), :</span></span>
 <span><span class="co">#&gt; row names were found from a short variable and have been discarded</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-9-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="" width="672"></p>
 <p>When <code>type = "phase"</code>, the warping functions are instead
 displayed which gives a sense of the phase variability in the data
 <em>after</em> phase alignment. Again, they are colored by cluster
@@ -359,7 +359,7 @@ membership:</p>
 <span><span class="co">#&gt; Warning in data.frame(grid = as.vector(x$original_grids), value =</span></span>
 <span><span class="co">#&gt; as.vector(x$aligned_grids), : row names were found from a short variable and</span></span>
 <span><span class="co">#&gt; have been discarded</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-10-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-10-1.png" class="r-plt" alt="" width="672"></p>
 <p>It is also possible to show a visual inspection of internal cluster
 validation via the <a href="https://astamm.github.io/fdacluster/reference/diagnostic_plot.html"><code>diagnostic_plot()</code></a>
 function, which shows individual distance-to-center and silhouette
@@ -367,7 +367,7 @@ values, with observations ordered by decreasing value of intra-cluster
 silhouette:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/diagnostic_plot.html">diagnostic_plot</a></span><span class="op">(</span><span class="va">growth_caps</span><span class="op">)</span></span></code></pre></div>
-<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-11-1.png" width="672"></p>
+<p><img src="berkeley-growth_files/figure-html/unnamed-chunk-11-1.png" class="r-plt" alt="" width="672"></p>
 <p>Finally, we can explore the correspondence between the non-supervised
 groups that we found and the actual gender distribution:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -411,7 +411,7 @@ a girl.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
