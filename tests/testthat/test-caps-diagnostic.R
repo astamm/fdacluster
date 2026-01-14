@@ -1,4 +1,5 @@
 test_that("`diagnostic_plot()` works", {
+  skip_if_not_installed("lpSolve")
   out <- fdakmeans(
     simulated30_sub$x,
     simulated30_sub$y,
