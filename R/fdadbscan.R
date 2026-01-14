@@ -9,7 +9,8 @@
 #' @return An object of class [`caps`].
 #'
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("lpSolve", quietly = TRUE)
+#'
 #' #----------------------------------
 #' # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
 #' idx <- c(1:5, 11:15)
@@ -33,22 +34,25 @@
 #' plot(out, type = "amplitude")
 #' # Or the estimated warping functions with:
 #' plot(out, type = "phase")
-fdadbscan <- function(x, y,
-                      is_domain_interval = FALSE,
-                      transformation = c("identity", "srvf"),
-                      warping_class = c("none", "shift", "dilation", "affine", "bpd"),
-                      centroid_type = "mean",
-                      metric = c("l2", "normalized_l2", "pearson"),
-                      cluster_on_phase = FALSE,
-                      use_verbose = FALSE,
-                      warping_options = c(0.15, 0.15),
-                      maximum_number_of_iterations = 100L,
-                      number_of_threads = 1L,
-                      parallel_method = 0L,
-                      distance_relative_tolerance = 0.001,
-                      use_fence = FALSE,
-                      check_total_dissimilarity = TRUE,
-                      compute_overall_center = FALSE) {
+fdadbscan <- function(
+  x,
+  y,
+  is_domain_interval = FALSE,
+  transformation = c("identity", "srvf"),
+  warping_class = c("none", "shift", "dilation", "affine", "bpd"),
+  centroid_type = "mean",
+  metric = c("l2", "normalized_l2", "pearson"),
+  cluster_on_phase = FALSE,
+  use_verbose = FALSE,
+  warping_options = c(0.15, 0.15),
+  maximum_number_of_iterations = 100L,
+  number_of_threads = 1L,
+  parallel_method = 0L,
+  distance_relative_tolerance = 0.001,
+  use_fence = FALSE,
+  check_total_dissimilarity = TRUE,
+  compute_overall_center = FALSE
+) {
   call <- rlang::call_match(defaults = TRUE)
   callname <- rlang::call_name(call)
   callargs <- rlang::call_args(call)
@@ -81,17 +85,24 @@ fdadbscan <- function(x, y,
   centroid_name <- centroid_type_args$name
   centroid_extra <- centroid_type_args$extra
 
-  if (centroid_name != "medoid" && parallel_method == 1L)
-    cli::cli_abort("Parallelization on the distance calculation loop is only available for computing medoids.")
+  if (centroid_name != "medoid" && parallel_method == 1L) {
+    cli::cli_abort(
+      "Parallelization on the distance calculation loop is only available for computing medoids."
+    )
+  }
 
   callargs$centroid_type <- centroid_name
   callargs$centroid_extra <- centroid_extra
 
-  if (warping_class == "none" && cluster_on_phase)
-    cli::cli_abort("It makes no sense to cluster based on phase variability if no alignment is performed.")
+  if (warping_class == "none" && cluster_on_phase) {
+    cli::cli_abort(
+      "It makes no sense to cluster based on phase variability if no alignment is performed."
+    )
+  }
 
-  if (use_verbose)
+  if (use_verbose) {
     cli::cli_alert_info("Computing the distance matrix...")
+  }
 
   D <- fdadist(
     x = x,
@@ -111,19 +122,23 @@ fdadbscan <- function(x, y,
     dbscan::dbscan(obj, minPts = .min_pts)
   })
   sils <- sapply(results, \(.res) {
-    if (length(unique(.res$cluster)) == 1) return(NA)
+    if (length(unique(.res$cluster)) == 1) {
+      return(NA)
+    }
     mean(cluster::silhouette(.res$cluster, D)[, "sil_width"])
   })
 
-  if (all(is.na(sils)))
+  if (all(is.na(sils))) {
     dbres <- results[[1]]
-  else
+  } else {
     dbres <- results[[which.max(sils)]]
+  }
   labels <- dbres$cluster
   n_clusters <- length(unique(labels[labels > 0]))
 
-  if (use_verbose)
+  if (use_verbose) {
     cli::cli_alert_info("Aligning all curves with respect to their centroid...")
+  }
 
   kmresults <- lapply(1:n_clusters, function(k) {
     cluster_ids <- which(labels == k)
@@ -152,8 +167,9 @@ fdadbscan <- function(x, y,
     )
   })
 
-  if (use_verbose)
+  if (use_verbose) {
     cli::cli_alert_info("Consolidating output...")
+  }
 
   original_curves <- array(dim = c(N, L, M))
   original_curves[labels == 0, , ] <- y[labels == 0, , ]
