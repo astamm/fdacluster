@@ -7,11 +7,13 @@ which the height in cm has been measured over time on a common grid of
 age:
 
 ``` r
-growth <- fda::growth
 mb <- as.factor(c(
-  rep("male", dim(growth$hgtm)[2]), 
+  rep("male", dim(growth$hgtm)[2]),
   rep("female", dim(growth$hgtf)[2])
 ))
+```
+
+``` r
 N <- length(mb)
 x <- growth$age
 M <- length(x)
@@ -21,8 +23,8 @@ tibble::tibble(
   Height = matrix_tree(y0, margin = 2),
   Gender = mb,
   CurveID = 1:N
-) |> 
-  unnest(Age, Height) |> 
+) |>
+  unnest(Age, Height) |>
   ggplot(aes(Age, Height, color = Gender, group = CurveID)) +
   geom_point() +
   geom_line() +
@@ -34,7 +36,7 @@ tibble::tibble(
   )
 ```
 
-![](berkeley-growth_files/figure-html/unnamed-chunk-1-1.png)
+![](berkeley-growth_files/figure-html/unnamed-chunk-2-1.png)
 
 A single observation is actually a time series
 $\mathbf{x}_{i} = \left( x_{i}\left( t_{1} \right),\ldots,x_{i}\left( t_{M} \right) \right)^{\top}$.
@@ -83,10 +85,16 @@ fd_vals <- lapply(1:N, \(n) {
     out$gcv
   }
   lambda_opt <- stats::optimise(cost, c(1e-8, 1))$minimum
-  if (lambda_opt <= 1e-8)
-    cli::cli_alert_warning("The optimal penalty has reached the lower bound (1e-8) for curve #{n}.")
-  if (lambda_opt >= 1)
-    cli::cli_alert_warning("The optimal penalty has reached the upper bound (1) for curve #{n}.")
+  if (lambda_opt <= 1e-8) {
+    cli::cli_alert_warning(
+      "The optimal penalty has reached the lower bound (1e-8) for curve #{n}."
+    )
+  }
+  if (lambda_opt >= 1) {
+    cli::cli_alert_warning(
+      "The optimal penalty has reached the upper bound (1) for curve #{n}."
+    )
+  }
   yfdPar <- fda::fdPar(yfd, 2, lambda_opt)
   fda::smooth.fd(yfd, yfdPar)
 })
@@ -107,20 +115,20 @@ tibble::tibble(
   Height = matrix_tree(y0, margin = 2),
   Gender = mb,
   CurveID = 1:N
-) |> 
-  unnest(Age, Height) |> 
-  ggplot(aes(Age, Height, color = Gender, group = CurveID)) + 
-  geom_point() + 
+) |>
+  unnest(Age, Height) |>
+  ggplot(aes(Age, Height, color = Gender, group = CurveID)) +
+  geom_point() +
   geom_line() +
-  theme_bw() + 
+  theme_bw() +
   labs(
-    title = "Heights of 39 boys and 54 girls from age 1 to 18", 
-    x = "Age (years)", 
+    title = "Heights of 39 boys and 54 girls from age 1 to 18",
+    x = "Age (years)",
     y = "Height (cm)"
   )
 ```
 
-![](berkeley-growth_files/figure-html/unnamed-chunk-3-1.png)
+![](berkeley-growth_files/figure-html/unnamed-chunk-4-1.png)
 
 We can also compute and display the growth rate:
 
@@ -144,7 +152,7 @@ tibble::tibble(
   )
 ```
 
-![](berkeley-growth_files/figure-html/unnamed-chunk-4-1.png)
+![](berkeley-growth_files/figure-html/unnamed-chunk-5-1.png)
 
 This graph is interesting because it tells us that
 
@@ -187,15 +195,15 @@ growth_mcaps <- compare_caps(
   x = x,
   y = t(y1),
   n_clusters = 2,
-  metric = "normalized_l2", 
+  metric = "normalized_l2",
   clustering_method = c(
-    "kmeans", 
-    "hclust-complete", 
-    "hclust-average", 
+    "kmeans",
+    "hclust-complete",
+    "hclust-average",
     "hclust-single",
     "dbscan"
-  ), 
-  warping_class = "affine", 
+  ),
+  warping_class = "affine",
   centroid_type = "mean",
   cluster_on_phase = TRUE
 )
@@ -221,7 +229,7 @@ optional arguments:
 plot(growth_mcaps, validation_criterion = "wss", what = "distribution")
 ```
 
-![](berkeley-growth_files/figure-html/unnamed-chunk-6-1.png)
+![](berkeley-growth_files/figure-html/unnamed-chunk-7-1.png)
 
 In terms of within-cluster distances to center (WSS), hierarchical
 agglomerative clustering with average or complete linkage and $k$-means
@@ -231,7 +239,7 @@ stand out.
 plot(growth_mcaps, validation_criterion = "silhouette", what = "distribution")
 ```
 
-![](berkeley-growth_files/figure-html/unnamed-chunk-7-1.png)
+![](berkeley-growth_files/figure-html/unnamed-chunk-8-1.png)
 
 In terms of individual silhouette values, DBSCAN does not appear in the
 comparison because it auto-detects the number of clusters and only found
@@ -247,7 +255,7 @@ growth_caps <- fdahclust(
   y = t(y1),
   n_clusters = 2,
   metric = "normalized_l2",
-  warping_class = "affine", 
+  warping_class = "affine",
   centroid_type = "mean",
   cluster_on_phase = TRUE
 )
@@ -275,7 +283,7 @@ plot(growth_caps, type = "amplitude")
 #> row names were found from a short variable and have been discarded
 ```
 
-![](berkeley-growth_files/figure-html/unnamed-chunk-9-1.png)
+![](berkeley-growth_files/figure-html/unnamed-chunk-10-1.png)
 
 When `type = "phase"`, the warping functions are instead displayed which
 gives a sense of the phase variability in the data *after* phase
@@ -288,7 +296,7 @@ plot(growth_caps, type = "phase")
 #> have been discarded
 ```
 
-![](berkeley-growth_files/figure-html/unnamed-chunk-10-1.png)
+![](berkeley-growth_files/figure-html/unnamed-chunk-11-1.png)
 
 It is also possible to show a visual inspection of internal cluster
 validation via the
@@ -301,14 +309,14 @@ silhouette:
 diagnostic_plot(growth_caps)
 ```
 
-![](berkeley-growth_files/figure-html/unnamed-chunk-11-1.png)
+![](berkeley-growth_files/figure-html/unnamed-chunk-12-1.png)
 
 Finally, we can explore the correspondence between the non-supervised
 groups that we found and the actual gender distribution:
 
 ``` r
-table(growth_caps$memberships, mb) |> 
-  `rownames<-`(c("Group 1", "Group 2")) |> 
+table(growth_caps$memberships, mb) |>
+  `rownames<-`(c("Group 1", "Group 2")) |>
   knitr::kable()
 ```
 
