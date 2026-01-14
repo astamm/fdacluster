@@ -8,7 +8,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-load("../../R/sysdata.rda")
+load("input-formats-data.RData")
 ```
 
 ```{r setup}
@@ -175,7 +175,7 @@ of class `funData` using the Berkeley growth data study developed in
 ```{r, eval=FALSE}
 growth <- fda::growth
 growthData <- funData::funData(
-  argvals = growth$age, 
+  argvals = growth$age,
   X = t(cbind(growth$hgtm, growth$hgtf))
 )
 out_growth <- fdakmeans(
@@ -206,14 +206,14 @@ argvalsIrreg <- lapply(indices, \(i) argvals[i])
 # Simulate functional data with obvious grouping structure
 withr::with_seed(1234, {
   simData <- funData::irregFunData(
-    argvals = argvalsIrreg, 
+    argvals = argvalsIrreg,
     X = mapply(
-      function(x, a, b) a * sin(x + b), 
-      x = argvalsIrreg, 
+      function(x, a, b) a * sin(x + b),
+      x = argvalsIrreg,
       a = c(rgamma(10, 25, 50), rgamma(10, 50, 50), rgamma(10, 100, 50)),
       b = c(rnorm(10, -1, 0.1), rnorm(10, 0, 0.1), rnorm(10, 1, 0.1))
     )
-  )  
+  )
 })
 out_sim <- fdakmeans(
   x = simData,
@@ -236,12 +236,12 @@ of class `multiFunData` using the gait data study developed in
 
 ```{r, eval=FALSE}
 cycle_perc <- (0:19) / 19 * 100
-hipData <- t(fda::gait[, , 1])
+hipData <- t(fda::gait[,, 1])
 hipData <- hipData
-kneeData <- t(fda::gait[, , 2])
+kneeData <- t(fda::gait[,, 2])
 kneeData <- kneeData
 gaitData <- funData::multiFunData(
-  funData::funData(argvals = cycle_perc, X = hipData), 
+  funData::funData(argvals = cycle_perc, X = hipData),
   funData::funData(argvals = cycle_perc, X = kneeData)
 )
 out_gait <- fdakmeans(
@@ -341,14 +341,14 @@ of class `fd` using the gait data study developed in @silverman2002applied.
 ```{r, eval=FALSE}
 bspl <- fda::create.fourier.basis(rangeval = c(0, 100), nbasis = 5)
 gaitDataFD <- fda::smooth.basis(
-  argvals = cycle_perc, 
-  y = fda::gait, 
+  argvals = cycle_perc,
+  y = fda::gait,
   fdParobj = bspl
 )$fd
 out_gait_fd <- fdakmeans(
   x = cycle_perc,
   y = gaitDataFD,
-  n_clusters = 1, 
+  n_clusters = 1,
   seeding_strategy = "exhaustive",
   warping_class = "srvf",
   use_verbose = FALSE
