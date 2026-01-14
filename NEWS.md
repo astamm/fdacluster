@@ -1,4 +1,15 @@
-# fdacluster (development version)
+# fdacluster 0.4.2
+
+* Updated C++ code to use `std::isfinite()` on scalar values instead of
+`arma::is_finite()` which is meant for Armadillo objects. Also, replaced
+use of `arma::is_finite()` in favour of `.is_finite()` method of Armadillo
+objects.
+* Better handling of precomputed data in vignettes.
+* Skip examples and vignettes to accommodate some weird issues on some
+Rhub platforms.
+* Fixes #17 which reported integer overflow when computing linear indices
+  for large datasets by computing on the fly indices (i,j) from linear
+  indices.
 
 # fdacluster 0.4.1
 
