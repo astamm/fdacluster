@@ -1,5 +1,6 @@
 test_that("`fdadbscan()` works", {
   skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
