@@ -92,7 +92,8 @@ matrix_tree <- function(x, margin = 1) {
 A total of `r 39 + 54` children (39 boys and 54 girls) have been followed on
 which the height in cm has been measured over time on a common grid of age:
 
-```{r, fig.width=7, fig.retina=2}
+```{r, fig.width=7, fig.retina=2, eval = requireNamespace("fda", quietly = TRUE)}
+growth <- fda::growth
 mb <- as.factor(c(
   rep("male", dim(growth$hgtm)[2]),
   rep("female", dim(growth$hgtf)[2])
@@ -156,7 +157,7 @@ In practice, such a functional representation can be achieved in R using the
 growth curves where the weight $\lambda$ of the roughness penalty is determined
 by minimizing the generalized cross-validation criterion:
 
-```{r}
+```{r, eval = requireNamespace("fda", quietly = TRUE)}
 basisobj <- fda::create.bspline.basis(rangeval = range(x), nbasis = 15)
 fd_vals <- lapply(1:N, \(n) {
   yobs <- y0[, n]
@@ -191,7 +192,7 @@ fd <- fda::fd(
 
 We can now take a look of the data under this representation:
 
-```{r, fig.width=7, fig.retina=2}
+```{r, fig.width=7, fig.retina=2, eval = requireNamespace("fda", quietly = TRUE)}
 y0 <- fda::eval.fd(x, fd, 0)
 tibble::tibble(
   Age = replicate(N, x, simplify = FALSE),
@@ -213,7 +214,7 @@ tibble::tibble(
 
 We can also compute and display the growth rate:
 
-```{r, fig.width=7, fig.retina=2}
+```{r, fig.width=7, fig.retina=2, eval = requireNamespace("fda", quietly = TRUE)}
 y1 <- fda::eval.fd(x, fd, 1)
 tibble::tibble(
   Age = replicate(N, x, simplify = FALSE),
