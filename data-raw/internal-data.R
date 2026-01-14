@@ -200,6 +200,7 @@ growth_caps <- fdahclust(
 )
 
 save(
+  growth,
   growth_mcaps,
   growth_caps,
   file = "vignettes/berkeley-growth-data.RData",

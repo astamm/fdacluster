@@ -93,7 +93,6 @@ A total of `r 39 + 54` children (39 boys and 54 girls) have been followed on
 which the height in cm has been measured over time on a common grid of age:
 
 ```{r, fig.width=7, fig.retina=2}
-growth <- fda::growth
 mb <- as.factor(c(
   rep("male", dim(growth$hgtm)[2]),
   rep("female", dim(growth$hgtf)[2])
