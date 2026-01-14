@@ -16,8 +16,9 @@ impute_via_mean <- function(X, labels) {
         idx_max[n] <- M - m + 1
         break_high <- TRUE
       }
-      if (break_low && break_high)
+      if (break_low && break_high) {
         break
+      }
     }
   }
 
@@ -48,16 +49,20 @@ impute_via_mean <- function(X, labels) {
 }
 
 trapz <- function(x, y, dims = 1) {
-  if ((dims - 1) > 0)
+  if ((dims - 1) > 0) {
     perm <- c(dims:max(ndims(y), dims), 1:(dims - 1))
-  else
+  } else {
     perm <- c(dims:max(ndims(y), dims))
+  }
 
-  if (ndims(y) == 0)
+  if (ndims(y) == 0) {
     m <- 1
-  else {
-    if (length(x) != dim(y)[dims])
-      cli::cli_abort("Dimensions mismatch in trapezoidal integration (function {.fn trapz}).")
+  } else {
+    if (length(x) != dim(y)[dims]) {
+      cli::cli_abort(
+        "Dimensions mismatch in trapezoidal integration (function {.fn trapz})."
+      )
+    }
     y = aperm(y, perm)
     m <- nrow(y)
   }
@@ -66,9 +71,17 @@ trapz <- function(x, y, dims = 1) {
     M <- length(y)
     out <- sum(diff(x) * (y[-M] + y[-1]) / 2)
   } else {
-    slice1 <- y[as.vector(outer(1:(m - 1), dim(y)[1] * (1:prod(dim(y)[-1]) - 1), '+'))]
+    slice1 <- y[as.vector(outer(
+      1:(m - 1),
+      dim(y)[1] * (1:prod(dim(y)[-1]) - 1),
+      '+'
+    ))]
     dim(slice1) <- c(m - 1, length(slice1) / (m - 1))
-    slice2 <- y[as.vector(outer(2:m, dim(y)[1] * (1:prod(dim(y)[-1]) - 1), '+'))]
+    slice2 <- y[as.vector(outer(
+      2:m,
+      dim(y)[1] * (1:prod(dim(y)[-1]) - 1),
+      '+'
+    ))]
     dim(slice2) <- c(m - 1, length(slice2) / (m - 1))
     out <- t(diff(x)) %*% (slice1 + slice2) / 2.
     siz <- dim(y)
@@ -84,34 +97,43 @@ trapz <- function(x, y, dims = 1) {
   out
 }
 
-ndims <- function(x){
+ndims <- function(x) {
   length(dim(x))
 }
 
 check_centroid_type <- function(x) {
-  if (x == "mean" || x == "median" || x == "medoid") return(list(name = x, extra = 0))
+  if (x == "mean" || x == "median" || x == "medoid") {
+    return(list(name = x, extra = 0))
+  }
   if (grepl("lowess", x, fixed = TRUE)) {
     span_value <- as.numeric(gsub("\\D", "", x)) / 100
-    if (is.na(span_value)) span_value <- 0.1
+    if (is.na(span_value)) {
+      span_value <- 0.1
+    }
     return(list(name = "lowess", extra = span_value))
   }
   if (grepl("poly", x, fixed = TRUE)) {
     degree_value <- as.numeric(gsub("\\D", "", x))
-    if (is.na(degree_value)) degree_value <- 4
+    if (is.na(degree_value)) {
+      degree_value <- 4
+    }
     return(list(name = "poly", extra = degree_value))
   }
-  cli::cli_abort("The input argument {.arg centroid_type} should be one of {.code mean}, {.code medoid}, {.code lowessXX} or {.code polyXX}.")
+  cli::cli_abort(
+    "The input argument {.arg centroid_type} should be one of {.code mean}, {.code medoid}, {.code lowessXX} or {.code polyXX}."
+  )
 }
 
 format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
   # Here x is N x M and y is N x L x M when provided
   if (is.null(y) && rlang::is_installed("funData")) {
     if (inherits(x, "funData")) {
-      if (length(x@argvals) > 1)
+      if (length(x@argvals) > 1) {
         cli::cli_abort(c(
           "The {.pkg fdacluster} package does not support functional data defined ",
           "on multivariate domains."
         ))
+      }
       L <- 1
       y <- x@X
       dims <- dim(y)
@@ -138,56 +160,65 @@ format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
       dims <- dim(x[[1]]@X)
       grid <- x[[1]]@argvals[[1]]
       lapply(x, \(fData) {
-        if (length(fData@argvals) != 1)
+        if (length(fData@argvals) != 1) {
           cli::cli_abort(c(
             "The {.pkg fdacluster} package does not support functional data ",
             "defined on multivariate domains."
           ))
-        if (any(fData@argvals[[1]] != grid))
+        }
+        if (any(fData@argvals[[1]] != grid)) {
           cli::cli_abort(c(
             "All components of the {.cls multiFunData} object must share the same ",
             "evaluation grids."
           ))
-        if (any(dim(fData@X) != dims))
+        }
+        if (any(dim(fData@X) != dims)) {
           cli::cli_abort(c(
             "All components of the {.cls multiFunData} object must have values ",
             "stored in matrices with the same dimensions."
           ))
+        }
       })
       N <- dims[1]
       M <- dims[2]
       y <- array(dim = c(N, L, M))
-      for (l in 1:L) y[, l, ] <- x[[l]]@X
+      for (l in 1:L) {
+        y[, l, ] <- x[[l]]@X
+      }
       x <- grid
-    } else
+    } else {
       cli::cli_abort(c(
         "Functional data provided in a single argument {.arg x} must be either of ",
         "class {.cls funData} or of class {.cls irregFunData} or of class ",
         "{.cls multiFunData}."
       ))
+    }
   } else if (rlang::is_installed("fda") && inherits(y, "fd")) {
     dims <- sapply(y$fdnames, length)
     M <- dims[1]
     N <- dims[2]
     L <- dims[3]
     if (is.vector(x)) {
-      if (length(x) != M)
+      if (length(x) != M) {
         cli::cli_abort(c(
           "The number of function evaluations ({M}) does not match the grid ",
           "size ({length(x)})."
         ))
+      }
       y <- fda::eval.fd(x, y)
     } else {
-      if (nrow(x) != N)
+      if (nrow(x) != N) {
         cli::cli_abort(c(
           "When provided multiple evaluation grids as a matrix, the number of ",
           "rows should match the number of curves."
         ))
-      if (ncol(x) != M)
+      }
+      if (ncol(x) != M) {
         cli::cli_abort(c(
           "When provided multiple evaluation grids as a matrix, the number of ",
           "columns should match the common grid size."
         ))
+      }
       y <- fda::eval.fd(t(x), y)
     }
     if (is.null(dim(y))) {
@@ -213,18 +244,27 @@ format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
     x <- matrix(x, N, M, byrow = TRUE)
   }
 
-  if (anyNA(x))
-    cli::cli_abort("The input argument {.arg x} should not contain non-finite values.")
+  if (anyNA(x)) {
+    cli::cli_abort(
+      "The input argument {.arg x} should not contain non-finite values."
+    )
+  }
 
-  if (anyNA(y))
-    cli::cli_abort("The input argument {.arg y} should not contain non-finite values.")
+  if (anyNA(y)) {
+    cli::cli_abort(
+      "The input argument {.arg y} should not contain non-finite values."
+    )
+  }
 
   # Check if sample defined on a common interval
   lower_bound <- min(x[, 1])
   upper_bound <- max(x[, M])
   are_domains_equal <- all(x[, 1] == lower_bound) && all(x[, M] == upper_bound)
-  if (is_domain_interval && !are_domains_equal)
-    cli::cli_abort("The functional data are not defined on a common interval but argument {.arg is_domain_interval} specifies that they are.")
+  if (is_domain_interval && !are_domains_equal) {
+    cli::cli_abort(
+      "The functional data are not defined on a common interval but argument {.arg is_domain_interval} specifies that they are."
+    )
+  }
   if (is_domain_interval) {
     common_grid <- seq(lower_bound, upper_bound, length.out = M)
     for (i in 1:N) {
@@ -239,29 +279,70 @@ format_inputs <- function(x, y = NULL, is_domain_interval = FALSE) {
   list(x = x, y = y)
 }
 
-check_option_compatibility <- function(is_domain_interval, transformation, warping_class, metric) {
-  out <- .check_option_compatibility(is_domain_interval, transformation, warping_class, metric)
-  if (out == 1L)
-    cli::cli_abort("The functional domain is an interval. The only available transformation is the SRVF transformation.")
-  if (out == 2L)
-    cli::cli_abort('The functional domain is an interval. The only available warping classes are {.code "none"} and {.code "bpd"}.')
-  if (out == 3L)
-    cli::cli_abort("The only metric invariant by boundary-preserving diffeomorphisms is the L2 metric.")
+check_option_compatibility <- function(
+  is_domain_interval,
+  transformation,
+  warping_class,
+  metric
+) {
+  out <- .check_option_compatibility(
+    is_domain_interval,
+    transformation,
+    warping_class,
+    metric
+  )
+  if (out == 1L) {
+    cli::cli_abort(
+      "The functional domain is an interval. The only available transformation is the SRVF transformation."
+    )
+  }
+  if (out == 2L) {
+    cli::cli_abort(
+      'The functional domain is an interval. The only available warping classes are {.code "none"} and {.code "bpd"}.'
+    )
+  }
+  if (out == 3L) {
+    cli::cli_abort(
+      "The only metric invariant by boundary-preserving diffeomorphisms is the L2 metric."
+    )
+  }
 
-  if (out == 4L)
-    cli::cli_abort("It does not make sense to use boundary-preserving diffeomorphisms for aligning curves defined on the real line.")
-  if (out == 5L)
-    cli::cli_abort("The L2 metric is neither dilation-invariant nor affine-invariant.")
+  if (out == 4L) {
+    cli::cli_abort(
+      "It does not make sense to use boundary-preserving diffeomorphisms for aligning curves defined on the real line."
+    )
+  }
+  if (out == 5L) {
+    cli::cli_abort(
+      "The L2 metric is neither dilation-invariant nor affine-invariant."
+    )
+  }
 }
 
-.check_option_compatibility <- function(is_domain_interval, transformation, warping_class, metric) {
+.check_option_compatibility <- function(
+  is_domain_interval,
+  transformation,
+  warping_class,
+  metric
+) {
   if (is_domain_interval) {
-    if (transformation != "srvf") return(1)
-    if (warping_class != "none" && warping_class != "bpd") return(2)
+    if (transformation != "srvf") {
+      return(1)
+    }
+    if (warping_class != "none" && warping_class != "bpd") {
+      return(2)
+    }
     if (warping_class == "bpd" && metric != "l2") return(3)
   } else {
-    if (warping_class == "bpd") return(4)
-    if ((warping_class == "dilation" || warping_class == "affine") && metric == "l2") return(5)
+    if (warping_class == "bpd") {
+      return(4)
+    }
+    if (
+      (warping_class == "dilation" || warping_class == "affine") &&
+        metric == "l2"
+    ) {
+      return(5)
+    }
   }
   0
 }
@@ -279,8 +360,13 @@ remove_missing_points <- function(grids, curves) {
     tmax <- max(grids[n, non_na_indices])
     tout <- seq(tmin, tmax, length.out = M)
     out_grids[n, ] <- tout
-    for (l in 1:L)
-      out_curves[n, l, ] <- stats::approx(grids[n, ], curves[n, l, ], xout = tout)$y
+    for (l in 1:L) {
+      out_curves[n, l, ] <- stats::approx(
+        grids[n, ],
+        curves[n, l, ],
+        xout = tout
+      )$y
+    }
   }
   list(grids = out_grids, curves = out_curves)
 }
@@ -297,32 +383,40 @@ unnest_string <- function(x, cols) {
 
   base_names <- names(x)[!(names(x) %in% cols)]
   out <- lapply(base_names, \(.base_name) {
-    do.call(c, mapply(\(.x, .times) {
-      is_factor <- is.factor(.x)
-      if (is_factor) {
-        lvls <- levels(.x)
-        .x <- as.character(.x)
-      }
-      if (is.character(.x)) {
-        if (length(.x) == 1) {
-          out <- rep(.x, .times)
+    do.call(
+      c,
+      mapply(
+        \(.x, .times) {
+          is_factor <- is.factor(.x)
           if (is_factor) {
-            out <- factor(out, levels = lvls)
+            lvls <- levels(.x)
+            .x <- as.character(.x)
           }
-          return(out)
-        }
-        out <- replicate(.times, .x, simplify = FALSE)
-        if (is_factor) {
-          out <- lapply(out, \(.out) factor(.out, levels = lvls))
-        }
-        return(out)
-      }
-      mat <- tcrossprod(rep(1, .times), .x)
-      if (ncol(mat) == 1) {
-        return(rep(.x, .times))
-      }
-      out <- lapply(seq_len(nrow(mat)), \(i) mat[i, ])
-    }, x[[.base_name]], times, SIMPLIFY = FALSE))
+          if (is.character(.x)) {
+            if (length(.x) == 1) {
+              out <- rep(.x, .times)
+              if (is_factor) {
+                out <- factor(out, levels = lvls)
+              }
+              return(out)
+            }
+            out <- replicate(.times, .x, simplify = FALSE)
+            if (is_factor) {
+              out <- lapply(out, \(.out) factor(.out, levels = lvls))
+            }
+            return(out)
+          }
+          mat <- tcrossprod(rep(1, .times), .x)
+          if (ncol(mat) == 1) {
+            return(rep(.x, .times))
+          }
+          out <- lapply(seq_len(nrow(mat)), \(i) mat[i, ])
+        },
+        x[[.base_name]],
+        times,
+        SIMPLIFY = FALSE
+      )
+    )
   })
   names(out) <- base_names
   out <- tibble::as_tibble(out)
@@ -347,30 +441,4 @@ matrix_tree <- function(x, margin = 1) {
 
 imap <- function(.x, .f, ...) {
   mapply(.f, .x, seq_along(.x), ..., SIMPLIFY = FALSE)
-}
-
-future_map2_dbl <- function(.x, .y, .f, ...,
-                            future_envir = parent.frame(),
-                            future_stdout = TRUE,
-                            future_conditions = "condition",
-                            future_globals = TRUE,
-                            future_packages = NULL,
-                            future_seed = TRUE,
-                            future_scheduling = 1,
-                            future_chunk_size = NULL,
-                            future_label = "future_mapply-%d") {
-  future.apply::future_mapply(
-    FUN = .f, .x, .y,
-    MoreArgs = rlang::list2(...),
-    SIMPLIFY = TRUE,
-    future.envir = future_envir,
-    future.stdout = future_stdout,
-    future.conditions = future_conditions,
-    future.globals = future_globals,
-    future.packages = future_packages,
-    future.seed = future_seed,
-    future.scheduling = future_scheduling,
-    future.chunk.size = future_chunk_size,
-    future.label = future_label
-  )
 }
