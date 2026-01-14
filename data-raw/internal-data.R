@@ -31,7 +31,7 @@ phase_data <- compare_caps(
 save(
   amplitude_data,
   phase_data,
-  file = "vignettes/articles/hierarchial-clustering-data.RData",
+  file = "vignettes/articles/hierarchical-clustering-data.RData",
   compress = "xz",
   version = 3
 )
