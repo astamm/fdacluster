@@ -1,4 +1,6 @@
 test_that('`fdakmeans()` works with fda::fd input object.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -8,8 +10,8 @@ test_that('`fdakmeans()` works with fda::fd input object.', {
   fd <- fda::as.fd(fda::smooth.basisPar(
     simulated30_sub$x[1, ],
     t(simulated30_sub$y[, 1, ]),
-    lambda = 0.00001)
-  )
+    lambda = 0.00001
+  ))
   out <- fdakmeans(
     x = simulated30_sub$x,
     y = fd,
@@ -23,11 +25,22 @@ test_that('`fdakmeans()` works with fda::fd input object.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -43,6 +56,8 @@ test_that('`fdakmeans()` works with fda::fd input object.', {
 })
 
 test_that('`fdakmeans()` works with funData::funData input object.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -62,11 +77,22 @@ test_that('`fdakmeans()` works with funData::funData input object.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -82,6 +108,8 @@ test_that('`fdakmeans()` works with funData::funData input object.', {
 })
 
 test_that('`fdakmeans()` works with fixed initial seeds.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -101,11 +129,22 @@ test_that('`fdakmeans()` works with fixed initial seeds.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -121,6 +160,8 @@ test_that('`fdakmeans()` works with fixed initial seeds.', {
 })
 
 test_that('`fdakmeans()` works with kmeans++ seeding strategy.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -142,11 +183,22 @@ test_that('`fdakmeans()` works with kmeans++ seeding strategy.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -162,6 +214,7 @@ test_that('`fdakmeans()` works with kmeans++ seeding strategy.', {
 })
 
 test_that('`fdakmeans()` works with exhaustive-kmeans++ seeding strategy.', {
+  skip_if_not_installed("lpSolve")
   skip_on_cran()
 
   dims <- dim(simulated30_sub$y)
@@ -189,11 +242,22 @@ test_that('`fdakmeans()` works with exhaustive-kmeans++ seeding strategy.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -209,6 +273,7 @@ test_that('`fdakmeans()` works with exhaustive-kmeans++ seeding strategy.', {
 })
 
 test_that('`fdakmeans()` works with exhaustive seeding strategy.', {
+  skip_if_not_installed("lpSolve")
   skip_on_cran()
 
   dims <- dim(simulated30_sub$y)
@@ -234,11 +299,22 @@ test_that('`fdakmeans()` works with exhaustive seeding strategy.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -254,6 +330,8 @@ test_that('`fdakmeans()` works with exhaustive seeding strategy.', {
 })
 
 test_that('`fdakmeans()` works with hclust seeding strategy.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -273,11 +351,22 @@ test_that('`fdakmeans()` works with hclust seeding strategy.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -293,6 +382,8 @@ test_that('`fdakmeans()` works with hclust seeding strategy.', {
 })
 
 test_that('`fdakmeans()` works with dilation warping.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -312,11 +403,22 @@ test_that('`fdakmeans()` works with dilation warping.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -332,6 +434,8 @@ test_that('`fdakmeans()` works with dilation warping.', {
 })
 
 test_that('`fdakmeans()` works with no warping.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -351,11 +455,22 @@ test_that('`fdakmeans()` works with no warping.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -371,6 +486,8 @@ test_that('`fdakmeans()` works with no warping.', {
 })
 
 test_that('`fdakmeans()` works with shift warping.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -390,11 +507,22 @@ test_that('`fdakmeans()` works with shift warping.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -410,6 +538,8 @@ test_that('`fdakmeans()` works with shift warping.', {
 })
 
 test_that('`fdakmeans()` works with boundary-preserving diffeomorphism warping.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -431,11 +561,22 @@ test_that('`fdakmeans()` works with boundary-preserving diffeomorphism warping.'
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -451,6 +592,8 @@ test_that('`fdakmeans()` works with boundary-preserving diffeomorphism warping.'
 })
 
 test_that('`fdakmeans()` works with median centroid.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -470,11 +613,22 @@ test_that('`fdakmeans()` works with median centroid.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -490,6 +644,8 @@ test_that('`fdakmeans()` works with median centroid.', {
 })
 
 test_that('`fdakmeans()` works with medoid centroid.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -509,11 +665,22 @@ test_that('`fdakmeans()` works with medoid centroid.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -529,6 +696,8 @@ test_that('`fdakmeans()` works with medoid centroid.', {
 })
 
 test_that('`fdakmeans()` works with lowess centroid.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -548,11 +717,22 @@ test_that('`fdakmeans()` works with lowess centroid.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -568,6 +748,8 @@ test_that('`fdakmeans()` works with lowess centroid.', {
 })
 
 test_that('`fdakmeans()` works with poly centroid.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -587,11 +769,22 @@ test_that('`fdakmeans()` works with poly centroid.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -607,6 +800,8 @@ test_that('`fdakmeans()` works with poly centroid.', {
 })
 
 test_that('`fdakmeans()` works with normalized l2 metric.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -626,11 +821,22 @@ test_that('`fdakmeans()` works with normalized l2 metric.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -646,6 +852,8 @@ test_that('`fdakmeans()` works with normalized l2 metric.', {
 })
 
 test_that('`fdakmeans()` works when clustering on phase.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -666,11 +874,22 @@ test_that('`fdakmeans()` works when clustering on phase.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -686,6 +905,8 @@ test_that('`fdakmeans()` works when clustering on phase.', {
 })
 
 test_that('`fdakmeans()` works in verbose mode.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -705,11 +926,22 @@ test_that('`fdakmeans()` works in verbose mode.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -725,6 +957,8 @@ test_that('`fdakmeans()` works in verbose mode.', {
 })
 
 test_that('`fdakmeans()` works with parallel mode on distance calculation.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -745,11 +979,22 @@ test_that('`fdakmeans()` works with parallel mode on distance calculation.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -765,6 +1010,8 @@ test_that('`fdakmeans()` works with parallel mode on distance calculation.', {
 })
 
 test_that('`fdakmeans()` works with fence adaptive algorithm.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -785,11 +1032,22 @@ test_that('`fdakmeans()` works with fence adaptive algorithm.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
@@ -805,6 +1063,8 @@ test_that('`fdakmeans()` works with fence adaptive algorithm.', {
 })
 
 test_that('`fdakmeans()` works with computation of overall center.', {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -825,11 +1085,22 @@ test_that('`fdakmeans()` works with computation of overall center.', {
 
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))

@@ -28,6 +28,14 @@ phase_data <- compare_caps(
   cluster_on_phase = TRUE
 )
 
+save(
+  amplitude_data,
+  phase_data,
+  file = "vignettes/articles/hierarchical-clustering-data.RData",
+  compress = "xz",
+  version = 3
+)
+
 # kmeans-initialisation ---------------------------------------------------
 
 out_manual <- fdakmeans(
@@ -43,7 +51,11 @@ out_manual <- fdakmeans(
 )
 
 withr::with_seed(1234, {
-  initial_seeds <- replicate(10, sample.int(30, 2, replace = FALSE), simplify = FALSE)
+  initial_seeds <- replicate(
+    10,
+    sample.int(30, 2, replace = FALSE),
+    simplify = FALSE
+  )
   outs_manual <- purrr::map(initial_seeds, \(.seeds) {
     fdakmeans(
       x = simulated30$x,
@@ -60,35 +72,43 @@ withr::with_seed(1234, {
 })
 
 withr::with_seed(1234, {
-  outs_kpp <- replicate(10, {
-    fdakmeans(
-      x = simulated30$x,
-      y = simulated30$y,
-      n_clusters = 2,
-      seeding_strategy = "kmeans++",
-      warping_class = "affine",
-      centroid_type = "mean",
-      metric = "normalized_l2",
-      cluster_on_phase = FALSE,
-      use_verbose = FALSE
-    )
-  }, simplify = FALSE)
+  outs_kpp <- replicate(
+    10,
+    {
+      fdakmeans(
+        x = simulated30$x,
+        y = simulated30$y,
+        n_clusters = 2,
+        seeding_strategy = "kmeans++",
+        warping_class = "affine",
+        centroid_type = "mean",
+        metric = "normalized_l2",
+        cluster_on_phase = FALSE,
+        use_verbose = FALSE
+      )
+    },
+    simplify = FALSE
+  )
 })
 
 withr::with_seed(1234, {
-  outs_ekpp <- replicate(10, {
-    fdakmeans(
-      x = simulated30$x,
-      y = simulated30$y,
-      n_clusters = 2,
-      seeding_strategy = "exhaustive-kmeans++",
-      warping_class = "affine",
-      centroid_type = "mean",
-      metric = "normalized_l2",
-      cluster_on_phase = FALSE,
-      use_verbose = FALSE
-    )
-  }, simplify = FALSE)
+  outs_ekpp <- replicate(
+    10,
+    {
+      fdakmeans(
+        x = simulated30$x,
+        y = simulated30$y,
+        n_clusters = 2,
+        seeding_strategy = "exhaustive-kmeans++",
+        warping_class = "affine",
+        centroid_type = "mean",
+        metric = "normalized_l2",
+        cluster_on_phase = FALSE,
+        use_verbose = FALSE
+      )
+    },
+    simplify = FALSE
+  )
 })
 
 out_hclust <- fdakmeans(
@@ -103,10 +123,25 @@ out_hclust <- fdakmeans(
   use_verbose = FALSE
 )
 
+save(
+  initial_seeds,
+  out_manual,
+  outs_manual,
+  outs_kpp,
+  outs_ekpp,
+  out_hclust,
+  file = "vignettes/kmeans-initialisation-data.RData",
+  compress = "xz",
+  version = 3
+)
+
 # berkeley-growth ---------------------------------------------------------
 
 growth <- fda::growth
-mb <- as.factor(c(rep("male", dim(growth$hgtm)[2]), rep("female", dim(growth$hgtf)[2])))
+mb <- as.factor(c(
+  rep("male", dim(growth$hgtm)[2]),
+  rep("female", dim(growth$hgtf)[2])
+))
 N <- length(mb)
 x <- growth$age
 M <- length(x)
@@ -122,10 +157,16 @@ fd_vals <- purrr::map(1:N, \(n) {
     out$gcv
   }
   lambda_opt <- stats::optimise(cost, c(1e-8, 1))$minimum
-  if (lambda_opt <= 1e-8)
-    cli::cli_alert_warning("The optimal penalty has reached the lower bound (1e-8) for curve #{n}.")
-  if (lambda_opt >= 1)
-    cli::cli_alert_warning("The optimal penalty has reached the upper bound (1) for curve #{n}.")
+  if (lambda_opt <= 1e-8) {
+    cli::cli_alert_warning(
+      "The optimal penalty has reached the lower bound (1e-8) for curve #{n}."
+    )
+  }
+  if (lambda_opt >= 1) {
+    cli::cli_alert_warning(
+      "The optimal penalty has reached the upper bound (1) for curve #{n}."
+    )
+  }
   yfdPar <- fda::fdPar(yfd, 2, lambda_opt)
   fda::smooth.fd(yfd, yfdPar)
 })
@@ -156,6 +197,15 @@ growth_caps <- fdahclust(
   warping_class = "affine",
   centroid_type = "mean",
   cluster_on_phase = TRUE
+)
+
+save(
+  growth,
+  growth_mcaps,
+  growth_caps,
+  file = "vignettes/berkeley-growth-data.RData",
+  compress = "xz",
+  version = 3
 )
 
 # input-formats -----------------------------------------------------------
@@ -200,9 +250,9 @@ out_sim <- fdakmeans(
 )
 
 cycle_perc <- (0:19) / 19 * 100
-hipData <- t(fda::gait[, , 1])
+hipData <- t(fda::gait[,, 1])
 hipData <- hipData
-kneeData <- t(fda::gait[, , 2])
+kneeData <- t(fda::gait[,, 2])
 kneeData <- kneeData
 gaitData <- funData::multiFunData(
   funData::funData(argvals = cycle_perc, X = hipData),
@@ -237,25 +287,14 @@ out_gait_fd <- fdakmeans(
   use_verbose = FALSE
 )
 
-plan(sequential)
-
-usethis::use_data(
-  amplitude_data,
-  phase_data,
-  initial_seeds,
-  out_manual,
-  outs_manual,
-  outs_kpp,
-  outs_ekpp,
-  out_hclust,
-  growth_mcaps,
-  growth_caps,
+save(
   out_growth,
   out_sim,
   out_gait,
   out_gait_fd,
-  internal = TRUE,
-  overwrite = TRUE,
+  file = "vignettes/articles/input-formats-data.RData",
   compress = "xz",
   version = 3
 )
+
+plan(sequential)

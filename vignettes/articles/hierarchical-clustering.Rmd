@@ -5,7 +5,7 @@ title: "Hierarchical clustering"
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>", 
+  comment = "#>",
   fig.width = 7,
   fig.height = 5,
   fig.align = "center",
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 library(fdacluster)
 library(future)
-load("../../R/sysdata.rda")
+load("hierarchical-clustering-data.RData")
 ```
 
 ## Theory
@@ -78,7 +78,7 @@ fdahclust(
   linkage_criterion = c("complete", "average", "single", "ward.D2"),
   cluster_on_phase = FALSE,
   use_verbose = TRUE,
-  
+
   warping_options = c(0.15, 0.15),
   maximum_number_of_iterations = 100L,
   number_of_threads = 1L,
@@ -119,7 +119,7 @@ Let us consider the following sample of $30$ simulated unidimensional curves:
 ```{r data, echo=FALSE}
 matplot(
   x = t(simulated30_sub$x),
-  y = t(simulated30_sub$y[, 1,]),
+  y = t(simulated30_sub$y[, 1, ]),
   type = "l",
   xlab = "x",
   ylab = "y"
@@ -140,7 +140,7 @@ out1 <- fdahclust(
   n_clusters = 2,
   centroid_type = "mean",
   warping_class = "affine",
-  metric = "normalized_l2", 
+  metric = "normalized_l2",
   cluster_on_phase = FALSE
 )
 ```
@@ -184,7 +184,7 @@ out2 <- fdahclust(
   n_clusters = 3,
   centroid_type = "mean",
   warping_class = "affine",
-  metric = "normalized_l2", 
+  metric = "normalized_l2",
   cluster_on_phase = TRUE
 )
 ```
@@ -209,13 +209,13 @@ clustering on amplitude data:
 ncores <- max(parallel::detectCores() - 1L, 1L)
 plan(multisession, workers = ncores)
 amplitude_data <- compare_caps(
-  x = simulated30_sub$x, 
-  y = simulated30_sub$y, 
-  n_clusters = 1:5, 
-  metric = "normalized_l2", 
+  x = simulated30_sub$x,
+  y = simulated30_sub$y,
+  n_clusters = 1:5,
+  metric = "normalized_l2",
   warping_class = c("none", "shift", "dilation", "affine"),
-  clustering_method = "hclust-complete", 
-  centroid_type = "mean", 
+  clustering_method = "hclust-complete",
+  centroid_type = "mean",
   cluster_on_phase = FALSE
 )
 plan(sequential)
@@ -255,13 +255,13 @@ variability instead:
 ncores <- max(parallel::detectCores() - 1L, 1L)
 plan(multisession, workers = ncores)
 phase_data <- compare_caps(
-  x = simulated30_sub$x, 
-  y = simulated30_sub$y, 
-  n_clusters = 1:5, 
-  metric = "normalized_l2", 
+  x = simulated30_sub$x,
+  y = simulated30_sub$y,
+  n_clusters = 1:5,
+  metric = "normalized_l2",
   warping_class = c("shift", "dilation", "affine"),
-  clustering_method = "hclust-complete", 
-  centroid_type = "mean", 
+  clustering_method = "hclust-complete",
+  centroid_type = "mean",
   cluster_on_phase = TRUE
 )
 plan(sequential)

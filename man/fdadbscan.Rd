@@ -123,6 +123,8 @@ This function extends \code{DBSCAN} to functional data. It includes the
 possibility to separate amplitude and phase information.
 }
 \examples{
+\dontshow{if (requireNamespace("lpSolve", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+
 #----------------------------------
 # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
 idx <- c(1:5, 11:15)
@@ -146,4 +148,5 @@ out <- fdadbscan(
 plot(out, type = "amplitude")
 # Or the estimated warping functions with:
 plot(out, type = "phase")
+\dontshow{\}) # examplesIf}
 }

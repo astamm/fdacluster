@@ -107,7 +107,7 @@
 #' @return An object of class [`caps`].
 #'
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("lpSolve", quietly = TRUE)
 #' #----------------------------------
 #' # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
 #' idx <- c(1:5, 11:15, 21:25)
@@ -195,25 +195,28 @@ fdakmeans <- function(
   centroid_name <- centroid_type_args$name
   centroid_extra <- centroid_type_args$extra
 
-  if (centroid_name != "medoid" && parallel_method == 1L)
+  if (centroid_name != "medoid" && parallel_method == 1L) {
     cli::cli_abort(
       "Parallelization on the distance calculation loop is only available for computing medoids."
     )
+  }
 
   callargs$centroid_type <- centroid_name
   callargs$centroid_extra <- centroid_extra
 
-  if (warping_class == "none" && cluster_on_phase)
+  if (warping_class == "none" && cluster_on_phase) {
     cli::cli_abort(
       "It makes no sense to cluster based on phase variability if no alignment is performed."
     )
+  }
 
   # Handle seeds
   if (is.null(seeds)) {
-    if (use_verbose)
+    if (use_verbose) {
       cli::cli_alert_info(
         "Computing initial centroids using {seeding_strategy} strategy..."
       )
+    }
     if (seeding_strategy == "hclust") {
       out <- fdahclust(
         x = x,
@@ -340,10 +343,11 @@ fdakmeans <- function(
     }
   } else {
     n_centroids <- length(seeds)
-    if (n_centroids != n_clusters && n_centroids != 1L)
+    if (n_centroids != n_clusters && n_centroids != 1L) {
       cli::cli_abort(
         "The number of initial centroid indices provided by the {.arg seeds} argument should be either 1 or {n_clusters}."
       )
+    }
     if (n_centroids == 1L && n_clusters > 1L) {
       D <- fdadist(
         x = x,
@@ -368,26 +372,16 @@ fdakmeans <- function(
   seeds <- seeds - 1
 
   if (transformation == "srvf" && warping_class %in% c("none", "bpd")) {
-    if (!(centroid_name %in% c("mean", "medoid")))
+    if (!(centroid_name %in% c("mean", "medoid"))) {
       cli::cli_abort(
         "Only mean and medoid centroids are available for SRVFs using the {.fn fdasrvf::kmeans_align} function."
       )
+    }
 
     yperm <- aperm(y, c(2, 3, 1))
     common_grid <- x[1, ]
 
     # AST: nonempty should be 1 but badly handled in fdasrvf
-    save(
-      seeds,
-      common_grid,
-      yperm,
-      n_clusters,
-      centroid_type,
-      maximum_number_of_iterations,
-      use_verbose,
-      warping_class,
-      file = "~/Downloads/fdasrvf_kmeans_align.RData"
-    )
     res <- fdasrvf::kmeans_align(
       f = yperm,
       time = common_grid,
@@ -434,9 +428,10 @@ fdakmeans <- function(
     # clustering is still performed on amplitude for SRVF, only distances to
     # centers are transformed in the output
     q0 <- res$q0
-    if (length(dim(q0)) == 2L)
+    if (length(dim(q0)) == 2L) {
       # This should be done in fdasrvf package
       dim(q0) <- c(1, dim(q0))
+    }
     amplitude_variation <- sum(res$distances_to_center^2)
     total_variation <- sum(sapply(1:N, \(n) {
       sum(sapply(1:L, \(l) {

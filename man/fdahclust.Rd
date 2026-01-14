@@ -140,6 +140,7 @@ once hierarchical clustering is performed, curves within clusters need to be
 aligned to their corresponding centroid.
 }
 \examples{
+\dontshow{if (requireNamespace("lpSolve", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #----------------------------------
 # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
 idx <- c(1:5, 11:15, 21:25)
@@ -164,4 +165,5 @@ out <- fdahclust(
 plot(out, type = "amplitude")
 # Or the estimated warping functions with:
 plot(out, type = "phase")
+\dontshow{\}) # examplesIf}
 }

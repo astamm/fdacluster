@@ -1,4 +1,6 @@
 test_that("`fdahclust()` works", {
+  skip_if_not_installed("lpSolve")
+
   dims <- dim(simulated30_sub$y)
   N <- dims[1]
   L <- dims[2]
@@ -14,11 +16,22 @@ test_that("`fdahclust()` works", {
   )
   expect_true(is_caps(out))
   expect_equal(length(out), 14)
-  expected_names <- c("original_curves", "original_grids", "aligned_grids",
-                      "center_curves", "center_grids", "n_clusters",
-                      "memberships", "distances_to_center", "silhouettes",
-                      "amplitude_variation", "total_variation", "n_iterations",
-                      "call_name", "call_args")
+  expected_names <- c(
+    "original_curves",
+    "original_grids",
+    "aligned_grids",
+    "center_curves",
+    "center_grids",
+    "n_clusters",
+    "memberships",
+    "distances_to_center",
+    "silhouettes",
+    "amplitude_variation",
+    "total_variation",
+    "n_iterations",
+    "call_name",
+    "call_args"
+  )
   expect_equal(names(out), expected_names)
   expect_equal(dim(out$original_curves), dims)
   expect_equal(dim(out$original_grids), c(N, P))
