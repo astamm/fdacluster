@@ -19,7 +19,7 @@
 #' @return An object of class [`caps`].
 #'
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("lpSolve", quietly = TRUE)
 #' #----------------------------------
 #' # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
 #' idx <- c(1:5, 11:15, 21:25)
@@ -44,24 +44,27 @@
 #' plot(out, type = "amplitude")
 #' # Or the estimated warping functions with:
 #' plot(out, type = "phase")
-fdahclust <- function(x, y = NULL,
-                      n_clusters = 1L,
-                      is_domain_interval = FALSE,
-                      transformation = c("identity", "srvf"),
-                      warping_class = c("none", "shift", "dilation", "affine", "bpd"),
-                      centroid_type = "mean",
-                      metric = c("l2", "normalized_l2", "pearson"),
-                      cluster_on_phase = FALSE,
-                      linkage_criterion = c("complete", "average", "single", "ward.D2"),
-                      use_verbose = FALSE,
-                      warping_options = c(0.15, 0.15),
-                      maximum_number_of_iterations = 100L,
-                      number_of_threads = 1L,
-                      parallel_method = 0L,
-                      distance_relative_tolerance = 0.001,
-                      use_fence = FALSE,
-                      check_total_dissimilarity = TRUE,
-                      compute_overall_center = FALSE) {
+fdahclust <- function(
+  x,
+  y = NULL,
+  n_clusters = 1L,
+  is_domain_interval = FALSE,
+  transformation = c("identity", "srvf"),
+  warping_class = c("none", "shift", "dilation", "affine", "bpd"),
+  centroid_type = "mean",
+  metric = c("l2", "normalized_l2", "pearson"),
+  cluster_on_phase = FALSE,
+  linkage_criterion = c("complete", "average", "single", "ward.D2"),
+  use_verbose = FALSE,
+  warping_options = c(0.15, 0.15),
+  maximum_number_of_iterations = 100L,
+  number_of_threads = 1L,
+  parallel_method = 0L,
+  distance_relative_tolerance = 0.001,
+  use_fence = FALSE,
+  check_total_dissimilarity = TRUE,
+  compute_overall_center = FALSE
+) {
   call <- rlang::call_match(defaults = TRUE)
   callname <- rlang::call_name(call)
   callargs <- rlang::call_args(call)
@@ -94,20 +97,27 @@ fdahclust <- function(x, y = NULL,
   centroid_name <- centroid_type_args$name
   centroid_extra <- centroid_type_args$extra
 
-  if (centroid_name != "medoid" && parallel_method == 1L)
-    cli::cli_abort("Parallelization on the distance calculation loop is only available for computing medoids.")
+  if (centroid_name != "medoid" && parallel_method == 1L) {
+    cli::cli_abort(
+      "Parallelization on the distance calculation loop is only available for computing medoids."
+    )
+  }
 
   callargs$centroid_type <- centroid_name
   callargs$centroid_extra <- centroid_extra
 
-  if (warping_class == "none" && cluster_on_phase)
-    cli::cli_abort("It makes no sense to cluster based on phase variability if no alignment is performed.")
+  if (warping_class == "none" && cluster_on_phase) {
+    cli::cli_abort(
+      "It makes no sense to cluster based on phase variability if no alignment is performed."
+    )
+  }
 
   linkage_criterion <- rlang::arg_match(linkage_criterion)
   callargs$linkage_criterion <- linkage_criterion
 
-  if (use_verbose)
+  if (use_verbose) {
     cli::cli_alert_info("Computing the distance matrix...")
+  }
 
   D <- fdadist(
     x = x,
@@ -120,14 +130,16 @@ fdahclust <- function(x, y = NULL,
   )
   Dm <- as.matrix(D)
 
-  if (use_verbose)
+  if (use_verbose) {
     cli::cli_alert_info("Calculating the tree...")
+  }
 
   hc <- stats::hclust(D, method = linkage_criterion)
   labels <- stats::cutree(tree = hc, k = n_clusters)
 
-  if (use_verbose)
+  if (use_verbose) {
     cli::cli_alert_info("Aligning all curves with respect to their centroid...")
+  }
 
   kmresults <- lapply(1:n_clusters, function(k) {
     cluster_ids <- which(labels == k)
@@ -156,8 +168,9 @@ fdahclust <- function(x, y = NULL,
     )
   })
 
-  if (use_verbose)
+  if (use_verbose) {
     cli::cli_alert_info("Consolidating output...")
+  }
 
   original_curves <- array(dim = c(N, L, M))
   original_grids <- matrix(nrow = N, ncol = M)

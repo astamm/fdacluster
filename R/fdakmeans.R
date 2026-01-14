@@ -107,7 +107,7 @@
 #' @return An object of class [`caps`].
 #'
 #' @export
-#' @examples
+#' @examplesIf requireNamespace("lpSolve", quietly = TRUE)
 #' #----------------------------------
 #' # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
 #' idx <- c(1:5, 11:15, 21:25)

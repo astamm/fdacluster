@@ -153,6 +153,7 @@ for functional data, with possible joint amplitude and phase separation. A
 number of warping class are implemented to achieve this separation.
 }
 \examples{
+\dontshow{if (requireNamespace("lpSolve", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 #----------------------------------
 # Extracts 15 out of the 30 simulated curves in `simulated30_sub` data set
 idx <- c(1:5, 11:15, 21:25)
@@ -177,4 +178,5 @@ out <- fdakmeans(
 plot(out, type = "amplitude")
 # Or the estimated warping functions with:
 plot(out, type = "phase")
+\dontshow{\}) # examplesIf}
 }
