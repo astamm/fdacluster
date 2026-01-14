@@ -65,17 +65,21 @@ fdadist <- function(
     labels <- 1:N
   }
 
-  index_table <- linear_index(N)
+  K <- N * (N - 1) / 2
   curve_pair <- array(dim = c(2, L, M))
   grid_pair <- array(dim = c(2, M))
 
-  .pairwise_distances <- function(index_table) {
-    pb <- progressr::progressor(steps = nrow(index_table))
-    future_map2_dbl(
-      index_table$i,
-      index_table$j,
-      \(i, j) {
+  .pairwise_distances <- function(n_elements) {
+    pb <- progressr::progressor(steps = n_elements)
+    res_list <- future.apply::future_lapply(
+      0:(n_elements - 1),
+      \(k) {
         pb()
+
+        i <- N - 2 - floor(sqrt(-8 * k + 4 * N * (N - 1) - 7) / 2.0 - 0.5)
+        j <- k + i + 1 - N * (N - 1) / 2 + (N - i) * ((N - i) - 1) / 2
+        i <- i + 1
+        j <- j + 1
 
         curve_pair[1, , ] <- y[i, , ]
         curve_pair[2, , ] <- y[j, , ]
@@ -120,12 +124,13 @@ fdadist <- function(
 
         out
       },
-      future_seed = TRUE,
-      future_packages = "fdacluster"
+      future.packages = "fdacluster",
+      future.seed = TRUE
     )
+    unlist(res_list)
   }
 
-  d <- .pairwise_distances(index_table)
+  d <- .pairwise_distances(K)
 
   attributes(d) <- NULL
   attr(d, "Labels") <- labels
@@ -136,11 +141,4 @@ fdadist <- function(
   attr(d, "method") <- metric
   class(d) <- "dist"
   d
-}
-
-linear_index <- function(n) {
-  df <- expand.grid(j = 1:n, i = 1:n)
-  df <- subset(df, df$j > df$i)
-  rownames(df) <- NULL
-  df[, 2:1]
 }
