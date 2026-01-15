@@ -18,7 +18,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/astamm/fdacluster/blob/master/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/astamm/fdacluster/blob/v0.4.2/DESCRIPTION)
 
 Stamm A (2026). *fdacluster: Joint Clustering and Alignment of
 Functional Data*. R package version 0.4.2,

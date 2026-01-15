@@ -2,6 +2,8 @@
 
 ## fdacluster 0.4.2
 
+CRAN release: 2026-01-14
+
 - Updated C++ code to use `std::isfinite()` on scalar values instead of
   `arma::is_finite()` which is meant for Armadillo objects. Also,
   replaced use of `arma::is_finite()` in favour of `.is_finite()` method
