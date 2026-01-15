@@ -1,5 +1,7 @@
 # Changelog
 
+## fdacluster (development version)
+
 ## fdacluster 0.4.2
 
 CRAN release: 2026-01-14

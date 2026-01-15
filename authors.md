@@ -18,16 +18,16 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/astamm/fdacluster/blob/v0.4.2/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/astamm/fdacluster/blob/master/DESCRIPTION)
 
 Stamm A (2026). *fdacluster: Joint Clustering and Alignment of
-Functional Data*. R package version 0.4.2,
+Functional Data*. R package version 0.4.2.9000,
 <https://astamm.github.io/fdacluster/>.
 
     @Manual{,
       title = {fdacluster: Joint Clustering and Alignment of Functional Data},
       author = {Aymeric Stamm},
       year = {2026},
-      note = {R package version 0.4.2},
+      note = {R package version 0.4.2.9000},
       url = {https://astamm.github.io/fdacluster/},
     }
