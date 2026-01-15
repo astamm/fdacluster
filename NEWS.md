@@ -1,3 +1,5 @@
+# fdacluster (development version)
+
 # fdacluster 0.4.2
 
 * Updated C++ code to use `std::isfinite()` on scalar values instead of
